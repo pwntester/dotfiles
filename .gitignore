@@ -1,0 +1,7 @@
+*.DS_Store
+.AppleDouble
+.LSOverride
+
+nvim/.config/nvim/plugged/*
+nvim/.config/nvim/tmp/*
+nvim/.config/nvim/view/*
