@@ -1,1 +1,6 @@
-for d in $(ls); do stow $d; done
+stow git
+stow nvim
+stow radare
+stow tmux
+stow zsh
+
