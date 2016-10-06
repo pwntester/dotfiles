@@ -346,9 +346,9 @@ call plug#end()
   let g:neomake_warning_sign = {'texthl': 'MyWarningMsg'}
 
   " Deoplete.nvim
-  let g:deoplete#enable_at_startup = 1
-  autocmd BufEnter *.* if getfsize(@%) < 1000000 | let g:deoplete#disable_auto_complete = 0 | endif
-  autocmd BufEnter *.* if getfsize(@%) > 1000000 | let g:deoplete#disable_auto_complete = 1 | endif
+  let g:deoplete#enable_at_startup = 0 
+  "autocmd BufEnter *.* if getfsize(@%) < 1000000 | let g:deoplete#disable_auto_complete = 0 | endif
+  "autocmd BufEnter *.* if getfsize(@%) > 1000000 | let g:deoplete#disable_auto_complete = 1 | endif
   inoremap <silent><expr> <C-k> pumvisible() ? "\<C-p>" : ""
   inoremap <silent><expr> <C-j> pumvisible() ? "\<C-n>" : ">"
 
