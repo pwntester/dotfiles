@@ -3,15 +3,8 @@ if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
 	source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
 fi
 
-fancy-ctrl-z () {
-  if [[ $#BUFFER -eq 0 ]]; then
-    BUFFER="fg"
-    zle accept-line
-  else
-    zle push-input
-    zle clear-screen
-  fi
-}
-zle -N fancy-ctrl-z
-bindkey '^Z' fancy-ctrl-z
+# Docker completion (autoload -Uz compinit && compinit -i)
+fpath=(~/.zsh/completion $fpath)
+autoload -Uz compinit && compinit -i
+
 if [ "$TMUX" = "" ]; then tmux; fi
