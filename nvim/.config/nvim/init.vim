@@ -2,9 +2,14 @@ set nocompatible
 filetype off
 
 call plug#begin('~/.config/nvim/plugged')
-  Plug 'Shougo/unite.vim'                                           " Fuzzy searching
+  " Plug 'Shougo/unite.vim'                                           " Fuzzy searching
+  " Plug 'Shougo/vimfiler.vim'                                        " File explorer
+  Plug 'Shougo/denite.nvim'                                          " Fuzzy searching
   Plug 'Shougo/neomru.vim'                                          " Fuzzy searching for most recent used files
-  Plug 'Shougo/vimfiler.vim'                                        " File explorer
+  Plug 'scrooloose/nerdtree'                                        " File explorer
+  Plug 'Xuyuanp/nerdtree-git-plugin'                                " NERDTree plugin for showing git changes
+  Plug 'Shougo/neosnippet.vim'                                      " Snippets engine
+  Plug 'Shougo/neosnippet-snippets'                                 " Snippets
   Plug 't9md/vim-choosewin'                                         " Let you choose target window (plays well with vimfiler)
   Plug 'kana/vim-textobj-user'                                      " Allows text object customization
   Plug 'kana/vim-textobj-line'                                      " Text Objects for lines (l)
@@ -13,16 +18,16 @@ call plug#begin('~/.config/nvim/plugged')
   Plug 'bkad/CamelCaseMotion'                                       " Text Objects for CamelCase motion (,w)
   Plug 'tpope/vim-surround'                                         " Motions and Text Objects for surroundaing character(s)?
   Plug 'wellle/targets.vim'                                         " Add next (n) and last (l) to built-in Text Objects, also 'a' for arguments and separators (, . ; : + - = ~ _ * # / | \ & $)
-  Plug 'terryma/vim-expand-region'                                  " Expand visual selection
   Plug 'tpope/vim-commentary'                                       " Comments
   Plug 'tpope/vim-fugitive'                                         " Git integration
+  "Plug 'airblade/vim-gitgutter'                                     " Git integration
   Plug 'tpope/vim-repeat'                                           " Bundle commands as atomic and repeatable operations
-  Plug 'SirVer/ultisnips'                                           " Snippets engine
-  Plug 'honza/vim-snippets'                                         " Snippets
-  Plug 'Shougo/deoplete.nvim'                                       " Asynchronous completion
+  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }     " Asynchronous completion
   Plug 'zchee/deoplete-jedi'                                        " Python completion for deoplete
+  Plug 'zchee/deoplete-clang'                                       " Objective-C completion for deoplete
+  Plug 'pwntester/deoplete-swift'                                   " Swift completion for deoplete
+  Plug 'artur-shaik/vim-javacomplete2'                              " Java completion for omnifunc
   Plug 'christoomey/vim-tmux-navigator'                             " Tmux integration
-  Plug 'wellle/visual-split.vim'                                    " Control splits with visual selections or text objects
   Plug 'ap/vim-css-color', {'for': ['css', 'html', 'php']}          " Shows CSS colors
   Plug 'gertjanreynaert/cobalt2-vim-theme'                          " Theme
   Plug 'godlygeek/tabular'                                          " Line up text
@@ -31,36 +36,33 @@ call plug#begin('~/.config/nvim/plugged')
   Plug 'othree/yajs.vim', { 'for': 'javascript' }                   " Better syntax for JS
   Plug 'gavocanov/vim-js-indent'                                    " Better indentation for JS
   Plug 'b4winckler/vim-objc'                                        " Better syntax for Objective-C
-  Plug 'toyamarinyon/vim-swift'                                     " Better syntax for Swift
+  Plug 'kballard/vim-swift'                                         " Better syntax for Swift
   Plug 'othree/xml.vim'                                             " Better syntax for XML
   Plug 'derekwyatt/vim-scala'                                       " Better syntax for Scala
-  Plug 'ekalinin/Dockerfile.vim'                                    " Better syntax for Scala
+  Plug 'ekalinin/Dockerfile.vim'                                    " Better syntax for Docker
   Plug 'tfnico/vim-gradle'                                          " Gradle syntax and compiler integration
-  Plug 'tmhedberg/matchit'                                          " Expand % matching to HTML, and others
   Plug 'vim-airline/vim-airline'                                    " Nice status line
   Plug 'vim-airline/vim-airline-themes'                             " Airline themes
   Plug 'benekastah/neomake'                                         " Asynchronous linters
   Plug 'vim-scripts/vim-scroll-position'                            " Shows scroll position indicator in gutter
   Plug 'qpkorr/vim-bufkill'                                         " Delete buffers without messing around windows layout
   Plug 'henrik/vim-indexed-search'                                  " Search index
-  Plug 'airblade/vim-rooter'                                        " Changes the working directory to the project root when you open a file
   Plug 'AndrewRadev/linediff.vim'                                   " File and chunk diffs
   Plug 'alvan/vim-closetag'                                         " Auto-close tags in HTML, XML, etc.
   Plug 'majutsushi/tagbar'                                          " Tag side menu
   Plug 'Raimondi/delimitMate'                                       " Auto-close parenthesis
-  Plug 'rking/ag.vim'                                               " Fast replacement for vimgrep
-  Plug 'mbr/vim-pyre'                                               " 'S' command (replaces 's') to use python regular expressions when substituting
   Plug 'junegunn/vader.vim'                                         " Testing vim plugins
   Plug 'junegunn/rainbow_parentheses.vim'                           " Quickly identify closing parenthesis
-  Plug 'mattn/gist-vim'                                             " Create Gists from vim
-  Plug 'alfredodeza/khuno.vim'                                      " Python linter and SCA
+  Plug 'rizzatti/dash.vim'                                          " Query Dash from vim
   Plug 'https://github.hpe.com/alvaro-munoz/vim-fortify.git'        " Fortify SCA rule developement
+  "Plug 'c0r73x/neotags.nvim'                                        " Generate ctags
 call plug#end()
 
 " GENERAL
   colorscheme cobalt2                                               " Beautiful Cobalt is beautiful
   set autowrite                                                     " Write on shell/make command
   set fileencoding=utf-8                                            " All the way!
+  set encoding=utf8
   set nrformats=alpha,hex,octal                                     " Increment/decrement numbers. C-a,a (because of tmux), C-x
   set shell=/bin/zsh                                                " ZSH ftw!
   set visualbell                                                    " Silent please
@@ -168,6 +170,8 @@ call plug#end()
   augroup END
 
 " MAPPINGS
+
+  noremap m <ESC>:ApplyTransformer HealthVariant<CR>
 
   " Terminal mode escape (neovim)
   if has('nvim')
@@ -282,12 +286,20 @@ call plug#end()
   nnoremap <leader>i :%s///gn<CR>
 
   " unite mappings
-  nnoremap <leader>m :<C-u>Unite -start-insert file_mru<cr>
-  nnoremap <leader>b :<C-u>Unite bookmark<cr>
+  " nnoremap <leader>m :<C-u>Unite -start-insert file_mru<cr>
+  " nnoremap <leader>b :<C-u>Unite bookmark<cr>
+
+  " denite mappings
+  nnoremap <leader>m :<C-u>Denite -start-insert file_mru<cr>
+  nnoremap <leader>b :<C-u>Denite buffer<cr>
 
   " vimfiler. find current file in explorer buffer
-  nmap <leader>f :VimFilerBufferDir -explorer -find -parent<CR>
-  nmap <leader>e :VimFilerExplorer -parent<CR>
+  " nmap <leader>f :VimFilerBufferDir -explorer -find -parent<CR>
+  " nmap <leader>e :VimFilerExplorer -parent<CR>
+
+  " NERDTree
+  nnoremap <silent> <Leader>f :NERDTreeFind<CR>
+  nnoremap <Leader>e :NERDTreeToggle<Enter>
 
   " vim-fortify
   nnoremap <leader>i :NewRuleID<CR>
@@ -309,7 +321,15 @@ call plug#end()
   let g:airline_symbols.space = "\ua0"
   let g:airline_section_c = airline#section#create(['[', '%{getcwd()}', '] ', '%f'])
   
+  " neosnippet
+  let g:neosnippet#snippets_directory='/Users/alvaro/Development/GitRepos/vim-fortify/snippets'
+  imap <tab> <Plug>(neosnippet_expand_or_jump)
+  smap <tab> <Plug>(neosnippet_expand_or_jump)
+  xmap <tab> <Plug>(neosnippet_expand_target)
+  imap <expr><tab> neosnippet#expandable_or_jumpable() ? "\<Plug>(neosnippet_expand_or_jump)" : "\<tab>"
+
   " vim-fortify
+  let g:fortify_SCAPath = "/Applications/HP_Fortify/sca"
   let g:fortify_PythonPath = "/usr/local/lib/python2.7/site-packages"
   let g:fortify_AndroidJarPath = "/Users/alvaro/Library/Android/sdk/platforms/android-22/android.jar"
   "let g:fortify_AndroidJarPath = "/Users/alvaro/Library/Android/sdk/platforms/android-22/android-support-v7-appcompat.jar"
@@ -319,9 +339,9 @@ call plug#end()
   let g:fortify_ScanOpts = []
   let g:fortify_TranslationOpts = []
   let g:fortify_JDKVersion = "1.8"
-  let g:fortify_XCodeSDK = "/Applications/Xcode-beta.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk"
-  let g:fortify_FoldRules = 0
-  let g:fortify_DefaultIndentation = "structural"
+  let g:fortify_XCodeSDK = "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk"
+  " let g:fortify_FoldRules = 0
+  " let g:fortify_DefaultIndentation = "structural"
   autocmd BufNewFile,BufReadPost *.xml map R ,R
   autocmd BufNewFile,BufReadPost *.rules map R ,R
   autocmd BufNewFile,BufReadPost *.xml map r ,r
@@ -344,34 +364,45 @@ call plug#end()
   let g:neomake_error_sign = {'texthl': 'ErrorMsg'}
   hi MyWarningMsg ctermbg=3 ctermfg=0
   let g:neomake_warning_sign = {'texthl': 'MyWarningMsg'}
+  let g:neomake_swift_swiftc_maker = {
+        \ 'args': ['-parse', '-target', 'x86_64-apple-ios9.0', '-sdk', '/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk'],
+        \ 'errorformat':
+            \ '%E%f:%l:%c: error: %m,' .
+            \ '%W%f:%l:%c: warning: %m,' .
+            \ '%Z%\s%#^~%#,' .
+            \ '%-G%.%#',
+        \ }
+    let g:neomake_swift_enabled_makers = ['swiftc']
+
 
   " Deoplete.nvim
-  let g:deoplete#enable_at_startup = 0 
-  "autocmd BufEnter *.* if getfsize(@%) < 1000000 | let g:deoplete#disable_auto_complete = 0 | endif
-  "autocmd BufEnter *.* if getfsize(@%) > 1000000 | let g:deoplete#disable_auto_complete = 1 | endif
+  let g:deoplete#enable_at_startup = 1
+  autocmd BufEnter *.* if getfsize(@%) < 1000000 | let g:deoplete#disable_auto_complete = 0 | endif
+  autocmd BufEnter *.* if getfsize(@%) > 1000000 | let g:deoplete#disable_auto_complete = 1 | endif
   inoremap <silent><expr> <C-k> pumvisible() ? "\<C-p>" : ""
   inoremap <silent><expr> <C-j> pumvisible() ? "\<C-n>" : ">"
+  let g:deoplete#sources#clang#libclang_path = '/usr/local/Cellar/llvm/3.9.0/lib/libclang.dylib'
+  let g:deoplete#sources#clang#clang_header = '/usr/local/Cellar/llvm'
+  let g:deoplete#sources#clang#flags = [
+      \ "-cc1",
+      \ "-triple", "x86_64-apple-ios9.3.0",
+      \ "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator9.3.sdk",
+      \ "-fmax-type-align=16",
+      \ ]
 
-  " vim-rooter
-  let g:rooter_disable_map = 1
-  let g:rooter_silent_chdir = 1
-  let g:rooter_use_lcd = 1
-  let g:rooter_change_directory_for_non_project_files = 1
-  let g:rooter_patterns = ['.git', '.git/', '_darcs/', '.hg/', '.bzr/', '.svn/', 'pom.xml']
-  autocmd BufEnter * :Rooter
+  " vim-javacomplete2
+  autocmd FileType java setlocal omnifunc=javacomplete#Complete
+  nmap <F4> <Plug>(JavaComplete-Imports-AddSmart)
+  imap <F4> <Plug>(JavaComplete-Imports-AddSmart)
+  nmap <F5> <Plug>(JavaComplete-Imports-Add)
+  imap <F5> <Plug>(JavaComplete-Imports-Add)
+  nmap <F6> <Plug>(JavaComplete-Imports-AddMissing)
+  imap <F6> <Plug>(JavaComplete-Imports-AddMissing)
+  nmap <F7> <Plug>(JavaComplete-Imports-RemoveUnused)
+  imap <F7> <Plug>(JavaComplete-Imports-RemoveUnused)
 
   " vim-closetag
   let g:closetag_filenames = "*.html,*.xhtml,*.xml,*.rules"
-
-  " expand-regions
-  vmap v <Plug>(expand_region_expand)
-  vmap <C-v> <Plug>(expand_region_shrink)
-  call expand_region#custom_text_objects({
-      \ 'ii' :1,
-      \ 'ai' :1,
-      \ 'it' :1,
-      \ 'at' :1,
-      \ })
 
   " vim-indexed-search
   let g:indexed_search_max_lines = 400000
@@ -380,38 +411,74 @@ call plug#end()
   let g:indexed_search_shortmess = 1
 
   " unite
-  let g:unite_data_directory = '~/.config/nvim/tmp'
-  call unite#filters#matcher_default#use(['matcher_fuzzy'])
-  call unite#filters#sorter_default#use(['sorter_rank'])
-  let g:unite_prompt='» '
-  call unite#custom#profile('default', 'context', {
+  " let g:unite_data_directory = '~/.config/nvim/unite'
+  " call unite#filters#matcher_default#use(['matcher_fuzzy'])
+  " call unite#filters#sorter_default#use(['sorter_rank'])
+  " let g:unite_prompt='» '
+  " call unite#custom#profile('default', 'context', {
+  "   \   'winheight': 10,
+  "   \   'direction': 'botright',
+  "   \ })
+
+  " denite
+  call denite#custom#map('_', '<Esc>', 'quit')
+  call denite#custom#map('insert', 'jk', 'enter_mode:normal')
+  call denite#custom#map('insert', '<C-j>', 'move_to_next_line')
+  call denite#custom#map('insert', '<C-k>', 'move_to_prev_line')
+  "call denite#custom#source('file_mru', 'sorters', ['sorter_sublime'])
+  call denite#custom#option('default', 'prompt', '>')
+  call denite#custom#option('default', 'context', {
     \   'winheight': 10,
     \   'direction': 'botright',
     \ })
 
-  " vimfiler
-  let g:vimfiler_as_default_explorer = 1
-  let g:vimfiler_no_default_key_mappings = 1
-  call vimfiler#custom#profile('default', 'context', {
-    \   'explorer' : 1,
-    \   'parent'   : 1,
-    \   'no_focus' : 1,
-    \   'safe'     : 0
-    \ })
-  autocmd VimEnter * VimFilerExplorer -parent -direction=topleft
-  autocmd FileType vimfiler nmap <buffer><expr> <CR> vimfiler#smart_cursor_map("\<Plug>(vimfiler_expand_tree)","\<Plug>(vimfiler_edit_file)")
-  autocmd FileType vimfiler nmap <buffer><expr> <C-h> "\<Plug>(vimfiler_toggle_visible_ignore_files)"
-  autocmd FileType vimfiler nmap <buffer><expr> o "\<Plug>(vimfiler_expand_tree)"
-  autocmd FileType vimfiler nmap <buffer><expr> q "\<Plug>(vimfiler_close)"
-  autocmd FileType vimfiler nmap <buffer><expr> n "\<Plug>(vimfiler_make_directory)"
-  autocmd FileType vimfiler nmap <buffer><expr> f "\<Plug>(vimfiler_new_file)"
-  autocmd FileType vimfiler nmap <buffer><expr> r "\<Plug>(vimfiler_rename_file)"
-  autocmd FileType vimfiler nmap <buffer><expr> d "\<Plug>(vimfiler_delete_file)"
-  autocmd FileType vimfiler nmap <buffer><expr> <S-l> ""
-  autocmd FileType vimfiler nmap <buffer><expr> <S-h> ""
-  autocmd FileType vimfiler nmap <buffer><expr> <S-k> ""
-  autocmd FileType vimfiler setlocal nobuflisted
+  " denite menu
+  let s:menus = {}
+  let s:menus.config = {'description': 'Edit configuration files'}
+  let s:menus.config.file_candidates = [
+    \ ['zshrc', '~/.zshrc'],
+	\ ['zshprofile', '~/.zprofile'],
+	\ ]
+  let s:menus.fortify = {'description': 'Fortify'}
+  let s:menus.fortify.command_candidates = [
+	\ ['Translate current file', 'Translate %'],
+	\ ['Scan current buildId with current buffer', 'Scan %'],
+	\ ]
+  let s:menus.commands = {'description': 'Fortify'}
+  let s:menus.commands.command_candidates = [
+	\ ['Configuration Files', 'Denite menu:config'],
+	\ ['Fortify Commands', 'Denite menu:Fortify'],
+	\ ]
+  call denite#custom#var('menu', 'menus', s:menus)
+ 
+  " vim-swift
+  let g:swift_developer_dir = '/Applications/Xcode.app'
+  let g:swift_platform = 'iphonesimulator'
+  let g:swift_device = 'iPhone 6'
 
+  " vimfiler
+  " let g:vimfiler_as_default_explorer = 1
+  " let g:vimfiler_no_default_key_mappings = 1
+  " call vimfiler#custom#profile('default', 'context', {
+  "   \   'explorer' : 1,
+  "   \   'parent'   : 1,
+  "   \   'no_focus' : 1,
+  "   \   'safe'     : 0
+  "   \ })
+  " autocmd VimEnter * VimFilerExplorer -parent -direction=topleft
+  " autocmd FileType vimfiler nmap <buffer><expr> <CR> vimfiler#smart_cursor_map("\<Plug>(vimfiler_expand_tree)","\<Plug>(vimfiler_edit_file)")
+  " autocmd FileType vimfiler nmap <buffer><expr> <C-h> "\<Plug>(vimfiler_toggle_visible_ignore_files)"
+  " autocmd FileType vimfiler nmap <buffer><expr> o "\<Plug>(vimfiler_expand_tree)"
+  " autocmd FileType vimfiler nmap <buffer><expr> q "\<Plug>(vimfiler_close)"
+  " autocmd FileType vimfiler nmap <buffer><expr> n "\<Plug>(vimfiler_make_directory)"
+  " autocmd FileType vimfiler nmap <buffer><expr> f "\<Plug>(vimfiler_new_file)"
+  " autocmd FileType vimfiler nmap <buffer><expr> r "\<Plug>(vimfiler_rename_file)"
+  " autocmd FileType vimfiler nmap <buffer><expr> d "\<Plug>(vimfiler_delete_file)"
+  " autocmd FileType vimfiler nmap <buffer><expr> <S-l> ""
+  " autocmd FileType vimfiler nmap <buffer><expr> <S-h> ""
+  " autocmd FileType vimfiler nmap <buffer><expr> <S-k> ""
+  " autocmd FileType vimfiler setlocal nobuflisted
+  
   " vim-plug
   autocmd FileType vim-plug nmap <buffer><expr> <S-l> ""
   autocmd FileType vim-plug nmap <buffer><expr> <S-h> ""

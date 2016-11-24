@@ -3,17 +3,7 @@ alias sca="sourceanalyzer"
 alias tmux="TERM=screen-256color-bce tmux"
 alias vi='nvim'
 alias burp='java -Xmx2048m -XX:MaxPermSize=1G -Xdock:name="Burp" -Xdock:icon=/Users/alvaro/CTFs/tools/Burp/icon.png -jar /Users/alvaro/CTFs/tools/Burp/burp.jar &'
-
-# Path
-path=(
-	/usr/local/mysql/bin
-	/Users/alvaro/bin
-	/usr/local/share/npm/bin
-	/Applications/HP_Fortify/sca_main/bin
-	/Applications/HP_Fortify/awb_main/bin
-	/Applications/HP_Fortify/sca/bin
-	$path
-)
+alias ctags="`brew --prefix`/bin/ctags"
 
 # Language
 if [[ -z "$LANG" ]]; then
@@ -35,7 +25,7 @@ export PAGER='less'
 
 export XDG_CONFIG_HOME=$HOME/.config
 export NODE_PATH="/usr/local/lib/node"
-export PATH=/usr/local/bin:/usr/local/sbin:/usr/local/mysql/bin:/usr/local/share/npm/bin:/Applications/HP_Fortify/sca_main/bin:/Applications/HP_Fortify/awb_main/bin:/Applications/HP_Fortify/sca/bin:$PATH
+export PATH=/usr/local/bin:/usr/local/sbin:/usr/local/mysql/bin:/usr/local/share/npm/bin:/Applications/HP_Fortify/sca/bin:/Applications/HP_Fortify/awb_main/bin:$PATH
 export JAVA_8_HOME=$(/usr/libexec/java_home -v1.8)
 export JAVA_7_HOME=$(/usr/libexec/java_home -v1.7)
 export JAVA_HOME=$JAVA_8_HOME
