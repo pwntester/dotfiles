@@ -15,12 +15,12 @@ call plug#begin('~/.config/nvim/plugged')
   Plug 'kana/vim-textobj-line'                                      " Text Objects for lines (l)
   Plug 'kana/vim-textobj-indent'                                    " Text Objects for indents (i)
   Plug 'whatyouhide/vim-textobj-xmlattr'                            " Text Objects for XML attributes (x)
-  Plug 'bkad/CamelCaseMotion'                                       " Text Objects for CamelCase motion (,w)
+  Plug 'vim-scripts/camelcasemotion'                                " Text Objects for CamelCase motion (,w)
   Plug 'tpope/vim-surround'                                         " Motions and Text Objects for surroundaing character(s)?
   Plug 'wellle/targets.vim'                                         " Add next (n) and last (l) to built-in Text Objects, also 'a' for arguments and separators (, . ; : + - = ~ _ * # / | \ & $)
   Plug 'tpope/vim-commentary'                                       " Comments
   Plug 'tpope/vim-fugitive'                                         " Git integration
-  "Plug 'airblade/vim-gitgutter'                                     " Git integration
+  Plug 'airblade/vim-gitgutter'                                     " Git integration
   Plug 'tpope/vim-repeat'                                           " Bundle commands as atomic and repeatable operations
   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }     " Asynchronous completion
   Plug 'zchee/deoplete-jedi'                                        " Python completion for deoplete
@@ -59,7 +59,7 @@ call plug#begin('~/.config/nvim/plugged')
 call plug#end()
 
 " GENERAL
-  colorscheme cobalt2                                               " Beautiful Cobalt is beautiful
+  colorscheme cobalt2
   set autowrite                                                     " Write on shell/make command
   set fileencoding=utf-8                                            " All the way!
   set encoding=utf8
@@ -478,6 +478,26 @@ call plug#end()
   " autocmd FileType vimfiler nmap <buffer><expr> <S-h> ""
   " autocmd FileType vimfiler nmap <buffer><expr> <S-k> ""
   " autocmd FileType vimfiler setlocal nobuflisted
+
+  " NERDTree
+  let g:NERDTreeCaseSensitiveSort = 1
+  let g:NERDTreeChDirMode = 2
+  let g:NERDTreeQuitOnOpen = 1
+  let g:NERDTreeSortHiddenFirst = 1
+  let g:NERDTreeIgnore = ["\.swp$"]
+
+  " nerdtree-git-plugin
+  let g:NERDTreeIndicatorMapCustom = {
+			\ "Modified"  : "M",
+			\ "Staged"    : "S",
+			\ "Untracked" : "U",
+			\ "Renamed"   : "R",
+			\ "Unmerged"  : "N",
+			\ "Deleted"   : "D",
+			\ "Dirty"     : "*",
+			\ "Clean"     : "C",
+			\ "Unknown"   : "?"
+			\ }
   
   " vim-plug
   autocmd FileType vim-plug nmap <buffer><expr> <S-l> ""
