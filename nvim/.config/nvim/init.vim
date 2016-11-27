@@ -7,9 +7,6 @@ set runtimepath+=~/.config/nvim/dein/repos/github.com/Shougo/dein.vim
 call dein#begin(expand('~/.config/nvim/dein'))
   call dein#add('Shougo/dein.vim') " Plugin manager
   call dein#add('haya14busa/dein-command.vim') " Plugin manager
-  call dein#add('Shougo/neomru.vim') " Fuzzy searching for most recent used files
-  call dein#add('Shougo/vimfiler.vim') " File explorer
-  call dein#add('Shougo/unite.vim') " (for vimfiler)
   call dein#add('t9md/vim-choosewin') " Let you choose target window
   call dein#add('kana/vim-textobj-user') " Allows text object customization
   call dein#add('kana/vim-textobj-line') " Text Objects for lines (l)
@@ -27,7 +24,6 @@ call dein#begin(expand('~/.config/nvim/dein'))
   call dein#add('ap/vim-css-color') " Shows CSS colors
   call dein#add('gertjanreynaert/cobalt2-vim-theme') " Theme
   call dein#add('tpope/vim-commentary') " Comments
-  call dein#add('Shougo/denite.nvim') " Fuzzy searching
 
   call dein#add('alvan/vim-closetag', {'on_i': 1}) " Auto-close tags in HTML, XML, etc.
   call dein#add('Raimondi/delimitMate', {'on_i': 1}) " Auto-close parenthesis
@@ -35,7 +31,30 @@ call dein#begin(expand('~/.config/nvim/dein'))
   call dein#add('Shougo/neosnippet-snippets', {'on_i': 1}) " Snippets
   call dein#add('Shougo/deoplete.nvim', {'on_i': 1}) " Asynchronous completion
 
+
   call dein#add('benekastah/neomake', {'on_event': ['BufWritePre']}) " Asynchronous linters
+
+  call dein#add('Shougo/neomru.vim', {'on_source': ['Shougo/denite.nvim']}) " Most recent used files source for Denite
+  call dein#add('Shougo/denite.nvim', { 
+        \ 'on_cmd': ['Denite'],
+        \ 'depends': ['Shougo/neomru.vim'],
+        \ 'hook_post_source': '
+            \ call denite#custom#map("_", "<esc>", "quit")\n
+            \ call denite#custom#map("insert", "<C-j>", "move_to_next_line")\n
+            \ call denite#custom#map("insert", "<C-k>", "move_to_prev_line")\n
+            \ call denite#custom#source("file_mru", "sorters", ["sorter_sublime"])\n
+            \ call denite#custom#option("default", "prompt", ">")\n
+            \ call denite#custom#option("default", "winheight", 10)\n
+            \ call denite#custom#option("default", "reversed", 1)\n
+            \ call denite#custom#option("default", "auto_resize", 1)\n
+  \'}) " Fuzzy searching
+  call dein#add('Shougo/unite.vim', {'on_source': ['Shougo/vimfiler.vim']}) " Fuzzy searching
+  call dein#add('Shougo/vimfiler.vim', {
+        \ 'on_cmd': ['VimFilerExplorer', 'VimFilerBufferDir'],
+        \ 'depends': 'unite.vim',
+        \ 'hook_post_source': '
+            \ call vimfiler#custom#profile("default", "context", {"explorer":1, "parent":1, "no_focus":1, "safe":0})
+  \'}) " File explorer
 
   call dein#add('AndrewRadev/linediff.vim', {'on_cmd': ['Linediff']}) " File and chunk diffs
   call dein#add('majutsushi/tagbar', {'on_cmd': ['Tagbar']}) " Tag side menu
@@ -273,8 +292,8 @@ call dein#end()
   nnoremap <leader>b :<C-u>Denite buffer<Return>
 
   " vimfiler
-  nmap <leader>f :VimFilerBufferDir -explorer -find -parent -winwidth=35<Return>
-  nmap <leader>e :VimFilerExplorer -parent -winwidth=35<Return>
+  nmap <leader>f :VimFilerBufferDir -explorer -find -parent -winwidth=25<Return>
+  nmap <leader>e :VimFilerExplorer -parent -direction=topleft -winwidth=25<Return>
 
   " vim-fortify
   nnoremap <leader>i :NewRuleID<Return>
@@ -417,26 +436,11 @@ call dein#end()
   let g:indexed_search_shortmess = 1
 
   " denite
-  call denite#custom#map('_', '<esc>', 'quit')
-  call denite#custom#map('insert', '<C-j>', 'move_to_next_line')
-  call denite#custom#map('insert', '<C-k>', 'move_to_prev_line')
-  call denite#custom#source('file_mru', 'sorters', ['sorter_sublime'])
-  call denite#custom#option('default', 'prompt', '>')
-  call denite#custom#option('default', 'winheight', 10)
-  call denite#custom#option('default', 'reversed', 1)
-  call denite#custom#option('default', 'auto_resize', 1)
   highlight default link  deniteMatched Keyword
 
   " vimfiler
   let g:vimfiler_as_default_explorer = 1
   let g:vimfiler_no_default_key_mappings = 1
-  call vimfiler#custom#profile('default', 'context', {
-    \   'explorer' : 1,
-    \   'parent'   : 1,
-    \   'no_focus' : 1,
-    \   'safe'     : 0
-    \ })
-  autocmd VimEnter * VimFilerExplorer -parent -direction=topleft -winwidth=25
   autocmd FileType vimfiler nmap <buffer><expr> <Return> vimfiler#smart_cursor_map("\<Plug>(vimfiler_expand_tree)","\<Plug>(vimfiler_edit_file)")
   autocmd FileType vimfiler nmap <buffer><expr> <C-h> "\<Plug>(vimfiler_toggle_visible_ignore_files)"
   autocmd FileType vimfiler nmap <buffer><expr> o "\<Plug>(vimfiler_expand_tree)"
