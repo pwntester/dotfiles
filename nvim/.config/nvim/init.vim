@@ -2,15 +2,13 @@ set nocompatible
 filetype off
 
 call plug#begin('~/.config/nvim/plugged')
-  " Plug 'Shougo/unite.vim'                                           " Fuzzy searching
-  " Plug 'Shougo/vimfiler.vim'                                        " File explorer
   Plug 'Shougo/denite.nvim'                                          " Fuzzy searching
   Plug 'Shougo/neomru.vim'                                          " Fuzzy searching for most recent used files
   Plug 'scrooloose/nerdtree'                                        " File explorer
   Plug 'Xuyuanp/nerdtree-git-plugin'                                " NERDTree plugin for showing git changes
   Plug 'Shougo/neosnippet.vim'                                      " Snippets engine
   Plug 'Shougo/neosnippet-snippets'                                 " Snippets
-  Plug 't9md/vim-choosewin'                                         " Let you choose target window (plays well with vimfiler)
+  Plug 't9md/vim-choosewin'                                         " Let you choose target window
   Plug 'kana/vim-textobj-user'                                      " Allows text object customization
   Plug 'kana/vim-textobj-line'                                      " Text Objects for lines (l)
   Plug 'kana/vim-textobj-indent'                                    " Text Objects for indents (i)
@@ -126,7 +124,6 @@ call plug#end()
     set mousehide                                                   " Hide mouse pointer while typing
   endif
 
-
 " AUTOCOMPLETION
   set wildmenu wildmode=longest:full
   set wildoptions=tagfile
@@ -170,8 +167,6 @@ call plug#end()
   augroup END
 
 " MAPPINGS
-
-  noremap m <ESC>:ApplyTransformer HealthVariant<CR>
 
   " Terminal mode escape (neovim)
   if has('nvim')
@@ -285,21 +280,13 @@ call plug#end()
   " Show last search index
   nnoremap <leader>i :%s///gn<CR>
 
-  " unite mappings
-  " nnoremap <leader>m :<C-u>Unite -start-insert file_mru<cr>
-  " nnoremap <leader>b :<C-u>Unite bookmark<cr>
-
   " denite mappings
-  nnoremap <leader>m :<C-u>Denite -start-insert file_mru<cr>
+  nnoremap <leader>m :<C-u>Denite file_mru<cr>
   nnoremap <leader>b :<C-u>Denite buffer<cr>
-
-  " vimfiler. find current file in explorer buffer
-  " nmap <leader>f :VimFilerBufferDir -explorer -find -parent<CR>
-  " nmap <leader>e :VimFilerExplorer -parent<CR>
 
   " NERDTree
   nnoremap <silent> <Leader>f :NERDTreeFind<CR>
-  nnoremap <Leader>e :NERDTreeToggle<Enter>
+  nnoremap <Leader>e :NERDTreeToggle<CR>
 
   " vim-fortify
   nnoremap <leader>i :NewRuleID<CR>
@@ -410,27 +397,14 @@ call plug#end()
   let g:indexed_search_colors = 0
   let g:indexed_search_shortmess = 1
 
-  " unite
-  " let g:unite_data_directory = '~/.config/nvim/unite'
-  " call unite#filters#matcher_default#use(['matcher_fuzzy'])
-  " call unite#filters#sorter_default#use(['sorter_rank'])
-  " let g:unite_prompt='» '
-  " call unite#custom#profile('default', 'context', {
-  "   \   'winheight': 10,
-  "   \   'direction': 'botright',
-  "   \ })
-
   " denite
-  call denite#custom#map('_', '<Esc>', 'quit')
-  call denite#custom#map('insert', 'jk', 'enter_mode:normal')
+  call denite#custom#map('_', '<esc>', 'quit')
   call denite#custom#map('insert', '<C-j>', 'move_to_next_line')
   call denite#custom#map('insert', '<C-k>', 'move_to_prev_line')
-  "call denite#custom#source('file_mru', 'sorters', ['sorter_sublime'])
+  call denite#custom#source('file_mru', 'sorters', ['sorter_sublime'])
   call denite#custom#option('default', 'prompt', '>')
-  call denite#custom#option('default', 'context', {
-    \   'winheight': 10,
-    \   'direction': 'botright',
-    \ })
+  call denite#custom#option('default', 'winheight', 10)
+  call denite#custom#option('default', 'reversed', 1)
 
   " denite menu
   let s:menus = {}
@@ -456,30 +430,8 @@ call plug#end()
   let g:swift_platform = 'iphonesimulator'
   let g:swift_device = 'iPhone 6'
 
-  " vimfiler
-  " let g:vimfiler_as_default_explorer = 1
-  " let g:vimfiler_no_default_key_mappings = 1
-  " call vimfiler#custom#profile('default', 'context', {
-  "   \   'explorer' : 1,
-  "   \   'parent'   : 1,
-  "   \   'no_focus' : 1,
-  "   \   'safe'     : 0
-  "   \ })
-  " autocmd VimEnter * VimFilerExplorer -parent -direction=topleft
-  " autocmd FileType vimfiler nmap <buffer><expr> <CR> vimfiler#smart_cursor_map("\<Plug>(vimfiler_expand_tree)","\<Plug>(vimfiler_edit_file)")
-  " autocmd FileType vimfiler nmap <buffer><expr> <C-h> "\<Plug>(vimfiler_toggle_visible_ignore_files)"
-  " autocmd FileType vimfiler nmap <buffer><expr> o "\<Plug>(vimfiler_expand_tree)"
-  " autocmd FileType vimfiler nmap <buffer><expr> q "\<Plug>(vimfiler_close)"
-  " autocmd FileType vimfiler nmap <buffer><expr> n "\<Plug>(vimfiler_make_directory)"
-  " autocmd FileType vimfiler nmap <buffer><expr> f "\<Plug>(vimfiler_new_file)"
-  " autocmd FileType vimfiler nmap <buffer><expr> r "\<Plug>(vimfiler_rename_file)"
-  " autocmd FileType vimfiler nmap <buffer><expr> d "\<Plug>(vimfiler_delete_file)"
-  " autocmd FileType vimfiler nmap <buffer><expr> <S-l> ""
-  " autocmd FileType vimfiler nmap <buffer><expr> <S-h> ""
-  " autocmd FileType vimfiler nmap <buffer><expr> <S-k> ""
-  " autocmd FileType vimfiler setlocal nobuflisted
-
   " NERDTree
+  let NERDTreeShowBookmarks = 1
   let g:NERDTreeCaseSensitiveSort = 1
   let g:NERDTreeChDirMode = 2
   let g:NERDTreeQuitOnOpen = 1
