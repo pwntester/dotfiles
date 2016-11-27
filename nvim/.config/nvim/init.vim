@@ -5,11 +5,9 @@ filetype off
 
 set runtimepath+=~/.config/nvim/dein/repos/github.com/Shougo/dein.vim
 call dein#begin(expand('~/.config/nvim/dein'))
-  call dein#add('Shougo/dein.vim')
+  call dein#add('Shougo/dein.vim') " Plugin manager
+  call dein#add('haya14busa/dein-command.vim') " Plugin manager
   call dein#add('Shougo/neomru.vim') " Fuzzy searching for most recent used files
-  call dein#add('Shougo/neosnippet') " Snippets engine
-  call dein#add('Shougo/neosnippet-snippets') " Snippets
-  call dein#add('Shougo/denite.nvim') " Fuzzy searching
   call dein#add('Shougo/vimfiler.vim') " File explorer
   call dein#add('Shougo/unite.vim') " (for vimfiler)
   call dein#add('t9md/vim-choosewin') " Let you choose target window
@@ -18,41 +16,47 @@ call dein#begin(expand('~/.config/nvim/dein'))
   call dein#add('kana/vim-textobj-indent') " Text Objects for indents (i)
   call dein#add('bkad/camelcasemotion') " Text Objects for CamelCase motion (,w)
   call dein#add('tpope/vim-surround') " Motions and Text Objects for surroundaing character(s)?
-  call dein#add('tpope/vim-commentary') " Comments
   call dein#add('airblade/vim-gitgutter') " Git integration
-  call dein#add('Shougo/deoplete.nvim') " Asynchronous completion
-  call dein#add('zchee/deoplete-jedi') " Python completion for deoplete
-  call dein#add('zchee/deoplete-clang') " Objective-C completion for deoplete
-  call dein#add('pwntester/deoplete-swift') " Swift completion for deoplete
-  call dein#add('artur-shaik/vim-javacomplete2') " Java completion for omnifunc
-  call dein#add('christoomey/vim-tmux-navigator') " Tmux integration
-  call dein#add('ap/vim-css-color') " Shows CSS colors
-  call dein#add('gertjanreynaert/cobalt2-vim-theme') " Theme
-  call dein#add('godlygeek/tabular') " Line up text
-  call dein#add('plasticboy/vim-markdown') " Better syntax for markdown files
-  call dein#add('elzr/vim-json') " Better syntax for JSON files
-  call dein#add('othree/yajs.vim') " Better syntax for JS
-  call dein#add('gavocanov/vim-js-indent') " Better indentation for JS
-  call dein#add('b4winckler/vim-objc') " Better syntax for Objective-C
-  call dein#add('kballard/vim-swift') " Better syntax for Swift
-  call dein#add('othree/xml.vim') " Better syntax for XML
-  call dein#add('derekwyatt/vim-scala') " Better syntax for Scala
-  call dein#add('ekalinin/Dockerfile.vim') " Better syntax for Docker
-  call dein#add('tfnico/vim-gradle') " Gradle syntax and compiler integration
   call dein#add('vim-airline/vim-airline') " Nice status line
   call dein#add('vim-airline/vim-airline-themes') " Airline themes
-  call dein#add('benekastah/neomake') " Asynchronous linters
   call dein#add('vim-scripts/vim-scroll-position') " Shows scroll position indicator in gutter
   call dein#add('qpkorr/vim-bufkill') " Delete buffers without messing around windows layout
   call dein#add('henrik/vim-indexed-search') " Search index
-  call dein#add('AndrewRadev/linediff.vim') " File and chunk diffs
-  call dein#add('alvan/vim-closetag') " Auto-close tags in HTML, XML, etc.
-  call dein#add('majutsushi/tagbar') " Tag side menu
-  call dein#add('Raimondi/delimitMate') " Auto-close parenthesis
-  call dein#add('junegunn/vader.vim') " Testing vim plugins
   call dein#add('junegunn/rainbow_parentheses.vim') " Quickly identify closing parenthesis
-  call dein#add('rizzatti/dash.vim') " Query Dash from vim
-  call dein#add('https://github.hpe.com/alvaro-munoz/vim-fortify.git') " Fortify SCA rule developement
+  call dein#add('christoomey/vim-tmux-navigator') " Tmux integration
+  call dein#add('ap/vim-css-color') " Shows CSS colors
+  call dein#add('gertjanreynaert/cobalt2-vim-theme') " Theme
+  call dein#add('tpope/vim-commentary') " Comments
+  call dein#add('Shougo/denite.nvim') " Fuzzy searching
+
+  call dein#add('alvan/vim-closetag', {'on_i': 1}) " Auto-close tags in HTML, XML, etc.
+  call dein#add('Raimondi/delimitMate', {'on_i': 1}) " Auto-close parenthesis
+  call dein#add('Shougo/neosnippet', {'on_i': 1}) " Snippets engine
+  call dein#add('Shougo/neosnippet-snippets', {'on_i': 1}) " Snippets
+  call dein#add('Shougo/deoplete.nvim', {'on_i': 1}) " Asynchronous completion
+
+  call dein#add('benekastah/neomake', {'on_event': ['BufWritePre']}) " Asynchronous linters
+
+  call dein#add('AndrewRadev/linediff.vim', {'on_cmd': ['Linediff']}) " File and chunk diffs
+  call dein#add('majutsushi/tagbar', {'on_cmd': ['Tagbar']}) " Tag side menu
+  call dein#add('godlygeek/tabular', {'on_cmd': ['Tabularize']}) " Line up text
+  call dein#add('rizzatti/dash.vim', {'on_cmd': ['Dash']}) " Query Dash from vim
+
+  call dein#add('zchee/deoplete-jedi', {'on_ft': ['python']}) " Python completion for deoplete
+  call dein#add('zchee/deoplete-clang', {'on_ft': ['c', 'cpp', 'objc']}) " Objective-C completion for deoplete
+  call dein#add('pwntester/deoplete-swift', {'on_ft': ['swift']}) " Swift completion for deoplete
+  call dein#add('artur-shaik/vim-javacomplete2', {'on_ft': ['java']}) " Java completion for omnifunc
+  call dein#add('plasticboy/vim-markdown', {'on_ft': ['markdown']}) " Better syntax for markdown files
+  call dein#add('elzr/vim-json', {'on_ft': ['json']}) " Better syntax for JSON files
+  call dein#add('othree/yajs.vim', {'on_ft': ['javascript']}) " Better syntax for JS
+  call dein#add('gavocanov/vim-js-indent', {'on_ft': ['javascript']}) " Better indentation for JS
+  call dein#add('b4winckler/vim-objc', {'on_ft': ['objc']}) " Better syntax for Objective-C
+  call dein#add('kballard/vim-swift', {'on_ft': ['swift']}) " Better syntax for Swift
+  call dein#add('othree/xml.vim', {'on_ft': ['xml', 'fortifyrulepack']}) " Better syntax for XML
+  call dein#add('derekwyatt/vim-scala', {'on_ft': ['scala']}) " Better syntax for Scala
+  call dein#add('ekalinin/Dockerfile.vim', {'on_ft': ['Dockerfile']}) " Better syntax for Docker
+  call dein#add('tfnico/vim-gradle', {'on_ft': ['gradle']}) " Gradle syntax and compiler integration
+  call dein#add('https://github.hpe.com/alvaro-munoz/vim-fortify.git', {'on_ft': ['fortifyrulepack', 'fortifynst']}) " Fortify SCA rule developement
 call dein#end()
 
 " GENERAL
