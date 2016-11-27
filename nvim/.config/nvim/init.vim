@@ -1,86 +1,82 @@
-set nocompatible
+if &compatible
+  set nocompatible
+endif
 filetype off
 
-call plug#begin('~/.config/nvim/plugged')
-  Plug 'Shougo/denite.nvim'                                          " Fuzzy searching
-  Plug 'Shougo/neomru.vim'                                          " Fuzzy searching for most recent used files
-  Plug 'scrooloose/nerdtree'                                        " File explorer
-  Plug 'Xuyuanp/nerdtree-git-plugin'                                " NERDTree plugin for showing git changes
-  Plug 'Shougo/neosnippet.vim'                                      " Snippets engine
-  Plug 'Shougo/neosnippet-snippets'                                 " Snippets
-  Plug 't9md/vim-choosewin'                                         " Let you choose target window
-  Plug 'kana/vim-textobj-user'                                      " Allows text object customization
-  Plug 'kana/vim-textobj-line'                                      " Text Objects for lines (l)
-  Plug 'kana/vim-textobj-indent'                                    " Text Objects for indents (i)
-  Plug 'whatyouhide/vim-textobj-xmlattr'                            " Text Objects for XML attributes (x)
-  Plug 'vim-scripts/camelcasemotion'                                " Text Objects for CamelCase motion (,w)
-  Plug 'tpope/vim-surround'                                         " Motions and Text Objects for surroundaing character(s)?
-  Plug 'wellle/targets.vim'                                         " Add next (n) and last (l) to built-in Text Objects, also 'a' for arguments and separators (, . ; : + - = ~ _ * # / | \ & $)
-  Plug 'tpope/vim-commentary'                                       " Comments
-  Plug 'tpope/vim-fugitive'                                         " Git integration
-  Plug 'airblade/vim-gitgutter'                                     " Git integration
-  Plug 'tpope/vim-repeat'                                           " Bundle commands as atomic and repeatable operations
-  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }     " Asynchronous completion
-  Plug 'zchee/deoplete-jedi'                                        " Python completion for deoplete
-  Plug 'zchee/deoplete-clang'                                       " Objective-C completion for deoplete
-  Plug 'pwntester/deoplete-swift'                                   " Swift completion for deoplete
-  Plug 'artur-shaik/vim-javacomplete2'                              " Java completion for omnifunc
-  Plug 'christoomey/vim-tmux-navigator'                             " Tmux integration
-  Plug 'ap/vim-css-color', {'for': ['css', 'html', 'php']}          " Shows CSS colors
-  Plug 'gertjanreynaert/cobalt2-vim-theme'                          " Theme
-  Plug 'godlygeek/tabular'                                          " Line up text
-  Plug 'plasticboy/vim-markdown'                                    " Better syntax for markdown files
-  Plug 'elzr/vim-json'                                              " Better syntax for JSON files
-  Plug 'othree/yajs.vim', { 'for': 'javascript' }                   " Better syntax for JS
-  Plug 'gavocanov/vim-js-indent'                                    " Better indentation for JS
-  Plug 'b4winckler/vim-objc'                                        " Better syntax for Objective-C
-  Plug 'kballard/vim-swift'                                         " Better syntax for Swift
-  Plug 'othree/xml.vim'                                             " Better syntax for XML
-  Plug 'derekwyatt/vim-scala'                                       " Better syntax for Scala
-  Plug 'ekalinin/Dockerfile.vim'                                    " Better syntax for Docker
-  Plug 'tfnico/vim-gradle'                                          " Gradle syntax and compiler integration
-  Plug 'vim-airline/vim-airline'                                    " Nice status line
-  Plug 'vim-airline/vim-airline-themes'                             " Airline themes
-  Plug 'benekastah/neomake'                                         " Asynchronous linters
-  Plug 'vim-scripts/vim-scroll-position'                            " Shows scroll position indicator in gutter
-  Plug 'qpkorr/vim-bufkill'                                         " Delete buffers without messing around windows layout
-  Plug 'henrik/vim-indexed-search'                                  " Search index
-  Plug 'AndrewRadev/linediff.vim'                                   " File and chunk diffs
-  Plug 'alvan/vim-closetag'                                         " Auto-close tags in HTML, XML, etc.
-  Plug 'majutsushi/tagbar'                                          " Tag side menu
-  Plug 'Raimondi/delimitMate'                                       " Auto-close parenthesis
-  Plug 'junegunn/vader.vim'                                         " Testing vim plugins
-  Plug 'junegunn/rainbow_parentheses.vim'                           " Quickly identify closing parenthesis
-  Plug 'rizzatti/dash.vim'                                          " Query Dash from vim
-  Plug 'https://github.hpe.com/alvaro-munoz/vim-fortify.git'        " Fortify SCA rule developement
-  "Plug 'c0r73x/neotags.nvim'                                        " Generate ctags
-call plug#end()
+set runtimepath+=~/.config/nvim/dein/repos/github.com/Shougo/dein.vim
+call dein#begin(expand('~/.config/nvim/dein'))
+  call dein#add('Shougo/dein.vim')
+  call dein#add('Shougo/neomru.vim') " Fuzzy searching for most recent used files
+  call dein#add('Shougo/neosnippet') " Snippets engine
+  call dein#add('Shougo/neosnippet-snippets') " Snippets
+  call dein#add('Shougo/denite.nvim') " Fuzzy searching
+  call dein#add('Shougo/vimfiler.vim') " File explorer
+  call dein#add('Shougo/unite.vim') " (for vimfiler)
+  call dein#add('t9md/vim-choosewin') " Let you choose target window
+  call dein#add('kana/vim-textobj-user') " Allows text object customization
+  call dein#add('kana/vim-textobj-line') " Text Objects for lines (l)
+  call dein#add('kana/vim-textobj-indent') " Text Objects for indents (i)
+  call dein#add('bkad/camelcasemotion') " Text Objects for CamelCase motion (,w)
+  call dein#add('tpope/vim-surround') " Motions and Text Objects for surroundaing character(s)?
+  call dein#add('tpope/vim-commentary') " Comments
+  call dein#add('airblade/vim-gitgutter') " Git integration
+  call dein#add('Shougo/deoplete.nvim') " Asynchronous completion
+  call dein#add('zchee/deoplete-jedi') " Python completion for deoplete
+  call dein#add('zchee/deoplete-clang') " Objective-C completion for deoplete
+  call dein#add('pwntester/deoplete-swift') " Swift completion for deoplete
+  call dein#add('artur-shaik/vim-javacomplete2') " Java completion for omnifunc
+  call dein#add('christoomey/vim-tmux-navigator') " Tmux integration
+  call dein#add('ap/vim-css-color') " Shows CSS colors
+  call dein#add('gertjanreynaert/cobalt2-vim-theme') " Theme
+  call dein#add('godlygeek/tabular') " Line up text
+  call dein#add('plasticboy/vim-markdown') " Better syntax for markdown files
+  call dein#add('elzr/vim-json') " Better syntax for JSON files
+  call dein#add('othree/yajs.vim') " Better syntax for JS
+  call dein#add('gavocanov/vim-js-indent') " Better indentation for JS
+  call dein#add('b4winckler/vim-objc') " Better syntax for Objective-C
+  call dein#add('kballard/vim-swift') " Better syntax for Swift
+  call dein#add('othree/xml.vim') " Better syntax for XML
+  call dein#add('derekwyatt/vim-scala') " Better syntax for Scala
+  call dein#add('ekalinin/Dockerfile.vim') " Better syntax for Docker
+  call dein#add('tfnico/vim-gradle') " Gradle syntax and compiler integration
+  call dein#add('vim-airline/vim-airline') " Nice status line
+  call dein#add('vim-airline/vim-airline-themes') " Airline themes
+  call dein#add('benekastah/neomake') " Asynchronous linters
+  call dein#add('vim-scripts/vim-scroll-position') " Shows scroll position indicator in gutter
+  call dein#add('qpkorr/vim-bufkill') " Delete buffers without messing around windows layout
+  call dein#add('henrik/vim-indexed-search') " Search index
+  call dein#add('AndrewRadev/linediff.vim') " File and chunk diffs
+  call dein#add('alvan/vim-closetag') " Auto-close tags in HTML, XML, etc.
+  call dein#add('majutsushi/tagbar') " Tag side menu
+  call dein#add('Raimondi/delimitMate') " Auto-close parenthesis
+  call dein#add('junegunn/vader.vim') " Testing vim plugins
+  call dein#add('junegunn/rainbow_parentheses.vim') " Quickly identify closing parenthesis
+  call dein#add('rizzatti/dash.vim') " Query Dash from vim
+  call dein#add('https://github.hpe.com/alvaro-munoz/vim-fortify.git') " Fortify SCA rule developement
+call dein#end()
 
 " GENERAL
   colorscheme cobalt2
   set autowrite                                                     " Write on shell/make command
   set fileencoding=utf-8                                            " All the way!
-  set encoding=utf8
-  set nrformats=alpha,hex,octal                                     " Increment/decrement numbers. C-a,a (because of tmux), C-x
+  set nrformats=alpha,hex,octal                                     " Increment/decrement numbers. C-a,a (tmux), C-x
   set shell=/bin/zsh                                                " ZSH ftw!
   set visualbell                                                    " Silent please
   set ffs=unix                                                      " Use Unix EOL
   set hidden                                                        " Hide buffers when unloaded
   set nottimeout
-  set shell=zsh
 
 " SYNTAX/LAYOUT
   syntax on                                                         " Activate the syntax
-  " hi CursorLine  cterm=none ctermbg=234 ctermfg=none guibg=234 guifg=none
   filetype plugin indent on                                         " Automatic recognition of filetype
-  set modelines=1                                                   " Enable vim mode lines
   set wrap                                                          " Wrap lines visually
   set sidescroll=1                                                  " Side scroll when wrap is disabled
   set linebreak                                                     " Wrap lines at special characters instead of at max width
   autocmd BufNewFile,BufRead *.gradle set filetype=groovy           " Auto-set syntax for gradle files
+  autocmd BufNewFile,BufRead *.m set filetype=objc                  " Auto-set syntax for objc files
   set listchars=tab:>-,trail:.,extends:>,precedes:<,nbsp:%          " Showing trailing whitespace
   highlight clear SignColumn                                        " Clear Sign column bg color
-  "autocmd BufEnter *.* if getfsize(@%) < 1000000 | :syntax sync fromstart | endif " Detect syntax from start of file
+  autocmd BufEnter *.* if getfsize(@%) < 1000000 | :syntax sync fromstart | endif " Detect syntax from start of file
 
 " LANGUAGE SPECIFICS
   let msql_sql_query = 1                                            " Better mysql highlight
@@ -168,59 +164,57 @@ call plug#end()
 
 " MAPPINGS
 
-  " Terminal mode escape (neovim)
+  " in OSX/tmux, c-h is mapped to bs, so mappping bs to C-w
+  if has('nvim')
+     nmap <bs> <C-w>h
+   endif
+
+  " terminal mode escape (neovim)
   if has('nvim')
     tnoremap jk <C-\><C-n>
   endif
 
-  " Quit all windows
+  " quit all windows
   command! Q execute "qa!"
 
-  " Refresh syntax highlighting
-  noremap <F11> <ESC>:syntax sync fromstart<CR>
-  inoremap <F11> <ESC>:syntax sync fromstart<CR>a
+  " refresh syntax highlighting
+  noremap <F11> <ESC>:syntax sync fromstart<Return>
+  inoremap <F11> <ESC>:syntax sync fromstart<Return>a
 
-  " Remove  EOLs
-  noremap <F10> <ESC>:%s///g<CR>
-
-  " vim-over
-  nnoremap <silent><F7> :OverCommandLine<CR>
-  vnoremap <silent><F7> <Esc>:OverCommandLine<CR><F37>
-
-  " Space to place the cursor in the middle of the screen
+  " space to place the cursor in the middle of the screen
   nnoremap <Space>j <C-d>
   nnoremap <Space>k <C-u>
 
-  " Escape to normal mode in insert mode
+  " escape to normal mode in insert mode
   inoremap jk <ESC>
 
-  " Shifting visual block should keep it selected
+  " shifting visual block should keep it selected
   vnoremap < <gv
   vnoremap > >gv
 
-  " Allow the . to execute once for each line of a visual selection
-  vnoremap . :normal .<CR>
+  " allow the . to execute once for each line of a visual selection
+  vnoremap . :normal .<Return>
 
-  " Automatically jump to end of text you pasted
+  " automatically jump to end of text you pasted
   vnoremap <silent> y y`]
   vnoremap <silent> p p`]
   nnoremap <silent> p p`]
 
-  " Quickly select text you pasted
+  " quickly select text you pasted
   noremap gP `[v`]`]`
 
-  " Highlight last inserted text
+  " highlight last inserted text
   nnoremap gI `[v`]
 
-  " Go up/down onw visual line
+  " go up/down onw visual line
   map j gj
   map k gk
 
-  " Go to Beggining or End of line
+  " go to Beggining or End of line
   nnoremap B ^
   nnoremap E $
 
-  " Disable arrow keys
+  " disable arrow keys
   nnoremap <up> <nop>
   nnoremap <down> <nop>
   nnoremap <left> <nop>
@@ -230,68 +224,70 @@ call plug#end()
   inoremap <left> <nop>
   inoremap <right> <nop>
 
-  " Remove search highlights
-  noremap <silent>\ :nohls<CR>
+  " remove search highlights
+  noremap <silent>\ :nohls<Return>
 
-  " Disable paste mode when leaving Insert mode
-  au InsertLeave * set nopaste
+  " disable paste mode when leaving Insert mode
+  autocmd InsertLeave * set nopaste
 
-  " Cycle through buffers
-  nnoremap <S-l> :bnext<CR>
-  nnoremap <S-h> :bprevious<CR>
+  " cycle through buffers
+  nnoremap <S-l> :bnext<Return>
+  nnoremap <S-h> :bprevious<Return>
 
-  " Jump to last visited location
+  " jump to last visited location
   nnoremap <S-k> <C-^>
 
 " LEADER MAPPINGS
 
-  " Remove trailing spaces
-  nnoremap <leader>c :%s/\s\+$//<cr>
+  " remove trailing spaces
+  nnoremap <leader>c :%s/\s\+$//<Return>
 
-  " Space is your leader
+  " space is your leader
   let mapleader = ","
 
-  " Fugitive
-  nmap <leader>gs :Gstatus<CR>
-  nmap <leader>ge :Gedit<CR>
-  nmap <leader>gw :Gwrite<CR>
-  nmap <leader>gr :Gread<CR>
-  nmap <leader>gd :Gdiff<CR>
-
-  " Save file
-  nnoremap <leader>w :w<CR>
+  " save file
+  nnoremap <leader>w :w<Return>
   nnoremap <leader>W :w !sudo tee % > /dev/null
 
-  " Paste keeping the default register
+  " paste keeping the default register
   vnoremap <leader>p "_dP
 
-  " Copy & paste to system clipboard
+  " copy & paste to system clipboard
   vmap <leader>y "*y
 
-  " Show/hide line numbers
-  nnoremap <leader>n :set nonumber!<CR>
+  " show/hide line numbers
+  nnoremap <leader>n :set nonumber!<Return>
 
-  " Relative line numbering
-  nnoremap <leader>r :set norelativenumber!<CR>
+  " relative line numbering
+  nnoremap <leader>r :set norelativenumber!<Return>
 
-  " Set paste mode
-  nnoremap <leader>p :set nopaste!<CR>
+  " set paste mode
+  nnoremap <leader>p :set nopaste!<Return>
 
-  " Show last search index
-  nnoremap <leader>i :%s///gn<CR>
+  " denite
+  nnoremap <leader>m :<C-u>Denite file_mru<Return>
+  nnoremap <leader>b :<C-u>Denite buffer<Return>
 
-  " denite mappings
-  nnoremap <leader>m :<C-u>Denite file_mru<cr>
-  nnoremap <leader>b :<C-u>Denite buffer<cr>
-
-  " NERDTree
-  nnoremap <silent> <Leader>f :NERDTreeFind<CR>
-  nnoremap <Leader>e :NERDTreeToggle<CR>
+  " vimfiler
+  nmap <leader>f :VimFilerBufferDir -explorer -find -parent -winwidth=35<Return>
+  nmap <leader>e :VimFilerExplorer -parent -winwidth=35<Return>
 
   " vim-fortify
-  nnoremap <leader>i :NewRuleID<CR>
+  nnoremap <leader>i :NewRuleID<Return>
 
 " PLUGINS
+
+  " camelcasemotion
+  map <silent> cw <Plug>CamelCaseMotion_w
+  map <silent> cb <Plug>CamelCaseMotion_b
+  map <silent> ce <Plug>CamelCaseMotion_e
+
+  omap <silent> icw <Plug>CamelCaseMotion_iw
+  xmap <silent> icw <Plug>CamelCaseMotion_iw
+  omap <silent> icb <Plug>CamelCaseMotion_ib
+  xmap <silent> icb <Plug>CamelCaseMotion_ib
+  omap <silent> ice <Plug>CamelCaseMotion_ie
+  xmap <silent> ice <Plug>CamelCaseMotion_ie
 
   " vim-airline
   au VimEnter * AirlineTheme powerlineish
@@ -327,8 +323,6 @@ call plug#end()
   let g:fortify_TranslationOpts = []
   let g:fortify_JDKVersion = "1.8"
   let g:fortify_XCodeSDK = "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk"
-  " let g:fortify_FoldRules = 0
-  " let g:fortify_DefaultIndentation = "structural"
   autocmd BufNewFile,BufReadPost *.xml map R ,R
   autocmd BufNewFile,BufReadPost *.rules map R ,R
   autocmd BufNewFile,BufReadPost *.xml map r ,r
@@ -338,31 +332,60 @@ call plug#end()
   autocmd FileType fortifyauditpane nmap <buffer><expr> <S-h> ""
   autocmd FileType fortifyauditpane nmap <buffer><expr> <S-k> ""
 
-  " ListToggle
-  let g:lt_location_list_toggle_map = '<leader>l'
-  let g:lt_quickfix_list_toggle_map = '<leader>q'
-  let g:lt_height = 25
-
   " neomake
   autocmd! BufWritePost * Neomake
   let g:neomake_javascript_enabled_checkers = ['jshint', 'jscs', 'eslint']
   let g:neomake_javascript_jscs_options = '--esnext'
   let g:neomake_airline = 1
+  highlight MyWarningStyle ctermbg=3 ctermfg=0
+  let g:neomake_warning_sign = {'texthl': 'MyWarningStyle'}
   let g:neomake_error_sign = {'texthl': 'ErrorMsg'}
-  hi MyWarningMsg ctermbg=3 ctermfg=0
-  let g:neomake_warning_sign = {'texthl': 'MyWarningMsg'}
+  let g:neomake_swift_enabled_makers = ['swiftc']
   let g:neomake_swift_swiftc_maker = {
-        \ 'args': ['-parse', '-target', 'x86_64-apple-ios9.0', '-sdk', '/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk'],
+        \ 'args': [
+            \'-parse',
+            \'-target', 'x86_64-apple-ios9.0',
+            \'-sdk', '/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk'
+        \ ],
         \ 'errorformat':
             \ '%E%f:%l:%c: error: %m,' .
             \ '%W%f:%l:%c: warning: %m,' .
             \ '%Z%\s%#^~%#,' .
             \ '%-G%.%#',
         \ }
-    let g:neomake_swift_enabled_makers = ['swiftc']
+  let g:neomake_objc_enabled_makers = ['clang']
+  let g:neomake_objc_clang_maker = {
+        \ 'args': [
+            \ '-cc1',
+            \ '-triple', 'x86_64-apple-ios9.3.0',
+            \ '-isysroot', '/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk',
+            \ '-fmax-type-align=16',
+            \ '-fshow-column ' .
+            \ '-fshow-source-location ' .
+            \ '-fno-caret-diagnostics ' .
+            \ '-fno-color-diagnostics ' .
+            \ '-fdiagnostics-format=clang' 
+        \ ],
+        \ 'errorformat':
+            \ '%E%f:%l:%c: fatal error: %m,' .
+            \ '%E%f:%l:%c: error: %m,' .
+            \ '%W%f:%l:%c: warning: %m,' .
+            \ '%-G%\m%\%%(LLVM ERROR:%\|No compilation database found%\)%\@!%.%#,' .
+            \ '%E%m'
+        \ }
+  " let g:neomake_objc_clang_maker = {
+  "       \ 'args': ['-fsyntax-only', '-Wall', '-Wextra'],
+  "       \ 'errorformat':
+  "           \ '%-G%f:%s:,' .
+  "           \ '%f:%l:%c: %trror: %m,' .
+  "           \ '%f:%l:%c: %tarning: %m,' .
+  "           \ '%f:%l:%c: %m,'.
+  "           \ '%f:%l: %trror: %m,'.
+  "           \ '%f:%l: %tarning: %m,'.
+  "           \ '%f:%l: %m',
+  "       \ }
 
-
-  " Deoplete.nvim
+  " deoplete.nvim
   let g:deoplete#enable_at_startup = 1
   autocmd BufEnter *.* if getfsize(@%) < 1000000 | let g:deoplete#disable_auto_complete = 0 | endif
   autocmd BufEnter *.* if getfsize(@%) > 1000000 | let g:deoplete#disable_auto_complete = 1 | endif
@@ -373,20 +396,12 @@ call plug#end()
   let g:deoplete#sources#clang#flags = [
       \ "-cc1",
       \ "-triple", "x86_64-apple-ios9.3.0",
-      \ "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator9.3.sdk",
+      \ "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk",
       \ "-fmax-type-align=16",
       \ ]
 
   " vim-javacomplete2
   autocmd FileType java setlocal omnifunc=javacomplete#Complete
-  nmap <F4> <Plug>(JavaComplete-Imports-AddSmart)
-  imap <F4> <Plug>(JavaComplete-Imports-AddSmart)
-  nmap <F5> <Plug>(JavaComplete-Imports-Add)
-  imap <F5> <Plug>(JavaComplete-Imports-Add)
-  nmap <F6> <Plug>(JavaComplete-Imports-AddMissing)
-  imap <F6> <Plug>(JavaComplete-Imports-AddMissing)
-  nmap <F7> <Plug>(JavaComplete-Imports-RemoveUnused)
-  imap <F7> <Plug>(JavaComplete-Imports-RemoveUnused)
 
   " vim-closetag
   let g:closetag_filenames = "*.html,*.xhtml,*.xml,*.rules"
@@ -405,64 +420,42 @@ call plug#end()
   call denite#custom#option('default', 'prompt', '>')
   call denite#custom#option('default', 'winheight', 10)
   call denite#custom#option('default', 'reversed', 1)
+  call denite#custom#option('default', 'auto_resize', 1)
+  highlight default link  deniteMatched Keyword
 
-  " denite menu
-  let s:menus = {}
-  let s:menus.config = {'description': 'Edit configuration files'}
-  let s:menus.config.file_candidates = [
-    \ ['zshrc', '~/.zshrc'],
-	\ ['zshprofile', '~/.zprofile'],
-	\ ]
-  let s:menus.fortify = {'description': 'Fortify'}
-  let s:menus.fortify.command_candidates = [
-	\ ['Translate current file', 'Translate %'],
-	\ ['Scan current buildId with current buffer', 'Scan %'],
-	\ ]
-  let s:menus.commands = {'description': 'Fortify'}
-  let s:menus.commands.command_candidates = [
-	\ ['Configuration Files', 'Denite menu:config'],
-	\ ['Fortify Commands', 'Denite menu:Fortify'],
-	\ ]
-  call denite#custom#var('menu', 'menus', s:menus)
- 
-  " vim-swift
-  let g:swift_developer_dir = '/Applications/Xcode.app'
-  let g:swift_platform = 'iphonesimulator'
-  let g:swift_device = 'iPhone 6'
+  " vimfiler
+  let g:vimfiler_as_default_explorer = 1
+  let g:vimfiler_no_default_key_mappings = 1
+  call vimfiler#custom#profile('default', 'context', {
+    \   'explorer' : 1,
+    \   'parent'   : 1,
+    \   'no_focus' : 1,
+    \   'safe'     : 0
+    \ })
+  autocmd VimEnter * VimFilerExplorer -parent -direction=topleft -winwidth=25
+  autocmd FileType vimfiler nmap <buffer><expr> <Return> vimfiler#smart_cursor_map("\<Plug>(vimfiler_expand_tree)","\<Plug>(vimfiler_edit_file)")
+  autocmd FileType vimfiler nmap <buffer><expr> <C-h> "\<Plug>(vimfiler_toggle_visible_ignore_files)"
+  autocmd FileType vimfiler nmap <buffer><expr> o "\<Plug>(vimfiler_expand_tree)"
+  autocmd FileType vimfiler nmap <buffer><expr> q "\<Plug>(vimfiler_close)"
+  autocmd FileType vimfiler nmap <buffer><expr> n "\<Plug>(vimfiler_make_directory)"
+  autocmd FileType vimfiler nmap <buffer><expr> f "\<Plug>(vimfiler_new_file)"
+  autocmd FileType vimfiler nmap <buffer><expr> r "\<Plug>(vimfiler_rename_file)"
+  autocmd FileType vimfiler nmap <buffer><expr> d "\<Plug>(vimfiler_delete_file)"
+  autocmd FileType vimfiler nmap <buffer><expr> <S-l> ""
+  autocmd FileType vimfiler nmap <buffer><expr> <S-h> ""
+  autocmd FileType vimfiler nmap <buffer><expr> <S-k> ""
 
-  " NERDTree
-  let NERDTreeShowBookmarks = 1
-  let g:NERDTreeCaseSensitiveSort = 1
-  let g:NERDTreeChDirMode = 2
-  let g:NERDTreeQuitOnOpen = 1
-  let g:NERDTreeSortHiddenFirst = 1
-  let g:NERDTreeIgnore = ["\.swp$"]
-
-  " nerdtree-git-plugin
-  let g:NERDTreeIndicatorMapCustom = {
-			\ "Modified"  : "M",
-			\ "Staged"    : "S",
-			\ "Untracked" : "U",
-			\ "Renamed"   : "R",
-			\ "Unmerged"  : "N",
-			\ "Deleted"   : "D",
-			\ "Dirty"     : "*",
-			\ "Clean"     : "C",
-			\ "Unknown"   : "?"
-			\ }
-  
   " vim-plug
   autocmd FileType vim-plug nmap <buffer><expr> <S-l> ""
   autocmd FileType vim-plug nmap <buffer><expr> <S-h> ""
   autocmd FileType vim-plug nmap <buffer><expr> <S-k> ""
 
   " vim-bufkill
-  cabbrev bd <c-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'BD' : 'bdelete')<CR>
-  cabbrev bd! <c-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'BD!' : 'bdelete!')<CR>
+  cabbrev bd <C-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'BD' : 'bdelete')<Return>
+  cabbrev bd! <C-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'BD!' : 'bdelete!')<Return>
 
   " vim-javascript
   let g:javascript_enable_domhtmlcss = 1
 
   " rainbow
   autocmd BufEnter * :RainbowParentheses
-
