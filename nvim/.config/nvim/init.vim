@@ -157,10 +157,10 @@ call dein#end()
   set shiftround                                                    " Round indent to multiple of 'shiftwidth'
 
 " AUTOLOAD
-  augroup VimReload
-  autocmd!
-    autocmd BufWritePost $MYVIMRC source $MYVIMRC
-  augroup END
+  " augroup VimReload
+  " autocmd!
+  "   autocmd BufWritePost $MYVIMRC source $MYVIMRC
+  " augroup END
 
 " MAPPINGS
 
