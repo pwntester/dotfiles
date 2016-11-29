@@ -185,18 +185,30 @@ cabbrev bd! <C-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'BD!' : 'bdelete!')<Ret
 
 [[plugins]]
 repo = 'osyo-manga/vim-anzu'
-hook_source = '''
-nmap n <Plug>(anzu-n-with-echo)zz
-nmap N <Plug>(anzu-N-with-echo)zz
-nmap * <Plug>(anzu-star-with-echo)zz
-nmap # <Plug>(anzu-sharp-with-echo)zz
-nmap <Esc><Esc> <Plug>(anzu-clear-search-status)
+
+[[plugins]]
+repo = 'inside/vim-search-pulse'
+depends = 'vim-anzu'
+hook_add = '''
+let g:vim_search_pulse_mode = 'cursor_line'
+let g:vim_search_pulse_disable_auto_mappings = 1
+nmap n <Plug>(anzu-n)<Plug>Pulse
+nmap N <Plug>(anzu-N)<Plug>Pulse
+nmap * <Plug>(anzu-star)<Plug>Pulse
+nmap # <Plug>(anzu-sharp)<Plug>Pulse
+cmap <silent> <expr> <enter> search_pulse#PulseFirst()
 '''
 
 [[plugins]]
 repo = 'junegunn/rainbow_parentheses.vim'
 hook_source = '''
 autocmd BufEnter * nested :RainbowParentheses
+'''
+
+[[plugins]]
+repo = 'alvan/vim-closetag'
+hook_source = '''
+let g:closetag_filenames = "*.xml,*.html,*.xhtml,*.phtml"
 '''
 
 [[plugins]]
