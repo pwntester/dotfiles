@@ -1,0 +1,413 @@
+[[plugins]]
+repo = 'Shougo/dein.vim'
+
+[[plugins]]
+repo = 'haya14busa/dein-command.vim'
+on_cmd = 'Dein'
+
+[[plugins]]
+repo = 'tpope/vim-surround'
+hook_add = '''
+nmap <silent>sa <Plug>(operator-surround-append)
+nmap <silent>sd <Plug>(operator-surround-delete)
+nmap <silent>sr <Plug>(operator-surround-replace)
+'''
+
+[[plugins]]
+repo = 'airblade/vim-gitgutter'
+
+[[plugins]]
+repo = 'itchyny/lightline.vim'
+hook_add = '''
+execute 'source' fnameescape(expand('~/.config/nvim/rc.d/lightline.vim'))
+'''
+
+[[plugins]]
+repo = 'benekastah/neomake'
+depends = 'lightline.vim'
+hook_source = '''
+autocmd BufEnter * nested Neomake
+autocmd BufWritePost * nested Neomake
+autocmd User NeomakeFinished nested call lightline#update()
+let g:neomake_javascript_enabled_checkers = ['jshint', 'eslint']
+let g:neomake_javascript_eslint_marker = {
+      \   'exe': 'eslint_d',
+      \   'args': ['-f', 'compact', '--fix'],
+      \   'errorformat': '%E%f: line %l\, col %c\, Error - %m,' .
+      \   '%W%f: line %l\, col %c\, Warning - %m'
+      \ }
+let g:neomake_swift_enabled_makers = ['swiftc']
+let g:neomake_swift_swiftc_maker = {
+    \ 'args': [
+        \'-parse',
+        \'-target', 'x86_64-apple-ios9.0',
+        \'-sdk', '/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk'
+    \ ],
+    \ 'errorformat':
+        \ '%E%f:%l:%c: error: %m,' .
+        \ '%W%f:%l:%c: warning: %m,' .
+        \ '%Z%\s%#^~%#,' .
+        \ '%-G%.%#',
+    \ }
+let g:neomake_objc_enabled_makers = ['clang']
+let g:neomake_objc_clang_maker = {
+        \ 'args': [
+        \ '-fsyntax-only',
+        \ '-Wall',
+        \ '-Wextra',
+        \ '-c',
+        \ '-mios-simulator-version-min=9.0',
+        \ '-fobjc-abi-version=2',
+        \ '-isysroot', '/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk',
+    \],
+    \ 'errorformat':
+        \ '%-G%f:%s:,' .
+        \ '%f:%l:%c: %trror: %m,' .
+        \ '%f:%l:%c: %tarning: %m,' .
+        \ '%f:%l:%c: %m,'.
+        \ '%f:%l: %trror: %m,'.
+        \ '%f:%l: %tarning: %m,'.
+        \ '%f:%l: %m',
+    \ }
+'''
+
+[[plugins]]
+repo = 'https://github.hpe.com/alvaro-munoz/vim-fortify.git'
+depends = 'neomake'
+hook_add = '''
+nnoremap <leader>i :NewRuleID<Return>
+'''
+hook_source = '''
+let g:fortify_SCAPath = "/Applications/HP_Fortify/sca"
+let g:fortify_PythonPath = "/usr/local/lib/python2.7/site-packages"
+let g:fortify_AndroidJarPath = "/Users/alvaro/Library/Android/sdk/platforms/android-22/android.jar"
+let g:fortify_DefaultJarPath = "/Applications/HP_Fortify/default_jars" 
+let g:fortify_MemoryOpts = [ "-Xmx4096M", "-Xss24M", "-64" ]
+let g:fortify_AWBOpts = []
+let g:fortify_ScanOpts = []
+let g:fortify_TranslationOpts = []
+let g:fortify_JDKVersion = "1.8"
+let g:fortify_XCodeSDK = "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk"
+autocmd BufNewFile,BufReadPost *.xml nested map R ,R
+autocmd BufNewFile,BufReadPost *.rules nested map R ,R
+autocmd BufNewFile,BufReadPost *.xml nested map r ,r
+autocmd BufNewFile,BufReadPost *.rules nested map r ,r
+autocmd FileType fortifyrulepack nested setlocal omnifunc=fortify#Complete
+autocmd FileType fortifyauditpane nested nmap <buffer><expr> <S-l> ""
+autocmd FileType fortifyauditpane nested nmap <buffer><expr> <S-h> ""
+autocmd FileType fortifyauditpane nested nmap <buffer><expr> <S-k> ""
+'''
+
+[[plugins]]
+repo = 't9md/vim-choosewin'
+on_map = '<Plug>'
+hook_add = 'nmap <C-w><C-w> <Plug>(choosewin)'
+
+[[plugins]]
+repo = 'kana/vim-textobj-user'
+
+[[plugins]]
+repo = 'kana/vim-textobj-line'
+depends = 'vim-textobj-user'
+on_map = [['ox', '<Plug>']]
+hook_add = '''
+omap al <Plug>(textobj-line-a)
+omap il <Plug>(textobj-line-i)
+xmap al <Plug>(textobj-line-a)
+xmap il <Plug>(textobj-line-i)
+'''
+
+[[plugins]]
+repo = 'kana/vim-textobj-indent'
+depends = 'vim-textobj-user'
+on_map = [['ox', '<Plug>']]
+hook_add = '''
+omap ai <Plug>(textobj-indent-a)
+omap ii <Plug>(textobj-indent-i)
+xmap ai <Plug>(textobj-indent-a)
+xmap ii <Plug>(textobj-indent-i)
+omap aI <Plug>(textobj-indent-same-a)
+omap iI <Plug>(textobj-indent-same-i)
+xmap aI <Plug>(textobj-indent-same-a)
+xmap iI <Plug>(textobj-indent-same-i)
+'''
+
+[[plugins]]
+repo = 'bkad/camelcasemotion'
+hook_add = '''
+map <silent> _w <Plug>CamelCaseMotion_w
+map <silent> _b <Plug>CamelCaseMotion_b
+map <silent> _e <Plug>CamelCaseMotion_e
+
+omap <silent> i_w <Plug>CamelCaseMotion_iw
+xmap <silent> i_w <Plug>CamelCaseMotion_iw
+omap <silent> i_b <Plug>CamelCaseMotion_ib
+xmap <silent> i_b <Plug>CamelCaseMotion_ib
+omap <silent> i_e <Plug>CamelCaseMotion_ie
+xmap <silent> i_e <Plug>CamelCaseMotion_ie
+'''
+
+[[plugins]]
+repo = 'taohex/lightline-buffer'
+depends = 'lightline.vim'
+hook_source = '''
+let g:lightline_buffer_excludes = ['vimfiler']
+let g:lightline_buffer_show_bufnr = 1
+let g:lightline_buffer_rotate = 0
+let g:lightline_buffer_fname_mod = ':t'
+let g:lightline_buffer_maxflen = 30
+let g:lightline_buffer_maxfextlen = 3
+let g:lightline_buffer_minflen = 16
+let g:lightline_buffer_minfextlen = 3
+let g:lightline_buffer_reservelen = 20
+let g:lightline_buffer_logo = ' '
+let g:lightline_buffer_readonly_icon = ''
+let g:lightline_buffer_modified_icon = '*'
+let g:lightline_buffer_git_icon = ' '
+let g:lightline_buffer_ellipsis_icon = '..'
+let g:lightline_buffer_expand_left_icon = '◀ '
+let g:lightline_buffer_expand_right_icon = ' ▶'
+let g:lightline_buffer_active_buffer_left_icon = ''
+let g:lightline_buffer_active_buffer_right_icon = ''
+let g:lightline_buffer_separator_icon = ' '
+'''
+
+
+[[plugins]]
+repo = 'vim-scripts/vim-scroll-position'
+
+[[plugins]]
+repo = 'qpkorr/vim-bufkill'
+hook_source = '''
+cabbrev bd <C-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'BD' : 'bdelete')<Return>
+cabbrev bd! <C-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'BD!' : 'bdelete!')<Return>
+'''
+
+[[plugins]]
+repo = 'osyo-manga/vim-anzu'
+hook_source = '''
+nmap n <Plug>(anzu-n-with-echo)zz
+nmap N <Plug>(anzu-N-with-echo)zz
+nmap * <Plug>(anzu-star-with-echo)zz
+nmap # <Plug>(anzu-sharp-with-echo)zz
+nmap <Esc><Esc> <Plug>(anzu-clear-search-status)
+'''
+
+[[plugins]]
+repo = 'junegunn/rainbow_parentheses.vim'
+hook_source = '''
+autocmd BufEnter * nested :RainbowParentheses
+'''
+
+[[plugins]]
+repo = 'christoomey/vim-tmux-navigator'
+
+[[plugins]]
+repo = 'ap/vim-css-color'
+
+[[plugins]]
+repo = 'pwntester/cobalt2-vim-theme'
+script_type = 'colors'
+
+[[plugins]]
+repo = 'tpope/vim-commentary'
+
+[[plugins]]
+repo = 'Shougo/context_filetype.vim'
+
+[[plugins]]
+repo = 'cohama/lexima.vim'
+on_i = 1
+hook_source = '''
+let g:lexima_enable_basic_rules = 1
+let g:lexima_enable_space_rules = 1
+let g:lexima_enable_endwise_rules = 1
+let g:lexima_enable_newline_rules = 1
+'''
+
+
+[[plugins]]
+repo = 'Shougo/neosnippet'
+on_i = 1
+hook_add = '''
+imap <tab> <Plug>(neosnippet_expand_or_jump)
+smap <tab> <Plug>(neosnippet_expand_or_jump)
+xmap <tab> <Plug>(neosnippet_expand_target)
+imap <expr><tab> neosnippet#expandable_or_jumpable() ? "\<Plug>(neosnippet_expand_or_jump)" : "\<tab>"
+'''
+
+[[plugins]]
+repo = 'Shougo/neosnippet-snippets'
+on_i = 1
+
+[[plugins]]
+repo = 'Shougo/deoplete.nvim'
+on_i = 1
+hook_add = '''
+inoremap <silent><expr> <C-k> pumvisible() ? "\<C-p>" : ""
+inoremap <silent><expr> <C-j> pumvisible() ? "\<C-n>" : ">"
+'''
+hook_source = '''
+let g:deoplete#enable_at_startup = 1
+autocmd BufEnter *.* nested if getfsize(@%) < 1000000 | let g:deoplete#disable_auto_complete = 0 | endif
+autocmd BufEnter *.* nested if getfsize(@%) > 1000000 | let g:deoplete#disable_auto_complete = 1 | endif
+let g:deoplete#sources#clang#libclang_path = '/usr/local/Cellar/llvm/3.9.0/lib/libclang.dylib'
+let g:deoplete#sources#clang#clang_header = '/usr/local/Cellar/llvm'
+let g:deoplete#sources#clang#flags = [
+    \ "-cc1",
+    \ "-triple", "x86_64-apple-ios9.3.0",
+    \ "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk",
+    \ "-fmax-type-align=16",
+    \ ]
+'''
+
+[[plugins]]
+repo = 'Shougo/neomru.vim'
+
+
+[[plugins]]
+repo = 'Shougo/denite.nvim'
+on_cmd = [
+  'Denite',
+  'DeniteCursorWord',
+]
+hook_add = '''
+nnoremap <leader>m :<C-u>Denite file_mru<Return>
+nnoremap <leader>b :<C-u>Denite buffer<Return>
+'''
+hook_source = '''
+highlight default link  deniteMatched Keyword
+call denite#custom#map("_", "<esc>", "quit")
+call denite#custom#map("insert", "<C-j>", "move_to_next_line")
+call denite#custom#map("insert", "<C-k>", "move_to_prev_line")
+call denite#custom#source("file_mru", "sorters", ["sorter_sublime"])
+call denite#custom#option("default", "prompt", ">")
+call denite#custom#option("default", "winheight", 10)
+call denite#custom#option("default", "reversed", 1)
+call denite#custom#option("default", "auto_resize", 1)
+'''
+
+
+[[plugins]]
+repo = 'Shougo/vimfiler.vim'
+depends = 'unite.vim'
+on_cmd = [
+  'VimFiler',
+  'VimFilerExplorer',
+]
+on_path = '\h\w*:'
+hook_add = '''
+nmap <leader>f :VimFilerBufferDir -explorer -find -parent -winwidth=30<Return>
+nmap <leader>e :VimFilerExplorer -parent -direction=topleft -winwidth=30<Return>
+'''
+hook_source = '''
+"call vimfiler#custom#profile("default", "context", {"explorer":1, "parent":1, "no_focus":1, "safe":0})
+let g:vimfiler_as_default_explorer = 1
+let g:vimfiler_no_default_key_mappings = 1
+autocmd FileType vimfiler nested nmap <buffer><expr> <Return> vimfiler#smart_cursor_map("\<Plug>(vimfiler_expand_tree)","\<Plug>(vimfiler_edit_file)")
+autocmd FileType vimfiler nested nmap <buffer><expr> <C-h> "\<Plug>(vimfiler_toggle_visible_ignore_files)"
+autocmd FileType vimfiler nested nmap <buffer><expr> o "\<Plug>(vimfiler_expand_tree)"
+autocmd FileType vimfiler nested nmap <buffer><expr> q "\<Plug>(vimfiler_close)"
+autocmd FileType vimfiler nested nmap <buffer><expr> n "\<Plug>(vimfiler_make_directory)"
+autocmd FileType vimfiler nested nmap <buffer><expr> f "\<Plug>(vimfiler_new_file)"
+autocmd FileType vimfiler nested nmap <buffer><expr> r "\<Plug>(vimfiler_rename_file)"
+autocmd FileType vimfiler nested nmap <buffer><expr> d "\<Plug>(vimfiler_delete_file)"
+autocmd FileType vimfiler nested nmap <buffer><expr> <S-l> ""
+autocmd FileType vimfiler nested nmap <buffer><expr> <S-h> ""
+autocmd FileType vimfiler nested nmap <buffer><expr> <S-k> ""
+'''
+
+[[plugins]]
+repo = 'Shougo/unite.vim'
+on_cmd = [
+  'Unite',
+  'UniteWithCursorWord',
+]
+
+[[plugins]]
+repo = 'AndrewRadev/linediff.vim'
+on_cmd = [
+    'Linediff'
+]
+
+[[plugins]]
+repo = 'majutsushi/tagbar'
+on_cmd = [
+    'Tagbar'
+]
+
+[[plugins]]
+repo = 'godlygeek/tabular'
+on_cmd = [
+    'Tabularize'
+]
+
+[[plugins]]
+repo = 'rizzatti/dash.vim'
+on_cmd = [
+    'Dash'
+]
+
+[[plugins]]
+repo = 'zchee/deoplete-jedi'
+on_ft = ['python']
+
+[[plugins]]
+repo = 'zchee/deoplete-clang'
+on_ft = ['c', 'cpp', 'objc']
+
+[[plugins]]
+repo = 'pwntester/deoplete-swift'
+on_ft = ['swift']
+
+[[plugins]]
+repo = 'artur-shaik/vim-javacomplete2'
+on_ft = ['java']
+hook_source = '''
+autocmd FileType java nested setlocal omnifunc=javacomplete#Complete
+'''
+
+[[plugins]]
+repo = 'plasticboy/vim-markdown'
+on_ft = ['markdown']
+
+[[plugins]]
+repo = 'elzr/vim-json'
+'on_ft' = ['json']
+
+[[plugins]]
+repo = 'othree/yajs.vim'
+on_ft = ['javascript']
+
+[[plugins]]
+repo = 'gavocanov/vim-js-indent'
+on_ft = ['javascript']
+
+[[plugins]]
+repo = 'b4winckler/vim-objc'
+on_ft = ['objc']
+
+[[plugins]]
+repo = 'kballard/vim-swift'
+on_ft = ['swift']
+
+[[plugins]]
+repo = 'othree/xml.vim'
+on_ft = ['xml', 'fortifyrulepack']
+
+[[plugins]]
+repo = 'derekwyatt/vim-scala'
+on_ft = ['scala']
+
+[[plugins]]
+repo = 'ekalinin/Dockerfile.vim'
+on_ft = ['Dockerfile']
+
+[[plugins]]
+repo = 'tfnico/vim-gradle'
+on_ft = ['gradle']
+
+[[plugins]]
+repo = 'cespare/vim-toml'
+on_ft = ['toml']
+
