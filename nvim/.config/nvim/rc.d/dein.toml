@@ -7,11 +7,6 @@ on_cmd = 'Dein'
 
 [[plugins]]
 repo = 'tpope/vim-surround'
-hook_add = '''
-nmap <silent>sa <Plug>(operator-surround-append)
-nmap <silent>sd <Plug>(operator-surround-delete)
-nmap <silent>sr <Plug>(operator-surround-replace)
-'''
 
 [[plugins]]
 repo = 'airblade/vim-gitgutter'
@@ -76,8 +71,6 @@ repo = 'https://github.hpe.com/alvaro-munoz/vim-fortify.git'
 depends = 'neomake'
 hook_add = '''
 nnoremap <leader>i :NewRuleID<Return>
-'''
-hook_source = '''
 let g:fortify_SCAPath = "/Applications/HP_Fortify/sca"
 let g:fortify_PythonPath = "/usr/local/lib/python2.7/site-packages"
 let g:fortify_AndroidJarPath = "/Users/alvaro/Library/Android/sdk/platforms/android-22/android.jar"
@@ -88,6 +81,8 @@ let g:fortify_ScanOpts = []
 let g:fortify_TranslationOpts = []
 let g:fortify_JDKVersion = "1.8"
 let g:fortify_XCodeSDK = "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk"
+'''
+hook_source = '''
 autocmd BufNewFile,BufReadPost *.xml nested map R ,R
 autocmd BufNewFile,BufReadPost *.rules nested map R ,R
 autocmd BufNewFile,BufReadPost *.xml nested map r ,r
@@ -219,7 +214,15 @@ repo = 'ap/vim-css-color'
 
 [[plugins]]
 repo = 'pwntester/cobalt2-vim-theme'
-script_type = 'colors'
+
+[[plugins]]
+repo = 'altercation/vim-colors-solarized'
+
+[[plugins]]
+repo = 'mhartington/oceanic-next'
+
+[[plugins]]
+repo = 'pwntester/zaphyr'
 
 [[plugins]]
 repo = 'tpope/vim-commentary'
@@ -236,7 +239,6 @@ let g:lexima_enable_space_rules = 1
 let g:lexima_enable_endwise_rules = 1
 let g:lexima_enable_newline_rules = 1
 '''
-
 
 [[plugins]]
 repo = 'Shougo/neosnippet'
@@ -292,7 +294,6 @@ highlight default link  deniteMatched Keyword
 call denite#custom#map("_", "<esc>", "quit")
 call denite#custom#map("insert", "<C-j>", "move_to_next_line")
 call denite#custom#map("insert", "<C-k>", "move_to_prev_line")
-call denite#custom#source("file_mru", "sorters", ["sorter_sublime"])
 call denite#custom#option("default", "prompt", ">")
 call denite#custom#option("default", "winheight", 10)
 call denite#custom#option("default", "reversed", 1)
@@ -382,6 +383,11 @@ autocmd FileType java nested setlocal omnifunc=javacomplete#Complete
 [[plugins]]
 repo = 'plasticboy/vim-markdown'
 on_ft = ['markdown']
+hook_add = '''
+let g:vim_markdown_folding_disabled = 1
+autocmd BufRead,BufNewFile *.md setlocal spell complete+=kspell
+autocmd BufRead,BufNewFile *.md hi SpellBad guibg=#ff2929 guifg=#ffffff" ctermbg=224
+'''
 
 [[plugins]]
 repo = 'elzr/vim-json'

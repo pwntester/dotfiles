@@ -25,6 +25,6 @@ if [[ "$platform" == 'macosx' ]]; then
     export DYLD_LIBRARY_PATH=/Users/alvaro/CTFs/tools/angr-unicorn:/Users/alvaro/virtualenvs/angr_pypy/site-packages/pyvex/lib
 fi
 
-
+source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 if [ "$TMUX" = "" ]; then tmux; fi

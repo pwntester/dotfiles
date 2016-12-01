@@ -3,6 +3,7 @@ let g:unite_force_overwrite_statusline = 0
 let g:denite_force_overwrite_statusline = 0
 let g:vimfiler_force_overwrite_statusline = 0
 let g:lightline = {
+    \ 'colorscheme': 'solarized',
     \ 'active': {
     \     'left': [ [ 'mode', 'paste' ], [ 'cwd' ], [ 'anzu', 'readonly', 'filename', 'modified' ], ],
     \      'right': [ [ 'column' ], [ 'percent' ], [ 'fileformat', 'fileencoding', 'filetype', 'neomake_errors', 'neomake_warnings', ] ]

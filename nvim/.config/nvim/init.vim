@@ -120,9 +120,11 @@ command! Q execute "qa!"
 noremap <F11> <ESC>:syntax sync fromstart<Return>
 inoremap <F11> <ESC>:syntax sync fromstart<Return>a
 
-" space to place the cursor in the middle of the screen
-nnoremap <Space>j <C-d>
-nnoremap <Space>k <C-u>
+" navigate faster
+noremap <space>h ^
+noremap <space>l g_
+nnoremap <Space>j 8j
+nnoremap <Space>k 8k
 
 " escape to normal mode in insert mode
 inoremap jk <ESC>
@@ -203,7 +205,20 @@ nnoremap <leader>r :set norelativenumber!<Return>
 " set paste mode
 nnoremap <leader>p :set nopaste!<Return>
 
+" Show syntax highlighting groups for word under cursor
+nmap <leader>z :call <SID>SynStack()<CR>
+function! <SID>SynStack()
+  if !exists("*synstack")
+    return
+  endif
+  echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
+endfunc
+
 " PLUGINS {{{
+if (!isdirectory(expand("$HOME/.config/nvim/dein/repos/github.com/Shougo/dein.vim")))
+    call system(expand("mkdir -p $HOME/.config/nvim/dein/repos/github.com"))
+    call system(expand("git clone https://github.com/Shougo/dein.vim $HOME/.config/nvim/dein/repos/github.com/Shougo/dein.vim"))
+endif
 set runtimepath+=~/.config/nvim/dein/repos/github.com/Shougo/dein.vim
 let s:dein_basepath = expand('~/.config/nvim/dein')
 let s:dein_toml = expand('~/.config/nvim/rc.d/dein.toml')
@@ -217,7 +232,10 @@ if !has('vim_starting')
     call dein#call_hook('source')
     call dein#call_hook('post_source')
 endif
+filetype plugin indent on
 
-colorscheme cobalt2
-syntax on                                                         " Activate the syntax
-filetype plugin indent on                                         " Automatic recognition of filetype
+syntax enable
+set background=dark
+"colorscheme cobalt2
+colorscheme zaphyr
+"source ~/.config/nvim/dein/repos/github.com/pwntester/zaphyr/colors/zaphyr.vim
