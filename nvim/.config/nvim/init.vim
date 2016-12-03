@@ -1,19 +1,46 @@
-if &compatible
-  set nocompatible
+" PRELUDE {{{
+if has('vim_starting')
+  set fileencoding=utf-8                                          " All the way!
+  set encoding=utf-8
+  scriptencoding utf-8
+  " Use defaults.vim and revert several settings
+  if filereadable(expand('$VIMRUNTIME/defaults.vim'))
+    source $VIMRUNTIME/defaults.vim
+  endif
+  set nottimeout
+  " Disable unnecessary default plugins
+  let g:loaded_gzip              = 1
+  let g:loaded_tar               = 1
+  let g:loaded_tarPlugin         = 1
+  let g:loaded_zip               = 1
+  let g:loaded_zipPlugin         = 1
+  let g:loaded_rrhelper          = 1
+  let g:loaded_2html_plugin      = 1
+  let g:loaded_vimball           = 1
+  let g:loaded_vimballPlugin     = 1
+  let g:loaded_getscript         = 1
+  let g:loaded_getscriptPlugin   = 1
+  let g:loaded_logipat           = 1
+  let g:loaded_matchparen        = 1
+  let g:loaded_man               = 1
+  let g:loaded_netrw             = 1
+  let g:loaded_netrwPlugin       = 1
+  let g:loaded_netrwSettings     = 1
+  let g:loaded_netrwFileHandlers = 1
 endif
-filetype off
+" }}}
 
 " GENERAL {{{
 set autowrite                                                     " Write on shell/make command
-set fileencoding=utf-8                                            " All the way!
 set nrformats=alpha,hex,octal                                     " Increment/decrement numbers. C-a,a (tmux), C-x
 set shell=/bin/zsh                                                " ZSH ftw!
 set visualbell                                                    " Silent please
 set ffs=unix                                                      " Use Unix EOL
 set hidden                                                        " Hide buffers when unloaded
-set nottimeout
+" }}}
 
 " SYNTAX/LAYOUT {{{
+syntax enable
 set wrap                                                          " Wrap lines visually
 set sidescroll=1                                                  " Side scroll when wrap is disabled
 set linebreak                                                     " Wrap lines at special characters instead of at max width
@@ -22,6 +49,7 @@ autocmd BufNewFile,BufRead *.m set filetype=objc                  " Auto-set syn
 set listchars=tab:>-,trail:.,extends:>,precedes:<,nbsp:%          " Showing trailing whitespace
 highlight clear SignColumn                                        " Clear Sign column bg color
 "autocmd BufEnter *.* if getfsize(@%) < 1000000 | :syntax sync fromstart | endif " Detect syntax from start of file
+" }}}
 
 " LANGUAGE SPECIFICS {{{
 let msql_sql_query = 1                                            " Better mysql highlight
@@ -38,21 +66,25 @@ let java_minlines = 150                                           " Start syntax
 let java_comment_strings=1                                        " Strings and numbers inside a comment
 let g:sh_no_error = 1                                             " Shell scrpting highlighting fixes
 let g:markdown_fenced_languages = ['python', 'lua', 'sh', 'vim']  " Highlight fenced code
+" }}}
 
 " FOLDING {{{
-set foldmethod=manual                                             " Fold manually (zf)
+set foldmethod=manual                                              " Fold manually (zf)
 set foldcolumn=0                                                  " Do not show fold levels in side bar
+" }}}
 
 " UI {{{
 set cursorline                                                    " Print cursorline
 set guioptions=-Mfl                                               " nomenu, nofork, scrollbar
 set laststatus=2                                                  " status line always on
+set showtabline=2                                                 " always shows tabline
 set lazyredraw                                                    " Don't update the display while executing macros
 set number                                                        " Print the line number
 set scrolloff=5                                                   " 5 lines margin to the cursor when moving
 set t_Co=256                                                      " 256 colors
 set ttyfast                                                       " Faster redraw
 set showcmd                                                       " Show partial commands in status line
+" }}}
 
 " MOUSE {{{
 behave xterm                                                      " Behave like xterm
@@ -64,6 +96,7 @@ if has('mouse')
     set mousefocus                                                  " Autofocus
     set mousehide                                                   " Hide mouse pointer while typing
 endif
+" }}}
 
 " AUTOCOMPLETION {{{
 set wildmenu wildmode=longest:full
@@ -76,6 +109,7 @@ set wildignore+=.git,.hg,.bzr,.svn
 set wildignore+=*.jpg,*.bmp,*.gif,*.png,*.jpeg,*.svg
 set wildignore+=build/*,tmp/*,vendor/cache/*,bin/*
 set wildignore+=.sass-cache/*
+" }}}
 
 " BACKUP/SAVE {{{
 set wb                                                            " Make a backup before overwriting
@@ -85,11 +119,13 @@ set directory=~/.config/nvim/tmp/swap/                            " But do it al
 set backupdir=~/.config/nvim/tmp/backup/                          " But do it always in the same place
 set undodir=~/.config/nvim/tmp/undo/                              " But do it always in the same place
 au FocusLost * :silent! wall
+" }}}
 
 " VIEWS {{{
 set viewoptions=cursor,folds                                      " Set view options for saving/restoring
 autocmd BufWinLeave *.* mkview!
 autocmd BufWinEnter *.* silent! loadview
+" }}}
 
 " IDENT/STYLE {{{
 set autoindent                                                    " Auto-ident
@@ -100,6 +136,7 @@ set tabstop=4                                                     " How many spa
 set softtabstop=4                                                 " One tab = 4 spaces
 set shiftwidth=4                                                  " Reduntant with above
 set shiftround                                                    " Round indent to multiple of 'shiftwidth'
+" }}}
 
 " MAPPINGS {{{
 
@@ -123,8 +160,8 @@ inoremap <F11> <ESC>:syntax sync fromstart<Return>a
 " navigate faster
 noremap <space>h ^
 noremap <space>l g_
-nnoremap <Space>j 8j
-nnoremap <Space>k 8k
+nnoremap <Space>j 15j
+nnoremap <Space>k 15k
 
 " escape to normal mode in insert mode
 inoremap jk <ESC>
@@ -178,6 +215,10 @@ nnoremap <S-h> :bprevious<Return>
 " jump to last visited location
 nnoremap <S-k> <C-^>
 
+" save one keystroke
+nnoremap ; :
+" }}}
+
 " LEADER MAPPINGS {{{
 
 " remove trailing spaces
@@ -213,8 +254,14 @@ function! <SID>SynStack()
   endif
   echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
 endfunc
+" }}}
 
 " PLUGINS {{{
+if &compatible
+  set nocompatible
+endif
+filetype off
+
 if (!isdirectory(expand("$HOME/.config/nvim/dein/repos/github.com/Shougo/dein.vim")))
     call system(expand("mkdir -p $HOME/.config/nvim/dein/repos/github.com"))
     call system(expand("git clone https://github.com/Shougo/dein.vim $HOME/.config/nvim/dein/repos/github.com/Shougo/dein.vim"))
@@ -233,9 +280,4 @@ if !has('vim_starting')
     call dein#call_hook('post_source')
 endif
 filetype plugin indent on
-
-syntax enable
-set background=dark
-"colorscheme cobalt2
-colorscheme zaphyr
-"source ~/.config/nvim/dein/repos/github.com/pwntester/zaphyr/colors/zaphyr.vim
+" }}}

@@ -1,47 +1,78 @@
-set showtabline=2 
-let g:unite_force_overwrite_statusline = 0
-let g:denite_force_overwrite_statusline = 0
-let g:vimfiler_force_overwrite_statusline = 0
 let g:lightline = {
-    \ 'colorscheme': 'solarized',
+    \ 'colorscheme': 'wombat',
     \ 'active': {
-    \     'left': [ [ 'mode', 'paste' ], [ 'cwd' ], [ 'anzu', 'readonly', 'filename', 'modified' ], ],
-    \      'right': [ [ 'column' ], [ 'percent' ], [ 'fileformat', 'fileencoding', 'filetype', 'neomake_errors', 'neomake_warnings', ] ]
+    \   'left': [ [ 'mode', 'paste', 'anzu', ], [ 'filetype', ], [ 'readonly', 'filename', ], ],
+    \   'right': [ ['neomake_errors', 'neomake_warnings', 'column' ], [ 'percent' ], [ 'cwd', ] ]
+    \ },
+    \ 'inactive': {
+    \   'left': [ [ ] ],
+    \   'right': [ [ ], [ ] ]
     \ },
     \ 'tabline': {
-    \     'left': [ [ 'bufferinfo' ], [ 'bufferbefore', 'buffercurrent', 'bufferafter' ], ],
-    \ }, 
+    \   'left': [ [ 'tabs', ], ],
+    \   'right': [ [ ] ],
+    \ },
     \ 'component': {
     \   'readonly': '%{&filetype=="help"?"":&readonly?"⭤":""}',
-    \   'modified': '%{&filetype=="help"?"":&modified?"+":&modifiable?"":"-"}'
     \ },
     \ 'component_visible_condition': {
     \   'readonly': '(&filetype!="help"&& &readonly)',
-    \   'modified': '(&filetype!="help"&&(&modified||!&modifiable))',
     \ },
     \ 'component_expand': {
-    \     'buffercurrent': 'lightline#buffer#buffercurrent2',
-    \     'neomake_errors': 'LightLineNeomakeErrors',
-    \     'neomake_warnings': 'LightLineNeomakeWarnings',
+    \   'neomake_errors': 'LightLineNeomakeErrors',
+    \   'neomake_warnings': 'LightLineNeomakeWarnings',
+    \   'tabs': 'LightLineBufferTabs',
     \ },
     \ 'component_type': {
-    \     'neomake_errors': 'error',
-    \     'neomake_warnings': 'warning',
+    \   'neomake_errors': 'error',
+    \   'neomake_warnings': 'warning',
     \ },
     \ 'component_function': {
-    \     'bufferinfo': 'lightline#buffer#bufferinfo',
-    \     'bufferbefore': 'lightline#buffer#bufferbefore',
-    \     'bufferafter': 'lightline#buffer#bufferafter',
-    \     'cwd': 'LightLineCwd',
-    \     'anzu' : 'anzu#search_status',
-    \     'filename': 'LightLineFilename',
+    \   'cwd': 'LightLineCwd',
+    \   'anzu' : 'LightLineAnzu',
+    \   'filename': 'LightLineFilename',
     \ },
     \ 'separator': { 'left': '⮀', 'right': '⮂' },
-    \ 'subseparator': { 'left': '⮁', 'right': '⮃' }
+    \ 'subseparator': { 'left': '⮁', 'right': '⮃' },
+    \ 'tabline_separator': { 'left': ' ', 'right': ' ' },
+    \ 'tabline_subseparator': { 'left': ' ', 'right': ' ' },
     \ }
+
+function! LightLineBufferTabs()
+    let buflist = filter(range(1,bufnr('$')),'buflisted(v:val) && "quickfix" !=? getbufvar(v:val, "&buftype")') 
+    let tabline_before = []
+    let tabline_current = []
+    let tabline_after = []
+    let isBeforeCurrent = 1
+    for buf_nr in buflist
+        if buf_nr == winbufnr(0)
+            let isBeforeCurrent = 0
+            let tabline_current += [buf_nr]
+        else
+            if isBeforeCurrent
+                let tabline_before += [buf_nr]
+            else
+                let tabline_after += [buf_nr]
+            endif
+        endif
+    endfor
+    let tabline_before = map(tabline_before, "fnamemodify(bufname(v:val), ':t') . (getbufvar(v:val, '&mod')?' *':'')")
+    let tabline_current = map(tabline_current, "fnamemodify(bufname(v:val), ':t') . (getbufvar(v:val, '&mod')?' *':'')")
+    let tabline_after = map(tabline_after, "fnamemodify(bufname(v:val), ':t') . (getbufvar(v:val, '&mod')?' *':'')")
+    return [tabline_before, tabline_current, tabline_after]
+endfunction
 
 function! LightLineFilename()
     return fnamemodify(expand("%"), ":~:.")
+endfunction
+
+function! LightLineAnzu()
+    let status = anzu#search_status()
+    if status == ""
+        return ''
+    else
+        return split(split(status, "(")[1], ')')[0]
+    endif
 endfunction
 
 function! LightLineCwd()

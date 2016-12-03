@@ -6,6 +6,19 @@ repo = 'haya14busa/dein-command.vim'
 on_cmd = 'Dein'
 
 [[plugins]]
+repo = 'pwntester/cobalt2-vim-theme'
+
+[[plugins]]
+repo = 'albertorestifo/github.vim'
+
+[[plugins]]
+repo = 'pwntester/zaphyr'
+hook_add = '''
+set background=dark
+colorscheme zaphyr
+'''
+
+[[plugins]]
 repo = 'tpope/vim-surround'
 
 [[plugins]]
@@ -18,9 +31,12 @@ execute 'source' fnameescape(expand('~/.config/nvim/rc.d/lightline.vim'))
 '''
 
 [[plugins]]
+repo = 'tpope/vim-repeat'
+
+[[plugins]]
 repo = 'benekastah/neomake'
 depends = 'lightline.vim'
-hook_source = '''
+hook_add = '''
 autocmd BufEnter * nested Neomake
 autocmd BufWritePost * nested Neomake
 autocmd User NeomakeFinished nested call lightline#update()
@@ -64,8 +80,17 @@ let g:neomake_objc_clang_maker = {
         \ '%f:%l: %tarning: %m,'.
         \ '%f:%l: %m',
     \ }
-'''
+let g:neomake_error_sign = {
+            \ 'text': '✖',
+            \ 'texthl': 'NeomakeErrorMsg',
+            \ }
 
+let g:neomake_warning_sign = {
+            \ 'text': '⚠',
+            \ 'texthl': 'NeomakeWarningMsg',
+            \ }
+
+'''
 [[plugins]]
 repo = 'https://github.hpe.com/alvaro-munoz/vim-fortify.git'
 depends = 'neomake'
@@ -81,12 +106,12 @@ let g:fortify_ScanOpts = []
 let g:fortify_TranslationOpts = []
 let g:fortify_JDKVersion = "1.8"
 let g:fortify_XCodeSDK = "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk"
-'''
-hook_source = '''
 autocmd BufNewFile,BufReadPost *.xml nested map R ,R
 autocmd BufNewFile,BufReadPost *.rules nested map R ,R
 autocmd BufNewFile,BufReadPost *.xml nested map r ,r
 autocmd BufNewFile,BufReadPost *.rules nested map r ,r
+'''
+hook_source = '''
 autocmd FileType fortifyrulepack nested setlocal omnifunc=fortify#Complete
 autocmd FileType fortifyauditpane nested nmap <buffer><expr> <S-l> ""
 autocmd FileType fortifyauditpane nested nmap <buffer><expr> <S-h> ""
@@ -142,38 +167,15 @@ omap <silent> i_e <Plug>CamelCaseMotion_ie
 xmap <silent> i_e <Plug>CamelCaseMotion_ie
 '''
 
-[[plugins]]
-repo = 'taohex/lightline-buffer'
-depends = 'lightline.vim'
-hook_source = '''
-let g:lightline_buffer_excludes = ['vimfiler']
-let g:lightline_buffer_show_bufnr = 1
-let g:lightline_buffer_rotate = 0
-let g:lightline_buffer_fname_mod = ':t'
-let g:lightline_buffer_maxflen = 30
-let g:lightline_buffer_maxfextlen = 3
-let g:lightline_buffer_minflen = 16
-let g:lightline_buffer_minfextlen = 3
-let g:lightline_buffer_reservelen = 20
-let g:lightline_buffer_logo = ' '
-let g:lightline_buffer_readonly_icon = ''
-let g:lightline_buffer_modified_icon = '*'
-let g:lightline_buffer_git_icon = ' '
-let g:lightline_buffer_ellipsis_icon = '..'
-let g:lightline_buffer_expand_left_icon = '◀ '
-let g:lightline_buffer_expand_right_icon = ' ▶'
-let g:lightline_buffer_active_buffer_left_icon = ''
-let g:lightline_buffer_active_buffer_right_icon = ''
-let g:lightline_buffer_separator_icon = ' '
-'''
-
+# [[plugins]]
+# repo = 'ap/vim-buftabline'
 
 [[plugins]]
 repo = 'vim-scripts/vim-scroll-position'
 
 [[plugins]]
 repo = 'qpkorr/vim-bufkill'
-hook_source = '''
+hook_add = '''
 cabbrev bd <C-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'BD' : 'bdelete')<Return>
 cabbrev bd! <C-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'BD!' : 'bdelete!')<Return>
 '''
@@ -186,7 +188,8 @@ repo = 'inside/vim-search-pulse'
 depends = 'vim-anzu'
 hook_add = '''
 let g:vim_search_pulse_mode = 'cursor_line'
-let g:vim_search_pulse_disable_auto_mappings = 1
+let g:vim_search_pulse_disable_auto_mappings=1
+let g:anzu_enable_CursorMoved_AnzuUpdateSearchStatus=0
 nmap n <Plug>(anzu-n)<Plug>Pulse
 nmap N <Plug>(anzu-N)<Plug>Pulse
 nmap * <Plug>(anzu-star)<Plug>Pulse
@@ -213,19 +216,8 @@ repo = 'christoomey/vim-tmux-navigator'
 repo = 'ap/vim-css-color'
 
 [[plugins]]
-repo = 'pwntester/cobalt2-vim-theme'
-
-[[plugins]]
-repo = 'altercation/vim-colors-solarized'
-
-[[plugins]]
-repo = 'mhartington/oceanic-next'
-
-[[plugins]]
-repo = 'pwntester/zaphyr'
-
-[[plugins]]
-repo = 'tpope/vim-commentary'
+repo = 'tomtom/tcomment_vim'
+#repo = 'tpope/vim-commentary'
 
 [[plugins]]
 repo = 'Shougo/context_filetype.vim'
