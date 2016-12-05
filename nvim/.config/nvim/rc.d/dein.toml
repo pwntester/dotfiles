@@ -6,16 +6,13 @@ repo = 'haya14busa/dein-command.vim'
 on_cmd = 'Dein'
 
 [[plugins]]
-repo = 'pwntester/cobalt2-vim-theme'
-
-[[plugins]]
 repo = 'albertorestifo/github.vim'
 
 [[plugins]]
-repo = 'pwntester/zaphyr'
+repo = 'pwntester/cobalt2.vim'
 hook_add = '''
 set background=dark
-colorscheme zaphyr
+colorscheme cobalt2
 '''
 
 [[plugins]]
@@ -26,6 +23,7 @@ repo = 'airblade/vim-gitgutter'
 
 [[plugins]]
 repo = 'itchyny/lightline.vim'
+depends = 'cobalt2.vim'
 hook_add = '''
 execute 'source' fnameescape(expand('~/.config/nvim/rc.d/lightline.vim'))
 '''
@@ -167,21 +165,14 @@ omap <silent> i_e <Plug>CamelCaseMotion_ie
 xmap <silent> i_e <Plug>CamelCaseMotion_ie
 '''
 
-# [[plugins]]
-# repo = 'ap/vim-buftabline'
-
 [[plugins]]
 repo = 'vim-scripts/vim-scroll-position'
 
 [[plugins]]
-repo = 'qpkorr/vim-bufkill'
-hook_add = '''
-cabbrev bd <C-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'BD' : 'bdelete')<Return>
-cabbrev bd! <C-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'BD!' : 'bdelete!')<Return>
-'''
-
-[[plugins]]
 repo = 'osyo-manga/vim-anzu'
+hook_add = '''
+let g:anzu_enable_CursorMoved_AnzuUpdateSearchStatus=1
+'''
 
 [[plugins]]
 repo = 'inside/vim-search-pulse'
@@ -189,12 +180,11 @@ depends = 'vim-anzu'
 hook_add = '''
 let g:vim_search_pulse_mode = 'cursor_line'
 let g:vim_search_pulse_disable_auto_mappings=1
-let g:anzu_enable_CursorMoved_AnzuUpdateSearchStatus=0
 nmap n <Plug>(anzu-n)<Plug>Pulse
 nmap N <Plug>(anzu-N)<Plug>Pulse
 nmap * <Plug>(anzu-star)<Plug>Pulse
 nmap # <Plug>(anzu-sharp)<Plug>Pulse
-cmap <silent> <expr> <enter> search_pulse#PulseFirst()
+"cmap <silent> <expr> <enter> search_pulse#PulseFirst()
 '''
 
 [[plugins]]
@@ -217,7 +207,6 @@ repo = 'ap/vim-css-color'
 
 [[plugins]]
 repo = 'tomtom/tcomment_vim'
-#repo = 'tpope/vim-commentary'
 
 [[plugins]]
 repo = 'Shougo/context_filetype.vim'
@@ -270,7 +259,6 @@ let g:deoplete#sources#clang#flags = [
 [[plugins]]
 repo = 'Shougo/neomru.vim'
 
-
 [[plugins]]
 repo = 'Shougo/denite.nvim'
 on_cmd = [
@@ -280,18 +268,32 @@ on_cmd = [
 hook_add = '''
 nnoremap <leader>m :<C-u>Denite file_mru<Return>
 nnoremap <leader>b :<C-u>Denite buffer<Return>
+nnoremap <leader>d :<C-u>Denite directory_rec<Return>
+highlight default link  deniteMatched Keyword
 '''
 hook_source = '''
-highlight default link  deniteMatched Keyword
-call denite#custom#map("_", "<esc>", "quit")
-call denite#custom#map("insert", "<C-j>", "move_to_next_line")
-call denite#custom#map("insert", "<C-k>", "move_to_prev_line")
+call denite#custom#map(
+        \ '<esc>',
+        \ '<denite:quit>',
+        \ 'noremap'
+        \)
+call denite#custom#map(
+        \ 'insert',
+        \ '<C-j>',
+        \ '<denite:move_to_next_line>',
+        \ 'noremap'
+        \)
+call denite#custom#map(
+        \ 'insert',
+        \ '<C-k>',
+        \ '<denite:move_to_previous_line>',
+        \ 'noremap'
+        \)
 call denite#custom#option("default", "prompt", ">")
 call denite#custom#option("default", "winheight", 10)
 call denite#custom#option("default", "reversed", 1)
 call denite#custom#option("default", "auto_resize", 1)
 '''
-
 
 [[plugins]]
 repo = 'Shougo/vimfiler.vim'
@@ -396,6 +398,9 @@ on_ft = ['javascript']
 [[plugins]]
 repo = 'b4winckler/vim-objc'
 on_ft = ['objc']
+hook_add = '''
+autocmd BufNewFile,BufRead *.m set filetype=objc
+'''
 
 [[plugins]]
 repo = 'kballard/vim-swift'
@@ -416,8 +421,10 @@ on_ft = ['Dockerfile']
 [[plugins]]
 repo = 'tfnico/vim-gradle'
 on_ft = ['gradle']
+hook_add = '''
+autocmd BufNewFile,BufRead *.gradle set filetype=groovy 
+'''
 
 [[plugins]]
 repo = 'cespare/vim-toml'
 on_ft = ['toml']
-

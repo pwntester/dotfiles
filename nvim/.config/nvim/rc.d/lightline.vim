@@ -1,5 +1,6 @@
+let g:cobalt2_lightline = 1
 let g:lightline = {
-    \ 'colorscheme': 'wombat',
+    \ 'colorscheme': 'cobalt2',
     \ 'active': {
     \   'left': [ [ 'mode', 'paste', 'anzu', ], [ 'filetype', ], [ 'readonly', 'filename', ], ],
     \   'right': [ ['neomake_errors', 'neomake_warnings', 'column' ], [ 'percent' ], [ 'cwd', ] ]

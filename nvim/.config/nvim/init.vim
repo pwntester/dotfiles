@@ -1,35 +1,3 @@
-" PRELUDE {{{
-if has('vim_starting')
-  set fileencoding=utf-8                                          " All the way!
-  set encoding=utf-8
-  scriptencoding utf-8
-  " Use defaults.vim and revert several settings
-  if filereadable(expand('$VIMRUNTIME/defaults.vim'))
-    source $VIMRUNTIME/defaults.vim
-  endif
-  set nottimeout
-  " Disable unnecessary default plugins
-  let g:loaded_gzip              = 1
-  let g:loaded_tar               = 1
-  let g:loaded_tarPlugin         = 1
-  let g:loaded_zip               = 1
-  let g:loaded_zipPlugin         = 1
-  let g:loaded_rrhelper          = 1
-  let g:loaded_2html_plugin      = 1
-  let g:loaded_vimball           = 1
-  let g:loaded_vimballPlugin     = 1
-  let g:loaded_getscript         = 1
-  let g:loaded_getscriptPlugin   = 1
-  let g:loaded_logipat           = 1
-  let g:loaded_matchparen        = 1
-  let g:loaded_man               = 1
-  let g:loaded_netrw             = 1
-  let g:loaded_netrwPlugin       = 1
-  let g:loaded_netrwSettings     = 1
-  let g:loaded_netrwFileHandlers = 1
-endif
-" }}}
-
 " GENERAL {{{
 set autowrite                                                     " Write on shell/make command
 set nrformats=alpha,hex,octal                                     " Increment/decrement numbers. C-a,a (tmux), C-x
@@ -37,6 +5,9 @@ set shell=/bin/zsh                                                " ZSH ftw!
 set visualbell                                                    " Silent please
 set ffs=unix                                                      " Use Unix EOL
 set hidden                                                        " Hide buffers when unloaded
+set fileencoding=utf-8
+set encoding=utf-8
+set nottimeout
 " }}}
 
 " SYNTAX/LAYOUT {{{
@@ -44,10 +15,7 @@ syntax enable
 set wrap                                                          " Wrap lines visually
 set sidescroll=1                                                  " Side scroll when wrap is disabled
 set linebreak                                                     " Wrap lines at special characters instead of at max width
-autocmd BufNewFile,BufRead *.gradle set filetype=groovy           " Auto-set syntax for gradle files
-autocmd BufNewFile,BufRead *.m set filetype=objc                  " Auto-set syntax for objc files
 set listchars=tab:>-,trail:.,extends:>,precedes:<,nbsp:%          " Showing trailing whitespace
-highlight clear SignColumn                                        " Clear Sign column bg color
 "autocmd BufEnter *.* if getfsize(@%) < 1000000 | :syntax sync fromstart | endif " Detect syntax from start of file
 " }}}
 
@@ -65,11 +33,11 @@ let java_highlight_functions="style"                              " Follow Java 
 let java_minlines = 150                                           " Start syntax sync 150 above current line
 let java_comment_strings=1                                        " Strings and numbers inside a comment
 let g:sh_no_error = 1                                             " Shell scrpting highlighting fixes
-let g:markdown_fenced_languages = ['python', 'lua', 'sh', 'vim']  " Highlight fenced code
+let g:markdown_fenced_languages = ['python', 'java', 'vim']       " Highlight fenced code
 " }}}
 
 " FOLDING {{{
-set foldmethod=manual                                              " Fold manually (zf)
+set foldmethod=manual                                             " Fold manually (zf)
 set foldcolumn=0                                                  " Do not show fold levels in side bar
 " }}}
 
@@ -84,17 +52,18 @@ set scrolloff=5                                                   " 5 lines marg
 set t_Co=256                                                      " 256 colors
 set ttyfast                                                       " Faster redraw
 set showcmd                                                       " Show partial commands in status line
+set noshowmode                                                    " Dont show the mode in the command line
 " }}}
 
 " MOUSE {{{
 behave xterm                                                      " Behave like xterm
 if has('mouse')
-    set mouse=a                                                     " Mouse support
+    set mouse=a                                                   " Mouse support
     if !has('nvim')
         set ttymouse=xterm2
     endif
-    set mousefocus                                                  " Autofocus
-    set mousehide                                                   " Hide mouse pointer while typing
+    set mousefocus                                                " Autofocus
+    set mousehide                                                 " Hide mouse pointer while typing
 endif
 " }}}
 
@@ -119,9 +88,6 @@ set directory=~/.config/nvim/tmp/swap/                            " But do it al
 set backupdir=~/.config/nvim/tmp/backup/                          " But do it always in the same place
 set undodir=~/.config/nvim/tmp/undo/                              " But do it always in the same place
 au FocusLost * :silent! wall
-" }}}
-
-" VIEWS {{{
 set viewoptions=cursor,folds                                      " Set view options for saving/restoring
 autocmd BufWinLeave *.* mkview!
 autocmd BufWinEnter *.* silent! loadview
@@ -140,22 +106,15 @@ set shiftround                                                    " Round indent
 
 " MAPPINGS {{{
 
-" in OSX/tmux, c-h is mapped to bs, so mappping bs to C-w
 if has('nvim')
+    " in OSX/tmux, c-h is mapped to bs, so mappping bs to C-w
     nmap <bs> <C-w>h
-endif
-
-" terminal mode escape (neovim)
-if has('nvim')
+    " terminal mode escape (neovim)
     tnoremap jk <C-\><C-n>
 endif
 
 " quit all windows
 command! Q execute "qa!"
-
-" refresh syntax highlighting
-noremap <F11> <ESC>:syntax sync fromstart<Return>
-inoremap <F11> <ESC>:syntax sync fromstart<Return>a
 
 " navigate faster
 noremap <space>h ^
@@ -217,37 +176,49 @@ nnoremap <S-k> <C-^>
 
 " save one keystroke
 nnoremap ; :
+
+" do not close windows when closing buffers
+cabbrev bd <C-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'bprevious<Bar>bdelete#' : 'bdelete')<CR>
+cabbrev bd! <C-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'bprevious<Bar>bdelete!#' : 'bdelete!')<CR>
+
+" save me from 1 files :)
+cabbrev w1 <C-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'w!' : 'w1')<CR>
+
 " }}}
 
 " LEADER MAPPINGS {{{
 
-" remove trailing spaces
-nnoremap <leader>c :%s/\s\+$//<Return>
-
 " space is your leader
-let mapleader = ","
+let mapleader = "," 
+
+" refresh syntax highlighting
+noremap <Leader>s <ESC>:syntax sync fromstart<Return>
+inoremap <Leader>s <ESC>:syntax sync fromstart<Return>a
+
+" remove trailing spaces
+nnoremap <Leader>c :%s/\s\+$//<Return>
 
 " save file
-nnoremap <leader>w :w<Return>
-nnoremap <leader>W :w !sudo tee % > /dev/null
+nnoremap <Leader>w :w<Return>
+nnoremap <Leader>W :w !sudo tee % > /dev/null
 
 " paste keeping the default register
-vnoremap <leader>p "_dP
+vnoremap <Leader>p "_dP
 
 " copy & paste to system clipboard
-vmap <leader>y "*y
+vmap <Leader>y "*y
 
 " show/hide line numbers
-nnoremap <leader>n :set nonumber!<Return>
+nnoremap <Leader>n :set nonumber!<Return>
 
 " relative line numbering
-nnoremap <leader>r :set norelativenumber!<Return>
+nnoremap <Leader>r :set norelativenumber!<Return>
 
 " set paste mode
-nnoremap <leader>p :set nopaste!<Return>
+nnoremap <Leader>p :set nopaste!<Return>
 
 " Show syntax highlighting groups for word under cursor
-nmap <leader>z :call <SID>SynStack()<CR>
+nmap <Leader>z :call <SID>SynStack()<CR>
 function! <SID>SynStack()
   if !exists("*synstack")
     return
