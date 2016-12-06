@@ -108,6 +108,7 @@ autocmd BufNewFile,BufReadPost *.xml nested map R ,R
 autocmd BufNewFile,BufReadPost *.rules nested map R ,R
 autocmd BufNewFile,BufReadPost *.xml nested map r ,r
 autocmd BufNewFile,BufReadPost *.rules nested map r ,r
+autocmd FileType fortifydescription setlocal spell complete+=kspell
 '''
 hook_source = '''
 autocmd FileType fortifyrulepack nested setlocal omnifunc=fortify#Complete
@@ -171,7 +172,7 @@ repo = 'vim-scripts/vim-scroll-position'
 [[plugins]]
 repo = 'osyo-manga/vim-anzu'
 hook_add = '''
-let g:anzu_enable_CursorMoved_AnzuUpdateSearchStatus=1
+"let g:anzu_enable_CursorMoved_AnzuUpdateSearchStatus=1
 '''
 
 [[plugins]]
@@ -269,7 +270,6 @@ hook_add = '''
 nnoremap <leader>m :<C-u>Denite file_mru<Return>
 nnoremap <leader>b :<C-u>Denite buffer<Return>
 nnoremap <leader>d :<C-u>Denite directory_rec<Return>
-highlight default link  deniteMatched Keyword
 '''
 hook_source = '''
 call denite#custom#map(
@@ -379,8 +379,7 @@ repo = 'plasticboy/vim-markdown'
 on_ft = ['markdown']
 hook_add = '''
 let g:vim_markdown_folding_disabled = 1
-autocmd BufRead,BufNewFile *.md setlocal spell complete+=kspell
-autocmd BufRead,BufNewFile *.md hi SpellBad guibg=#ff2929 guifg=#ffffff" ctermbg=224
+autocmd FileType markdown setlocal spell complete+=kspell
 '''
 
 [[plugins]]

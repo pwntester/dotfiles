@@ -2,6 +2,14 @@
 .AppleDouble
 .LSOverride
 
-nvim/.config/nvim/plugged/*
+nvim/.config/nvim/dein/repos/*
 nvim/.config/nvim/tmp/*
 nvim/.config/nvim/view/*
+nvim/.config/nvim/dein/state_nvim.vim
+nvim/.config/nvim/dein/cache_nvim
+nvim/.config/nvim/dein/.cache/*
+nvim/.config/nvim/.netrwhist
+
+nvim/.config/Hewlett-Packard/*
+nvim/.config/SweetScape/*
+nvim/.config/configstore/*
