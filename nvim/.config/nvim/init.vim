@@ -5,6 +5,7 @@ set shell=/bin/zsh                                                " ZSH ftw!
 set visualbell                                                    " Silent please
 set ffs=unix                                                      " Use Unix EOL
 set hidden                                                        " Hide buffers when unloaded
+set inccommand=nosplit                                            " Live preview for :substitute
 set fileencoding=utf-8
 set encoding=utf-8
 set nottimeout

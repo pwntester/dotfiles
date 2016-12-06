@@ -123,6 +123,35 @@ on_map = '<Plug>'
 hook_add = 'nmap <C-w><C-w> <Plug>(choosewin)'
 
 [[plugins]]
+repo = 'bkad/camelcasemotion'
+hook_add = '''
+map w <Plug>CamelCaseMotion_w
+map b <Plug>CamelCaseMotion_b
+map e <Plug>CamelCaseMotion_e
+sunmap w
+sunmap b
+sunmap e
+omap iw <Plug>CamelCaseMotion_iw
+xmap iw <Plug>CamelCaseMotion_iw
+omap ib <Plug>CamelCaseMotion_ib
+xmap ib <Plug>CamelCaseMotion_ib
+omap ie <Plug>CamelCaseMotion_ie
+xmap ie <Plug>CamelCaseMotion_ie
+'''
+
+[[plugins]]
+repo = 'kana/vim-niceblock'
+
+[[plugins]]
+repo = 'kana/vim-operator-replace'
+hook_add = '''
+map r <Plug>(operator-replace)
+'''
+
+[[plugins]]
+repo = 'kana/vim-operator-user'
+
+[[plugins]]
 repo = 'kana/vim-textobj-user'
 
 [[plugins]]
@@ -152,21 +181,6 @@ xmap iI <Plug>(textobj-indent-same-i)
 '''
 
 [[plugins]]
-repo = 'bkad/camelcasemotion'
-hook_add = '''
-map <silent> _w <Plug>CamelCaseMotion_w
-map <silent> _b <Plug>CamelCaseMotion_b
-map <silent> _e <Plug>CamelCaseMotion_e
-
-omap <silent> i_w <Plug>CamelCaseMotion_iw
-xmap <silent> i_w <Plug>CamelCaseMotion_iw
-omap <silent> i_b <Plug>CamelCaseMotion_ib
-xmap <silent> i_b <Plug>CamelCaseMotion_ib
-omap <silent> i_e <Plug>CamelCaseMotion_ie
-xmap <silent> i_e <Plug>CamelCaseMotion_ie
-'''
-
-[[plugins]]
 repo = 'vim-scripts/vim-scroll-position'
 
 [[plugins]]
@@ -187,6 +201,9 @@ nmap * <Plug>(anzu-star)<Plug>Pulse
 nmap # <Plug>(anzu-sharp)<Plug>Pulse
 "cmap <silent> <expr> <enter> search_pulse#PulseFirst()
 '''
+
+[[plugins]]
+repo = 'machakann/vim-highlightedyank'
 
 [[plugins]]
 repo = 'junegunn/rainbow_parentheses.vim'
@@ -262,10 +279,7 @@ repo = 'Shougo/neomru.vim'
 
 [[plugins]]
 repo = 'Shougo/denite.nvim'
-on_cmd = [
-  'Denite',
-  'DeniteCursorWord',
-]
+on_cmd = ['Denite', 'DeniteCursorWord']
 hook_add = '''
 nnoremap <leader>m :<C-u>Denite file_mru<Return>
 nnoremap <leader>b :<C-u>Denite buffer<Return>
@@ -298,14 +312,17 @@ call denite#custom#option("default", "auto_resize", 1)
 [[plugins]]
 repo = 'Shougo/vimfiler.vim'
 depends = 'unite.vim'
-on_cmd = [
-  'VimFiler',
-  'VimFilerExplorer',
-]
+on_cmd = ['VimFiler', 'VimFilerExplorer']
 on_path = '\h\w*:'
 hook_add = '''
 nmap <leader>f :VimFilerBufferDir -explorer -find -parent -winwidth=30<Return>
 nmap <leader>e :VimFilerExplorer -parent -direction=topleft -winwidth=30<Return>
+let g:vimfiler_ignore_pattern = printf('\%%(%s\)', join([
+      \ '^\..*',
+      \ '\.pyc$',
+      \ '^__pycache__$',
+      \ '\.egg-info$',
+      \], '\|'))
 '''
 hook_source = '''
 "call vimfiler#custom#profile("default", "context", {"explorer":1, "parent":1, "no_focus":1, "safe":0})
@@ -326,38 +343,33 @@ autocmd FileType vimfiler nested nmap <buffer><expr> <S-k> ""
 
 [[plugins]]
 repo = 'Shougo/unite.vim'
-on_cmd = [
-  'Unite',
-  'UniteWithCursorWord',
-]
+on_cmd = ['Unite', 'UniteWithCursorWord']
 
 [[plugins]]
 repo = 'AndrewRadev/linediff.vim'
-on_cmd = [
-    'Linediff'
-]
+on_cmd = 'Linediff'
 
 [[plugins]]
 repo = 'majutsushi/tagbar'
-on_cmd = [
-    'Tagbar'
-]
+on_cmd = 'Tagbar'
 
 [[plugins]]
 repo = 'godlygeek/tabular'
-on_cmd = [
-    'Tabularize'
-]
+on_cmd = 'Tabularize'
+hook_add = '''
+nmap <Leader>a= :Tabularize /=<Return>
+vmap <Leader>a= :Tabularize /=<Return>
+nmap <Leader>a: :Tabularize /:\zs<Return>
+vmap <Leader>a: :Tabularize /:\zs<Return>
+'''
 
 [[plugins]]
 repo = 'rizzatti/dash.vim'
-on_cmd = [
-    'Dash'
-]
+on_cmd = 'Dash'
 
 [[plugins]]
 repo = 'zchee/deoplete-jedi'
-on_ft = ['python']
+on_ft = 'python'
 
 [[plugins]]
 repo = 'zchee/deoplete-clang'
@@ -365,18 +377,18 @@ on_ft = ['c', 'cpp', 'objc']
 
 [[plugins]]
 repo = 'pwntester/deoplete-swift'
-on_ft = ['swift']
+on_ft = 'swift'
 
 [[plugins]]
 repo = 'artur-shaik/vim-javacomplete2'
-on_ft = ['java']
+on_ft = 'java'
 hook_source = '''
 autocmd FileType java nested setlocal omnifunc=javacomplete#Complete
 '''
 
 [[plugins]]
 repo = 'plasticboy/vim-markdown'
-on_ft = ['markdown']
+on_ft = 'markdown'
 hook_add = '''
 let g:vim_markdown_folding_disabled = 1
 autocmd FileType markdown setlocal spell complete+=kspell
@@ -384,26 +396,26 @@ autocmd FileType markdown setlocal spell complete+=kspell
 
 [[plugins]]
 repo = 'elzr/vim-json'
-'on_ft' = ['json']
+'on_ft' = 'json'
 
 [[plugins]]
 repo = 'othree/yajs.vim'
-on_ft = ['javascript']
+on_ft = 'javascript'
 
 [[plugins]]
 repo = 'gavocanov/vim-js-indent'
-on_ft = ['javascript']
+on_ft = 'javascript'
 
 [[plugins]]
 repo = 'b4winckler/vim-objc'
-on_ft = ['objc']
+on_ft = 'objc'
 hook_add = '''
 autocmd BufNewFile,BufRead *.m set filetype=objc
 '''
 
 [[plugins]]
 repo = 'kballard/vim-swift'
-on_ft = ['swift']
+on_ft = 'swift'
 
 [[plugins]]
 repo = 'othree/xml.vim'
@@ -411,19 +423,19 @@ on_ft = ['xml', 'fortifyrulepack']
 
 [[plugins]]
 repo = 'derekwyatt/vim-scala'
-on_ft = ['scala']
+on_ft = 'scala'
 
 [[plugins]]
 repo = 'ekalinin/Dockerfile.vim'
-on_ft = ['Dockerfile']
+on_ft = 'Dockerfile'
 
 [[plugins]]
 repo = 'tfnico/vim-gradle'
-on_ft = ['gradle']
+on_ft = 'gradle'
 hook_add = '''
 autocmd BufNewFile,BufRead *.gradle set filetype=groovy 
 '''
 
 [[plugins]]
 repo = 'cespare/vim-toml'
-on_ft = ['toml']
+on_ft = 'toml'
