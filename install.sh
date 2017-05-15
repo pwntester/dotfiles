@@ -1,6 +1,6 @@
 stow git
 stow nvim
-stow radare
+stow r2
 stow tmux
 stow zsh
 

@@ -1,0 +1,7 @@
+e anal.hasnext=false
+e asm.cmtright=true
+e asm.pseudo=false
+e http.bind=public
+e http.cors=true
+e http.ui=p
+e http.sandbox=false

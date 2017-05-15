@@ -1,0 +1,67 @@
+e http.cors = true
+=h
+aa
+px 10
+pd 10
+s main
+pd 10
+=h
+e http.cors=true
+aa
+s main
+pd 100
+=h
+pdj 100@0x8049edd0000
+pdj 10@0x8049edd0000
+pd 10@0x8049edd0000
+aa
+pd 10@0x8049edd0000
+pd 10
+aaa
+pd 10
+s main
+pd 10
+pdj 10
+afij 0x8049edd;afvj 0x8049edd;afaj 0x8049edd
+afvj 0x8049edd
+afv?
+afvaj 0x8049edd
+afvaj @0x8049edd
+afva
+afvj @0x8049edd
+afaj @0x8049edd
+afij 0x8049edd;afvj 0x8049edd;afaj 0x8049edd
+=h
+afvrj
+s main
+afvrj
+afvbj
+=h
+aa
+e http.cors = true
+s entry
+s main
+pf
+pd 10
+pd 100
+s sym.sendAll
+ls
+pdf
+=h
+aa
+=h
+e http.ui = p
+=h
+e http.sandbox=false
+e http.ui=p
+=h
+quit
+q
+=h
+e http.root
+e http.root=/Users/alvaro/.config/radare2/www
+=h
+ecj
+e gui.background = gray
+=h
+q

@@ -37,7 +37,9 @@ setopt AUTO_CD
 bindkey -v
 
 # Use jk to exit insert mode (jj is too slow).
+export KEYTIMEOUT=1
 bindkey -M viins 'jk' vi-cmd-mode
+bindkey 'jk' vi-cmd-mode
 
 # vi style incremental search
 bindkey '^R' history-incremental-search-backward

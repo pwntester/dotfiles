@@ -54,6 +54,7 @@ set t_Co=256                                                      " 256 colors
 set ttyfast                                                       " Faster redraw
 set showcmd                                                       " Show partial commands in status line
 set noshowmode                                                    " Dont show the mode in the command line
+autocmd BufEnter *.* :set colorcolumn=0                           " Dont show column
 " }}}
 
 " MOUSE {{{
@@ -85,28 +86,29 @@ set wildignore+=.sass-cache/*
 set wb                                                            " Make a backup before overwriting
 set nobackup                                                      " But don't keep it
 set swapfile                                                      " Swap is good.
-set directory=~/.config/nvim/tmp/swap/                            " But do it always in the same place
-set backupdir=~/.config/nvim/tmp/backup/                          " But do it always in the same place
-set undodir=~/.config/nvim/tmp/undo/                              " But do it always in the same place
+set undofile                                                      " Maintain undo history between sessions
+silent !mkdir ~/.config/nvim/tmp > /dev/null 2>&1                 " Create tmp directory if it does not exist already
+set directory=~/.config/nvim/tmp                                  " But do it always in the same place
+set backupdir=~/.config/nvim/tmp                                  " But do it always in the same place
+set undodir=~/.config/nvim/tmp                                    " But do it always in the same place
 au FocusLost * :silent! wall
-set viewoptions=cursor,folds                                      " Set view options for saving/restoring
-autocmd BufWinLeave *.* mkview!
-autocmd BufWinEnter *.* silent! loadview
+"set viewoptions=cursor,folds                                      " Set view options for saving/restoring
+"autocmd BufWinLeave *.* mkview!
+"autocmd BufWinEnter *.* silent! loadview
 " }}}
 
 " IDENT/STYLE {{{
 set autoindent                                                    " Auto-ident
 set smartindent                                                   " Smart ident
+set shiftround                                                    " Round indent to multiple of 'shiftwidth'
 set smarttab                                                      " Reset autoindent after a blank line
 set expandtab                                                     " Tabs are spaces
 set tabstop=4                                                     " How many spaces on tab
 set softtabstop=4                                                 " One tab = 4 spaces
 set shiftwidth=4                                                  " Reduntant with above
-set shiftround                                                    " Round indent to multiple of 'shiftwidth'
 " }}}
 
 " MAPPINGS {{{
-
 if has('nvim')
     " in OSX/tmux, c-h is mapped to bs, so mappping bs to C-w
     nmap <bs> <C-w>h
@@ -179,11 +181,22 @@ nnoremap <S-k> <C-^>
 nnoremap ; :
 
 " do not close windows when closing buffers
-cabbrev bd <C-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'bprevious<Bar>bdelete#' : 'bdelete')<CR>
-cabbrev bd! <C-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'bprevious<Bar>bdelete!#' : 'bdelete!')<CR>
+cabbrev bd <C-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'Bclose' : 'bdelete')<Return>
 
 " save me from 1 files :)
 cabbrev w1 <C-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'w!' : 'w1')<CR>
+
+" resize splits
+nnoremap <silent> > :exe "vertical resize +5"<Return>
+nnoremap <silent> < :exe "vertical resize -5"<Return>
+nnoremap <silent> + :exe "resize +5"<Return>
+nnoremap <silent> - :exe "resize -5"<Return>
+
+" >> to generate new horizontal split
+nnoremap <silent> >> <C-w>v
+
+" vv to generate new vertical split
+nnoremap <silent> vv <C-w>S
 
 " }}}
 
