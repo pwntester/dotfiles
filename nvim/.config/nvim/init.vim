@@ -50,11 +50,18 @@ set showtabline=2                                                 " always shows
 set lazyredraw                                                    " Don't update the display while executing macros
 set number                                                        " Print the line number
 set scrolloff=5                                                   " 5 lines margin to the cursor when moving
+set tw=1000                                                       " TextWitdh ulra high since its used for active window highlighting
 set t_Co=256                                                      " 256 colors
+set t_ut=
 set ttyfast                                                       " Faster redraw
 set showcmd                                                       " Show partial commands in status line
 set noshowmode                                                    " Dont show the mode in the command line
 autocmd BufEnter *.* :set colorcolumn=0                           " Dont show column
+if (has("termguicolors"))                                         " Set true colors
+    set t_8f=\[[38;2;%lu;%lu;%lum
+    set t_8b=\[[48;2;%lu;%lu;%lum
+    set termguicolors
+endif
 " }}}
 
 " MOUSE {{{
@@ -96,6 +103,18 @@ au FocusLost * :silent! wall
 "autocmd BufWinLeave *.* mkview!
 "autocmd BufWinEnter *.* silent! loadview
 " }}}
+
+" HIGHLIGHT ACTIVE WINDOW
+hi ColorColumn ctermbg=lightgrey guibg=lightgrey
+if exists('+colorcolumn')
+    autocmd BufEnter,FocusGained,VimEnter,WinEnter * if s:should_colorcolumn() | let &l:colorcolumn='+' . join(range(0, 254), ',+') | endif
+    autocmd FocusLost,WinLeave * if s:should_colorcolumn() | let &l:colorcolumn=join(range(1, 255), ',') | endif
+endif
+let g:ColorColumnBlacklist = ['diff', 'undotree', 'nerdtree', 'qf']
+function! s:should_colorcolumn() abort
+  return index(g:ColorColumnBlacklist, &filetype) == -1
+endfunction
+
 
 " IDENT/STYLE {{{
 set autoindent                                                    " Auto-ident
@@ -191,12 +210,6 @@ nnoremap <silent> > :exe "vertical resize +5"<Return>
 nnoremap <silent> < :exe "vertical resize -5"<Return>
 nnoremap <silent> + :exe "resize +5"<Return>
 nnoremap <silent> - :exe "resize -5"<Return>
-
-" >> to generate new horizontal split
-nnoremap <silent> >> <C-w>v
-
-" vv to generate new vertical split
-nnoremap <silent> vv <C-w>S
 
 " }}}
 

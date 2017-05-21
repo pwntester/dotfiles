@@ -1,6 +1,6 @@
 alias awb="auditworkbench"
 alias sca="sourceanalyzer"
-alias tmux="TERM=screen-256color-bce tmux"
+#alias tmux="TERM=screen-256color-bce tmux"
 alias vi='nvim'
 alias burp='java -Xmx2048m -XX:MaxPermSize=1G -Xdock:name="Burp" -Xdock:icon=/Users/alvaro/CTFs/tools/Burp/icon.png -jar /Users/alvaro/CTFs/tools/Burp/burp.jar &'
 alias ctags="`brew --prefix`/bin/ctags"

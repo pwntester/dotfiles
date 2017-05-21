@@ -9,6 +9,9 @@ on_cmd = 'Dein'
 repo = 'tpope/vim-surround'
 
 [[plugins]]
+repo = 'wincent/terminus'
+
+[[plugins]]
 repo = 'matze/vim-move'
 hook_add = '''
 let g:move_map_keys = 0
