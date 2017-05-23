@@ -12,6 +12,21 @@ repo = 'tpope/vim-surround'
 repo = 'wincent/terminus'
 
 [[plugins]]
+repo = 'junegunn/fzf'
+build = './install --all'
+merged = 0
+
+[[plugins]]
+repo = 'junegunn/fzf.vim'
+depends = 'fzf'
+hook_add = '''
+nnoremap <leader>m :History<Return>
+nnoremap <leader>b :Buffers<Return>
+nnoremap <leader>d :Files<Return>
+'''
+
+
+[[plugins]]
 repo = 'matze/vim-move'
 hook_add = '''
 let g:move_map_keys = 0
@@ -129,6 +144,8 @@ autocmd FileType fortifyrulepack nested setlocal omnifunc=fortify#complete
 autocmd FileType fortifyauditpane nested nmap <buffer><expr> <S-l> ""
 autocmd FileType fortifyauditpane nested nmap <buffer><expr> <S-h> ""
 autocmd FileType fortifyauditpane nested nmap <buffer><expr> <S-k> ""
+" search for contents of register 0 (where AuditPane copies the RuleIDs)
+noremap <C-s> :execute substitute('/'.@0,'0$','','g')<CR>
 '''
 
 [[plugins]]
@@ -275,41 +292,41 @@ repo = 'pwntester/deoplete-swift'
 on_ft = 'swift'
 on_if = "has('macunix')"
 
-[[plugins]]
-repo = 'Shougo/neomru.vim'
+# [[plugins]]
+# repo = 'Shougo/neomru.vim'
 
-[[plugins]]
-repo = 'Shougo/denite.nvim'
-on_cmd = ['Denite', 'DeniteCursorWord']
-hook_add = '''
-nnoremap <leader>m :<C-u>Denite file_mru<Return>
-nnoremap <leader>b :<C-u>Denite buffer<Return>
-nnoremap <leader>d :<C-u>Denite directory_rec<Return>
-'''
-hook_source = '''
-call denite#custom#map(
-        \ '<esc>',
-        \ '<denite:quit>',
-        \ 'noremap'
-        \)
-call denite#custom#map(
-        \ 'insert',
-        \ '<C-j>',
-        \ '<denite:move_to_next_line>',
-        \ 'noremap'
-        \)
-call denite#custom#map(
-        \ 'insert',
-        \ '<C-k>',
-        \ '<denite:move_to_previous_line>',
-        \ 'noremap'
-        \)
-call denite#custom#option("default", "prompt", ">")
-call denite#custom#option("default", "winheight", 10)
-call denite#custom#option("default", "reversed", 1)
-call denite#custom#option("default", "auto_resize", 1)
-'''
-
+# [[plugins]]
+# repo = 'Shougo/denite.nvim'
+# on_cmd = ['Denite', 'DeniteCursorWord']
+# hook_add = '''
+# "nnoremap <leader>m :<C-u>Denite file_mru<Return>
+# "nnoremap <leader>b :<C-u>Denite buffer<Return>
+# "nnoremap <leader>d :<C-u>Denite directory_rec<Return>
+# '''
+# hook_source = '''
+# call denite#custom#map(
+#         \ '<esc>',
+#         \ '<denite:quit>',
+#         \ 'noremap'
+#         \)
+# call denite#custom#map(
+#         \ 'insert',
+#         \ '<C-j>',
+#         \ '<denite:move_to_next_line>',
+#         \ 'noremap'
+#         \)
+# call denite#custom#map(
+#         \ 'insert',
+#         \ '<C-k>',
+#         \ '<denite:move_to_previous_line>',
+#         \ 'noremap'
+#         \)
+# call denite#custom#option("default", "prompt", ">")
+# call denite#custom#option("default", "winheight", 10)
+# call denite#custom#option("default", "reversed", 1)
+# call denite#custom#option("default", "auto_resize", 1)
+# '''
+#
 [[plugins]]
 repo = 'Shougo/vimfiler.vim'
 depends = 'unite.vim'
@@ -442,6 +459,16 @@ repo = 'albertorestifo/github.vim'
 [[plugins]]
 repo = 'pwntester/cobalt2.vim'
 hook_add = '''
+
+" Highlight active window 
+if exists('+colorcolumn')
+    autocmd BufEnter,FocusGained,VimEnter,WinEnter * let &l:colorcolumn=join(range(1, 500), ',')
+    autocmd FocusLost,WinLeave * let &l:colorcolumn='+' . join(range(0, 500), ',+')
+endif
+
 set background=dark
 colorscheme cobalt2
+highlight ColorColumn guibg=#020511
+highlight Normal guibg=#17252c
+highlight Search  gui=underline guifg=red guibg=#020511
 '''

@@ -92,7 +92,7 @@ set wildignore+=.sass-cache/*
 " BACKUP/SAVE {{{
 set wb                                                            " Make a backup before overwriting
 set nobackup                                                      " But don't keep it
-set swapfile                                                      " Swap is good.
+set noswapfile                                                    " Swap is evil
 set undofile                                                      " Maintain undo history between sessions
 silent !mkdir ~/.config/nvim/tmp > /dev/null 2>&1                 " Create tmp directory if it does not exist already
 set directory=~/.config/nvim/tmp                                  " But do it always in the same place
@@ -103,18 +103,6 @@ au FocusLost * :silent! wall
 "autocmd BufWinLeave *.* mkview!
 "autocmd BufWinEnter *.* silent! loadview
 " }}}
-
-" HIGHLIGHT ACTIVE WINDOW
-hi ColorColumn ctermbg=lightgrey guibg=lightgrey
-if exists('+colorcolumn')
-    autocmd BufEnter,FocusGained,VimEnter,WinEnter * if s:should_colorcolumn() | let &l:colorcolumn='+' . join(range(0, 254), ',+') | endif
-    autocmd FocusLost,WinLeave * if s:should_colorcolumn() | let &l:colorcolumn=join(range(1, 255), ',') | endif
-endif
-let g:ColorColumnBlacklist = ['diff', 'undotree', 'nerdtree', 'qf']
-function! s:should_colorcolumn() abort
-  return index(g:ColorColumnBlacklist, &filetype) == -1
-endfunction
-
 
 " IDENT/STYLE {{{
 set autoindent                                                    " Auto-ident
@@ -137,6 +125,11 @@ endif
 
 " quit all windows
 command! Q execute "qa!"
+
+" debug syntax
+map <F10> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
+        \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
+        \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
 
 " navigate faster
 noremap <space>h ^
