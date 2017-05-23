@@ -1,8 +1,7 @@
+# Alias
 alias awb="auditworkbench"
 alias sca="sourceanalyzer"
-#alias tmux="TERM=screen-256color-bce tmux"
 alias vi='nvim'
-alias burp='java -Xmx2048m -XX:MaxPermSize=1G -Xdock:name="Burp" -Xdock:icon=/Users/alvaro/CTFs/tools/Burp/icon.png -jar /Users/alvaro/CTFs/tools/Burp/burp.jar &'
 alias ctags="`brew --prefix`/bin/ctags"
 
 # Language
@@ -23,6 +22,7 @@ export EDITOR='vim'
 export VISUAL='vim'
 export PAGER='less'
 
+# Variables
 export XDG_CONFIG_HOME=$HOME/.config
 export NODE_PATH="/usr/local/lib/node"
 export PATH=/usr/local/bin:/usr/local/sbin:/usr/local/mysql/bin:/usr/local/share/npm/bin:/Applications/HP_Fortify/sca/bin:/Applications/HP_Fortify/awb_main/bin:$PATH
@@ -35,14 +35,6 @@ setopt AUTO_CD
 
 # Use Vi(m) style key bindings.
 bindkey -v
-
-# Use jk to exit insert mode (jj is too slow).
 export KEYTIMEOUT=1
 bindkey -M viins 'jk' vi-cmd-mode
 bindkey 'jk' vi-cmd-mode
-
-# vi style incremental search
-bindkey '^R' history-incremental-search-backward
-bindkey '^S' history-incremental-search-forward
-bindkey '^P' history-search-backward
-bindkey '^N' history-search-forward

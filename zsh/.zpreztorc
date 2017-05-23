@@ -34,8 +34,8 @@ zstyle ':prezto:load' pmodule \
   'python' \
   'tmux' \
   'utility' \
+  'syntax-highlighting' \
 
-  #'syntax-highlighting' \
 #
 # Editor
 #
@@ -44,22 +44,12 @@ zstyle ':prezto:load' pmodule \
 zstyle ':prezto:module:editor' key-bindings 'vi'
 bindkey -M viins "jk" vi-cmd-mode
 
-# Auto convert .... to ../..
-# zstyle ':prezto:module:editor' dot-expansion 'yes'
-
 #
 # Git
 #
 
 # Ignore submodules when they are 'dirty', 'untracked', 'all', or 'none'.
 # zstyle ':prezto:module:git:status:ignore' submodules 'all'
-
-#
-# GNU Utility
-#
-
-# Set the command prefix on non-GNU systems.
-# zstyle ':prezto:module:gnu-utility' prefix 'g'
 
 #
 # History Substring Search
@@ -82,14 +72,7 @@ zstyle ':prezto:module:history-substring-search' globbing-flags ''
 # Set the prompt theme to load.
 # Setting it to 'random' loads a random theme.
 # Auto set to 'off' on dumb terminals.
-zstyle ':prezto:module:prompt' theme 'nicoulaj'
-
-#
-# Ruby
-#
-
-# Auto switch the Ruby version on directory change.
-# zstyle ':prezto:module:ruby:chruby' auto-switch 'yes'
+zstyle ':prezto:module:prompt' theme 'pure'
 
 #
 # SSH
@@ -102,7 +85,7 @@ zstyle ':prezto:module:ssh:load' identities 'id_rsa' 'id_rsa2' 'id_github'
 # Syntax Highlighting
 #
 
-#zstyle ':prezto:module:syntax-highlighting' color 'yes'
+zstyle ':prezto:module:syntax-highlighting' color 'yes'
 
 # Set syntax highlighters.
 # By default, only the main highlighter is enabled.
@@ -113,25 +96,11 @@ zstyle ':prezto:module:syntax-highlighting' highlighters \
   'cursor' \
   'root'
 
-#
 # Set syntax highlighting styles.
 zstyle ':prezto:module:syntax-highlighting' styles \
   'builtin' 'bg=blue' \
   'command' 'bg=green' \
   'function' 'bg=blue'
-
-#
-# Terminal
-#
-
-# Auto set the tab and window titles.
-# zstyle ':prezto:module:terminal' auto-title 'yes'
-
-# Set the window title format.
-# zstyle ':prezto:module:terminal:window-title' format '%n@%m: %s'
-
-# Set the tab title format.
-# zstyle ':prezto:module:terminal:tab-title' format '%m: %s'
 
 #
 # Tmux
