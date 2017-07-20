@@ -52,16 +52,18 @@ set number                                                        " Print the li
 set scrolloff=5                                                   " 5 lines margin to the cursor when moving
 set tw=1000                                                       " TextWitdh ulra high since its used for active window highlighting
 set t_Co=256                                                      " 256 colors
-set t_ut=
 set ttyfast                                                       " Faster redraw
 set showcmd                                                       " Show partial commands in status line
 set noshowmode                                                    " Dont show the mode in the command line
 autocmd BufEnter *.* :set colorcolumn=0                           " Dont show column
 if (has("termguicolors"))                                         " Set true colors
-    set t_8f=\[[38;2;%lu;%lu;%lum
-    set t_8b=\[[48;2;%lu;%lu;%lum
     set termguicolors
 endif
+augroup CursorLineOnlyInActiveWindow
+  autocmd!
+  autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline
+  autocmd WinLeave * setlocal nocursorline
+augroup END
 " }}}
 
 " MOUSE {{{
@@ -130,12 +132,6 @@ command! Q execute "qa!"
 map <F10> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
         \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
         \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
-
-" navigate faster
-noremap <space>h ^
-noremap <space>l g_
-nnoremap <Space>j 15j
-nnoremap <Space>k 15k
 
 " escape to normal mode in insert mode
 inoremap jk <ESC>
@@ -209,11 +205,15 @@ nnoremap <silent> - :exe "resize -5"<Return>
 " LEADER MAPPINGS {{{
 
 " space is your leader
-let mapleader = "," 
+nnoremap <SPACE> <Nop>
+let mapleader = "\<Space>"
+
+" navigate faster
+nnoremap <Leader>j 15j
+nnoremap <Leader>k 15k
 
 " refresh syntax highlighting
 noremap <Leader>s <ESC>:syntax sync fromstart<Return>
-inoremap <Leader>s <ESC>:syntax sync fromstart<Return>a
 
 " remove trailing spaces
 nnoremap <Leader>c :%s/\s\+$//<Return>

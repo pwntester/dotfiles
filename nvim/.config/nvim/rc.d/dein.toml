@@ -12,6 +12,24 @@ repo = 'tpope/vim-surround'
 repo = 'wincent/terminus'
 
 [[plugins]]
+repo = 'wincent/ferret'
+
+[[plugins]]
+repo = 'francoiscabrol/ranger.vim'
+on_cmd = ['Ranger', 'RangerWorkingDirectory']
+hook_add = '''
+let g:ranger_map_keys = 0
+nnoremap <leader>t :Ranger<Return>
+'''
+
+[[plugins]]
+repo = 'Yggdroot/indentLine'
+hook_add = '''
+let g:indentLine_color_gui = '#17252c'
+let g:indentLine_fileTypeExclude = ['fortifytestpane', 'fortifyauditpane']
+'''
+
+[[plugins]]
 repo = 'junegunn/fzf'
 build = './install --all'
 merged = 0
@@ -119,7 +137,7 @@ let g:neomake_warning_sign = {
 
 '''
 [[plugins]]
-repo = 'https://github.hpe.com/alvaro-munoz/vim-fortify.git'
+repo = 'https://github.houston.softwaregrp.net/alvaro-munoz/vim-fortify'
 depends = 'neomake'
 hook_add = '''
 nnoremap <leader>i :NewRuleID<Return>
@@ -262,7 +280,7 @@ inoremap <silent><expr> <C-k> pumvisible() ? "\<C-p>" : ""
 inoremap <silent><expr> <C-j> pumvisible() ? "\<C-n>" : ">"
 '''
 hook_source = '''
-let g:deoplete#enable_at_startup = 1
+let g:deoplete#enable_at_startup = 0
 "autocmd BufEnter *.* nested if getfsize(@%) < 1000000 | let g:deoplete#disable_auto_complete = 0 | endif
 "autocmd BufEnter *.* nested if getfsize(@%) > 1000000 | let g:deoplete#disable_auto_complete = 1 | endif
 
@@ -385,14 +403,6 @@ vmap <Leader>a: :Tabularize /:\zs<Return>
 repo = 'rbgrouleff/bclose.vim'
 
 [[plugins]]
-repo = 'brooth/far.vim'
-on_cmd = ['Far', 'F', 'Farundo', 'Fardo', 'Refar', 'Farp']
-hook_add = '''
-let g:far#source = 'agnvim'
-let g:far#file_mask_favorites = ['%', '.']
-'''
-
-[[plugins]]
 repo = 'artur-shaik/vim-javacomplete2'
 on_ft = 'java'
 hook_source = '''
@@ -459,11 +469,10 @@ repo = 'albertorestifo/github.vim'
 [[plugins]]
 repo = 'pwntester/cobalt2.vim'
 hook_add = '''
-
 " Highlight active window 
 if exists('+colorcolumn')
-    autocmd BufEnter,FocusGained,VimEnter,WinEnter * let &l:colorcolumn=join(range(1, 500), ',')
-    autocmd FocusLost,WinLeave * let &l:colorcolumn='+' . join(range(0, 500), ',+')
+    autocmd BufEnter,FocusGained,VimEnter,WinEnter * let &l:colorcolumn=join(range(1, 800), ',')
+    autocmd FocusLost,WinLeave * let &l:colorcolumn='+' . join(range(0, 800), ',+')
 endif
 
 set background=dark
@@ -471,4 +480,7 @@ colorscheme cobalt2
 highlight ColorColumn guibg=#020511
 highlight Normal guibg=#17252c
 highlight Search  gui=underline guifg=red guibg=#020511
+highlight EndOfBuffer guibg=#17252c guifg=#17252c
+"highlight CursorLine cterm=NONE ctermbg=darkred ctermfg=white guibg=darkred guifg=white
+"highlight CursorColumn cterm=NONE ctermbg=darkred ctermfg=white guibg=darkred guifg=white
 '''
