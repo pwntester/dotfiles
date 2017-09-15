@@ -2,7 +2,7 @@ let g:cobalt2_lightline = 1
 let g:lightline = {
     \ 'colorscheme': 'cobalt2',
     \ 'active': {
-    \   'left': [ [ 'mode', 'paste', 'anzu', ], [ 'fugitive', 'filetype', ], [ 'filename', ], ],
+    \   'left': [ [ 'mode', 'paste', ], [ 'fugitive', 'filetype', ], [ 'filename', ], ],
     \   'right': [ ['neomake_errors', 'neomake_warnings', 'column' ], [ 'percent' ], [ 'cwd', ] ]
     \ },
     \ 'inactive': {
@@ -25,9 +25,9 @@ let g:lightline = {
     \ },
     \ 'component_function': {
     \   'cwd': 'LightlineCwd',
-    \   'anzu' : 'LightlineAnzu',
     \   'filename': 'LightlineFilename',
     \   'fugitive': 'LightlineFugitive',
+    \   'deoplete': 'LightlineDeoplete',
     \ },
     \ 'separator': { 'left': '⮀', 'right': '⮂' },
     \ 'subseparator': { 'left': '⮁', 'right': '⮃' },
@@ -35,6 +35,12 @@ let g:lightline = {
     \ 'tabline_subseparator': { 'left': ' ', 'right': ' ' },
     \ }
 
+function! LightlineDeoplete()
+  if deoplete#is_enabled()
+    return 'Deoplete enabled'
+  endif
+  return 'Deoplete disabled'
+endfunction
 
 function! LightlineFugitive()
   if &ft !~? 'vimfiler\|fortifytestpane\|fortifyauditpane\|fortifycategory\|tagbar' && exists("*fugitive#head")
@@ -80,16 +86,6 @@ function! LightlineFilename()
         \ fname == '__AuditPane__' ? '' :
         \ &ft == 'vimfiler' ? vimfiler#get_status_string() :
         \ ('' != fname ? fname : '[No Name]')
-endfunction
-
-function! LightlineAnzu()
-    "let status = anzu#search_status()
-    let status = ""
-    if status == ""
-        return ''
-    else
-        return split(split(status, "(")[1], ')')[0]
-    endif
 endfunction
 
 function! LightlineCwd()

@@ -13,3 +13,7 @@ nvim/.config/nvim/.netrwhist
 nvim/.config/Hewlett-Packard/*
 nvim/.config/SweetScape/*
 nvim/.config/configstore/*
+
+r2/.config/radare2/history
+
+tmux/.tmux/resurrect/*

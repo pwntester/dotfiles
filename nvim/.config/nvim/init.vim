@@ -213,7 +213,7 @@ nnoremap <Leader>j 15j
 nnoremap <Leader>k 15k
 
 " refresh syntax highlighting
-noremap <Leader>s <ESC>:syntax sync fromstart<Return>
+"noremap <Leader>s <ESC>:syntax sync fromstart<Return>
 
 " remove trailing spaces
 nnoremap <Leader>c :%s/\s\+$//<Return>
