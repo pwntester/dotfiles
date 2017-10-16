@@ -31,6 +31,7 @@ export JAVA_7_HOME=$(/usr/libexec/java_home -v1.7)
 export JAVA_HOME=$JAVA_8_HOME
 export PKG_CONFIG_PATH=/usr/local/Cellar/cairo/1.12.16_1/lib/pkgconfig:/usr/local/opt/pixman/lib/pkgconfig:/usr/local/opt/fontconfig/lib/pkgconfig:/usr/local/opt/freetype/lib/pkgconfig:/usr/local/opt/libpng/lib/pkgconfig:/opt/X11/lib/pkgconfig
 export ANT_OPTS=-XX:MaxPermSize=256m
+export SHELL=`which zsh`
 setopt AUTO_CD
 
 # Use Vi(m) style key bindings.
