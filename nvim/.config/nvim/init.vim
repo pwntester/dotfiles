@@ -131,7 +131,7 @@ command! Q execute "qa!"
 " debug syntax
 map <F10> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
         \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
-        \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
+        \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<Return>
 
 " escape to normal mode in insert mode
 inoremap jk <ESC>
@@ -173,7 +173,7 @@ inoremap <left> <nop>
 inoremap <right> <nop>
 
 " remove search highlights
-noremap <silent>\ :nohls<Return>
+noremap <silent>./ :nohlsearch<Return>
 
 " disable paste mode when leaving Insert mode
 autocmd InsertLeave * set nopaste
@@ -192,7 +192,7 @@ nnoremap ; :
 cabbrev bd <C-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'Bclose' : 'bdelete')<Return>
 
 " save me from 1 files :)
-cabbrev w1 <C-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'w!' : 'w1')<CR>
+cabbrev w1 <C-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'w!' : 'w1')<Return>
 
 " resize splits
 nnoremap <silent> > :exe "vertical resize +5"<Return>
@@ -238,7 +238,7 @@ nnoremap <Leader>r :set norelativenumber!<Return>
 nnoremap <Leader>p :set nopaste!<Return>
 
 " Show syntax highlighting groups for word under cursor
-nmap <Leader>z :call <SID>SynStack()<CR>
+nmap <Leader>z :call <SID>SynStack()<Return>
 function! <SID>SynStack()
   if !exists("*synstack")
     return

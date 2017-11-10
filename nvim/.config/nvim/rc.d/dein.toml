@@ -9,6 +9,73 @@ on_cmd = 'Dein'
 repo = 'tpope/vim-surround'
 
 [[plugins]]
+repo = 'brooth/far.vim'
+on_cmd = ['Far', 'Fardo', 'Farp', 'Refar', 'Farundo', 'F']
+hook_add = '''
+let g:far#default_mappings = 0
+
+augroup FARBufferEnter
+    " Exclude item under the cursor.
+    autocmd FileType far_vim nnoremap <buffer><silent> x :call g:far#change_exclude_under_cursor(1)<cr>
+    autocmd FileType far_vim vnoremap <buffer><silent> x :call g:far#change_exclude_under_cursor(1)<cr>
+
+    " Include item under the cursor.
+    autocmd FileType far_vim nnoremap <buffer><silent> i :call g:far#change_exclude_under_cursor(0)<cr>
+    autocmd FileType far_vim vnoremap <buffer><silent> i :call g:far#change_exclude_under_cursor(0)<cr>
+
+    " Toggle item exclusion under the cursor
+    autocmd FileType far_vim nnoremap <buffer><silent> t :call g:far#change_exclude_under_cursor(-1)<cr>
+    autocmd FileType far_vim vnoremap <buffer><silent> t :call g:far#change_exclude_under_cursor(-1)<cr>
+
+    " Exclude all items
+    autocmd FileType far_vim noremap <buffer><silent> X :call g:far#change_exclude_all(1)<cr>
+
+    " Include all items
+    autocmd FileType far_vim noremap <buffer><silent> I :call g:far#change_exclude_all(0)<cr>
+
+    " Toggle exclusion for all items.
+    autocmd FileType far_vim noremap <buffer><silent> T :call g:far#change_exclude_all(-1)<cr>
+
+    " Jump to the source code of the item under the cursor.
+    autocmd FileType far_vim noremap <buffer><silent> <CR> :call g:far#jump_buffer_under_cursor()<cr>
+
+    " Open preview window (if not) and scroll to the item under the cursor.
+    autocmd FileType far_vim noremap <buffer><silent> p :call g:far#show_preview_window_under_cursor()<cr>
+
+    " Close preview window.
+    autocmd FileType far_vim noremap <buffer><silent> P :call g:far#close_preview_window()<cr>
+
+    " Scroll preview window up (if open).
+    autocmd FileType far_vim noremap <buffer><silent> u :call g:far#scroll_preview_window(-g:far#preview_window_scroll_step)<cr>
+
+    " Scroll preview window down (if open).
+    autocmd FileType far_vim noremap <buffer><silent> d :call g:far#scroll_preview_window(g:far#preview_window_scroll_step)<cr>
+
+    " Expand node under the cursor.
+    autocmd FileType far_vim noremap <buffer><silent> zo :call g:far#change_collapse_under_cursor(0)<cr>
+
+    " Collapse node under the cursor.
+    autocmd FileType far_vim noremap <buffer><silent> zc :call g:far#change_collapse_under_cursor(1)<cr>
+
+    " Toggle node expanding under the cursor.
+    autocmd FileType far_vim noremap <buffer><silent> za :call g:far#change_collapse_under_cursor(-1)<cr>
+
+    " Expand all nodes.
+    autocmd FileType far_vim noremap <buffer><silent> zO :call g:far#change_collapse_all(0)<cr>
+
+    " Collapse all nodes.
+    autocmd FileType far_vim noremap <buffer><silent> zC :call g:far#change_collapse_all(1)<cr>
+
+    " Toggle exclusion for all nodes.
+    autocmd FileType far_vim noremap <buffer><silent> zT :call g:far#change_collapse_all(-1)<cr>
+augroup END
+'''
+
+[[plugins]]
+repo = 'tpope/vim-eunuch'
+on_cmd = ['Delete', 'Unlink', 'Move', 'Rename', 'Chmod', 'Mkdir', 'Find', 'Locate', 'Wall', 'SudoWrite', 'SudoEdit']
+
+[[plugins]]
 repo = 'regedarek/ZoomWin'
 on_cmd = ['ZoomWin']
 hook_add = '''
@@ -175,20 +242,9 @@ on_map = '<Plug>'
 hook_add = 'nmap <C-w><C-w> <Plug>(choosewin)'
 
 [[plugins]]
-repo = 'bkad/camelcasemotion'
+repo = 'chaoren/vim-wordmotion'
 hook_add = '''
-" map w <Plug>CamelCaseMotion_w
-" map b <Plug>CamelCaseMotion_b
-" map e <Plug>CamelCaseMotion_e
-" sunmap w
-" sunmap b
-" sunmap e
-" omap iw <Plug>CamelCaseMotion_iw
-" xmap iw <Plug>CamelCaseMotion_iw
-" omap ib <Plug>CamelCaseMotion_ib
-" xmap ib <Plug>CamelCaseMotion_ib
-" omap ie <Plug>CamelCaseMotion_ie
-" xmap ie <Plug>CamelCaseMotion_ie
+let g:wordmotion_prefix = '<Leader>'
 '''
 
 [[plugins]]

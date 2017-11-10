@@ -20,3 +20,6 @@ fi
 
 # fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# z
+/usr/local/etc/profile.d/z.sh
