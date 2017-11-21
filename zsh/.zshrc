@@ -16,10 +16,5 @@ elif [[ "$unamestr" == 'Linux' ]]; then
    platform='linux'
 fi
 
-#source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-
 # fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
-# z
-/usr/local/etc/profile.d/z.sh

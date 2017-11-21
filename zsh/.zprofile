@@ -4,7 +4,6 @@ alias sca="sourceanalyzer"
 alias vi='nvim'
 alias ctags="`brew --prefix`/bin/ctags"
 alias tree="exa --tree"
-alias ls="exa -abgl --git"
 
 # Language
 if [[ -z "$LANG" ]]; then
@@ -53,27 +52,9 @@ fv() {
   [[ -n "$files" ]] && ${EDITOR:-vim} "${files[@]}"
 }
 
-# fd - cd into the selected directory
-fd() {
-  local dir
-  dir=$(find ${1:-.} -type d 2> /dev/null | fzf +m) && cd "$dir"
-}
-
-# vdf - cd into the directory of the selected file
-vdf() {
-   local file
-   local dir
-   file=$(fzf +m -q "$1") && dir=$(dirname "$file") && cd "$dir"
-}
-
 # fc - Searching file contents
 ffc() {
     grep --line-buffered --color=never -r "" * | fzf
-}
-
-# fh - repeat history
-fh() {
-  print -z $( ([ -n "$ZSH_NAME" ] && fc -l 1 || history) | fzf +s --tac | sed 's/ *[0-9]* *//')
 }
 
 # fkill - kill process
@@ -85,35 +66,6 @@ fkill() {
   then
     echo $pid | xargs kill -${1:-9}
   fi
-}
-
-# tm - create new tmux session, or switch to existing one. Works from within tmux too. (@bag-man)
-# `tm` will allow you to select your tmux session via fzf.
-# `tm irc` will attach to the irc session (if it exists), else it will create it.
-
-tm() {
-  [[ -n "$TMUX" ]] && change="switch-client" || change="attach-session"
-  if [ $1 ]; then 
-    tmux $change -t "$1" 2>/dev/null || (tmux new-session -d -s $1 && tmux $change -t "$1"); return
-  fi
-  session=$(tmux list-sessions -F "#{session_name}" 2>/dev/null | fzf --exit-0) &&  tmux $change -t "$session" || echo "No sessions found."
-}
-
-# fs [FUZZY PATTERN] - Select selected tmux session
-#   - Bypass fuzzy finder if there's only one match (--select-1)
-#   - Exit if there's no match (--exit-0)
-fs() {
-  local session
-  session=$(tmux list-sessions -F "#{session_name}" | \
-    fzf --query="$1" --select-1 --exit-0) &&
-  tmux switch-client -t "$session"
-}
-
-# like normal z when used with arguments but displays an fzf prompt when used without.
-unalias z 2> /dev/null
-z() {
-  [ $# -gt 0 ] && _z "$*" && return
-  cd "$(_z -l 2>&1 | fzf --height 40% --nth 2.. --reverse --inline-info +s --tac --query "${*##-* }" | sed 's/^[0-9,.]* *//')"
 }
 
 
