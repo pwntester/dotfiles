@@ -1,8 +1,0 @@
-pane	dotfiles	1	:zsh	1	:*	1	:/Users/alvaro/dotfiles	1	zsh	:-zsh
-pane	scala	1	:nvim	1	:*	1	:/Users/alvaro/Fortify/SSR/scala/repos/scala-tests	1	nvim	:nvim rules.xml
-pane	scala	1	:nvim	1	:*	2	:/Users/alvaro/Fortify/SSR/scala/repos/scala-tests	0	zsh	:
-pane	vim-fortify	1	:zsh	1	:*	1	:/Users/alvaro/Development/GitRepos/vim-fortify	1	zsh	:
-window	dotfiles	1	1	:*	c964,272x66,0,0,7
-window	scala	1	1	:*	050b,272x66,0,0[272x53,0,0,0,272x12,0,54,1]
-window	vim-fortify	1	1	:*	d01f,203x49,0,0,2
-state	dotfiles	scala

@@ -383,42 +383,6 @@ on_ft = 'swift'
 on_if = "has('macunix')"
 
 [[plugins]]
-repo = 'Shougo/vimfiler.vim'
-depends = 'unite.vim'
-on_cmd = ['VimFiler', 'VimFilerExplorer']
-on_path = '\h\w*:'
-hook_add = '''
-nmap <leader>f :VimFilerBufferDir -explorer -find -parent -winwidth=30<Return>
-nmap <leader>e :VimFilerExplorer -parent -direction=topleft -winwidth=30<Return>
-let g:vimfiler_ignore_pattern = printf('\%%(%s\)', join([
-      \ '^\..*',
-      \ '\.pyc$',
-      \ '^__pycache__$',
-      \ '\.egg-info$',
-      \], '\|'))
-'''
-hook_source = '''
-"call vimfiler#custom#profile("default", "context", {"explorer":1, "parent":1, "no_focus":1, "safe":0})
-let g:vimfiler_as_default_explorer = 1
-let g:vimfiler_no_default_key_mappings = 1
-autocmd FileType vimfiler nested nmap <buffer><expr> <Return> vimfiler#smart_cursor_map("\<Plug>(vimfiler_expand_tree)","\<Plug>(vimfiler_edit_file)")
-autocmd FileType vimfiler nested nmap <buffer><expr> <C-h> "\<Plug>(vimfiler_toggle_visible_ignore_files)"
-autocmd FileType vimfiler nested nmap <buffer><expr> o "\<Plug>(vimfiler_expand_tree)"
-autocmd FileType vimfiler nested nmap <buffer><expr> q "\<Plug>(vimfiler_close)"
-autocmd FileType vimfiler nested nmap <buffer><expr> n "\<Plug>(vimfiler_make_directory)"
-autocmd FileType vimfiler nested nmap <buffer><expr> f "\<Plug>(vimfiler_new_file)"
-autocmd FileType vimfiler nested nmap <buffer><expr> r "\<Plug>(vimfiler_rename_file)"
-autocmd FileType vimfiler nested nmap <buffer><expr> d "\<Plug>(vimfiler_delete_file)"
-autocmd FileType vimfiler nested nmap <buffer><expr> <S-l> ""
-autocmd FileType vimfiler nested nmap <buffer><expr> <S-h> ""
-autocmd FileType vimfiler nested nmap <buffer><expr> <S-k> ""
-'''
-
-[[plugins]]
-repo = 'Shougo/unite.vim'
-on_cmd = ['Unite', 'UniteWithCursorWord']
-
-[[plugins]]
 repo = 'AndrewRadev/linediff.vim'
 on_cmd = 'Linediff'
 
