@@ -132,9 +132,9 @@ fun! Lexplore(dir, right)
   let lexwinnr = bufwinnr(t:netrw_lexbufnr)
   if lexwinnr != -1
     let curwin = winnr()
-    exe lexwinnr."wincmd w"
+    silent! exe lexwinnr."wincmd w"
     close
-    exe curwin."wincmd w"
+    silent! exe curwin."wincmd w"
   endif
   unlet t:netrw_lexbufnr
 
@@ -157,15 +157,15 @@ function! ToggleVExplorer()
       let expl_win_num = bufwinnr(t:expl_buf_num)
       if expl_win_num != -1
           let cur_win_nr = winnr()
-          exec expl_win_num . 'wincmd w'
+          silent! exec expl_win_num . 'wincmd w'
           close
-          exec cur_win_nr . 'wincmd w'
+          silent! exec cur_win_nr . 'wincmd w'
           unlet t:expl_buf_num
       else
           unlet t:expl_buf_num
       endif
   else
-      exec '1wincmd w'
+      silent! exec '1wincmd w'
       Lexplore
       let t:expl_buf_num = bufnr("%")
   endif
