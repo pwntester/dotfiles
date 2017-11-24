@@ -180,6 +180,10 @@ if has('nvim')
     tnoremap jk <C-\><C-n>
 endif
 
+" center after search
+nnoremap n nzz 
+nnoremap N Nzz
+
 " quit all windows
 command! Q execute "qa!"
 
