@@ -1,0 +1,27 @@
+.node { 
+    stroke: #222;
+    stroke-width: 1.5px;
+    fill: #888;
+}
+.link { 
+    fill: none;
+    stroke: #999; 
+    stroke-opacity: .6; 
+    stroke-width: 1px; 
+}
+#end {
+    fill: green;
+}
+div.tooltip {
+    position: absolute;
+    text-align: center;
+    width: 200px;
+    height: 400px;
+    padding: 2px;
+    font: 12px sans-serif;
+    background: #ddd;
+    border: 2px;
+    border-color: black;
+    border-radius: 8px;
+    pointer-events: none;
+}

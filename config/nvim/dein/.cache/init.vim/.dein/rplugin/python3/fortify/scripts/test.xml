@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RulePack xmlns="xmlns://www.fortifysoftware.com/schema/rules"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="RulePack">
+    <RulePackID>1B1F33F2-5CB6-4BCA-9258-DACDCBA89A57</RulePackID>
+    <SKU>SKU-265548EC-A799-4791-9BF1-D9A42C7837D9</SKU>
+    <Name><![CDATA[]]></Name>
+    <Version>1.0</Version>
+    <Description><![CDATA[]]></Description>
+    <Rules version="3.2">
+        <RuleDefinitions>
+            <CharacterizationRule formatVersion="6.40" language="java">
+                <MetaInfo>
+                    <Group name="package">Java Spring EL</Group>
+                </MetaInfo>
+                <Notes><![CDATA[
+                    * org.springframework.ui.ModelMap
+                    * org.springframework.ui.Model
+                    - ModelMap(String attributeName, Object attributeValue)
+                    - addAttribute(String attributeName, Object attributeValue)
+                    - put(K key, V value)
+                    - addFlashAttribute(String attributeName, Object attributeValue)
+                    - putIfAbsent(K key, V value)
+                    - replace(K key, V value)
+                ]]></Notes>
+                <RuleID>990CCC3E-8731-40BC-AD83-F2CC4BEF6F4E</RuleID>
+                <StructuralMatch><![CDATA[
+                    FunctionCall fc: 
+                        function is [Function fun:
+                            name matches "put|putIfAbsent|merge|replace" 
+                            and enclosingClass.supers contains [Class: name == "java.util.Map"]
+                            and fc.instance.type.definition.name matches "org\.springframework\.ui\.Model(Map)?"
+                        ]
+                ]]></StructuralMatch>
+                <Definition><![CDATA[
+                    foreach name {
+                        Label(cmethod, "SpringELVisible::~%~::~%~", name, tname)
+                    }
+                    Label(cmethod, "SpringELVisible")
+                    Label(fun, "SpringDTOVisibilityFun::0::1")
+                ]]></Definition>
+            </CharacterizationRule>
+            <CharacterizationRule formatVersion="6.40" language="java">
+                <MetaInfo>
+                    <Group name="package">Java Spring EL</Group>
+                </MetaInfo>
+                <Notes><![CDATA[
+                    * org.springframework.ui.ModelMap
+                    * org.springframework.ui.Model
+                    - ModelMap(String attributeName, Object attributeValue)
+                    - addAttribute(String attributeName, Object attributeValue)
+                    - put(K key, V value)
+                    - addFlashAttribute(String attributeName, Object attributeValue)
+                    - putIfAbsent(K key, V value)
+                    - replace(K key, V value)
+                ]]></Notes>
+                <RuleID>6BD59754-9914-4A8B-8DDC-5E62D7978C50</RuleID>
+                <StructuralMatch><![CDATA[
+                    FunctionCall fc: function is [Function fun:
+                        (
+                            name matches "add(Flash)?Attribute" 
+                            and enclosingClass.supers contains [Class: name matches "org\.springframework\.ui\.Model(Map)?"]
+                        ) or (
+                            name matches "put|putIfAbsent|merge|replace" 
+                            and enclosingClass.supers contains [Class: name == "java.util.Map"]
+                            and fc.instance.type.definition.name matches "org\.springframework\.ui\.Model(Map)?"
+                        ) or (
+                            (constructor or name == "init^")
+                            and enclosingClass.name == "org.springframework.ui.ModelMap"
+                        )
+                    ]
+                    and arguments[1] is [Expression: type.name is [Identifier tname:]]
+                    and arguments.length == 2
+                    and fc.enclosingFunction is [Function cmethod: annotations contains [Annotation: 
+                        type.name matches "org\.springframework\.web\.bind\.annotation\.((Request|Get|Post|Delete|Put|Patch)Mapping|ExceptionHandler)"
+                        or type.definition is [Class: annotations contains [Annotation:
+                                type.name matches "org\.springframework\.web\.bind\.annotation\.((Request|Get|Post|Delete|Put|Patch)Mapping|ExceptionHandler)"
+                            ] and not annotations contains [Annotation:
+                                type.name == "org.springframework.stereotype.Controller" 
+                                or type.name == "org.springframework.web.bind.annotation.RestController"
+                            ]
+                        ]
+                    ]]
+                    and arguments[0] is [Expression: partialConstantValues contains [String name:]]
+                ]]></StructuralMatch>
+                <Definition><![CDATA[
+                    foreach name {
+                        Label(cmethod, "SpringELVisible::~%~::~%~", name, tname)
+                    }
+                    Label(cmethod, "SpringELVisible")
+                    Label(fun, "SpringDTOVisibilityFun::0::1")
+                ]]></Definition>
+            </CharacterizationRule>
+            <CharacterizationRule formatVersion="6.40" language="java">
+                <MetaInfo>
+                    <Group name="package">Java Spring EL</Group>
+                </MetaInfo>
+                <RuleID>9093A2AC-5FF8-4CD8-93AE-A8129C474FA7</RuleID>
+                <StructuralMatch><![CDATA[
+                    FunctionCall fc: 
+                        function is [Function fun:
+                            //fc.instance.type is [Type:]
+                            fc.instance.type is [Type:
+                                definition.name matches "org\.springframework\.ui\.Model(Map)?"
+                            ]
+                        ]
+                ]]></StructuralMatch>
+                <Definition><![CDATA[
+                    Label(fun, "SpringDTOVisibilityFun::0::1")
+                ]]></Definition>
+            </CharacterizationRule>
+            <StructuralRule formatVersion="16.10" language="java">
+                <MetaInfo>
+                    <Group name="package">test</Group>
+                </MetaInfo>
+                <RuleID>F97A3C07-FED8-476C-887F-8368584B58F2</RuleID>
+                <VulnKingdom>API Abuse</VulnKingdom>
+                <VulnCategory>FunctionCall</VulnCategory>
+                <DefaultSeverity>2.0</DefaultSeverity>
+                <Description />
+                <Predicate><![CDATA[
+                    FunctionCall fc: 
+                        function is [Function fun:
+                            fc.instance.type  is [Type:
+                                name == "foo"
+                            ]
+                        ]
+                ]]></Predicate>
+            </StructuralRule>
+            <StructuralRule formatVersion="16.10" language="java">
+                <MetaInfo>
+                    <Group name="package">test</Group>
+                </MetaInfo>
+                <RuleID>7FE96288-CC51-43C2-8BC9-AFE53A8139E8</RuleID>
+                <VulnKingdom>API Abuse</VulnKingdom>
+                <VulnCategory>FunctionCall</VulnCategory>
+                <DefaultSeverity>2.0</DefaultSeverity>
+                <Description />
+                <Predicate><![CDATA[
+                    FunctionCall fc: 
+                        function is [Function fun:
+                            fc.instance is [Expression: type  is [Type:
+                                name == "foo"
+                            ]]
+                        ]
+                ]]></Predicate>
+            </StructuralRule>
+             
+        </RuleDefinitions>
+    </Rules>
+</RulePack>
+

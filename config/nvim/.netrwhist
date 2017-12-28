@@ -1,0 +1,6 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhist_cnt =4
+let g:netrw_dirhist_1='/Users/alvaro/Fortify/SSR/XXE/XStream/src/main/java/com'
+let g:netrw_dirhist_2='/Users/alvaro/Fortify/SSR/XXE/XStream/src/main/java/com/itcuties'
+let g:netrw_dirhist_3='/Users/alvaro/Fortify/SSR/XXE/XStream/src/main/java/com/itcuties/java'
+let g:netrw_dirhist_4='/Users/alvaro/Fortify/SSR/XXE/XStream/src/main/java/com/itcuties/java/xstream'

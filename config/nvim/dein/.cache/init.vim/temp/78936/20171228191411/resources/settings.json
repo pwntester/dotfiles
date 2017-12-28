@@ -1,0 +1,29 @@
+{
+    "RulePack-Version": "3.4",
+    "LinterMaxChars": 1000000,
+    "PrintLinterErrorsToConsole": false,
+    "XCodeBuildOpts" : [],
+    "CCompiler": "gcc",
+    "CPPCompiler": "g++",
+    "CompilerOptions": "-c",
+    "MemoryOpts": [
+        "-Xmx1024M",
+        "-Xss24M",
+        "-64"
+    ],
+    "AWBOpts": [
+    ],
+    "ScanOpts": [
+    ],
+    "TranslationOpts": [
+    ],
+    "IndentStructuralBlocks": true,
+    "JDKVersion": ["1.8"],
+    "NSTRoot": "",
+    "Additional_path_items": [
+    ],
+    "PythonPath": "/usr/local/lib/python2.7/site-packages",
+    "RuleWebURL": "http://16.103.201.25:8081",
+    "GoogleSearchURL": "http://www.google.com/search?&btnI=1&q="
+
+}

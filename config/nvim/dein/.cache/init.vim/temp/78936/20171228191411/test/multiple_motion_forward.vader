@@ -1,0 +1,40 @@
+Include: fixtures/multiple.xml
+Do (multiple motion forward rule):
+    15j2,rdG 
+Expect fortifyrulepack:
+    <?xml version="1.0" encoding="UTF-8"?>
+    <RulePack xmlns="xmlns://www.fortifysoftware.com/schema/rules" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="RulePack">
+        <Rules version="3.2">
+            <RuleDefinitions>
+                <StructuralRule formatVersion="3.2" language="java">
+                    <MetaInfo>
+                        <Group name="package">test</Group>
+                    </MetaInfo>
+                    <RuleID>B100B36C-E4A6-4ED0-85CC-41C4C8627996</RuleID>
+                    <VulnKingdom>test</VulnKingdom>
+                    <VulnCategory>test</VulnCategory>
+                    <DefaultSeverity>5.0</DefaultSeverity>
+                    <Description/>
+                    <Predicate><![CDATA[
+                        FunctionCall fc: name == "println"
+                            and fc.enclosingFunction is [Function f:
+                                name == "foo3"
+                                //and f.callers contains [Function c1: name == "foo1" ]
+                                and f.callers contains [Function c2: name == "foo2" ]
+                            ]
+                            and fc.sourceLocation.startLine is [Number l:]
+                            and fc.function.filename is [Label:]
+                    ]]></Predicate>
+                </StructuralRule>
+                <CharacterizationRule formatVersion="3.2" language="java">
+                    <MetaInfo>
+                        <Group name="package">test</Group>
+                    </MetaInfo>
+                    <RuleID>6C55C5D7-520B-48EA-845B-31F1DE83ADE9</RuleID>
+                    <StructuralMatch><![CDATA[
+                        Construct c:
+                    ]]></StructuralMatch>
+                    <Definition><![CDATA[
+                        Label() 
+                    ]]></Definition>
+                </CharacterizationRule>

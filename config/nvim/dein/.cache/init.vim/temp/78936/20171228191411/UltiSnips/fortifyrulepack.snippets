@@ -1,0 +1,286 @@
+priority -50
+
+global !p
+import uuid
+def _get_rule_id():
+    return str(uuid.uuid4()).upper()
+endglobal
+
+snippet RulePack "RulePack Template" b
+<?xml version="1.0" encoding="UTF-8"?>
+<RulePack xmlns="xmlns://www.fortifysoftware.com/schema/rules"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="RulePack">
+    <RulePackID>`!p if snip.c == "": snip.rv = _get_rule_id()`</RulePackID>
+    <SKU>`!p if snip.c == "": snip.rv = _get_rule_id()`</SKU>
+    <Name><![CDATA[$1]]></Name>
+    <Version>1.0</Version>
+    <Description><![CDATA[$2]]></Description>
+    <Rules version="3.2">
+        <RuleDefinitions>
+            $3
+        </RuleDefinitions>
+    </Rules>
+</RulePack>
+endsnippet
+
+
+snippet ControlFlowRule "ControlFlowRule Template" b
+<ControlflowRule formatVersion="3.2" language="$1">
+    <RuleID>`!p if snip.c == "": snip.rv = _get_rule_id()`</RuleID>
+    <VulnKingdom>$2</VulnKingdom>
+    <VulnCategory>$3</VulnCategory>
+    <VulnSubcategory>$4</VulnSubcategory>
+    <DefaultSeverity>$5</DefaultSeverity>
+    <Description>$6</Description>
+    <FunctionIdentifier id="$7">
+        <NamespaceName>
+            <Pattern>$8</Pattern>
+        </NamespaceName>
+        <ClassName>
+            <Pattern>$9</Pattern>
+        </ClassName>
+        <FunctionName>
+            <Pattern>$10</Pattern>
+        </FunctionName>
+        <ApplyTo implements="true" overrides="true" extends="true"/>
+    </FunctionIdentifier>
+    <FunctionIdentifier id="$11">
+        <NamespaceName>
+            <Pattern>$12</Pattern>
+        </NamespaceName>
+        <ClassName>
+            <Pattern>$13</Pattern>
+        </ClassName>
+        <FunctionName>
+            <Pattern>$14</Pattern>
+        </FunctionName>
+        <ApplyTo implements="true" overrides="true" extends="true"/>
+    </FunctionIdentifier>
+    <FunctionCallIdentifier id="$15">
+        <FunctionIdentifier>
+            <NamespaceName>
+                <Pattern>$16</Pattern>
+            </NamespaceName>
+            <ClassName>
+                <Pattern>$17</Pattern>
+            </ClassName>
+            <FunctionName>
+                <Pattern>$18</Pattern>
+            </FunctionName>
+            <ApplyTo implements="true" overrides="true" extends="true"/>
+        </FunctionIdentifier>
+        <Conditional>
+            <ConstantEq argument="$19" value="$20"/>
+        </Conditional>
+    </FunctionCallIdentifier>
+    <Definition><![CDATA[
+        state start myStartState;
+        state error myErrorState;
+    ]]></Definition>
+</ControlflowRule>
+endsnippet
+
+snippet CharacterizationRule "CharacterizationRule Template" b
+<CharacterizationRule formatVersion="3.2" language="$1">
+    <MetaInfo>
+        <Group name="package">$2</Group>
+    </MetaInfo>
+    <RuleID>`!p if snip.c == "": snip.rv = _get_rule_id()`</RuleID>
+    <StructuralMatch><![CDATA[
+        $3
+    ]]></StructuralMatch>
+    <Definition><![CDATA[
+        $4
+    ]]></Definition>
+</CharacterizationRule>
+endsnippet
+
+snippet StructuralRule "StructuralRule Template" b
+<StructuralRule formatVersion="3.2" language="$1">
+    <MetaInfo>
+        <Group name="package">$2</Group>
+    </MetaInfo>
+    <RuleID>`!p if snip.c == "": snip.rv = _get_rule_id()`</RuleID>
+    <VulnKingdom>$3</VulnKingdom>
+    <VulnCategory>$4</VulnCategory>
+    <VulnSubcategory>$5</VulnSubcategory>
+    <DefaultSeverity>${6:5.0}</DefaultSeverity>
+    <Description/>
+    <Predicate><![CDATA[
+        $0
+    ]]></Predicate>
+</StructuralRule>
+endsnippet
+
+snippet DataflowSourceRule "DataflowSourceRule Template" b
+<DataflowSourceRule formatVersion="3.2" language="$1">
+    <MetaInfo>
+        <Group name="package">$2</Group>
+        <Group name="inputsource">$3</Group>
+    </MetaInfo>
+    <RuleID>`!p if snip.c == "": snip.rv = _get_rule_id()`</RuleID>
+    <TaintFlags>$4</TaintFlags>
+    <FunctionIdentifier>
+        <NamespaceName>
+            <Value>$5</Value>
+        </NamespaceName>
+        <ClassName>
+            <Value>$6</Value>
+        </ClassName>
+        <FunctionName>
+            <Value>$7</Value>
+        </FunctionName>
+        <ApplyTo implements="true" overrides="true" extends="true"/>
+    </FunctionIdentifier>
+    <OutArguments>$8</OutArguments>
+</DataflowSourceRule>
+endsnippet
+
+snippet DataflowSinkRule "DataflowSinkRule Template" b
+<DataflowSinkRule formatVersion="3.2" language="$1">
+    <MetaInfo>
+        <Group name="package">$2</Group>
+    </MetaInfo>
+    <RuleID>`!p if snip.c == "": snip.rv = _get_rule_id()`</RuleID>
+    <VulnCategory>$3</VulnCategory>
+    <DefaultSeverity>$4</DefaultSeverity>
+    <Description/>
+    <Sink>
+        <InArguments>$5</InArguments>
+    </Sink>
+    <FunctionIdentifier>
+        <NamespaceName>
+            <Value>$6</Value>
+        </NamespaceName>
+        <ClassName>
+            <Value>$7</Value>
+        </ClassName>
+        <FunctionName>
+            <Value>$8</Value>
+        </FunctionName>
+        <ApplyTo implements="true" overrides="true" extends="true"/>
+    </FunctionIdentifier>
+</DataflowSinkRule>
+endsnippet
+
+snippet DataflowPassthroughRule "DataflowPassthroughRule Template" b
+<DataflowPassthroughRule formatVersion="3.2" language="$1">
+    <MetaInfo>
+        <Group name="package">$2</Group>
+    </MetaInfo>
+    <RuleID>`!p if snip.c == "": snip.rv = _get_rule_id()`</RuleID>
+    <TaintFlags>$3</TaintFlags>
+    <FunctionIdentifier>
+        <NamespaceName>
+            <Value>$4</Value>
+        </NamespaceName>
+        <ClassName>
+            <Value>$5</Value>
+        </ClassName>
+        <FunctionName>
+            <Value>$6</Value>
+        </FunctionName>
+        <ApplyTo implements="true" overrides="true" extends="true"/>
+    </FunctionIdentifier>
+    <InArguments>$7</InArguments>
+    <OutArguments>$8</OutArguments>
+</DataflowPassthroughRule>
+endsnippet
+
+snippet DataflowEntrypointRule "DataflowEntrypointRule Template" b
+<DataflowEntryPointRule formatVersion="3.2" language="$1">
+    <MetaInfo>
+        <Group name="package">$2</Group>
+        <Group name="inputsource">$3</Group>
+    </MetaInfo>
+    <RuleID>`!p if snip.c == "": snip.rv = _get_rule_id()`</RuleID>
+    <TaintFlags>$4</TaintFlags>
+    <FunctionIdentifier>
+        <NamespaceName>
+            <Value>$5</Value>
+        </NamespaceName>
+        <ClassName>
+            <Value>$6</Value>
+        </ClassName>
+        <FunctionName>
+            <Value>$7</Value>
+        </FunctionName>
+        <ApplyTo implements="true" overrides="true" extends="true"/>
+    </FunctionIdentifier>
+    <Conditional>
+        <ConstantEq argument="$6" value="$7"/>
+    </Conditional>
+    <InArguments>$8</InArguments>
+</DataflowEntryPointRule>
+endsnippet
+
+snippet DataflowCleanseRule "DataflowCleanseRule Template" b
+<DataflowCleanseRule formatVersion="3.2" language="$1">
+    <MetaInfo>
+        <Group name="package">$2</Group>
+    </MetaInfo>
+    <RuleID>`!p if snip.c == "": snip.rv = _get_rule_id()`</RuleID>
+    <TaintFlags>$3</TaintFlags>
+    <FunctionIdentifier>
+        <NamespaceName>
+            <Value>$4</Value>
+        </NamespaceName>
+        <ClassName>
+            <Value>$5</Value>
+        </ClassName>
+        <FunctionName>
+            <Value>$6</Value>
+        </FunctionName>
+        <ApplyTo implements="true" overrides="true" extends="true"/>
+    </FunctionIdentifier>
+    <OutArguments>$7</OutArguments>
+</DataflowCleanseRule>
+endsnippet
+
+snippet SuppressionRule "SuppressionRule Template" b
+<SuppressionRule formatVersion="3.2" language="$1">
+    <MetaInfo>
+        <Group name="package">$2</Group>
+    </MetaInfo>
+    <RuleID>$3</RuleID>
+</SuppressionRule>
+endsnippet
+
+snippet desc "Description Debug Block" b
+<Description>
+    <Explanation><![CDATA[
+        <Paragraph><Replace key="$$1$"/></Paragraph>
+    ]]></Explanation>
+</Description>
+endsnippet
+
+snippet SwiftOptional "Swift Optional" b
+(
+    /* Optional value */
+    instance is [FieldAccess: 
+        field is [Field: name == "value" and enclosingClass.name == "Optional"] 
+        and in [FieldAccess: field is [Field: 
+                $1
+            ]
+        ]
+    ] 
+    /* Unwrapped value */
+    or instance is [FieldAccess: 
+        field is [Field: 
+            $1
+        ]
+    ]
+)
+endsnippet
+
+snippet SwiftEnum "Swift Enum" b
+[FunctionCall: 
+    /* Enum $1.$2 */
+    function.enclosingClass is [Class: 
+        supers contains [Class: name == "$1"]
+        and name == "$2" 
+    ] and function.name == "$2" 
+]
+endsnippet
+
+

@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RulePack xmlns="xmlns://www.fortifysoftware.com/schema/rules"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="RulePack">
+    <RulePackID>839883E1-9DD6-41D5-9510-4D6EDA68FE77</RulePackID>
+    <SKU>SKU-839883E1-9DD6-41D5-9510-4D6EDA68FE77</SKU>
+    <Name><![CDATA[Default Fortify sublime editor rules.]]></Name>
+    <Version>1.0</Version>
+    <Description><![CDATA[Fortify Sublime Plugin default rules: sink, source]]></Description>
+    <Rules version="3.4">
+        <RuleDefinitions>
+
+            <DataflowSourceRule formatVersion="3.2" language="objc">
+                <RuleID>897BF1D9-ACFC-4C2A-88BB-570A5DA39655</RuleID>
+                <TaintFlags>+WEB, +XSS</TaintFlags>
+                <FunctionIdentifier>
+                    <NamespaceName>
+                        <Pattern>.*</Pattern>
+                    </NamespaceName>
+                    <ClassName>
+                        <Pattern>.*</Pattern>
+                    </ClassName>
+                    <FunctionName>
+                        <Value>source</Value>
+                    </FunctionName>
+                    <ApplyTo implements="true" overrides="true" extends="true"/>
+                </FunctionIdentifier>
+                <OutArguments>return</OutArguments>
+            </DataflowSourceRule>
+            <DataflowSinkRule formatVersion="3.12" language="objc">
+                <RuleID>2429B3F3-E3EB-4159-AD2E-6EDE1AD0DB8E</RuleID>
+                <VulnCategory>Sink</VulnCategory>
+                <DefaultSeverity>5.0</DefaultSeverity>
+                <Description/>
+                <Sink>
+                    <InArguments>0...</InArguments>
+                </Sink>
+                <FunctionIdentifier>
+                    <ClassName>
+                        <Pattern>.*</Pattern>
+                    </ClassName>
+                    <FunctionName>
+                        <Pattern>sink.*</Pattern>
+                    </FunctionName>
+                    <ApplyTo implements="true" overrides="true" extends="true"/>
+                </FunctionIdentifier>
+            </DataflowSinkRule>
+            <DataflowSinkRule formatVersion="3.2" language="java">
+                <RuleID>FC493D12-4633-4B4E-83DC-826D21A5BA6B</RuleID>
+                <VulnCategory>Sink</VulnCategory>
+                <DefaultSeverity>5.0</DefaultSeverity>
+                <Description/>
+                <Sink>
+                    <InArguments>0</InArguments>
+                </Sink>
+                <FunctionIdentifier>
+                    <NamespaceName>
+                        <Pattern>.*</Pattern>
+                    </NamespaceName>
+                    <ClassName>
+                        <Pattern>.*</Pattern>
+                    </ClassName>
+                    <FunctionName>
+                        <Value>sink</Value>
+                    </FunctionName>
+                    <ApplyTo implements="true" overrides="true" extends="true"/>
+                </FunctionIdentifier>
+            </DataflowSinkRule>
+            <DataflowSinkRule formatVersion="3.2" language="scala">
+                <RuleID>DF0A0160-7305-4D92-B324-6AA46EED27FE</RuleID>
+                <VulnCategory>Sink</VulnCategory>
+                <DefaultSeverity>5.0</DefaultSeverity>
+                <Description/>
+                <Sink>
+                    <InArguments>0</InArguments>
+                </Sink>
+                <FunctionIdentifier>
+                    <NamespaceName>
+                        <Pattern>.*</Pattern>
+                    </NamespaceName>
+                    <ClassName>
+                        <Pattern>.*</Pattern>
+                    </ClassName>
+                    <FunctionName>
+                        <Value>sink</Value>
+                    </FunctionName>
+                    <ApplyTo implements="true" overrides="true" extends="true"/>
+                </FunctionIdentifier>
+            </DataflowSinkRule>
+            <DataflowSinkRule formatVersion="3.9" language="python">
+                <RuleID>51814DEC-009F-4FE9-B45F-D2AAC4C205E4</RuleID>
+                <VulnCategory>Sink</VulnCategory>
+                <DefaultSeverity>5.0</DefaultSeverity>
+                <Description/>
+                <Sink>
+                    <InArguments>0...</InArguments>
+                </Sink>
+                <FunctionIdentifier>
+                    <NamespaceName>
+                        <Pattern>.*</Pattern>
+                    </NamespaceName>
+                    <ClassName>
+                        <Pattern>.*</Pattern>
+                    </ClassName>
+                    <FunctionName>
+                        <Value>sink</Value>
+                    </FunctionName>
+                    <ApplyTo implements="true" overrides="true" extends="true"/>
+                </FunctionIdentifier>
+            </DataflowSinkRule>
+            <DataflowSinkRule formatVersion="3.4" language="php">
+                <RuleID>1205755F-5641-4276-A2DE-5BACD0F74459</RuleID>
+                <VulnCategory>Sink</VulnCategory>
+                <DefaultSeverity>5.0</DefaultSeverity>
+                <Description/>
+                <Sink>
+                    <InArguments>0</InArguments>
+                </Sink>
+                <FunctionIdentifier>
+                    <NamespaceName>
+                        <Pattern>.*</Pattern>
+                    </NamespaceName>
+                    <ClassName>
+                        <Pattern>.*</Pattern>
+                    </ClassName>
+                    <FunctionName>
+                        <Value>sink</Value>
+                    </FunctionName>
+                    <ApplyTo implements="true" overrides="true" extends="true"/>
+                </FunctionIdentifier>
+            </DataflowSinkRule>
+            <DataflowSinkRule formatVersion="3.2" language="dotnet">
+                <RuleID>94B25811-B744-4258-8824-808BFE0BE0F6</RuleID>
+                <VulnCategory>Sink</VulnCategory>
+                <DefaultSeverity>5.0</DefaultSeverity>
+                <Description />
+                <Sink>
+                    <InArguments>0</InArguments>
+                </Sink>
+                <FunctionIdentifier>
+                    <NamespaceName>
+                        <Pattern>.*</Pattern>
+                    </NamespaceName>
+                    <ClassName>
+                        <Pattern>.*</Pattern>
+                    </ClassName>
+                    <FunctionName>
+                        <Value>sink</Value>
+                    </FunctionName>
+                    <ApplyTo extends="true" implements="true" overrides="true" />
+                </FunctionIdentifier>
+            </DataflowSinkRule>
+            <DataflowSourceRule formatVersion="3.2" language="java">
+                <RuleID>685078A6-407A-4B48-9339-F51226D2A5E2</RuleID>
+                <TaintFlags>+WEB, +XSS</TaintFlags>
+                <FunctionIdentifier>
+                    <NamespaceName>
+                        <Pattern>.*</Pattern>
+                    </NamespaceName>
+                    <ClassName>
+                        <Pattern>.*</Pattern>
+                    </ClassName>
+                    <FunctionName>
+                        <Value>source</Value>
+                    </FunctionName>
+                    <ApplyTo implements="true" overrides="true" extends="true"/>
+                </FunctionIdentifier>
+                <OutArguments>return</OutArguments>
+            </DataflowSourceRule>
+            <DataflowSourceRule formatVersion="3.9" language="python">
+                <RuleID>23309F51-793B-47C2-AADA-87A4A8933D75</RuleID>
+                <TaintFlags>+WEB, +XSS</TaintFlags>
+                <FunctionIdentifier>
+                    <NamespaceName>
+                        <Pattern>.*</Pattern>
+                    </NamespaceName>
+                    <ClassName>
+                        <Pattern>.*</Pattern>
+                    </ClassName>
+                    <FunctionName>
+                        <Value>source</Value>
+                    </FunctionName>
+                    <ApplyTo implements="true" overrides="true" extends="true"/>
+                </FunctionIdentifier>
+                <OutArguments>return</OutArguments>
+            </DataflowSourceRule>
+            <DataflowSourceRule formatVersion="3.2" language="dotnet">
+                <RuleID>A0452637-3440-4F57-929C-2CFB78F7B4D8</RuleID>
+                <TaintFlags>+WEB, +XSS</TaintFlags>
+                <FunctionIdentifier>
+                    <NamespaceName>
+                        <Pattern>.*</Pattern>
+                    </NamespaceName>
+                    <ClassName>
+                        <Pattern>.*</Pattern>
+                    </ClassName>
+                    <FunctionName>
+                        <Value>source</Value>
+                    </FunctionName>
+                    <ApplyTo extends="true" implements="true" overrides="true" />
+                </FunctionIdentifier>
+                <OutArguments>return</OutArguments>
+            </DataflowSourceRule>
+            <DataflowSourceRule formatVersion="3.4" language="php">
+                <RuleID>4BD1FE6D-518F-48FB-9591-FE202E364EB2</RuleID>
+                <TaintFlags>+WEB, +XSS</TaintFlags>
+                <FunctionIdentifier>
+                    <NamespaceName>
+                        <Pattern>.*</Pattern>
+                    </NamespaceName>
+                    <ClassName>
+                        <Pattern>.*</Pattern>
+                    </ClassName>
+                    <FunctionName>
+                        <Value>source</Value>
+                    </FunctionName>
+                    <ApplyTo implements="true" overrides="true" extends="true"/>
+                </FunctionIdentifier>
+                <OutArguments>return</OutArguments>
+            </DataflowSourceRule>
+            <DataflowSourceRule formatVersion="16.10" language="swift">
+                <RuleID>154EBE9B-266D-43B9-961A-C5C49D55D1F2</RuleID>
+                <!--TaintFlags>+WEB, +XSS</TaintFlags-->
+                <TaintFlags>+PRIVATE</TaintFlags>
+                <FunctionIdentifier>
+                    <NamespaceName>
+                        <Pattern>.*</Pattern>
+                    </NamespaceName>
+                    <ClassName>
+                        <Pattern>.*</Pattern>
+                    </ClassName>
+                    <FunctionName>
+                        <Value>source.*</Value>
+                    </FunctionName>
+                    <ApplyTo implements="true" overrides="true" extends="true"/>
+                </FunctionIdentifier>
+                <OutArguments>return</OutArguments>
+            </DataflowSourceRule>
+            <DataflowSinkRule formatVersion="16.10" language="swift">
+                <RuleID>64F2676D-977D-4C43-B778-A2AA3068A165</RuleID>
+                <VulnCategory>Sink</VulnCategory>
+                <DefaultSeverity>5.0</DefaultSeverity>
+                <Description/>
+                <Sink>
+                    <InArguments>0...</InArguments>
+                </Sink>
+                <FunctionIdentifier>
+                    <NamespaceName>
+                        <Pattern>.*</Pattern>
+                    </NamespaceName>
+                    <ClassName>
+                        <Pattern>.*</Pattern>
+                    </ClassName>
+                    <FunctionName>
+                        <Pattern>sink.*</Pattern>
+                    </FunctionName>
+                    <ApplyTo implements="true" overrides="true" extends="true"/>
+                </FunctionIdentifier>
+            </DataflowSinkRule>
+        </RuleDefinitions>
+    </Rules>
+</RulePack>

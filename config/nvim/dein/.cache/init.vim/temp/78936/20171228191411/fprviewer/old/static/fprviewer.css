@@ -1,0 +1,88 @@
+body {
+  font: 300 14px 'Helvetica Neue', Helvetica;
+}
+
+svg {
+  border: 1px solid #ccc;
+  overflow: hidden;
+  margin: 0 auto;
+}
+
+.node rect {
+  stroke: #333;
+  fill: #fff;
+}
+
+.edgePath path {
+  stroke: #333;
+  fill: #333;
+  stroke-width: 1.5px;
+}
+
+g.source > rect {
+	fill: #7f7;
+}
+
+g.sink > rect {
+	fill: #f77;
+}
+
+g.label {
+  color: #000;
+}
+
+.nav-list>li>a {
+  font-size: 0.7em;
+  padding: 3px 0px;
+}
+.details {
+  font-size: 0.8em;
+}
+
+.nav-header {
+  background-color: #5b727d;
+  text-shadow: none;
+}
+.nav-header>a {
+  font-size: 0.8em;
+  text-decoration: none;
+  color: white;
+  text-shadow: none;
+}
+.nav-header>span {
+  font-size: 0.8em;
+  text-decoration: none;
+  color: white;
+  text-shadow: none;
+}
+.nav-header>a>span {
+  font-size: 0.7em;
+}
+.label-critical {
+  background-color: #CA3F37;
+}
+.label-high {
+  background-color: #EF8B06;
+}
+.label-medium {
+  background-color: #F5C802;
+}
+.label-low {
+  background-color: #DBB602;
+}
+#code {
+  overflow: scroll;
+}
+.prettyprint ol.linenums > li {
+    list-style-type: none;
+}
+.prettyprint, ul, ol {
+  margin: 0 0 0px 0px;
+}
+.linenum .lit {
+  color:#ccc;
+}
+.label {
+  font-weight: normal;
+  text-shadow: none;
+}

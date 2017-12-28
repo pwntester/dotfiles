@@ -1,0 +1,50 @@
+jsFunction: 'light_pink'
+jsFuncCall: 'yellow'
+jsOperator: 'light_orange'
+jsStorageClass: 'yellow'
+jsFuncArgs: 'lightest_grey'
+jsBuiltins: 'light_orange'
+jsUndefined: 'dark_pink'
+jsThis: 'light_pink'
+jsPrototype: 'dirty_pink'
+jsRegexpOr: '@regex_or'
+jsRegexpQuantifier: '@regex_quantifier'
+jsRegexpGroup: '@regex_group'
+jsRegexpBoundary: '@regex_boundary'
+jsRegexpCharClass: '@regex_char_group'
+jsRegexpString: '@regex_string'
+jsRegexpMod: 'pink'
+jsRegexpBackRef: 'light_orange'
+javaScriptValue: '@Constant' #Constant
+javaScriptRegexpString: 'light_green' # String
+javaScriptComment: '' # Comment
+javaScriptLineComment: '' # Comment
+javaScriptCommentTodo: '' # Todo
+javaScriptSpecial: '' # Special
+javaScriptStringS: '' # String
+javaScriptStringD: '' # String
+javaScriptCharacter: '' # Character
+javaScriptSpecialCharacter: '' # javaScriptSpecial
+javaScriptNumber: '' # javaScriptValue
+javaScriptConditional: '' # Conditional
+javaScriptRepeat: '' # Repeat
+javaScriptBranch: '' # Conditional
+javaScriptOperator: '' # Operator
+javaScriptType: '' # Type
+javaScriptStatement: '' # Statement
+javaScriptFunction: '' # Function
+javaScriptBraces: '' # Function
+javaScriptError: '' # Error
+javaScriptParensError: '' # Error
+javaScriptNull: '' # Keyword
+javaScriptBoolean: '' # Boolean
+javaScriptIdentifier: '' # Identifier
+javaScriptLabel: '' # Label
+javaScriptException: '' # Exception
+javaScriptMessage: '' # Keyword
+javaScriptGlobal: '' # Keyword
+javaScriptMember: '' # Keyword
+javaScriptDeprecated: '' # Exception
+javaScriptReserved: '' # Keyword
+javaScriptDebug: '' # Debug
+javaScriptConstant: '' # Label

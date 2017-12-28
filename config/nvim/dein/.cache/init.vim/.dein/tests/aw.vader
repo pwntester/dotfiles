@@ -1,0 +1,137 @@
+Given (Some text):
+  This is some text
+
+Do (daw at Th[i]s):
+  fidaw
+
+Expect (This_ deleted):
+  is some text
+
+Do (daw at te[x]t):
+  3wfxdaw
+
+Expect (_text deleted):
+  This is some
+
+Do (daw at [_]some):
+  wf daw
+
+Expect (_some deleted):
+  This is text
+
+Do (2daw at s[o]me):
+  2wfo2daw
+
+Expect (_some_text deleted):
+  This is
+
+Do (d2aw at so[m]e):
+  2wfmd2aw
+
+Expect (_some_text deleted):
+  This is
+
+Given (Some text over two lines):
+  This is
+  some text
+
+Do (d2aw at i[s]):
+  wfsd2aw
+
+Expect (is\nsome_ deleted):
+  This text
+
+Given (Some text with trailing white space):
+  This is  
+  some text
+
+Do (d2aw at i[s]):
+  wfsd2aw
+
+Expect (is__\nsome deleted):
+  This text
+
+Given (Some text with leading white space):
+  This is
+    some text
+
+Do (d2aw at i[s]):
+  wfsd2aw
+
+Expect (is\n__some deleted):
+  This text
+
+Given (Some text with both trailing and leading white space):
+  This is  
+    some text
+
+Do (d2aw at i[s]):
+  wfsd2aw
+
+Expect (is__\n__some deleted):
+  This text
+
+Given (Leading white space):
+   foo
+
+Do (FIXME: daw at foo):
+  $daw
+
+Expect (Leading space left intact):
+   
+
+Given (Three ^$ lines):
+  foo
+  
+  
+  
+  bar
+
+Do (FIXME: daw at middle ^$ line):
+  2jdaw
+
+Expect (\n\n deleted):
+  foo
+  
+  bar
+
+Do (Delete vaw after selecting from first ^$ line downwards):
+  jvjawd
+
+Expect (\n\nbar deleted):
+  foo
+  
+
+Do (FIXME: Delete vaw after selecting from last ^$ line upwards):
+  Gkvkawd
+
+Expect (foo\n\n\n deleted):
+  bar
+
+Given (Three ^__$ lines):
+  foo
+    
+    
+    
+  bar
+
+Do (FIXME: daw at middle ^__$ line):
+  2jdaw
+
+Expect (\n__\n__\nbar deleted):
+  foo
+    
+
+Do (Delete vaw after selecting from first ^__$ line downwards):
+  jvjawd
+
+Expect (__\n__\n__\nbar deleted):
+  foo
+  
+
+Do (Delete vaw after selecting from last ^__$ line upwards):
+  Gkvkawd
+
+Expect (foo\n__\n__\n_ deleted):
+   
+  bar

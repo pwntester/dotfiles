@@ -1,0 +1,30 @@
+Include: fixtures/source.xml
+Do (toggle pattern/value):
+    12j
+    :PatternValue\<Enter>
+Expect fortifyrulepack:
+    <?xml version="1.0" encoding="UTF-8"?>
+    <RulePack xmlns="xmlns://www.fortifysoftware.com/schema/rules" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="RulePack">
+        <Rules version="3.2">
+            <RuleDefinitions>
+                <DataflowSourceRule formatVersion="3.10" language="java">
+                    <RuleID>41da4a4c-033b-4a47-9237-202533b3b747</RuleID>
+                    <TaintFlags>+TEST</TaintFlags>
+                    <FunctionIdentifier>
+                        <NamespaceName>
+                            <Value>android.content</Value>
+                        </NamespaceName>
+                        <ClassName>
+                            <Pattern>Intent</Pattern>
+                        </ClassName>
+                        <FunctionName>
+                            <Pattern>init\^|setAction</Pattern>
+                        </FunctionName>
+                        <ApplyTo implements="true" overrides="true" extends="true"/>
+                    </FunctionIdentifier>
+                    <OutArguments>return</OutArguments>
+                </DataflowSourceRule>
+            </RuleDefinitions>
+        </Rules>
+    </RulePack>
+

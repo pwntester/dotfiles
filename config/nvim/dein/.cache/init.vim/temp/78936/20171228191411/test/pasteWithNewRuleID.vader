@@ -1,0 +1,6 @@
+Include: fixtures/basic.xml
+Do (paste with new RuleID rule):
+    8jvarxk
+    :PasteWithNewRuleID\<Enter>
+Then:
+    AssertNotEqual getline('9'), '                  <RuleID>B100B36C-E4A6-4ED0-85CC-41C4C8627996</RuleID>'

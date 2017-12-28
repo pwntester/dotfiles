@@ -1,0 +1,40 @@
+Include: include/setup.vader
+
+Execute (cargo skip non json line):
+  new
+  file build/lib.rs
+  let cargo = neomake#makers#ft#rust#cargo()
+  let cargo.exe = 'printf'
+  let cargo.args = ['error: Could not compile `derive_more`.']
+
+  call neomake#Make(1, [cargo])
+  NeomakeTestsWaitForFinishedJobs
+
+  AssertEqual [], getloclist(0)
+  bwipe
+
+Execute (cargo info message):
+  new
+  file build/lib.rs
+  let cargo = neomake#makers#ft#rust#cargo()
+  let cargo.exe = 'cat'
+  let cargo.args = '../tests/fixtures/rust/cargo_info.json'
+
+  call neomake#Make(1, [cargo])
+  NeomakeTestsWaitForFinishedJobs
+
+  AssertEqual [], getloclist(0)
+  bwipe
+
+Execute (cargo error without span):
+  new
+  file build/lib.rs
+  let cargo = neomake#makers#ft#rust#cargo()
+  let cargo.exe = 'cat'
+  let cargo.args = '../tests/fixtures/rust/cargo_error_without_span.json'
+
+  call neomake#Make(1, [cargo])
+  NeomakeTestsWaitForFinishedJobs
+
+  AssertEqual [], getloclist(0)
+  bwipe

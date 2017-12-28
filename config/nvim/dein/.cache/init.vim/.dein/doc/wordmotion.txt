@@ -1,0 +1,131 @@
+*wordmotion.txt* More useful word motions for Vim
+
+INTRODUCTION					*wordmotion*
+
+This is one word under Vim's definition:
+>
+	CamelCaseACRONYMWords_underscore1234
+	^
+<
+With this plugin, this becomes six words:
+>
+	CamelCaseACRONYMWords_underscore1234
+	^    ^   ^      ^     ^         ^
+<
+WORDS						*wordmotion-words*
+
+A word is any of the following separated with spaces
+(<Space>, <Tab>, <EOL>, `_`, etc):
+
+- An uppercase letter followed by one or more lowercase letters
+- One or more uppercase letters that does not immediately precede
+  a lowercase letter
+- One or more uppercase letters
+- One or more lowercase letters
+- A valid hexadecimal literal
+- A valid binary literal
+- One or more numeric digits
+- One or more of other characters
+- An empty line
+
+MAPPINGS					*wordmotion-mappings*
+
+						*wordmotion-w*
+{prefix}w		[count] words forward. |exclusive| motion.
+
+						*wordmotion-e*
+{prefix}e		Forward to the end of word [count] |inclusive|.
+			Does not stop in an empty line.
+
+						*wordmotion-b*
+{prefix}b		[count] words backward. |exclusive| motion.
+
+						*wordmotion-ge*
+{prefix}ge		Backward to the end of word [count] |inclusive|.
+
+						*wordmotion-aw*
+a{prefix}w		"a word", select [count] words (see |wordmotion-word|).
+			Leading or trailing white space is included, but not
+			counted.
+			When used in Visual linewise mode "aw" switches to
+			Visual characterwise mode.
+
+						*wordmotion-iw*
+i{prefix}w		"inner word", select [count] words
+			(see |wordmotion-word|).
+			White space between words is counted too.
+			When used in Visual linewise mode "iw" switches to
+			Visual characterwise mode.
+
+						*wordmotion-<C-R>_<C-W>*
+<C-R><C-W>		Insert the word under the cursor in Cmdline mode
+			(see |wordmotion-word|).
+
+CUSTOMIZATION					*wordmotion-customization*
+
+The default word motion mappings are `w`, `b`, `e`, `ge`, `aw`, and `iw`.
+
+						*g:wordmotion_prefix*
+Use |g:wordmotion_prefix| to apply a common prefix to each of the default word
+motion mappings.
+E.g.,
+>
+	let g:wordmotion_prefix = '<Leader>'
+<
+NOTE: does not apply to the command line mode `<C-R><C-W>` mapping.
+
+						*g:wordmotion_mappings*
+Use |g:wordmotion_mappings| to individually replace the default word motion
+mappings.
+E.g.,
+>
+	let g:wordmotion_mappings = {
+	\ 'w' : '<M-w>',
+	\ 'b' : '<M-b>',
+	\ 'e' : '<M-e>',
+	\ 'ge' : 'g<M-e>',
+	\ 'aw' : 'a<M-w>',
+	\ 'iw' : 'i<M-w>',
+	\ '<C-R><C-W>' : '<C-R><M-w>'
+	\ }
+<
+Unspecified entries will still use the default mappings.
+Set the value to an empty string to disable the mapping.
+
+NOTE: this overrides |g:wordmotion_prefix|.
+
+						*g:wordmotion_spaces*
+Use |g:wordmotion_spaces| (default '_') to designate extra space characters.
+E.g.,
+>
+	let g:wordmotion_spaces = '_-.'
+<
+will produce the following result:
+>
+	foo_bar-baz.qux
+	^   ^   ^   ^
+<
+CAVEATS						*wordmotion-caveats*
+
+There are some special cases with how Vim's word motions work.
+E.g.,
+
+Vim:
+>
+	^foo [b]ar$ -> dw -> ^foo[ ]$
+	^ baz$               ^ baz$
+
+	^[f]oo bar$ -> cw -> ^[ ]bar$
+
+This plugin:
+>
+	^foo [b]ar$ -> dw -> ^foo [b]az$
+	^ baz$
+
+	^[f]oo bar$ -> cw -> ^[b]ar$
+<
+This plugin faithfully follows the motion of `w` when executing `dw` and `cw`,
+while Vim replaces these two special cases with the behavior of `de` and `ce`,
+respectively.
+
+ vim:tw=78:ts=8:ft=help:norl:

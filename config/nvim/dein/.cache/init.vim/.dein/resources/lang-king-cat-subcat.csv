@@ -1,0 +1,993 @@
+abap,Code Quality,Obsolete,
+abap,Encapsulation,System Information Leak,
+abap,Input Validation and Representation,Command Injection,
+abap,Input Validation and Representation,Cross-Site Scripting,Persistent
+abap,Input Validation and Representation,Cross-Site Scripting,Poor Validation
+abap,Input Validation and Representation,Cross-Site Scripting,Reflected
+abap,Input Validation and Representation,Denial of Service,
+abap,Input Validation and Representation,Dynamic Code Evaluation,Code Injection
+abap,Input Validation and Representation,Header Manipulation,
+abap,Input Validation and Representation,Header Manipulation,Cookies
+abap,Input Validation and Representation,Log Forging,
+abap,Input Validation and Representation,Open Redirect,
+abap,Input Validation and Representation,Path Manipulation,
+abap,Input Validation and Representation,Process Control,
+abap,Input Validation and Representation,Resource Injection,
+abap,Input Validation and Representation,SQL Injection,
+abap,Security Features,Access Control,Database
+abap,Security Features,Access Control,Missing Authorization Check
+abap,Security Features,Password Management,Empty Password
+abap,Security Features,Password Management,Hardcoded Password
+abap,Security Features,Password Management,Password in Comment
+abap,Security Features,Privacy Violation,
+actionscript,Code Quality,Portability Flaw,File Separator
+actionscript,Encapsulation,Flash Misconfiguration,Overly Permissive Cross-Domain Policy
+actionscript,Encapsulation,Flash Misconfiguration,Policy Restrictions Bypass
+actionscript,Encapsulation,Flash Misconfiguration,Unauthorized Data Access
+actionscript,Encapsulation,System Information Leak,
+actionscript,Input Validation and Representation,Command Injection,
+actionscript,Input Validation and Representation,Cross-Site Flashing,
+actionscript,Input Validation and Representation,Cross-Site Scripting,Persistent
+actionscript,Input Validation and Representation,Cross-Site Scripting,Poor Validation
+actionscript,Input Validation and Representation,Cross-Site Scripting,Reflected
+actionscript,Input Validation and Representation,Dynamic Code Evaluation,Code Injection
+actionscript,Input Validation and Representation,Log Forging,
+actionscript,Input Validation and Representation,Open Redirect,
+actionscript,Input Validation and Representation,Path Manipulation,
+actionscript,Input Validation and Representation,SQL Injection,
+actionscript,Input Validation and Representation,Unsafe Reflection,
+actionscript,Security Features,Access Control,Database
+actionscript,Security Features,Password Management,
+actionscript,Security Features,Password Management,Empty Password
+actionscript,Security Features,Password Management,Hardcoded Password
+actionscript,Security Features,Password Management,Null Password
+actionscript,Security Features,Password Management,Password in Comment
+actionscript,Security Features,Password Management,Weak Cryptography
+actionscript,Security Features,Privacy Violation,
+cfml,API Abuse,Obsolete,
+cfml,Encapsulation,ColdFusion Bad Practices,Leftover Debug Code
+cfml,Encapsulation,System Information Leak,
+cfml,Errors,Poor Error Handling,Unhandled Exception
+cfml,Input Validation and Representation,ColdFusion Bad Practices,Unauthorized Include
+cfml,Input Validation and Representation,Command Injection,
+cfml,Input Validation and Representation,Cross-Site Scripting,Persistent
+cfml,Input Validation and Representation,Cross-Site Scripting,Poor Validation
+cfml,Input Validation and Representation,Cross-Site Scripting,Reflected
+cfml,Input Validation and Representation,Denial of Service,
+cfml,Input Validation and Representation,Header Manipulation,
+cfml,Input Validation and Representation,Header Manipulation,Cookies
+cfml,Input Validation and Representation,Log Forging,
+cfml,Input Validation and Representation,Path Manipulation,
+cfml,Input Validation and Representation,Possible Variable Overwrite,
+cfml,Input Validation and Representation,Resource Injection,
+cfml,Input Validation and Representation,Setting Manipulation,
+cfml,Input Validation and Representation,SQL Injection,
+cfml,Input Validation and Representation,XPath Injection,
+cfml,Security Features,Credential Management,
+cfml,Security Features,Credential Management,Hardcoded Username
+cfml,Security Features,Insecure Randomness,
+cfml,Security Features,Password Management,
+cfml,Security Features,Password Management,Empty Password
+cfml,Security Features,Password Management,Hardcoded Password
+cfml,Security Features,Password Management,Password in Comment
+cfml,Security Features,Privacy Violation,
+cfml,Security Features,Weak Cryptographic Hash,
+cfml,Security Features,Weak Encryption,
+cobol,Encapsulation,System Information Leak,
+cobol,Errors,Poor Condition Handling,Ignored Condition
+cobol,Input Validation and Representation,Cross-Site Scripting,Persistent
+cobol,Input Validation and Representation,Cross-Site Scripting,Reflected
+cobol,Input Validation and Representation,Header Manipulation,
+cobol,Input Validation and Representation,Log Forging,
+cobol,Input Validation and Representation,Path Manipulation,
+cobol,Input Validation and Representation,Process Control,
+cobol,Input Validation and Representation,Resource Injection,
+cobol,Input Validation and Representation,Setting Manipulation,
+cobol,Input Validation and Representation,SQL Injection,
+cobol,Security Features,Access Control,Database
+cobol,Security Features,Access Control,DLI
+cobol,Security Features,Access Control,MQ
+cobol,Security Features,Password Management,
+cobol,Security Features,Password Management,Hardcoded Password
+cobol,Security Features,Password Management,Password in Comment
+cobol,Security Features,Password Management,Weak Cryptography
+cobol,Security Features,Privacy Violation,
+config,API Abuse,File Disclosure,Spring Webflow
+config,API Abuse,Often Misused,Spring Remote Service
+config,API Abuse,Often Misused,Spring Web Service
+config,Encapsulation,ADF Bad Practices,Default url-invoke-disallowed Setting
+config,Encapsulation,Flash Misconfiguration,Overly Permissive Cross-Domain Policy
+config,Encapsulation,Flash Misconfiguration,Overly Permissive Custom Headers Policy
+config,Encapsulation,Flash Misconfiguration,Unauthorized Data Access
+config,Encapsulation,HTML5,Overly Permissive CORS Policy
+config,Encapsulation,Insecure Storage,Android Backup Storage
+config,Encapsulation,JavaScript Hijacking,Vulnerable Framework
+config,Encapsulation,System Information Leak,Apache Axis
+config,Encapsulation,System Information Leak,Apache Axis 2
+config,Encapsulation,System Information Leak,Overly Broad SQL Logging
+config,Environment,Android Misconfiguration,Debug Information
+config,Environment,ASP.NET Misconfiguration,Certificate Validation Disabled
+config,Environment,ASP.NET Misconfiguration,Cookie Protection Disabled
+config,Environment,ASP.NET Misconfiguration,Debug Information
+config,Environment,ASP.NET Misconfiguration,Excessive Session Timeout
+config,Environment,ASP.NET Misconfiguration,Incomplete Certificate Validation
+config,Environment,ASP.NET Misconfiguration,Incomplete Cookie Protection
+config,Environment,ASP.NET Misconfiguration,Incomplete Role Protection
+config,Environment,ASP.NET Misconfiguration,Password Protection Disabled
+config,Environment,ASP.NET Misconfiguration,Request Validation Disabled
+config,Environment,ASP.NET Misconfiguration,Role Protection Disabled
+config,Environment,ASP.NET Misconfiguration,Session Cookies Disabled
+config,Environment,ASP.NET Misconfiguration,Trace Output
+config,Environment,ASP.NET Misconfiguration,Use of Impersonation Context
+config,Environment,ASP.NET Misconfiguration,Weak Password Protection
+config,Environment,Axis 2 Misconfiguration,Debug Information
+config,Environment,Axis 2 Misconfiguration,Insecure Message Security
+config,Environment,Axis 2 Misconfiguration,Insecure Transport Receiver
+config,Environment,Axis 2 Misconfiguration,Insecure Transport Sender
+config,Environment,Axis 2 Service Provider Misconfiguration,Inbound WS-Security Not Enabled
+config,Environment,Axis 2 Service Provider Misconfiguration,Missing Inbound Encryption
+config,Environment,Axis 2 Service Provider Misconfiguration,Missing Inbound Signature
+config,Environment,Axis 2 Service Provider Misconfiguration,Missing Inbound Timestamp
+config,Environment,Axis 2 Service Provider Misconfiguration,Missing Outbound Encryption
+config,Environment,Axis 2 Service Provider Misconfiguration,Missing Outbound Signature
+config,Environment,Axis 2 Service Provider Misconfiguration,Missing Outbound Timestamp
+config,Environment,Axis 2 Service Provider Misconfiguration,Outbound WS-Security Not Enabled
+config,Environment,Axis 2 Service Provider Misconfiguration,Unsigned Inbound Timestamp
+config,Environment,Axis 2 Service Provider Misconfiguration,Unsigned Outbound Timestamp
+config,Environment,Axis 2 Service Provider Misconfiguration,Weak Token
+config,Environment,Axis 2 Service Provider Misconfiguration,WS-Security Not Enabled
+config,Environment,Axis 2 Service Requester Misconfiguration,Inbound WS-Security Not Enabled
+config,Environment,Axis 2 Service Requester Misconfiguration,Missing Inbound Encryption
+config,Environment,Axis 2 Service Requester Misconfiguration,Missing Inbound Signature
+config,Environment,Axis 2 Service Requester Misconfiguration,Missing Inbound Timestamp
+config,Environment,Axis 2 Service Requester Misconfiguration,Missing Outbound Encryption
+config,Environment,Axis 2 Service Requester Misconfiguration,Missing Outbound Signature
+config,Environment,Axis 2 Service Requester Misconfiguration,Missing Outbound Timestamp
+config,Environment,Axis 2 Service Requester Misconfiguration,Outbound WS-Security Not Enabled
+config,Environment,Axis 2 Service Requester Misconfiguration,Plain Text Password
+config,Environment,Axis 2 Service Requester Misconfiguration,Unsigned Inbound Timestamp
+config,Environment,Axis 2 Service Requester Misconfiguration,Unsigned Outbound Timestamp
+config,Environment,Axis 2 Service Requester Misconfiguration,Weak Token
+config,Environment,Axis 2 Service Requester Misconfiguration,WS-Security Not Enabled
+config,Environment,Axis Misconfiguration,Debug Information
+config,Environment,Axis Misconfiguration,Service Enumeration
+config,Environment,Axis Service Provider Misconfiguration,Plain Text Password
+config,Environment,Axis Service Provider Misconfiguration,Weak Token
+config,Environment,Axis Service Requester Misconfiguration,Plain Text Password
+config,Environment,Axis Service Requester Misconfiguration,Weak Token
+config,Environment,Build Misconfiguration,Dynamic Dependency Version Usage
+config,Environment,Build Misconfiguration,External Ant Dependency Repository
+config,Environment,Build Misconfiguration,External Ivy Dependency Repository
+config,Environment,Build Misconfiguration,External Maven Dependency Repository
+config,Environment,Cookie Security,HTTPOnly not Set on Application Cookie
+config,Environment,Cookie Security,HTTPOnly not Set on Session Cookie
+config,Environment,Cookie Security,Overly Broad Session Cookie Domain
+config,Environment,Cookie Security,Overly Broad Session Cookie Path
+config,Environment,Cookie Security,Persistent Session Cookie
+config,Environment,Cookie Security,Session Cookie not Sent Over SSL
+config,Environment,Cookie Security,Session Cookies Disabled
+config,Environment,Flex Misconfiguration,Debug Information
+config,Environment,J2EE Misconfiguration,Cookies Disabled
+config,Environment,J2EE Misconfiguration,Debug Information
+config,Environment,J2EE Misconfiguration,Direct JSP Access
+config,Environment,J2EE Misconfiguration,Duplicate Security Role
+config,Environment,J2EE Misconfiguration,Duplicate Servlet Mapping
+config,Environment,J2EE Misconfiguration,Excessive Servlet Mappings
+config,Environment,J2EE Misconfiguration,Excessive Session Timeout
+config,Environment,J2EE Misconfiguration,Incomplete Error Handling
+config,Environment,J2EE Misconfiguration,Insecure Transport
+config,Environment,J2EE Misconfiguration,Insufficient Session-ID Length
+config,Environment,J2EE Misconfiguration,Invalid Servlet Name
+config,Environment,J2EE Misconfiguration,Missing Authentication Method
+config,Environment,J2EE Misconfiguration,Missing Data Transport Constraint
+config,Environment,J2EE Misconfiguration,Missing Error Handling
+config,Environment,J2EE Misconfiguration,Missing Filter Definition
+config,Environment,J2EE Misconfiguration,Missing Security Role
+config,Environment,J2EE Misconfiguration,Missing Servlet Mapping
+config,Environment,J2EE Misconfiguration,Unsafe Bean Declaration
+config,Environment,J2EE Misconfiguration,Weak Access Permissions
+config,Environment,Password Management,Empty Password in Configuration File
+config,Environment,Password Management,Password in Configuration File
+config,Environment,PHP Misconfiguration,allow_url_fopen Enabled
+config,Environment,PHP Misconfiguration,allow_url_include Enabled
+config,Environment,PHP Misconfiguration,cgi.force_redirect Disabled
+config,Environment,PHP Misconfiguration,file_uploads Enabled
+config,Environment,PHP Misconfiguration,magic_quotes_gpc Enabled
+config,Environment,PHP Misconfiguration,magic_quotes_runtime Enabled
+config,Environment,PHP Misconfiguration,magic_quotes_sybase Enabled
+config,Environment,PHP Misconfiguration,Missing open_basedir Entry
+config,Environment,PHP Misconfiguration,Missing safe_mode_exec_dir Entry
+config,Environment,PHP Misconfiguration,register_globals Enabled
+config,Environment,PHP Misconfiguration,safe_mode Disabled
+config,Environment,PHP Misconfiguration,session_use_trans_sid Enabled
+config,Environment,Race Condition,PHP Design Flaw
+config,Environment,Struts Misconfiguration,Duplicate Form Bean
+config,Environment,Struts Misconfiguration,Invalid Path
+config,Environment,Struts Misconfiguration,Missing Action Input
+config,Environment,Struts Misconfiguration,Missing Exception Type
+config,Environment,Struts Misconfiguration,Missing Form Bean
+config,Environment,Struts Misconfiguration,Missing Form Bean Name
+config,Environment,Struts Misconfiguration,Missing Form Bean Type
+config,Environment,Struts Misconfiguration,Missing Form Property Type
+config,Environment,Struts Misconfiguration,Missing Forward Name
+config,Environment,Struts Misconfiguration,Missing Forward Path
+config,Environment,System Information Leak,PHP Errors
+config,Environment,System Information Leak,PHP Version
+config,Environment,Tomcat Configuration,Insecure Transport
+config,Environment,WCF Misconfiguration,Anonymous Message Client
+config,Environment,WCF Misconfiguration,Anonymous Transport Client
+config,Environment,WCF Misconfiguration,Debug Information
+config,Environment,WCF Misconfiguration,Insecure Transport
+config,Environment,WCF Misconfiguration,Insufficient Audit Failure Handling
+config,Environment,WCF Misconfiguration,Insufficient Logging
+config,Environment,WCF Misconfiguration,MSMQ Anonymous Transport Client
+config,Environment,WCF Misconfiguration,Security Not Enabled
+config,Environment,WCF Misconfiguration,Service Enumeration
+config,Environment,WCF Misconfiguration,Throttling Not Enabled
+config,Environment,WCF Misconfiguration,Transport Security Enabled
+config,Environment,WCF Misconfiguration,Unauthorized Access
+config,Environment,WCF Misconfiguration,Unsafe Revocation Mode
+config,Environment,WCF Misconfiguration,Weak Token
+config,Environment,Weak WS-SecurityPolicy,Insecure Transport
+config,Environment,Weak WS-SecurityPolicy,Insufficient Supporting Token Protection
+config,Environment,Weak WS-SecurityPolicy,Missing Encryption on Message Attachments
+config,Environment,Weak WS-SecurityPolicy,Missing Encryption on Message Body
+config,Environment,Weak WS-SecurityPolicy,Missing Encryption on Message Headers
+config,Environment,Weak WS-SecurityPolicy,Missing Encryption Token
+config,Environment,Weak WS-SecurityPolicy,Missing Initiator Encryption Token
+config,Environment,Weak WS-SecurityPolicy,Missing Initiator Signature Token
+config,Environment,Weak WS-SecurityPolicy,Missing Recipient Encryption Token
+config,Environment,Weak WS-SecurityPolicy,Missing Recipient Signature Token
+config,Environment,Weak WS-SecurityPolicy,Missing Signature on Message Attachments
+config,Environment,Weak WS-SecurityPolicy,Missing Signature on Message Body
+config,Environment,Weak WS-SecurityPolicy,Missing Signature on Message Headers
+config,Environment,Weak WS-SecurityPolicy,Missing Signature Token
+config,Environment,Weak WS-SecurityPolicy,Missing Timestamp
+config,Environment,Weak WS-SecurityPolicy,Tokens Not Protected
+config,Environment,Weak WS-SecurityPolicy,Weak Token
+config,Environment,Weak XML Schema,Lax Processing
+config,Environment,Weak XML Schema,Type Any
+config,Environment,Weak XML Schema,Unbounded Occurrences
+config,Environment,Weak XML Schema,Undefined Namespace
+config,Environment,Weblogic Misconfiguration,Missing Timestamp
+config,Environment,Weblogic Misconfiguration,Weak Token
+config,Environment,WebSphere Misconfiguration,Missing Nonce
+config,Environment,WebSphere Misconfiguration,Servlets Served By Class Name
+config,Environment,WebSphere Service Provider Misconfiguration,Inbound WS-Security Not Enabled
+config,Environment,WebSphere Service Provider Misconfiguration,Missing Inbound Encryption
+config,Environment,WebSphere Service Provider Misconfiguration,Missing Inbound Signature
+config,Environment,WebSphere Service Provider Misconfiguration,Missing Inbound Timestamp
+config,Environment,WebSphere Service Provider Misconfiguration,Missing Outbound Encryption
+config,Environment,WebSphere Service Provider Misconfiguration,Missing Outbound Signature
+config,Environment,WebSphere Service Provider Misconfiguration,Missing Outbound Timestamp
+config,Environment,WebSphere Service Provider Misconfiguration,Missing Timestamp Expiration
+config,Environment,WebSphere Service Provider Misconfiguration,Outbound WS-Security Not Enabled
+config,Environment,WebSphere Service Provider Misconfiguration,Unsigned Inbound Timestamp
+config,Environment,WebSphere Service Provider Misconfiguration,Unsigned Outbound Timestamp
+config,Environment,WebSphere Service Provider Misconfiguration,Weak Token
+config,Environment,WebSphere Service Requester Misconfiguration,Inbound WS-Security Not Enabled
+config,Environment,WebSphere Service Requester Misconfiguration,Missing Inbound Encryption
+config,Environment,WebSphere Service Requester Misconfiguration,Missing Inbound Signature
+config,Environment,WebSphere Service Requester Misconfiguration,Missing Inbound Timestamp
+config,Environment,WebSphere Service Requester Misconfiguration,Missing Outbound Encryption
+config,Environment,WebSphere Service Requester Misconfiguration,Missing Outbound Signature
+config,Environment,WebSphere Service Requester Misconfiguration,Missing Outbound Timestamp
+config,Environment,WebSphere Service Requester Misconfiguration,Missing Timestamp Expiration
+config,Environment,WebSphere Service Requester Misconfiguration,Outbound WS-Security Not Enabled
+config,Environment,WebSphere Service Requester Misconfiguration,Unsigned Inbound Timestamp
+config,Environment,WebSphere Service Requester Misconfiguration,Unsigned Outbound Timestamp
+config,Environment,WebSphere Service Requester Misconfiguration,Weak Token
+config,Environment,WSE Misconfiguration,Insufficient Encryption
+config,Environment,WSE Misconfiguration,Missing Authorization
+config,Environment,WSE Misconfiguration,Unsigned Fault Timestamp
+config,Environment,WSE Misconfiguration,Unsigned Request Timestamp
+config,Environment,WSE Misconfiguration,Unsigned Response Timestamp
+config,Input Validation and Representation,ADF Bad Practices,Missing URL Parameter Converter
+config,Input Validation and Representation,Cross-Site Scripting,External Links
+config,Input Validation and Representation,SQL Injection,iBatis Data Map
+config,Input Validation and Representation,Struts,Duplicate Validation Forms
+config,Input Validation and Representation,Struts,Form Does Not Extend Validation Class
+config,Input Validation and Representation,Struts,Form Field Without Validator
+config,Input Validation and Representation,Struts,Plugin Framework Not In Use
+config,Input Validation and Representation,Struts,Unused Action Form
+config,Input Validation and Representation,Struts,Unused Validation Form
+config,Input Validation and Representation,Struts,Unvalidated Action Form
+config,Input Validation and Representation,Struts,Validator Turned Off
+config,Input Validation and Representation,Struts,Validator Without Form Field
+config,Input Validation and Representation,Struts 2,Duplicate Action Field Validators
+config,Input Validation and Representation,Struts 2,Duplicate Validators
+config,Input Validation and Representation,Struts 2,Undeclared Validator
+config,Input Validation and Representation,Struts 2,Validation File Without Action
+config,Input Validation and Representation,Struts 2,Validator Without Action Field
+config,Security Features,Access Control,Weak Security Constraint
+config,Security Features,Acegi Misconfiguration,Insecure Channel Mixing
+config,Security Features,Acegi Misconfiguration,Run-As Authentication Replacement
+config,Security Features,Android Bad Practices,Application Permission Defined
+config,Security Features,Android Bad Practices,Just Provider writePermission Defined
+config,Security Features,Android Bad Practices,Missing Component Permission
+config,Security Features,Android Bad Practices,Missing Exported Flag or Component Permission
+config,Security Features,Android Bad Practices,Mixed Component Functionality
+config,Security Features,Android Bad Practices,normal Permission
+config,Security Features,Android Bad Practices,Provider permission Defined
+config,Security Features,Android Bad Practices,Unnecessary Component Exposure
+config,Security Features,ASP.NET Misconfiguration,Header Checking Disabled
+config,Security Features,ASP.NET Misconfiguration,Missing Error Handling
+config,Security Features,ASP.NET Misconfiguration,ViewStateMac Disabled
+config,Security Features,Header Checking Disabled,
+config,Security Features,HTTP Verb Tampering,
+config,Security Features,Privacy Violation,Image
+config,Security Features,Privacy Violation,Password
+config,Security Features,Privilege Management,Android Data Storage
+config,Security Features,Privilege Management,Android Disable
+config,Security Features,Privilege Management,Android Location
+config,Security Features,Privilege Management,Android Messaging
+config,Security Features,Privilege Management,Android Network
+config,Security Features,Privilege Management,Android Telephony
+config,Security Features,Privilege Management,Missing Intent Permission
+config,Security Features,Privilege Management,Unnecessary Permission
+config,Security Features,WCF Misconfiguration,Weak Class Reference
+config,Security Features,Weak Cryptographic Hash,
+content,Encapsulation,Cross-Site Request Forgery,
+content,Encapsulation,Hardcoded Domain in HTML,
+content,Encapsulation,Hidden Field,
+content,Input Validation and Representation,HTML5,Form Validation Turned Off
+content,Input Validation and Representation,Often Misused,File Upload
+content,Security Features,Password Management,Insecure Submission
+content,Security Features,Password Management,Password in HTML Form
+content,Security Features,Privacy Violation,Autocomplete
+content,Security Features,Privacy Violation,Password
+cpp,API Abuse,Dangerous Function,
+cpp,API Abuse,Dangerous Function,strcpy()
+cpp,API Abuse,Directory Restriction,
+cpp,API Abuse,Heap Inspection,
+cpp,API Abuse,Heap Inspection,Swappable Memory
+cpp,API Abuse,Missing Check against Null,
+cpp,API Abuse,Often Misused,Authentication
+cpp,API Abuse,Often Misused,Exception Handling
+cpp,API Abuse,Often Misused,File System
+cpp,API Abuse,Often Misused,Privilege Management
+cpp,API Abuse,Often Misused,Strings
+cpp,API Abuse,Unchecked Return Value,
+cpp,Code Quality,Code Correctness,Arithmetic Operation on Boolean
+cpp,Code Quality,Code Correctness,Function Not Invoked
+cpp,Code Quality,Code Correctness,Function Returns Stack Address
+cpp,Code Quality,Code Correctness,Macro Misuse
+cpp,Code Quality,Code Correctness,Memory Free on Stack Variable
+cpp,Code Quality,Code Correctness,Premature Thread Termination
+cpp,Code Quality,Double Free,
+cpp,Code Quality,Memory Leak,
+cpp,Code Quality,Memory Leak,Reallocation
+cpp,Code Quality,Null Dereference,
+cpp,Code Quality,Obsolete,
+cpp,Code Quality,Obsolete,Inadequate Pointer Validation
+cpp,Code Quality,Poor Style,Redundant Initialization
+cpp,Code Quality,Poor Style,Value Never Read
+cpp,Code Quality,Poor Style,Variable Never Used
+cpp,Code Quality,Portability Flaw,
+cpp,Code Quality,Type Mismatch,Integer to Character
+cpp,Code Quality,Type Mismatch,Negative to Unsigned
+cpp,Code Quality,Type Mismatch,Signed to Unsigned
+cpp,Code Quality,Undefined Behavior,
+cpp,Code Quality,Undefined Behavior,Redundant Delete
+cpp,Code Quality,Uninitialized Variable,
+cpp,Code Quality,Unreleased Resource,
+cpp,Code Quality,Unreleased Resource,Synchronization
+cpp,Code Quality,Use After Free,
+cpp,Encapsulation,System Information Leak,
+cpp,Environment,Insecure Compiler Optimization,
+cpp,Environment,Insecure Compiler Optimization,Pointer Arithmetic
+cpp,Input Validation and Representation,Buffer Overflow,
+cpp,Input Validation and Representation,Command Injection,
+cpp,Input Validation and Representation,Denial of Service,
+cpp,Input Validation and Representation,Format String,
+cpp,Input Validation and Representation,Illegal Pointer Value,
+cpp,Input Validation and Representation,Integer Overflow,
+cpp,Input Validation and Representation,LDAP Injection,
+cpp,Input Validation and Representation,LDAP Manipulation,
+cpp,Input Validation and Representation,Log Forging,
+cpp,Input Validation and Representation,Out-of-Bounds Read,
+cpp,Input Validation and Representation,Path Manipulation,
+cpp,Input Validation and Representation,Process Control,
+cpp,Input Validation and Representation,Resource Injection,
+cpp,Input Validation and Representation,Setting Manipulation,
+cpp,Input Validation and Representation,SQL Injection,
+cpp,Input Validation and Representation,String Termination Error,
+cpp,Input Validation and Representation,Unsafe Reflection,
+cpp,Security Features,Access Control,Anonymous LDAP Bind
+cpp,Security Features,Access Control,Database
+cpp,Security Features,Access Control,LDAP
+cpp,Security Features,Insecure Randomness,
+cpp,Security Features,Key Management,Hardcoded Encryption Key
+cpp,Security Features,Least Privilege Violation,
+cpp,Security Features,Password Management,
+cpp,Security Features,Password Management,Empty Password
+cpp,Security Features,Password Management,Hardcoded Password
+cpp,Security Features,Password Management,Null Password
+cpp,Security Features,Password Management,Password in Comment
+cpp,Security Features,Password Management,Weak Cryptography
+cpp,Security Features,Privacy Violation,
+cpp,Security Features,Weak Cryptographic Hash,
+cpp,Security Features,Weak Cryptographic Hash,Hardcoded Salt
+cpp,Security Features,Weak Encryption,
+cpp,Security Features,Weak Encryption,Inadequate RSA Padding
+cpp,Security Features,Weak Encryption,Insufficient Key Size
+cpp,Time and State,Code Correctness,Erroneous Synchronization
+cpp,Time and State,Insecure Temporary File,
+cpp,Time and State,Race Condition,File System Access
+cpp,Time and State,Race Condition,Signal Handling
+dotnet,API Abuse,ASP.NET MVC Bad Practices,Request Parameters Bound into Persisted Objects
+dotnet,API Abuse,Code Correctness,Call to GC.Collect()
+dotnet,API Abuse,Code Correctness,Class Does Not Implement Equals
+dotnet,API Abuse,Code Correctness,ToString on Array
+dotnet,API Abuse,Missing Check against Null,
+dotnet,API Abuse,Object Model Violation,Just One of Equals() and GetHashCode() Defined
+dotnet,API Abuse,Often Misused,Authentication
+dotnet,API Abuse,Unchecked Return Value,
+dotnet,Code Quality,ASP.NET Bad Practices,Unminified Code
+dotnet,Code Quality,Code Correctness,Class Implements ICloneable
+dotnet,Code Quality,Code Correctness,Erroneous Class Compare
+dotnet,Code Quality,Code Correctness,Missing [Serializable] Attribute
+dotnet,Code Quality,Code Correctness,Misspelled Method Name
+dotnet,Code Quality,Code Correctness,null Argument to Equals()
+dotnet,Code Quality,Code Correctness,Regular Expressions Denial of Service
+dotnet,Code Quality,Dead Code,Unused Field
+dotnet,Code Quality,Dead Code,Unused Method
+dotnet,Code Quality,Null Dereference,
+dotnet,Code Quality,Obsolete,
+dotnet,Code Quality,Portability Flaw,File Separator
+dotnet,Code Quality,Unreleased Resource,
+dotnet,Code Quality,Unreleased Resource,Database
+dotnet,Code Quality,Unreleased Resource,Streams
+dotnet,Code Quality,Unreleased Resource,Synchronization
+dotnet,Code Quality,Unreleased Resource,Unmanaged Object
+dotnet,Encapsulation,ASP.NET Bad Practices,Leftover Debug Code
+dotnet,Encapsulation,Cross-Site Request Forgery,
+dotnet,Encapsulation,Hidden Field,
+dotnet,Encapsulation,HTML5,Overly Permissive CORS Policy
+dotnet,Encapsulation,JavaScript Hijacking,Vulnerable Framework
+dotnet,Encapsulation,Poor Logging Practice,Use of a System Output Stream
+dotnet,Encapsulation,System Information Leak,
+dotnet,Encapsulation,Trust Boundary Violation,
+dotnet,Environment,ASP.NET Misconfiguration,Trace Output
+dotnet,Environment,External Content,Content Delivery Network
+dotnet,Environment,WCF Misconfiguration,Anonymous Message Client
+dotnet,Environment,WCF Misconfiguration,Anonymous Transport Client
+dotnet,Environment,WCF Misconfiguration,Metadata
+dotnet,Environment,WCF Misconfiguration,Security Not Enabled
+dotnet,Environment,WCF Misconfiguration,Transport Security Enabled
+dotnet,Environment,WCF Misconfiguration,Unauthorized Access
+dotnet,Errors,Poor Error Handling,Empty Catch Block
+dotnet,Errors,Poor Error Handling,Overly Broad Catch
+dotnet,Errors,Poor Error Handling,Program Catches NullReferenceException
+dotnet,Input Validation and Representation,Command Injection,
+dotnet,Input Validation and Representation,Cross-Site Scripting,Persistent
+dotnet,Input Validation and Representation,Cross-Site Scripting,Poor Validation
+dotnet,Input Validation and Representation,Cross-Site Scripting,Reflected
+dotnet,Input Validation and Representation,Dangerous File Inclusion,
+dotnet,Input Validation and Representation,Denial of Service,
+dotnet,Input Validation and Representation,Denial of Service,Routing
+dotnet,Input Validation and Representation,Dynamic Code Evaluation,Script Injection
+dotnet,Input Validation and Representation,Header Manipulation,
+dotnet,Input Validation and Representation,Header Manipulation,Cookies
+dotnet,Input Validation and Representation,LDAP Injection,
+dotnet,Input Validation and Representation,LDAP Manipulation,
+dotnet,Input Validation and Representation,Log Forging,
+dotnet,Input Validation and Representation,Missing XML Validation,
+dotnet,Input Validation and Representation,Often Misused,File Upload
+dotnet,Input Validation and Representation,Open Redirect,
+dotnet,Input Validation and Representation,Path Manipulation,
+dotnet,Input Validation and Representation,Resource Injection,
+dotnet,Input Validation and Representation,Setting Manipulation,
+dotnet,Input Validation and Representation,SQL Injection,
+dotnet,Input Validation and Representation,SQL Injection,Castle ActiveRecord
+dotnet,Input Validation and Representation,SQL Injection,LINQ
+dotnet,Input Validation and Representation,SQL Injection,NHibernate
+dotnet,Input Validation and Representation,SQL Injection,SubSonic
+dotnet,Input Validation and Representation,Unsafe Native Invoke,
+dotnet,Input Validation and Representation,Unsafe Reflection,
+dotnet,Input Validation and Representation,Value Shadowing,
+dotnet,Input Validation and Representation,Value Shadowing,Server Variable
+dotnet,Input Validation and Representation,XML Injection,
+dotnet,Input Validation and Representation,XPath Injection,
+dotnet,Security Features,Access Control,Anonymous LDAP Bind
+dotnet,Security Features,Access Control,Database
+dotnet,Security Features,Access Control,LDAP
+dotnet,Security Features,ASP.NET Bad Practices,Use of Impersonation Context
+dotnet,Security Features,ASP.NET Misconfiguration,Persistent Authentication
+dotnet,Security Features,ASP.NET Misconfiguration,ViewStateMac Disabled
+dotnet,Security Features,Cookie Security,Cookie not Sent Over SSL
+dotnet,Security Features,Cookie Security,HTTPOnly not Set
+dotnet,Security Features,Cookie Security,Overly Broad Domain
+dotnet,Security Features,Cookie Security,Overly Broad Path
+dotnet,Security Features,Cookie Security,Persistent Cookie
+dotnet,Security Features,Header Checking Disabled,
+dotnet,Security Features,Insecure Randomness,
+dotnet,Security Features,Password Management,
+dotnet,Security Features,Password Management,Empty Password
+dotnet,Security Features,Password Management,Hardcoded Password
+dotnet,Security Features,Password Management,Null Password
+dotnet,Security Features,Password Management,Password in Comment
+dotnet,Security Features,Password Management,Weak Cryptography
+dotnet,Security Features,Privacy Violation,
+dotnet,Security Features,Privacy Violation,Heap Inspection
+dotnet,Security Features,Privacy Violation,Image
+dotnet,Security Features,Weak Cryptographic Hash,
+dotnet,Security Features,Weak Encryption,
+dotnet,Security Features,Weak Encryption,Inadequate RSA Padding
+dotnet,Security Features,Weak Encryption,Insufficient Key Size
+dotnet,Time and State,ASP.NET Bad Practices,Non-Serializable Object Stored in Session
+internal,Code Quality,Dead Code,
+internal,Code Quality,Format String,Argument Number Mismatch
+internal,Code Quality,Format String,Argument Type Mismatch
+internal,Code Quality,Fortify Internal,
+internal,Code Quality,Null Dereference,
+internal,Code Quality,Redundant Null Check,
+internal,Environment,ASP.NET Misconfiguration,Request Validation Disabled
+internal,Input Validation and Representation,Buffer Overflow,
+internal,Input Validation and Representation,Buffer Overflow,Format String
+internal,Input Validation and Representation,Buffer Overflow,Format String (%f/%F)
+internal,Input Validation and Representation,Buffer Overflow,Off-by-One
+internal,Input Validation and Representation,Buffer Overflow,Signed Comparison
+internal,Input Validation and Representation,Constraint,Ensures Statement
+internal,Input Validation and Representation,NUMBER Taint Sources,
+internal,Input Validation and Representation,Out-of-Bounds Read,
+internal,Input Validation and Representation,Out-of-Bounds Read,Off-by-One
+internal,Input Validation and Representation,Out-of-Bounds Read,Signed Comparison
+internal,Input Validation and Representation,Struts,Duplicate Validation Forms
+internal,Input Validation and Representation,Struts,Form Does Not Extend Validation Class
+internal,Input Validation and Representation,Struts,Form Field Without Validator
+internal,Input Validation and Representation,Struts,Plugin Framework Not In Use
+internal,Input Validation and Representation,Struts,Unused Action Form
+internal,Input Validation and Representation,Struts,Unvalidated Action Form
+internal,Input Validation and Representation,Struts,Validator Turned Off
+internal,Input Validation and Representation,Struts,Validator Without Form Field
+internal,Time and State,Session Fixation,
+java,API Abuse,Castor Bad Practices,Query Mode Not Read-Only
+java,API Abuse,Castor Bad Practices,Unspecified Query Mode
+java,API Abuse,Code Correctness,Call to System.gc()
+java,API Abuse,Code Correctness,Class Does Not Implement equals
+java,API Abuse,Code Correctness,Erroneous finalize() Method
+java,API Abuse,Code Correctness,Multiple Stream Commits
+java,API Abuse,Code Correctness,Negative Content-Length
+java,API Abuse,Code Correctness,toString on Array
+java,API Abuse,Dangerous Field,
+java,API Abuse,Dangerous Method,
+java,API Abuse,Dangerous Type,
+java,API Abuse,EJB Bad Practices,Use of AWT/Swing
+java,API Abuse,EJB Bad Practices,Use of Class Loader
+java,API Abuse,EJB Bad Practices,Use of java.io
+java,API Abuse,EJB Bad Practices,Use of Sockets
+java,API Abuse,EJB Bad Practices,Use of Synchronization Primitives
+java,API Abuse,File Disclosure,J2EE
+java,API Abuse,File Disclosure,Spring
+java,API Abuse,File Disclosure,Struts
+java,API Abuse,Immutable Classes,Field Mutation
+java,API Abuse,Immutable Classes,Non-final Fields
+java,API Abuse,Immutable Classes,Public Mutable Fields
+java,API Abuse,J2EE Bad Practices,getConnection()
+java,API Abuse,J2EE Bad Practices,Sockets
+java,API Abuse,Missing Check against Null,
+java,API Abuse,Missing Check for Null Parameter,
+java,API Abuse,Object Model Violation,Erroneous clone() Method
+java,API Abuse,Object Model Violation,Just one of equals() and hashCode() Defined
+java,API Abuse,Object Model Violation,Just one of restoreState() and saveState() Defined
+java,API Abuse,Obsolete,Deprecated by ESAPI
+java,API Abuse,Often Misused,Authentication
+java,API Abuse,Often Misused,Boolean.getBoolean()
+java,API Abuse,Often Misused,Encoding
+java,API Abuse,Password Management,Weak Redundancy
+java,API Abuse,Poor Style,Explicit Call to finalize()
+java,API Abuse,Spring MVC Bad Practices,Request Parameters Bound into Persisted Objects
+java,API Abuse,Unchecked Return Value,
+java,Code Quality,Android Bad Practices,Use of Released Camera Resource
+java,Code Quality,Android Bad Practices,Use of Released Media Resource
+java,Code Quality,Android Bad Practices,Use of Released SQLite Resource
+java,Code Quality,Code Correctness,Call to notify()
+java,Code Quality,Code Correctness,Call to Thread.run()
+java,Code Quality,Code Correctness,Class Does Not Implement Cloneable
+java,Code Quality,Code Correctness,Erroneous Class Compare
+java,Code Quality,Code Correctness,Erroneous Negative Value
+java,Code Quality,Code Correctness,Erroneous String Compare
+java,Code Quality,Code Correctness,Erroneous Zero Value
+java,Code Quality,Code Correctness,Incorrect serialPersistentFields Modifier
+java,Code Quality,Code Correctness,Misspelled Method Name
+java,Code Quality,Code Correctness,Non-Synchronized Method Overrides Synchronized Method
+java,Code Quality,Code Correctness,null Argument to equals()
+java,Code Quality,Code Correctness,Regular Expressions Denial of Service
+java,Code Quality,Dead Code,Empty Try Block
+java,Code Quality,Dead Code,Expression is Always false
+java,Code Quality,Dead Code,Expression is Always true
+java,Code Quality,Dead Code,Unused Field
+java,Code Quality,Dead Code,Unused Method
+java,Code Quality,Null Dereference,
+java,Code Quality,Obsolete,
+java,Code Quality,Poor Style,Confusing Naming
+java,Code Quality,Poor Style,Empty Synchronized Block
+java,Code Quality,Poor Style,Identifier Contains Dollar Symbol ($)
+java,Code Quality,Poor Style,Redundant Initialization
+java,Code Quality,Poor Style,Value Never Read
+java,Code Quality,Portability Flaw,File Separator
+java,Code Quality,Unreleased Resource,Android Camera
+java,Code Quality,Unreleased Resource,Android Media
+java,Code Quality,Unreleased Resource,Android SQLite Database
+java,Code Quality,Unreleased Resource,Database
+java,Code Quality,Unreleased Resource,Files
+java,Code Quality,Unreleased Resource,Sockets
+java,Code Quality,Unreleased Resource,Streams
+java,Code Quality,Unreleased Resource,Synchronization
+java,Encapsulation,Cross-Site Request Forgery,
+java,Encapsulation,Hidden Field,
+java,Encapsulation,HTML5,Overly Permissive CORS Policy
+java,Encapsulation,Insecure Storage,Android External Storage
+java,Encapsulation,Insecure Storage,Android World Readable or Writeable
+java,Encapsulation,Insecure Transport,
+java,Encapsulation,J2EE Bad Practices,Leftover Debug Code
+java,Encapsulation,JavaScript Hijacking,Ad Hoc Ajax
+java,Encapsulation,JavaScript Hijacking,Vulnerable Framework
+java,Encapsulation,Poor Logging Practice,Logger Not Declared Static Final
+java,Encapsulation,Poor Logging Practice,Multiple Loggers
+java,Encapsulation,Poor Logging Practice,Use of a System Output Stream
+java,Encapsulation,Poor Style,Non-final Public Static Field
+java,Encapsulation,System Information Leak,
+java,Encapsulation,System Information Leak,Incomplete Servlet Error Handling
+java,Encapsulation,Trust Boundary Violation,
+java,Encapsulation,Unsafe Mobile Code,Access Violation
+java,Encapsulation,Unsafe Mobile Code,Database Access
+java,Encapsulation,Unsafe Mobile Code,Inner Class
+java,Encapsulation,Unsafe Mobile Code,Public finalize() Method
+java,Encapsulation,Unsafe Mobile Code,Unsafe Array Declaration
+java,Encapsulation,Unsafe Mobile Code,Unsafe Public Field
+java,Environment,Axis 2 Misconfiguration,Insecure Message Security
+java,Errors,Poor Error Handling,Empty Catch Block
+java,Errors,Poor Error Handling,Overly Broad Catch
+java,Errors,Poor Error Handling,Overly Broad Throws
+java,Errors,Poor Error Handling,Program Catches NullPointerException
+java,Errors,Poor Error Handling,Return Inside Finally
+java,Errors,Poor Error Handling,Swallowed ThreadDeath
+java,Errors,Poor Error Handling,Throw Inside Finally
+java,Errors,Poor Error Handling,Unhandled SSL Exception
+java,Input Validation and Representation,Command Injection,
+java,Input Validation and Representation,Cross-Site Scripting,DOM
+java,Input Validation and Representation,Cross-Site Scripting,Persistent
+java,Input Validation and Representation,Cross-Site Scripting,Poor Validation
+java,Input Validation and Representation,Cross-Site Scripting,Reflected
+java,Input Validation and Representation,Dangerous File Inclusion,
+java,Input Validation and Representation,Denial of Service,
+java,Input Validation and Representation,Denial of Service,Parse Double
+java,Input Validation and Representation,Dynamic Code Evaluation,Code Injection
+java,Input Validation and Representation,Dynamic Code Evaluation,Code Manipulation
+java,Input Validation and Representation,Dynamic Code Evaluation,Script Injection
+java,Input Validation and Representation,Hadoop Cluster Manipulation,
+java,Input Validation and Representation,Hadoop Job Manipulation,
+java,Input Validation and Representation,Header Manipulation,
+java,Input Validation and Representation,Header Manipulation,Cookies
+java,Input Validation and Representation,LDAP Injection,
+java,Input Validation and Representation,LDAP Manipulation,
+java,Input Validation and Representation,Log Forging,
+java,Input Validation and Representation,Log Forging (debug),
+java,Input Validation and Representation,Missing XML Validation,
+java,Input Validation and Representation,Missing XML Validation,Untyped Response
+java,Input Validation and Representation,Often Misused,File Upload
+java,Input Validation and Representation,Open Redirect,
+java,Input Validation and Representation,Path Manipulation,
+java,Input Validation and Representation,Process Control,
+java,Input Validation and Representation,Process Control,Invoker Servlet
+java,Input Validation and Representation,Query String Injection,Amazon Web Services
+java,Input Validation and Representation,Query String Injection,Android Provider
+java,Input Validation and Representation,Resource Injection,
+java,Input Validation and Representation,Setting Manipulation,
+java,Input Validation and Representation,SQL Injection,
+java,Input Validation and Representation,SQL Injection,Hibernate
+java,Input Validation and Representation,SQL Injection,JDO
+java,Input Validation and Representation,SQL Injection,Persistence
+java,Input Validation and Representation,Struts,Erroneous validate() Method
+java,Input Validation and Representation,Struts,Form Field Without Validator
+java,Input Validation and Representation,Struts 2,Action Field Without Validator
+java,Input Validation and Representation,Struts 2,Duplicate Validation Files
+java,Input Validation and Representation,Struts 2,Unvalidated Action
+java,Input Validation and Representation,Unsafe JNI,
+java,Input Validation and Representation,Unsafe Reflection,
+java,Input Validation and Representation,XML Injection,
+java,Input Validation and Representation,XPath Injection,
+java,Security Features,Access Control,Amazon Web Services
+java,Security Features,Access Control,Android Provider
+java,Security Features,Access Control,Anonymous LDAP Bind
+java,Security Features,Access Control,Database
+java,Security Features,Access Control,LDAP
+java,Security Features,Android Bad Practices,Missing Broadcaster Permission
+java,Security Features,Android Bad Practices,Missing Receiver Permission
+java,Security Features,Android Bad Practices,Sticky Broadcast
+java,Security Features,Android Bad Practices,Weak Authentication
+java,Security Features,Cookie Security,Cookie not Sent Over SSL
+java,Security Features,Cookie Security,Overly Broad Domain
+java,Security Features,Cookie Security,Overly Broad Path
+java,Security Features,Cookie Security,Persistent Cookie
+java,Security Features,Insecure Randomness,
+java,Security Features,Insecure SSL,Android Customized Implementation
+java,Security Features,Insecure SSL,Android Hostname Verification Disabled
+java,Security Features,Insecure SSL,Android Socket
+java,Security Features,Missing SecurityManager Check,Cloneable
+java,Security Features,Missing SecurityManager Check,Serializable
+java,Security Features,Often Misused,Android Permission Check
+java,Security Features,Password Management,
+java,Security Features,Password Management,Empty Password
+java,Security Features,Password Management,Hardcoded Password
+java,Security Features,Password Management,Null Password
+java,Security Features,Password Management,Password in Comment
+java,Security Features,Password Management,Password in Redirect
+java,Security Features,Password Management,Weak Cryptography
+java,Security Features,PCI Privacy Violation,
+java,Security Features,Privacy Violation,
+java,Security Features,Privacy Violation,Android Internal Storage
+java,Security Features,Privacy Violation,Heap Inspection
+java,Security Features,Privilege Management,Amazon Web Services Unchecked Permissions
+java,Security Features,Privilege Management,Android Location
+java,Security Features,Privilege Management,Android Messaging
+java,Security Features,Privilege Management,Android Telephony
+java,Security Features,Privilege Management,Missing API Permission
+java,Security Features,Privilege Management,Missing Content Provider Permission
+java,Security Features,Privilege Management,Missing Intent Permission
+java,Security Features,Privilege Management,Overly Broad Access Specifier
+java,Security Features,Weak Cryptographic Hash,
+java,Security Features,Weak Cryptographic Hash,Hardcoded Salt
+java,Security Features,Weak Encryption,
+java,Security Features,Weak Encryption,Inadequate RSA Padding
+java,Security Features,Weak Encryption,Insufficient Key Size
+java,Security Features,Weak SecurityManager Check,Overridable Method
+java,Time and State,Code Correctness,Call to sleep() in Lock
+java,Time and State,Code Correctness,Double-Checked Locking
+java,Time and State,J2EE Bad Practices,Non-Serializable Object Stored in Session
+java,Time and State,J2EE Bad Practices,System.exit
+java,Time and State,J2EE Bad Practices,Threads
+java,Time and State,Race Condition,Format Flaw
+java,Time and State,Race Condition,Singleton Member Field
+java,Time and State,Race Condition,Static Database Connection
+java,Time and State,Session Fixation,
+javascript,API Abuse,Code Correctness,Negative Content-Length
+javascript,Encapsulation,Cross-Session Contamination,
+javascript,Encapsulation,Cross-Site Request Forgery,
+javascript,Encapsulation,HTML5,Overly Permissive Message Posting Policy
+javascript,Encapsulation,JavaScript Hijacking,Ad Hoc Ajax
+javascript,Encapsulation,JavaScript Hijacking,Vulnerable Framework
+javascript,Input Validation and Representation,Cross-Site Scripting,DOM
+javascript,Input Validation and Representation,Cross-Site Scripting,Poor Validation
+javascript,Input Validation and Representation,Denial of Service,
+javascript,Input Validation and Representation,Dynamic Code Evaluation,Code Injection
+javascript,Input Validation and Representation,Dynamic Code Evaluation,Script Injection
+javascript,Input Validation and Representation,Header Manipulation,
+javascript,Input Validation and Representation,Header Manipulation,Cookies
+javascript,Input Validation and Representation,Open Redirect,
+javascript,Input Validation and Representation,Path Manipulation,
+javascript,Input Validation and Representation,Resource Injection,
+javascript,Input Validation and Representation,SQL Injection,
+javascript,Security Features,Access Control,Database
+javascript,Security Features,HTML5,Easy-to-Guess Database Name
+javascript,Security Features,Insecure Randomness,
+javascript,Security Features,Password Management,
+javascript,Security Features,Password Management,Empty Password
+javascript,Security Features,Password Management,Hardcoded Password
+javascript,Security Features,Password Management,Null Password
+javascript,Security Features,Password Management,Password in Comment
+javascript,Security Features,Password Management,Weak Cryptography
+javascript,Security Features,Privacy Violation,
+javascript,Security Features,Weak Cryptographic Hash,
+javascript,Security Features,Weak Encryption,
+javascript,Security Features,Weak Encryption,Insufficient Key Size
+jsp,API Abuse,ADF Faces Bad Practices,unsecure Attribute
+jsp,Encapsulation,System Information Leak,
+jsp,Encapsulation,System Information Leak,HTML Comment in JSP
+jsp,Encapsulation,Trust Boundary Violation,
+jsp,Input Validation and Representation,Cross-Site Scripting,Persistent
+jsp,Input Validation and Representation,Cross-Site Scripting,Poor Validation
+jsp,Input Validation and Representation,Cross-Site Scripting,Reflected
+jsp,Input Validation and Representation,Dangerous File Inclusion,
+jsp,Input Validation and Representation,Dynamic Code Evaluation,Code Injection
+jsp,Input Validation and Representation,Header Manipulation,
+jsp,Input Validation and Representation,Log Forging,
+jsp,Input Validation and Representation,Open Redirect,
+jsp,Input Validation and Representation,Path Manipulation,
+jsp,Input Validation and Representation,Resource Injection,
+jsp,Input Validation and Representation,Setting Manipulation,
+jsp,Input Validation and Representation,SQL Injection,
+jsp,Input Validation and Representation,Unsafe Reflection,
+jsp,Input Validation and Representation,XML Injection,
+jsp,Security Features,Access Control,Database
+jsp,Security Features,Password Management,
+jsp,Security Features,Password Management,Empty Password
+jsp,Security Features,Password Management,Hardcoded Password
+jsp,Security Features,Password Management,Null Password
+jsp,Security Features,Password Management,Password in Comment
+jsp,Security Features,Password Management,Weak Cryptography
+jsp,Security Features,Privacy Violation,
+jsp,Time and State,Race Condition,Singleton Member Field
+objc,API Abuse,Often Misused,Encoding
+objc,API Abuse,Often Misused,File System
+objc,API Abuse,Often Misused,SMS
+objc,API Abuse,Often Misused,Weak SSL Certificate
+objc,Code Quality,Code Correctness,Regular Expressions Denial of Service
+objc,Code Quality,Memory Leak,
+objc,Code Quality,Unreleased Resource,Streams
+objc,Encapsulation,Insecure Storage,Missing Encryption on Stored Private Media
+objc,Encapsulation,Insecure Transport,
+objc,Encapsulation,Insecure Transport,HTTP GET
+objc,Input Validation and Representation,Cross-Site Scripting,Persistent
+objc,Input Validation and Representation,Cross-Site Scripting,Poor Validation
+objc,Input Validation and Representation,Cross-Site Scripting,Reflected
+objc,Input Validation and Representation,Format String,
+objc,Input Validation and Representation,JSON Injection,
+objc,Input Validation and Representation,Log Forging,
+objc,Input Validation and Representation,Path Manipulation,
+objc,Input Validation and Representation,Resource Injection,
+objc,Input Validation and Representation,SQL Injection,
+objc,Input Validation and Representation,Unsafe Reflection,
+objc,Input Validation and Representation,XML External Entity Injection,
+objc,Input Validation and Representation,XML Injection,
+objc,Input Validation and Representation,XPath Injection,
+objc,Security Features,Access Control,Database
+objc,Security Features,Key Management,Hardcoded Encryption Key
+objc,Security Features,Often Misused,SMS
+objc,Security Features,Password Management,Empty Password
+objc,Security Features,Password Management,Hardcoded Password
+objc,Security Features,Password Management,Null Password
+objc,Security Features,Privacy Violation,
+objc,Security Features,Privacy Violation,Keyboard Caching
+objc,Security Features,Privacy Violation,Screen Caching
+objc,Security Features,Weak Cryptographic Hash,
+objc,Security Features,Weak Encryption,
+objc,Security Features,Weak Encryption,Insufficient Key Size
+php,API Abuse,Dangerous Function,
+php,Code Quality,Code Correctness,Regular Expressions Denial of Service
+php,Encapsulation,HTML5,Overly Permissive CORS Policy
+php,Encapsulation,Insecure Transport,
+php,Encapsulation,Insecure Transport,HTTP GET
+php,Encapsulation,System Information Leak,
+php,Environment,CakePHP Misconfiguration,Debug Information
+php,Environment,CakePHP Misconfiguration,Excessive Session Timeout
+php,Environment,Cookie Security,HTTPOnly not Set on Session Cookie
+php,Environment,Cookie Security,Overly Broad Session Cookie Domain
+php,Environment,Cookie Security,Overly Broad Session Cookie Path
+php,Environment,Cookie Security,Persistent Session Cookie
+php,Environment,Cookie Security,Session Cookie not Sent Over SSL
+php,Environment,Cookie Security,Session Cookies Disabled
+php,Environment,PHP Misconfiguration,allow_url_fopen Enabled
+php,Environment,PHP Misconfiguration,allow_url_include Enabled
+php,Environment,PHP Misconfiguration,cgi.force_redirect Disabled
+php,Environment,PHP Misconfiguration,file_uploads Enabled
+php,Environment,PHP Misconfiguration,magic_quotes_gpc Enabled
+php,Environment,PHP Misconfiguration,magic_quotes_runtime Enabled
+php,Environment,PHP Misconfiguration,magic_quotes_sybase Enabled
+php,Environment,PHP Misconfiguration,Missing safe_mode_exec_dir Entry
+php,Environment,PHP Misconfiguration,register_globals Enabled
+php,Environment,PHP Misconfiguration,safe_mode Disabled
+php,Environment,PHP Misconfiguration,session_use_trans_sid Enabled
+php,Environment,Race Condition,PHP Design Flaw
+php,Environment,System Information Leak,PHP Errors
+php,Environment,System Information Leak,PHP Version
+php,Input Validation and Representation,Command Injection,
+php,Input Validation and Representation,Cross-Site Scripting,Persistent
+php,Input Validation and Representation,Cross-Site Scripting,Poor Validation
+php,Input Validation and Representation,Cross-Site Scripting,Reflected
+php,Input Validation and Representation,Dangerous File Inclusion,
+php,Input Validation and Representation,Dynamic Code Evaluation,Code Injection
+php,Input Validation and Representation,File Permission Manipulation,
+php,Input Validation and Representation,Header Manipulation,
+php,Input Validation and Representation,Header Manipulation,Cookies
+php,Input Validation and Representation,HTTP Parameter Pollution,
+php,Input Validation and Representation,Log Forging,
+php,Input Validation and Representation,Often Misused,File Upload
+php,Input Validation and Representation,Open Redirect,
+php,Input Validation and Representation,Path Manipulation,
+php,Input Validation and Representation,Possible Variable Overwrite,Functional Scope
+php,Input Validation and Representation,Possible Variable Overwrite,Global Scope
+php,Input Validation and Representation,Resource Injection,
+php,Input Validation and Representation,Setting Manipulation,
+php,Input Validation and Representation,SQL Injection,
+php,Input Validation and Representation,Unsafe Reflection,
+php,Input Validation and Representation,XML Injection,
+php,Input Validation and Representation,XPath Injection,
+php,Input Validation and Representation,XQuery Injection,
+php,Input Validation and Representation,XSLT Injection,
+php,Security Features,Access Control,Database
+php,Security Features,Cookie Security,Cookie not Sent Over SSL
+php,Security Features,Cookie Security,HTTPOnly not Set
+php,Security Features,Cookie Security,HTTPOnly not Set on Session Cookie
+php,Security Features,Cookie Security,Overly Broad Domain
+php,Security Features,Cookie Security,Overly Broad Path
+php,Security Features,Cookie Security,Overly Broad Session Cookie Domain
+php,Security Features,Cookie Security,Overly Broad Session Cookie Path
+php,Security Features,Cookie Security,Persistent Cookie
+php,Security Features,Cookie Security,Persistent Session Cookie
+php,Security Features,Cookie Security,Session Cookie not Sent Over SSL
+php,Security Features,Insecure Randomness,
+php,Security Features,Password Management,
+php,Security Features,Password Management,Empty Password
+php,Security Features,Password Management,Hardcoded Password
+php,Security Features,Password Management,Null Password
+php,Security Features,Password Management,Password in Comment
+php,Security Features,Password Management,Weak Cryptography
+php,Security Features,Privacy Violation,
+php,Security Features,Weak Cryptographic Hash,
+php,Security Features,Weak Cryptographic Hash,Hardcoded Salt
+php,Security Features,Weak Encryption,
+php,Security Features,Weak Encryption,Inadequate RSA Padding
+plsql,Code Quality,Code Correctness,Erroneous Null Comparison
+python,Code Quality,Portability Flaw,File Separator
+python,Encapsulation,HTML5,Overly Permissive CORS Policy
+python,Encapsulation,System Information Leak,
+python,Input Validation and Representation,Command Injection,
+python,Input Validation and Representation,Cross-Site Scripting,Persistent
+python,Input Validation and Representation,Cross-Site Scripting,Poor Validation
+python,Input Validation and Representation,Cross-Site Scripting,Reflected
+python,Input Validation and Representation,Header Manipulation,
+python,Input Validation and Representation,Log Forging,
+python,Input Validation and Representation,Open Redirect,
+python,Input Validation and Representation,Path Manipulation,
+python,Input Validation and Representation,Resource Injection,
+python,Input Validation and Representation,SQL Injection,
+python,Security Features,Insecure Randomness,
+python,Security Features,Password Management,Hardcoded Password
+python,Security Features,Password Management,Password in Comment
+python,Security Features,Weak Cryptographic Hash,
+sql,API Abuse,Dangerous Function,
+sql,API Abuse,SQL Bad Practices,Underspecified Identifier
+sql,Code Quality,Code Correctness,Erroneous Null Comparison
+sql,Code Quality,Unreleased Resource,
+sql,Code Quality,Unreleased Resource,Cursor Snarfing
+sql,Encapsulation,System Information Leak,
+sql,Encapsulation,Trust Boundary Violation,
+sql,Errors,Poor Error Handling,Empty Default Exception Handler
+sql,Input Validation and Representation,Cross-Site Scripting,Persistent
+sql,Input Validation and Representation,Cross-Site Scripting,Poor Validation
+sql,Input Validation and Representation,Cross-Site Scripting,Reflected
+sql,Input Validation and Representation,Denial of Service,
+sql,Input Validation and Representation,Header Manipulation,
+sql,Input Validation and Representation,Resource Injection,
+sql,Input Validation and Representation,SQL Injection,
+sql,Security Features,Access Control,Database
+sql,Security Features,Insecure Randomness,
+sql,Security Features,Password Management,
+sql,Security Features,Password Management,Empty Password
+sql,Security Features,Password Management,Hardcoded Password
+sql,Security Features,Password Management,Null Password
+sql,Security Features,Password Management,Password in Comment
+sql,Security Features,Privacy Violation,
+sql,Security Features,Privilege Management,Default Function or Procedure Rights
+sql,Security Features,Privilege Management,Default Package Rights
+sql,Security Features,Privilege Management,Overly Broad Grant
+sql,Security Features,Weak Cryptographic Hash,
+tsql,API Abuse,Dangerous Function,xp_cmdshell
+tsql,Code Quality,Code Correctness,Erroneous Null Comparison
+tsql,Input Validation and Representation,SQL Injection,
+tsql,Security Features,Access Control,Database
+tsql,Security Features,Insecure Randomness,
+tsql,Security Features,Weak Cryptographic Hash,
+vb,Encapsulation,HTML5,Overly Permissive CORS Policy
+vb,Encapsulation,System Information Leak,
+vb,Encapsulation,Trust Boundary Violation,
+vb,Input Validation and Representation,Command Injection,
+vb,Input Validation and Representation,Cross-Site Scripting,Persistent
+vb,Input Validation and Representation,Cross-Site Scripting,Poor Validation
+vb,Input Validation and Representation,Cross-Site Scripting,Reflected
+vb,Input Validation and Representation,Dynamic Code Evaluation,Code Injection
+vb,Input Validation and Representation,Dynamic Code Evaluation,Script Injection
+vb,Input Validation and Representation,Header Manipulation,
+vb,Input Validation and Representation,Header Manipulation,Cookies
+vb,Input Validation and Representation,Log Forging,
+vb,Input Validation and Representation,Open Redirect,
+vb,Input Validation and Representation,Path Manipulation,
+vb,Input Validation and Representation,Resource Injection,
+vb,Input Validation and Representation,Setting Manipulation,
+vb,Input Validation and Representation,SQL Injection,
+vb,Input Validation and Representation,Unsafe Reflection,
+vb,Security Features,Access Control,Database
+vb,Security Features,Insecure Randomness,
+vb,Security Features,Password Management,
+vb,Security Features,Password Management,Empty Password
+vb,Security Features,Password Management,Hardcoded Password
+vb,Security Features,Password Management,Null Password
+vb,Security Features,Password Management,Password in Comment
+vb,Security Features,Password Management,Weak Cryptography
+vb,Security Features,Privacy Violation,
+vb,Security Features,Weak Cryptographic Hash,
+vb,Security Features,Weak Encryption,
+vb,Security Features,Weak Encryption,Insufficient Key Size

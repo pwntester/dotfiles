@@ -1,0 +1,360 @@
+*linediff.txt*	Diff two blocks of text
+
+==============================================================================
+CONTENTS                                      *linediff* *linediff-contents*
+
+    Installation...........................: |linediff-installation|
+    Usage..................................: |linediff-usage|
+    Commands...............................: |linediff-commands|
+    Settings...............................: |linediff-settings|
+    Internals..............................: |linediff-internals|
+    Issues.................................: |linediff-issues|
+
+
+==============================================================================
+INSTALLATION                                           *linediff-installation*
+
+There are several ways to install the plugin. The recommended one is by using
+Tim Pope's pathogen (http://www.vim.org/scripts/script.php?script_id=2332). In
+that case, you can clone the plugin's git repository like so:
+>
+    git clone git://github.com/AndrewRadev/linediff.vim.git ~/.vim/bundle/linediff
+<
+If your vim configuration is under git version control, you could also set up
+the repository as a submodule, which would allow you to update more easily.
+The command is (provided you're in ~/.vim):
+>
+    git submodule add git://github.com/AndrewRadev/linediff.vim.git bundle/linediff
+<
+
+Another way is to simply copy all the essential directories inside the ~/.vim
+directory: plugin, autoload, doc.
+
+==============================================================================
+USAGE                                                         *linediff-usage*
+
+The plugin provides a simple command, |:Linediff|, which is used to diff two
+separate blocks of text.
+
+A simple example:
+>
+    def one
+      two
+    end
+
+    def two
+      three
+    end
+<
+If we mark the first three lines, starting from "def one", in visual mode, and
+execute the |:Linediff| command, the signs "1-" will be placed at the start
+and at the end of the visual mode's range. Doing the same thing on the bottom
+half of the code, starting from "def two", will result in the signs "2-"
+placed there. After that, a new tab will be opened with the two blocks of code
+in vertical splits, diffed against each other.
+
+The two buffers are temporary, but when any one of them is saved, its original
+buffer is updated. Note that this doesn't save the original buffer, just
+performs the change. Saving is something you should do later.
+
+Executing the command |:LinediffReset| will delete the temporary buffers and
+remove the signs.
+
+Executing a new |:Linediff| will do the same as |:LinediffReset|, but will
+also initiate a new diff process.
+
+The statuslines of the two temporary buffers will be changed to contain:
+    - The original buffer
+    - The starting line of the selected segment
+    - The ending line of the selected segment
+
+If you're using a custom statusline and it contains "%f" (the current file's
+name), that token will simply be substituted by the above data. Otherwise, the
+entire statusline will be set to a custom one.
+
+If you'd rather the statusline is left untouched, you can set the
+|g:linediff_modify_statusline| setting to 0. You can still access the buffer
+description via `b:differ.description`.
+
+If you'd like to do some additional setup on the buffers, you can hook into
+the `LinediffBufferReady` User autocommand. For instance, in order to stop the
+linediff with a `q`, try:
+>
+    autocmd User LinediffBufferReady nnoremap <buffer> q :LinediffReset<cr>
+<
+
+Diffing more than two areas ~
+
+If you'd like to diff more than two areas of code, you can use the
+|:LinediffAdd| command after the first |:Linediff| to mark more areas. You can
+then call |:LinediffShow| to open the diff:
+>
+    :1,2Linediff
+    :3,4LinediffAdd
+    :5,6LinediffAdd
+    :LinediffShow
+<
+This will diff the three specified areas. Alternatively, you can use the
+|:LinediffLast| command to add and show the differ. So, the above code is
+equivalent to:
+>
+    :1,2Linediff
+    :3,4LinediffAdd
+    :5,6LinediffLast
+<
+Note that there's a hard limit of 8 diffs set by Vim, so you can't diff more
+areas than that.
+
+Diffing merges ~
+
+If you have a merge conflict like this one:
+>
+    def one
+    <<<<<<< master
+      "first"
+    =======
+      "second"
+    >>>>>>> branch
+    end
+<
+You can easily start a diff between the two variants of the code by executing
+the |:LinediffMerge| command. You can use the diffed buffers the same way, or,
+you can use |:LinediffPick| to choose one buffer whose contents will replace
+the entire merge conflict. This also works with three-way diffs:
+>
+    def one
+    <<<<<<< master
+      "first"
+    |||||||
+      "second"
+    =======
+      "third"
+    >>>>>>> branch
+    end
+<
+The statuslines of the diff buffers will hold the label of the merge parent
+for convenience.
+
+==============================================================================
+COMMANDS                                                   *linediff-commands*
+
+                                                                     *:Linediff*
+:[range]Linediff
+
+The main interface of the plugin. Needs to be executed on a range of lines,
+which will be marked with a sign. On the selection of the second such range,
+the command will open a tab with the two ranges in vertically split windows
+and perform a diff on them. Saving one of the two buffers will automatically
+update the original buffer the text was taken from.
+
+When executed for a third time, a new line diff is initiated, and the current
+process is reset, much like the effect of |LinediffReset| would be.
+
+
+                                                                *:LinediffReset*
+:LinediffReset[!]
+
+Removes the signs denoting the diffed regions and deletes the temporary
+buffers, used for the diff. The original buffers are untouched by this, which
+means that any updates to them, performed by the diff process will remain.
+Specifying ! discards unsaved changes made in the temporary buffers.
+
+
+                                                                  *:LinediffAdd*
+:[range]LinediffAdd
+
+Adds a buffer to be diffed later. This is an interface that allows diffing
+more than two areas. Should be followed by another "Add", or by "Show" or
+"Last" to finish the process of adding areas.
+
+
+                                                                 *:LinediffShow*
+:LinediffShow
+
+Shows the diff between all of the marked areas. This is useful if you've been
+adding areas with |:LinediffAdd| and you're ready to see their diff.
+
+
+                                                                 *:LinediffLast*
+:[range]LinediffLast
+
+Performs a combination of |:LinediffAdd| and |:LinediffShow|. Considers the
+marked area to be the last one added to the diff buffers and opens the diff.
+
+
+                                                                *:LinediffMerge*
+:LinediffMerge
+
+Looks for merge markers around the cursor, takes their contents and renders
+them in a diff. The diff buffers act like normal diff buffers, updating their
+parent buffer, but you can call |:LinediffPick| to pick one of them to replace
+the entire merge conflict area.
+
+
+                                                                 *:LinediffPick*
+:LinediffPick
+
+Only valid after a |:LinediffMerge|, in a diff buffer. Picks the diff buffer
+you're in as the "correct" one to replace the entire merge conflict area in
+the parent buffer.
+
+
+==============================================================================
+SETTINGS                                                   *linediff-settings*
+
+                                                           *g:linediff_indent*
+>
+    let g:linediff_indent = 1
+<
+
+Default value: 0
+
+If this flag is set to 1, linediff will reindent the diffed sections in order
+to minimize differences caused by formatting. This may change the buffers'
+contents.
+
+                                                      *g:linediff_buffer_type*
+>
+    let g:linediff_buffer_type = 'scratch'
+<
+Default value: "tempfile"
+
+This variable can have one of two values, "scratch" or "tempfile".
+
+If it is set to "scratch", the created proxy buffer is not connected to any
+file. The benefit is that the filename can then be set to be an informative
+string instead of a weird temporary filename. The drawback is that you can't
+run some external commands on this buffer, since there is no real backing
+file.
+
+If it is set to "tempfile" (the default), the proxy buffer is actually a
+temporary file. The benefit is that you run external commands that expect an
+actual file (like executing |:make|). The drawback is that the only way to
+display information on the proxy is by hacking the statusline, which may cause
+issues and can't work reliably on all statuslines.
+
+                                            *g:linediff_first_buffer_command*
+                                            *g:linediff_further_buffer_command*
+>
+    let g:linediff_first_buffer_command  = 'new'
+    let g:linediff_further_buffer_command = 'vertical new'
+<
+
+Default values: "tabnew" and "rightbelow vertical new", respectively.
+
+These variables control what commands are used to open the temporary
+buffers. By default, the first one will open a blank new tab, and the
+subsequent ones will split it vertically, from the right.
+This should ensure a pretty sensible setup.
+
+As an example, you can set them like so:
+>
+    let g:linediff_first_buffer_command  = 'leftabove new'
+    let g:linediff_further_buffer_command = 'rightbelow vertical new'
+<
+With this, the buffers will be positioned in a split above the current buffer,
+the first one on the left, and the subsequent ones on the right.
+
+You can control the positioning with judicious use of |:rightbelow| and
+|:leftabove|. If you omit these commands, the view will simply follow your
+default settings when opening new splits.
+
+                                                          *g:linediff_diffopt*
+>
+    let g:linediff_diffopt = 'filler,iwhite'
+<
+Default value: "builtin"
+
+This variable contains the 'diffopt' to set while performing a linediff. You
+may want to have a different value of that setting for linediff than you do
+for other kinds of diffing.
+
+The special value of "builtin" simply doesn't touch the setting at all.
+
+Note that the 'diffopt' setting is global, which means that it will simply be
+set globally and then reverted back to its previous setting once the linediff
+is stopped.
+
+                                                *g:linediff_modify_statusline*
+>
+    let g:linediff_modify_statusline = 0
+<
+Default value: 1
+
+This setting controls whether linediff will attempt to put information about
+the diffed areas in the statusline. It's on by default, but you can set it to
+0 to leave the statusline untouched. You can access the description that would
+have been put there with `b:differ.description`, within the buffer.
+
+
+==============================================================================
+INTERNALS                                                 *linediff-internals*
+
+When a block of text is diffed with the plugin, a "Differ" object is
+initialized with its relevant data. The differ contains information about the
+buffer number, filetype, start and end lines of the text, and a few other
+things. Almost all functions the plugin uses are scoped to this object in
+order to keep the interface simple. They're located under
+"autoload/linediff/differ.vim" and should be fairly understandable.
+
+Functions that are general-purpose utilities are placed in
+"autoload/linediff/util.vim".
+
+All differ objects that are required for the diff buffers are linked to each
+other out of necessity. If they originate from a single buffer, updating one
+would move the lines of the other, so that one would have to be updated as
+well. There's a "controller" object that takes care of the high-level
+interaction between them.
+
+Closing ~
+
+Closing a diff buffer requires closing all diff buffers, because there's no
+longer any need in them existing. Turns out, this is a bit complicated in some
+Vim versions, because of weird connections between buffers, their local
+variables, and autocommands. On Vim 7.4.52, for instance, the plugin was able
+to segfault the editor by double-closing buffers. This is why closing is a bit
+of a complicated process.
+
+These are the different scenarios:
+
+- The user calls |:LinediffReset|: All diff buffers need to be closed. This
+  is the easy process -- just go through all buffers and close them one by
+  one, no dependencies.
+
+- The user closes a single diff buffer: A |BufUnload| autocommand is
+  triggered. That autocommand resets the differ (buffer id, line numbers,
+  etc), bringing it to an inactive state, but doesn't close it, since it's
+  already being closed. It sends a message to the Controller that the
+  destruction process has started.
+
+  From this point on, entering another window with a diff buffer destroys that
+  one as well (the |WinEnter| event is used). On every destruction, the
+  controller checks if all buffers have been cleared which would mean the
+  destruction process is over. This is hacky, but seems to a sensible way to
+  clear out all buffers, lazily, on older Vim versions.
+
+- The user closes all diff buffers with |:tabclose| or by switching to a new
+  tab and executing |:tabonly|: In this case, the |WinEnter| event never gets
+  called, but every closed diff buffer cleans itself up. It also starts the
+  "destroying" process in the Controller, but the Controller checks if there
+  are live differs, and if there aren't any left, removes its "destroying"
+  state, so that the next |WinEnter| wouldn't mess anything up.
+
+In short, the first unloaded buffer starts a destruction process, which means
+entering any diff buffer makes it self-destruct. If the buffers are all closed
+at once, that's fine, because the destruction process stops itself once there
+are no more live differs. Hacky, but seems to work.
+
+
+==============================================================================
+ISSUES                                                       *linediff-issues*
+
+You shouldn't linediff two pieces of text that overlap. Not that anything
+horribly bad will happen, it just won't work as you'd hope to. I don't feel
+like it's a very important use case, but if someone requests sensible
+behaviour in that case, I should be able to get it working.
+
+To report any other issues or offer suggestions, use the bugtracker of the
+github project at http://github.com/AndrewRadev/linediff.vim/issues
+
+vim:tw=78:sw=4:ft=help:norl:

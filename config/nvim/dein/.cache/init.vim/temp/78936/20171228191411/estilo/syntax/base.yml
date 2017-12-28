@@ -1,0 +1,87 @@
+# BASE UI
+#fun! s:X(group, fg, bg, attr, lcfg, lcbg)
+# guifg guibg text_styles
+Directory: 'yellow . .'
+DiffAdd: 'green . .' # Constant
+DiffAdded: 'green . .' # Constant
+DiffChange: '. darkest_green .'
+DiffDelete: 'black darker_red .'
+DiffText: 'greyish_blue black r'
+DiffRemoved: 'dark_pink . .'
+ErrorMsg: '. dark_red .'
+VertSplit: 'dark_grey -'
+Folded: 'light_grey darker_grey i'
+MatchParen: 'white dark_purple .'
+ModeMsg: ''
+MoreMsg: 'light_green . .'
+NonText: 'dark_grey - '
+PMenu: 'lightest_grey darkest_grey .'
+PMenuSel: 'darkest_grey yellow .'
+PmenuSbar: 'dark_grey . .'
+PmenuThumb: 'lightest_grey . .'
+Question: 'green . .'
+Search: 'black light_yellow u'
+SpecialKey: 'darker_grey black .'
+SpellBad: 'dark_red . u'
+SpellLocal: '. darkest_green u'
+SpellCap: '. darkest_blue u'
+SpellRare: '. aubergine u'
+StatusLine: 'black lightest_grey i'
+StatusLineNC: 'white darker_grey i'
+TabLine: 'white darkest_grey u'
+TabLineFill: 'white light_grey u'
+TabLineSel: 'darkest_grey yellow bu'
+Title: 'dirty_green . b'
+WarningMsg: ''
+WildMenu: 'pale_pink darkest_grey .'
+# BASE SYNTAX
+Comment: 'dark_blue . i'
+Constant: 'dark_pink . .'
+String: 'green . .' # Constant
+Character: '' # Constant
+Boolean: '' # Constant
+Number: '' # Constant
+Float: '' # Constant
+Identifier: 'dark_orange . .'
+Function: 'yellow . .' # Identifier
+Statement: 'dark_orange . .'
+Conditional: '' # Statement
+Repeat: '' # Statement
+Label: '' # Statement
+Operator: 'dark_blue . i' # Statement
+Keyword: '' # Statement
+Exception: '' # Statement
+PreProc: 'dark_orange'
+Include: '' # PreProc
+Define: '' # PreProc
+Macro: '' # PreProc
+PreCondit: '' # PreProc
+Type: 'yellow . .'
+StorageClass: 'light_orange . .' # Type
+Structure: 'dark_blue . i' # Type
+Typedef: '' # Type
+Special: 'light_green . .'
+SpecialChar: '' # Special
+Tag: '' # Special
+Delimiter: 'dirty_blue . .' # Special
+StringDelimiter: 'dirty_blue . .' # Special
+SpecialComment: '' # Special
+Debug: '' # Special
+Underlined: ''
+Ignore: ''
+Error: '. dark_red i'
+Todo: '. dark_blue i'
+ColorColumn: '. cobalt .'
+Conceal: ''
+Normal: 'white -'
+Cursor: '- darkest_grey .'
+CursorIM: ''
+CursorColumn: '- darkest_grey'
+CursorLine: '- darkest_grey'
+CursorLineNr: 'dark_grey - .'
+FoldColumn: 'dark_grey -'
+SignColumn: 'dark_grey -'
+IncSearch: ''
+LineNr: 'dark_grey -'
+Visual: 'white darker_blue .'
+VisualNOS: ''

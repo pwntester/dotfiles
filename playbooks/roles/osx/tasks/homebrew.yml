@@ -1,0 +1,27 @@
+---
+- name: Update Homebrew
+  homebrew: update_homebrew=yes
+
+- name: Tap Neovim
+  homebrew_tap: tap=neovim/neovim state=present
+
+- name: Install libraries with Homebrew
+  homebrew: name={{ item }} state=latest
+  with_items:
+    - curl
+    - git
+    - nmap
+    - python
+    - python3
+    - vim
+    - neovim
+    - wget
+    - zsh
+    - tmux
+    - zsh-completions
+
+- name: vim | install neovim support via pip2
+  pip: executable=pip2 name=neovim
+
+- name: vim | install neovim support via pip3
+  pip: executable=pip3 name=neovim
