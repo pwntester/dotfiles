@@ -22,5 +22,5 @@
 - name: nvim | execute dein installer
   script: /tmp/dein-installer.sh ~/.config/dein
 
-#- name: nvim | install/update vim plugins
-#  command: vim -c "call dein#install()" 
+- name: nvim | install/update vim plugins
+  command: nvim -c "call dein#install()" +qall
