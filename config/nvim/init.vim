@@ -309,24 +309,19 @@ endfunc
 if &compatible
   set nocompatible
 endif
-filetype off
 
-if (!isdirectory(expand("$HOME/.config/nvim/dein/repos/github.com/Shougo/dein.vim")))
-    call system(expand("mkdir -p $HOME/.config/nvim/dein/repos/github.com"))
-    call system(expand("git clone https://github.com/Shougo/dein.vim $HOME/.config/nvim/dein/repos/github.com/Shougo/dein.vim"))
-endif
-set runtimepath+=~/.config/nvim/dein/repos/github.com/Shougo/dein.vim
 let s:dein_basepath = expand('~/.config/nvim/dein')
+let s:dein_vim = expand('~/.config/nvim/dein/repos/github.com/Shougo/dein.vim')
 let s:dein_toml = expand('~/.config/nvim/rc.d/dein.toml')
-if dein#load_state(s:dein_basepath)
-    call dein#begin(s:dein_basepath, [expand('~/.config/nvim/init.vim'), s:dein_toml,])
+
+set runtimepath+=~/.config/nvim/dein/repos/github.com/Shougo/dein.vim
+if dein#load_state("~/.config/nvim/dein")
+    call dein#begin("~/.config/nvim/dein")
+    call dein#add("~/.config/nvim/dein/repos/github.com/Shougo/dein.vim")
     call dein#load_toml(s:dein_toml, {})
     call dein#end()
     call dein#save_state()
 endif
-if !has('vim_starting')
-    call dein#call_hook('source')
-    call dein#call_hook('post_source')
-endif
 filetype plugin indent on
+syntax enable
 " }}}
