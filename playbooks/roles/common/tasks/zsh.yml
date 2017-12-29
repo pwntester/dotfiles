@@ -1,0 +1,13 @@
+---
+- name: zsh | install zprezto
+  git: repo=https://github.com/sorin-ionescu/prezto.git dest=~/.zprezto force=yes
+
+- name: zsh | symlink dotfiles
+  file: src=~/dotfiles/home/{{ item }}
+        dest=~/{{ item }}
+        state=link
+        force=yes
+  with_items:
+    - .zshrc
+    - .zpreztorc
+    - .zprofile

@@ -1,0 +1,26 @@
+---
+#- name: nvim | install neovim support via pip2
+#  pip: executable=pip2 name=neovim state=forcereinstall
+
+#- name: nvim | install neovim support via pip3
+#  pip: executable=pip3 name=neovim state=forcereinstall
+
+- name: nvim | symlink dotfiles
+  file: src=~/dotfiles/config/{{ item }}
+        dest=~/.config/{{ item }}
+        state=link
+        force=yes
+  with_items:
+    - nvim
+
+- name: nvim | make ~/.config/dein
+  file: path=~/.config/dein state=directory
+
+- name: nvim | download dein installer
+  get_url: url=https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh dest=/tmp/dein-installer.sh
+
+- name: nvim | execute dein installer
+  script: /tmp/dein-installer.sh ~/.config/dein
+
+#- name: nvim | install/update vim plugins
+#  command: vim -c "call dein#install()" 

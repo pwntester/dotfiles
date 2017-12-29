@@ -1,0 +1,20 @@
+---
+- name: zsh | symlink dotfiles
+  file: src=~/dotfiles/home/{{ item }}
+        dest=~/{{ item }}
+        state=link
+        force=yes
+  with_items:
+    - .tmux.conf
+
+- name: zsh | make ~/.tmux
+  file: path=~/.tmux state=directory
+
+- name: zsh | make ~/.tmux/plugins
+  file: path=~/.tmux/plugins state=directory
+
+- name: zsh | clone tmux plugins
+  git: repo=https://github.com/tmux-plugins/tpm dest=~/.tmux/plugins/tpm
+
+- name: zsh | install/update tmux plugins
+  command: ~/.tmux/plugins/tpm/bin/update_plugins all
