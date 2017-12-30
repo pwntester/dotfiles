@@ -1,7 +1,4 @@
 [[plugins]]
-repo = 'Shougo/dein.vim'
-
-[[plugins]]
 repo = 'haya14busa/dein-command.vim'
 on_cmd = 'Dein'
 
@@ -106,10 +103,10 @@ let g:indentLine_color_gui = '#17252c'
 let g:indentLine_fileTypeExclude = ['fortifytestpane', 'fortifyauditpane']
 '''
 
-[[plugins]]
-repo = 'junegunn/fzf'
-build = './install --all'
-merged = 0
+#[[plugins]]
+#repo = 'junegunn/fzf'
+#build = './install --all'
+#merged = 0
 
 [[plugins]]
 repo = 'junegunn/fzf.vim'
@@ -221,45 +218,6 @@ let g:neomake_warning_sign = {
             \ 'texthl': 'NeomakeWarningMsg',
             \ }
 
-'''
-
-[[plugins]]
-repo = 'https://github.houston.softwaregrp.net/alvaro-munoz/vim-fortify'
-depends = 'neomake'
-hook_add = '''
-nnoremap <leader>i :NewRuleID<Return>
-let g:fortify_SCAPath = "/Applications/HP_Fortify/sca"
-let g:fortify_PythonPath = "/usr/local/lib/python2.7/site-packages"
-let g:fortify_AndroidJarPath = "/Users/alvaro/Library/Android/sdk/platforms/android-22/android.jar"
-let g:fortify_DefaultJarPath = "/Applications/HP_Fortify/default_jars" 
-let g:fortify_MemoryOpts = [ "-Xmx4096M", "-Xss24M", "-64" ]
-let g:fortify_AWBOpts = []
-let g:fortify_ScanOpts = [
-    \ "-Dcom.fortify.sca.limiters.MaxPassthroughChainDepth=4",
-    \ "-Dcom.fortify.sca.limiters.MaxChainDepth=5",
-    \ "-Dcom.fortify.sca.DebugNumericTaint=true",
-    \ "-Dcom.fortify.sca.ReportTrippedDepthLimiters=true",
-    \ "-Dcom.fortify.sca.ReportTrippedNodeLimiters=true",
-    \ "-Dcom.fortify.sca.ReportTightenedLimits=true", 
-    \ "-Dcom.fortify.sca.alias.mode.scala=fi", 
-"    \ "-Ddebug.dump-nst",
-\]
-let g:fortify_TranslationOpts = []
-let g:fortify_JDKVersion = "1.8"
-let g:fortify_XCodeSDK = "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk"
-autocmd BufNewFile,BufReadPost *.xml nested map R ,R
-autocmd BufNewFile,BufReadPost *.rules nested map R ,R
-autocmd BufNewFile,BufReadPost *.xml nested map r ,r
-autocmd BufNewFile,BufReadPost *.rules nested map r ,r
-autocmd FileType fortifydescription nested setlocal spell complete+=kspell
-'''
-hook_source = '''
-autocmd FileType fortifyrulepack nested setlocal omnifunc=fortify#complete
-autocmd FileType fortifyauditpane nested nmap <buffer><expr> <S-l> ""
-autocmd FileType fortifyauditpane nested nmap <buffer><expr> <S-h> ""
-autocmd FileType fortifyauditpane nested nmap <buffer><expr> <S-k> ""
-" search for contents of register 0 (where AuditPane copies the RuleIDs)
-noremap <C-s> :execute substitute('/'.@0,'0$','','g')<CR>
 '''
 
 [[plugins]]
@@ -455,22 +413,42 @@ on_ft = 'toml'
 repo = 'albertorestifo/github.vim'
 
 [[plugins]]
-repo = 'pwntester/cobalt2.vim'
+repo = 'https://github.houston.softwaregrp.net/alvaro-munoz/vim-fortify'
+depends = 'neomake'
 hook_add = '''
-" Highlight active window 
-if exists('+colorcolumn')
-    autocmd BufEnter,FocusGained,VimEnter,WinEnter * let &l:colorcolumn=join(range(1, 800), ',')
-    autocmd FocusLost,WinLeave * let &l:colorcolumn='+' . join(range(0, 800), ',+')
-endif
-
-set background=dark
-colorscheme cobalt2
-highlight ColorColumn guibg=#020511
-highlight Normal guibg=#17252c
-highlight Search  gui=underline guifg=red guibg=#020511
-highlight EndOfBuffer guibg=#17252c guifg=#17252c
-"highlight CursorLine cterm=NONE ctermbg=darkred ctermfg=white guibg=darkred guifg=white
-"highlight CursorColumn cterm=NONE ctermbg=darkred ctermfg=white guibg=darkred guifg=white
+nnoremap <leader>i :NewRuleID<Return>
+let g:fortify_SCAPath = "/Applications/HP_Fortify/sca"
+let g:fortify_PythonPath = "/usr/local/lib/python2.7/site-packages"
+let g:fortify_AndroidJarPath = "/Users/alvaro/Library/Android/sdk/platforms/android-22/android.jar"
+let g:fortify_DefaultJarPath = "/Applications/HP_Fortify/default_jars" 
+let g:fortify_MemoryOpts = [ "-Xmx4096M", "-Xss24M", "-64" ]
+let g:fortify_AWBOpts = []
+let g:fortify_ScanOpts = [
+    \ "-Dcom.fortify.sca.limiters.MaxPassthroughChainDepth=4",
+    \ "-Dcom.fortify.sca.limiters.MaxChainDepth=5",
+    \ "-Dcom.fortify.sca.DebugNumericTaint=true",
+    \ "-Dcom.fortify.sca.ReportTrippedDepthLimiters=true",
+    \ "-Dcom.fortify.sca.ReportTrippedNodeLimiters=true",
+    \ "-Dcom.fortify.sca.ReportTightenedLimits=true", 
+    \ "-Dcom.fortify.sca.alias.mode.scala=fi", 
+"    \ "-Ddebug.dump-nst",
+\]
+let g:fortify_TranslationOpts = []
+let g:fortify_JDKVersion = "1.8"
+let g:fortify_XCodeSDK = "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk"
+autocmd BufNewFile,BufReadPost *.xml nested map R ,R
+autocmd BufNewFile,BufReadPost *.rules nested map R ,R
+autocmd BufNewFile,BufReadPost *.xml nested map r ,r
+autocmd BufNewFile,BufReadPost *.rules nested map r ,r
+autocmd FileType fortifydescription nested setlocal spell complete+=kspell
+'''
+hook_source = '''
+autocmd FileType fortifyrulepack nested setlocal omnifunc=fortify#complete
+autocmd FileType fortifyauditpane nested nmap <buffer><expr> <S-l> ""
+autocmd FileType fortifyauditpane nested nmap <buffer><expr> <S-h> ""
+autocmd FileType fortifyauditpane nested nmap <buffer><expr> <S-k> ""
+" search for contents of register 0 (where AuditPane copies the RuleIDs)
+noremap <C-s> :execute substitute('/'.@0,'0$','','g')<CR>
 '''
 
 # [[plugins]]

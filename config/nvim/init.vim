@@ -318,10 +318,37 @@ set runtimepath+=~/.config/nvim/dein/repos/github.com/Shougo/dein.vim
 if dein#load_state("~/.config/nvim/dein")
     call dein#begin("~/.config/nvim/dein")
     call dein#add("~/.config/nvim/dein/repos/github.com/Shougo/dein.vim")
+    call dein#add("pwntester/cobalt2.vim")
     call dein#load_toml(s:dein_toml, {})
     call dein#end()
     call dein#save_state()
+    if dein#check_install()
+		if ! has('nvim')
+			set nomore
+		endif
+		call dein#install()
+	endif
 endif
 filetype plugin indent on
 syntax enable
+if ! has('vim_starting')
+	call dein#call_hook('source')
+	call dein#call_hook('post_source')
+endif
+" }}}
+
+" COLORS {{{
+set background=dark
+colorscheme cobalt2
+highlight ColorColumn guibg=#020511
+highlight Normal guibg=#17252c
+highlight Search  gui=underline guifg=red guibg=#020511
+highlight EndOfBuffer guibg=#17252c guifg=#17252c
+"highlight CursorLine cterm=NONE ctermbg=darkred ctermfg=white guibg=darkred guifg=white
+"highlight CursorColumn cterm=NONE ctermbg=darkred ctermfg=white guibg=darkred guifg=white
+" Highlight active window 
+if exists('+colorcolumn')
+    autocmd BufEnter,FocusGained,VimEnter,WinEnter * let &l:colorcolumn=join(range(1, 800), ',')
+    autocmd FocusLost,WinLeave * let &l:colorcolumn='+' . join(range(0, 800), ',+')
+endif
 " }}}

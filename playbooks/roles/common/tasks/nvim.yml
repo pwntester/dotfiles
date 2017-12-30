@@ -4,6 +4,10 @@
 
 #- name: nvim | install neovim support via pip3
 #  pip: executable=pip3 name=neovim state=forcereinstall
+#
+- name: nvim | make ~/.config
+  file: path=~/.config state=directory
+
 
 - name: nvim | symlink dotfiles
   file: src=~/dotfiles/config/{{ item }}
@@ -26,6 +30,3 @@
 
 - name: nvim | execute dein installer
   shell: sh ~/.config/nvim/dein/dein-installer.sh ~/.config/nvim/dein
-
-- name: nvim | install/update vim plugins
-  command: nvim -c "call dein#install()" +qall

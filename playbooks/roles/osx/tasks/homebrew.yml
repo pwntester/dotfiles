@@ -10,7 +10,6 @@
   with_items:
     - curl
     - git
-    - nmap
     - python
     - python3
     - vim
@@ -19,3 +18,4 @@
     - zsh
     - tmux
     - zsh-completions
+    - fzf

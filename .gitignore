@@ -4,9 +4,7 @@
 config/nvim/dein/repos/*
 config/nvim/tmp/*
 config/nvim/view/*
-config/nvim/dein/state_nvim.vim
-config/nvim/dein/cache_nvim
-config/nvim/dein/.cache/*
+config/nvim/dein/*
 config/nvim/.netrwhist
 config/nvim/spell/en.utf-8.spl
 config/nvim/spell/en.utf-8.sug

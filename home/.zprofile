@@ -37,6 +37,7 @@ export SHELL=`which zsh`
 export ANT_OPTS="-XX:MaxPermSize=256m -Dhttp.proxyHost=proxy.houston.hpecorp.net -Dhttp.proxyPort=8080 -Dhttps.proxyHost=proxy.houston.hpecorp.net -Dhttps.proxyPort=8080" 
 export PATH="$HOME/.cargo/bin:$PATH"
 setopt AUTO_CD
+export TERM="screen-256color"  
 
 # Use Vi(m) style key bindings.
 bindkey -v
