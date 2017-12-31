@@ -2,6 +2,7 @@
 - name: main | make ~/.config
   file: path=~/.config state=directory
 
+- import_tasks: python.yml
 - import_tasks: tmux.yml
 - import_tasks: zsh.yml
 - import_tasks: karabiner.yml

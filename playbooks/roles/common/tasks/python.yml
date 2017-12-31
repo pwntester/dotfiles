@@ -1,0 +1,27 @@
+---
+- name: Installing Python2 Modules
+  pip:
+    name: "{{ item }}"
+    executable: pip2
+    state: "forcereinstall"
+  with_items:
+  - 'neovim'
+  - 'jsbeautifier'
+  - 'lxml'
+  - 'ply'
+  - 'requests'
+  - 'whoosh'
+  become: true
+- name: Installing Python3 Modules
+  pip:
+    name: "{{ item }}"
+    executable: pip3
+    state: "forcereinstall"
+  with_items:
+  - 'neovim'
+  - 'jsbeautifier'
+  - 'lxml'
+  - 'ply'
+  - 'requests'
+  - 'whoosh'
+  become: true

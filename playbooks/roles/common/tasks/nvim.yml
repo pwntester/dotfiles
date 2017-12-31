@@ -1,10 +1,4 @@
 ---
-#- name: nvim | install neovim support via pip2
-#  pip: executable=pip2 name=neovim state=forcereinstall
-
-#- name: nvim | install neovim support via pip3
-#  pip: executable=pip3 name=neovim state=forcereinstall
-#
 - name: nvim | make ~/.config
   file: path=~/.config state=directory
 
