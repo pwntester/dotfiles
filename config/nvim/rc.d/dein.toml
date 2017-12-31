@@ -103,10 +103,10 @@ let g:indentLine_color_gui = '#17252c'
 let g:indentLine_fileTypeExclude = ['fortifytestpane', 'fortifyauditpane']
 '''
 
-#[[plugins]]
-#repo = 'junegunn/fzf'
-#build = './install --all'
-#merged = 0
+[[plugins]]
+repo = 'junegunn/fzf'
+build = './install --all'
+merged = 0
 
 [[plugins]]
 repo = 'junegunn/fzf.vim'
@@ -151,6 +151,24 @@ nmap ˚ <Plug>MoveLineUp
 
 [[plugins]]
 repo = 'airblade/vim-gitgutter'
+
+[[plugins]]
+repo = 'pwntester/cobalt2.vim'
+hook_add = '''
+set background=dark
+
+"Since the colorscheme setting needs to be done after source, do it with VimEnter.
+"However, add nested so that the occurrence of the Colorscheme event is not suppressed.<Paste>
+autocmd VimEnter * nested colorscheme cobalt2 
+
+"highlight ColorColumn guibg=#020511
+"highlight Normal guibg=#17252c
+"highlight Search  gui=underline guifg=red guibg=#020511
+"highlight EndOfBuffer guibg=#17252c guifg=#17252c
+"highlight CursorLine cterm=NONE ctermbg=darkred ctermfg=white guibg=darkred guifg=white
+"highlight CursorColumn cterm=NONE ctermbg=darkred ctermfg=white guibg=darkred guifg=white
+
+'''
 
 [[plugins]]
 repo = 'itchyny/lightline.vim'

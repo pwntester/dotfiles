@@ -29,8 +29,8 @@ let g:lightline = {
     \   'fugitive': 'LightlineFugitive',
     \   'deoplete': 'LightlineDeoplete',
     \ },
-    \ 'separator': { 'left': '⮀', 'right': '⮂' },
-    \ 'subseparator': { 'left': '⮁', 'right': '⮃' },
+    \ 'separator': { 'left': "\ue0b0", 'right': "\ue0b2" },
+	\ 'subseparator': { 'left': "\ue0b1", 'right': "\ue0b3" },
     \ 'tabline_separator': { 'left': ' ', 'right': ' ' },
     \ 'tabline_subseparator': { 'left': ' ', 'right': ' ' },
     \ }
