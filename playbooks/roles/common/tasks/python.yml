@@ -3,7 +3,7 @@
   pip:
     name: "{{ item }}"
     executable: pip2
-    state: "forcereinstall"
+    state: "present"
   with_items:
   - 'neovim'
   - 'jsbeautifier'
@@ -16,7 +16,7 @@
   pip:
     name: "{{ item }}"
     executable: pip3
-    state: "forcereinstall"
+    state: "present"
   with_items:
   - 'neovim'
   - 'jsbeautifier'

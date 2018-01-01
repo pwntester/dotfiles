@@ -158,16 +158,14 @@ hook_add = '''
 set background=dark
 
 "Since the colorscheme setting needs to be done after source, do it with VimEnter.
-"However, add nested so that the occurrence of the Colorscheme event is not suppressed.<Paste>
+"However, add nested so that the occurrence of the Colorscheme event is not suppressed.
 autocmd VimEnter * nested colorscheme cobalt2 
 
-"highlight ColorColumn guibg=#020511
-"highlight Normal guibg=#17252c
-"highlight Search  gui=underline guifg=red guibg=#020511
-"highlight EndOfBuffer guibg=#17252c guifg=#17252c
-"highlight CursorLine cterm=NONE ctermbg=darkred ctermfg=white guibg=darkred guifg=white
-"highlight CursorColumn cterm=NONE ctermbg=darkred ctermfg=white guibg=darkred guifg=white
-
+" Theme customization
+autocmd ColorScheme * hi ColorColumn guibg=#020511
+autocmd ColorScheme * hi Normal guibg=#17252c
+autocmd ColorScheme * hi Search  gui=underline guifg=red guibg=#020511
+autocmd ColorScheme * hi CursorLine gui=NONE guifg=NONE guibg=#1A1A1A 
 '''
 
 [[plugins]]
