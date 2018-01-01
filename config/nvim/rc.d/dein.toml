@@ -162,10 +162,7 @@ set background=dark
 autocmd VimEnter * nested colorscheme cobalt2 
 
 " Theme customization
-autocmd ColorScheme * hi ColorColumn guibg=#020511
-autocmd ColorScheme * hi Normal guibg=#17252c
-autocmd ColorScheme * hi Search  gui=underline guifg=red guibg=#020511
-autocmd ColorScheme * hi CursorLine gui=NONE guifg=NONE guibg=#1A1A1A 
+"autocmd ColorScheme * hi ColorColumn guibg=#020511
 '''
 
 [[plugins]]
