@@ -3,6 +3,9 @@ repo = 'haya14busa/dein-command.vim'
 on_cmd = 'Dein'
 
 [[plugins]]
+repo = 'Shougo/defx.nvim'
+
+[[plugins]]
 repo = 'tpope/vim-surround'
 hook_add = '''
 " change: cs<old><new>
@@ -361,12 +364,12 @@ on_cmd = 'Linediff'
 [[plugins]]
 repo = 'rbgrouleff/bclose.vim'
 
-[[plugins]]
-repo = 'artur-shaik/vim-javacomplete2'
-on_ft = 'java'
-hook_source = '''
-autocmd FileType java nested setlocal omnifunc=javacomplete#Complete
-'''
+# [[plugins]]
+# repo = 'artur-shaik/vim-javacomplete2'
+# on_ft = 'java'
+# hook_source = '''
+# autocmd FileType java nested setlocal omnifunc=javacomplete#Complete
+# '''
 
 [[plugins]]
 repo = 'plasticboy/vim-markdown'
@@ -432,19 +435,23 @@ hook_add = '''
 nnoremap <leader>i :NewRuleID<Return>
 let g:fortify_SCAPath = "/Applications/HP_Fortify/sca"
 let g:fortify_PythonPath = "/usr/local/lib/python2.7/site-packages"
-let g:fortify_AndroidJarPath = "/Users/alvaro/Library/Android/sdk/platforms/android-22/android.jar"
+let g:fortify_AndroidJarPath = "/Users/alvaro/Library/Android/sdk/platforms/android-26/android.jar"
 let g:fortify_DefaultJarPath = "/Applications/HP_Fortify/default_jars" 
 let g:fortify_MemoryOpts = [ "-Xmx4096M", "-Xss24M", "-64" ]
 let g:fortify_AWBOpts = []
 let g:fortify_ScanOpts = [
-    \ "-Dcom.fortify.sca.limiters.MaxPassthroughChainDepth=4",
+    " \ "-debug", "-debug-verbose", "-logfile", "scan.log",
+    " \ "-Ddebug.dump-nst",
+    " \ "-Ddebug.dump-cg", 
+    " \ "-Ddebug.dump-call-targets",
+    " \ "-Ddf3.debug=taint.log",
     \ "-Dcom.fortify.sca.limiters.MaxChainDepth=5",
+    \ "-Dcom.fortify.sca.limiters.MaxPassthroughChainDepth=4",
     \ "-Dcom.fortify.sca.DebugNumericTaint=true",
     \ "-Dcom.fortify.sca.ReportTrippedDepthLimiters=true",
     \ "-Dcom.fortify.sca.ReportTrippedNodeLimiters=true",
     \ "-Dcom.fortify.sca.ReportTightenedLimits=true", 
     \ "-Dcom.fortify.sca.alias.mode.scala=fi", 
-"    \ "-Ddebug.dump-nst",
 \]
 let g:fortify_TranslationOpts = []
 let g:fortify_JDKVersion = "1.8"
@@ -480,14 +487,14 @@ noremap <C-s> :execute substitute('/'.@0,'0$','','g')<CR>
 
 # [[plugins]]
 # repo = 'Shougo/neomru.vim'
-
+#
 # [[plugins]]
 # repo = 'Shougo/denite.nvim'
 # on_cmd = ['Denite', 'DeniteCursorWord']
 # hook_add = '''
-# "nnoremap <leader>m :<C-u>Denite file_mru<Return>
-# "nnoremap <leader>b :<C-u>Denite buffer<Return>
-# "nnoremap <leader>d :<C-u>Denite directory_rec<Return>
+# nnoremap <leader>m :<C-u>Denite file_mru<Return>
+# nnoremap <leader>b :<C-u>Denite buffer<Return>
+# nnoremap <leader>d :<C-u>Denite directory_rec<Return>
 # '''
 # hook_source = '''
 # call denite#custom#map(
