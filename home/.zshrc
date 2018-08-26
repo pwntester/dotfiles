@@ -7,6 +7,10 @@ fi
 fpath=(~/.zsh/completion $fpath)
 autoload -Uz compinit && compinit -i
 
+# Postgresql
+alias pg-start="launchctl load ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist"
+alias pg-stop="launchctl unload ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist"
+
 # OS detection
 platform='unknown'
 unamestr=`uname`

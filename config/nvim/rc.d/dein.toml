@@ -4,6 +4,31 @@ on_cmd = 'Dein'
 
 [[plugins]]
 repo = 'Shougo/defx.nvim'
+hook_add = '''
+autocmd FileType defx call s:defx_my_settings()
+function! s:defx_my_settings() abort
+    " Define mappings
+    nnoremap <silent><buffer><expr> <CR> defx#do_action('open')
+    nnoremap <silent><buffer><expr> N defx#do_action('new_directory')
+    nnoremap <silent><buffer><expr> n defx#do_action('new_file')
+    nnoremap <silent><buffer><expr> d defx#do_action('remove')
+    nnoremap <silent><buffer><expr> r defx#do_action('rename')
+
+    nnoremap <silent><buffer><expr> ~ defx#do_action('cd')
+    nnoremap <silent><buffer><expr> <Space> defx#do_action('toggle_select') . 'j'
+    nnoremap <silent><buffer><expr> h defx#do_action('cd', ['..'])
+    nnoremap <silent><buffer><expr> j line('.') == line('$') ? 'gg' : 'j'
+    nnoremap <silent><buffer><expr> k line('.') == 1 ? 'G' : 'k'
+endfunction
+
+" Close DEFX buffer after opening a file
+autocmd BufReadPre,FileReadPre * call s:DelDefxBuffer()
+function! s:DelDefxBuffer()
+  if bufexists("[defx]")
+    exe 'bdelete \[defx\]'
+  endif
+endfunction
+'''
 
 [[plugins]]
 repo = 'tpope/vim-surround'
@@ -111,11 +136,23 @@ repo = 'junegunn/fzf'
 build = './install --all'
 merged = 0
 
+# [[plugins]]
+# repo = 'tweekmonster/fzf-filemru'
+# hook_add = '''
+# nnoremap <leader>m :FilesMru --tiebreak=end<Return>
+# '''
+
+[[plugins]]
+repo = 'pbogut/fzf-mru.vim'
+hook_add = '''
+nnoremap <leader>m :FZFMru<Return> 
+'''
+
 [[plugins]]
 repo = 'junegunn/fzf.vim'
 depends = 'fzf'
 hook_add = '''
-nnoremap <leader>m :History<Return>
+nnoremap <leader>h :History<Return>
 nnoremap <leader>b :Buffers<Return>
 nnoremap <leader>s :Snippets<Return>
 nnoremap <leader>d :Files<Return>
@@ -327,9 +364,10 @@ let g:deoplete#enable_at_startup = 1
 "autocmd BufEnter *.* nested if getfsize(@%) < 1000000 | let b:deoplete_disable_auto_complete = 0 | endif
 "autocmd BufEnter *.* nested if getfsize(@%) > 1000000 | let b:deoplete_disable_auto_complete = 1 | endif
 "autocmd BufEnter *.* nested if getfsize(@%) > 1000000 | let b:deoplete_ignore_sources = ['buffer'] | endif
-autocmd BufEnter *.* nested if getfsize(@%) > 1000000 | call deoplete#disable() | endif
 "autocmd BufEnter *.* nested if getfsize(@%) < 1000000 | call deoplete#enable() | endif
-autocmd BufEnter *.* nested if getfsize(@%) < 1000000 | call deoplete#init#_enable() | endif
+"autocmd BufEnter *.* nested if getfsize(@%) < 1000000 | call deoplete#enable() | endif
+
+autocmd BufEnter *.* nested if getfsize(@%) > 1000000 | call deoplete#disable() | endif
 
 if has('macunix')
     let g:deoplete#sources#clang#libclang_path = '/usr/local/Cellar/llvm/3.9.0/lib/libclang.dylib'
@@ -445,15 +483,21 @@ let g:fortify_ScanOpts = [
     " \ "-Ddebug.dump-cg", 
     " \ "-Ddebug.dump-call-targets",
     " \ "-Ddf3.debug=taint.log",
-    \ "-Dcom.fortify.sca.limiters.MaxChainDepth=5",
-    \ "-Dcom.fortify.sca.limiters.MaxPassthroughChainDepth=4",
+    \ "-Dcom.fortify.sca.limiters.MaxChainDepth=10",
+    \ "-Dcom.fortify.sca.limiters.MaxPassthroughChainDepth=10",
     \ "-Dcom.fortify.sca.DebugNumericTaint=true",
     \ "-Dcom.fortify.sca.ReportTrippedDepthLimiters=true",
     \ "-Dcom.fortify.sca.ReportTrippedNodeLimiters=true",
     \ "-Dcom.fortify.sca.ReportTightenedLimits=true", 
     \ "-Dcom.fortify.sca.alias.mode.scala=fi", 
+    \ "-Dcom.fortify.sca.alias.mode.swift=fi", 
+    \ "-Dcom.fortify.sca.Phase0HigherOrder.Level=1",
+    \ "-Dcom.fortify.sca.Phase0HigherOrder.Languages=javascript",
+    \ "-Dcom.fortify.sca.EnableDOMModeling=true",
 \]
-let g:fortify_TranslationOpts = []
+let g:fortify_TranslationOpts = [
+    \ "-python-legacy",
+\]
 let g:fortify_JDKVersion = "1.8"
 let g:fortify_XCodeSDK = "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk"
 autocmd BufNewFile,BufReadPost *.xml nested map R ,R

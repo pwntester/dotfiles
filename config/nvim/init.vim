@@ -117,60 +117,6 @@ set softtabstop=4                                                 " One tab = 4 
 set shiftwidth=4                                                  " Reduntant with above
 " }}}
 
-"FILE EXPLORER
-let g:netrw_liststyle=3                                           " tree-view
-let g:netrw_banner=0                                              " no banner
-let g:netrw_altv=1                                                " open files on right
-let g:netrw_browse_split=4                                        " Open file in previous buffer
-let g:netrw_preview=1                                             " open previews vertically
-let g:netrw_winsize = -28                                         " absolute width of netrw window
-let g:netrw_sort_sequence = '[\/]$,*'
-com!  -nargs=* -bar -bang -complete=dir  Lexplore  call netrw#Lexplore(<q-args>, <bang>0)
-fun! Lexplore(dir, right)
-  if exists("t:netrw_lexbufnr")
-  " close down netrw explorer window
-  let lexwinnr = bufwinnr(t:netrw_lexbufnr)
-  if lexwinnr != -1
-    let curwin = winnr()
-    silent! exe lexwinnr."wincmd w"
-    close
-    silent! exe curwin."wincmd w"
-  endif
-  unlet t:netrw_lexbufnr
-
-  else
-    " open netrw explorer window in the dir of current file
-    " (even on remote files)
-    let path = substitute(exists("b:netrw_curdir")? b:netrw_curdir : expand("%:p"), '^\(.*[/\\]\)[^/\\]*$','\1','e')
-    exe (a:right? "botright" : "topleft")." vertical ".((g:netrw_winsize > 0)? (g:netrw_winsize*winwidth(0))/100 : -g:netrw_winsize) . " new"
-    if a:dir != ""
-      exe "Explore ".a:dir
-    else
-      exe "Explore ".path
-    endif
-    setlocal winfixwidth
-    let t:netrw_lexbufnr = bufnr("%")
-  endif
-endfun
-function! ToggleVExplorer()
-  if exists("t:expl_buf_num")
-      let expl_win_num = bufwinnr(t:expl_buf_num)
-      if expl_win_num != -1
-          let cur_win_nr = winnr()
-          silent! exec expl_win_num . 'wincmd w'
-          close
-          silent! exec cur_win_nr . 'wincmd w'
-          unlet t:expl_buf_num
-      else
-          unlet t:expl_buf_num
-      endif
-  else
-      silent! exec '1wincmd w'
-      Lexplore
-      let t:expl_buf_num = bufnr("%")
-  endif
-endfunction
-map <silent> <C-E> :call ToggleVExplorer()<CR>
 
 " MAPPINGS {{{
 if has('nvim')
@@ -231,6 +177,8 @@ inoremap <down> <nop>
 inoremap <left> <nop>
 inoremap <right> <nop>
 
+map <silent> <C-E> :Defx<CR>
+
 " remove search highlights
 noremap <silent>./ :nohlsearch<Return>
 
@@ -247,12 +195,6 @@ nnoremap <S-k> <C-^>
 " save one keystroke
 nnoremap ; :
 
-" do not close windows when closing buffers
-cabbrev bd <C-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'Bclose' : 'bdelete')<Return>
-
-" save me from 1 files :)
-cabbrev w1 <C-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'w!' : 'w1')<Return>
-
 " resize splits
 nnoremap <silent> > :exe "vertical resize +5"<Return>
 nnoremap <silent> < :exe "vertical resize -5"<Return>
@@ -260,6 +202,12 @@ nnoremap <silent> + :exe "resize +5"<Return>
 nnoremap <silent> - :exe "resize -5"<Return>
 
 " }}}
+
+" do not close windows when closing buffers
+cabbrev bd <C-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'Bclose' : 'bdelete')<Return>
+
+" save me from 1 files :)
+cabbrev w1 <C-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'w!' : 'w1')<Return>
 
 " LEADER MAPPINGS {{{
 
@@ -320,15 +268,15 @@ if dein#load_state("~/.config/nvim/dein")
     call dein#load_toml(s:dein_toml, {})
     call dein#end()
     call dein#save_state()
-    let s:install = input("Install missing plugins? (Y/N)")
-    if s:install == "y" || "Y"  
-        if dein#check_install()
-            if ! has('nvim')
-                set nomore
-            endif
-            call dein#install()
-        endif
-	endif
+    " let s:install = input("Install missing plugins? (Y/N)")
+    " if s:install == "y" || "Y"  
+    "     if dein#check_install()
+    "         if ! has('nvim')
+    "             set nomore
+    "         endif
+    "         call dein#install()
+    "     endif
+	" endif
 endif
 filetype plugin indent on
 syntax enable
