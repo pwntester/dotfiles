@@ -2,8 +2,8 @@ let g:cobalt2_lightline = 1
 let g:lightline = {
     \ 'colorscheme': 'cobalt2',
     \ 'active': {
-    \   'left': [ [ 'mode', 'paste', ], [ 'fugitive', 'filetype', ], [ 'filename', ], ],
-    \   'right': [ ['neomake_errors', 'neomake_warnings', 'column' ], [ 'percent' ], [ 'cwd', ] ]
+    \   'left': [ [ 'mode', 'paste', ], [ 'anzu', 'filetype', ], [ 'filename', ], ],
+    \   'right': [ [ 'linter_checking', 'linter_errors', 'linter_warnings', 'linter_ok', 'column' ], [ 'percent' ], [ 'cwd', ] ]
     \ },
     \ 'inactive': {
     \   'left': [ [ ] ],
@@ -14,19 +14,23 @@ let g:lightline = {
     \   'right': [ [ 'tabs_usage', ] ],
     \ },
     \ 'component_expand': {
-    \   'neomake_errors': 'LightlineNeomakeErrors',
-    \   'neomake_warnings': 'LightlineNeomakeWarnings',
     \   'tabs': 'LightlineBufferTabs',
     \   'tabs_usage': 'LightlineBufferTitle',
+    \   'linter_checking': 'lightline#ale#checking',
+    \   'linter_warnings': 'lightline#ale#warnings',
+    \   'linter_errors': 'lightline#ale#errors',
+    \   'linter_ok': 'lightline#ale#ok',
     \ },
     \ 'component_type': {
-    \   'neomake_errors': 'error',
-    \   'neomake_warnings': 'warning',
+    \   'linter_checking': 'left',
+    \   'linter_warnings': 'warning',
+    \   'linter_errors': 'error',
+    \   'linter_ok': 'left',
     \ },
     \ 'component_function': {
     \   'cwd': 'LightlineCwd',
     \   'filename': 'LightlineFilename',
-    \   'fugitive': 'LightlineFugitive',
+    \   'anzu': 'LightlineAnzu',
     \   'deoplete': 'LightlineDeoplete',
     \ },
     \ 'separator': { 'left': "\ue0b0", 'right': "\ue0b2" },
@@ -42,12 +46,8 @@ function! LightlineDeoplete()
   return 'Deoplete disabled'
 endfunction
 
-function! LightlineFugitive()
-  if &ft !~? 'vimfiler\|fortifytestpane\|fortifyauditpane\|fortifycategory\|tagbar' && exists("*fugitive#head")
-    let branch = fugitive#head()
-    return branch !=# '' ? '⭠ '.branch : ''
-  endif
-  return ''
+function! LightlineAnzu()
+  return anzu#search_status()
 endfunction
 
 function! LightlineBufferTitle()
@@ -55,7 +55,7 @@ function! LightlineBufferTitle()
 endfunction
 
 function! LightlineBufferTabs()
-    let buflist = filter(range(1,bufnr('$')),'buflisted(v:val) && "quickfix" !=? getbufvar(v:val, "&buftype")') 
+    let buflist = filter(range(1,bufnr('$')),'buflisted(v:val) && "quickfix" !=? getbufvar(v:val, "&buftype")')
     let tabline_before = []
     let tabline_current = []
     let tabline_after = []
@@ -80,7 +80,7 @@ endfunction
 
 function! LightlineFilename()
   let fname = fnamemodify(expand("%"), ":~:.")
-  return 
+  return
         \ fname == '__Tagbar__' ? g:lightline.fname :
         \ fname == '__TestPane__' ? '' :
         \ fname == '__AuditPane__' ? '' :
@@ -92,16 +92,3 @@ function! LightlineCwd()
     return fnamemodify(getcwd(), ':~')
 endfunction
 
-function! LightlineNeomakeErrors()
-  if !exists(":Neomake") || ((get(neomake#statusline#QflistCounts(), "E", 0) + get(neomake#statusline#LoclistCounts(), "E", 0)) == 0)
-    return ''
-  endif
-  return 'E:'.(get(neomake#statusline#LoclistCounts(), 'E', 0) + get(neomake#statusline#QflistCounts(), 'E', 0))
-endfunction
-
-function! LightlineNeomakeWarnings()
-  if !exists(":Neomake") || ((get(neomake#statusline#QflistCounts(), "W", 0) + get(neomake#statusline#LoclistCounts(), "W", 0)) == 0)
-    return ''
-  endif
-  return 'W:'.(get(neomake#statusline#LoclistCounts(), 'W', 0) + get(neomake#statusline#QflistCounts(), 'W', 0))
-endfunction

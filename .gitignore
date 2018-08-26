@@ -1,10 +1,9 @@
 *.DS_Store
 .AppleDouble
 .LSOverride
-config/nvim/dein/repos/*
-config/nvim/tmp/*
+config/nvim/pack/*
+config/nvim/backups/*
 config/nvim/view/*
-config/nvim/dein/*
 config/nvim/.netrwhist
 config/nvim/spell/en.utf-8.spl
 config/nvim/spell/en.utf-8.sug
