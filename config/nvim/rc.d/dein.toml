@@ -31,6 +31,9 @@ endfunction
 '''
 
 [[plugins]]
+repo = 'andymass/vim-matchup'
+
+[[plugins]]
 repo = 'tpope/vim-surround'
 hook_add = '''
 " change: cs<old><new>
