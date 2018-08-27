@@ -21,6 +21,7 @@ if exists('*minpac#init')
   call minpac#add('zchee/deoplete-jedi')
   call minpac#add('andymass/vim-matchup')
   call minpac#add('tpope/vim-surround')
+  call minpac#add('tpope/vim-repeat')
   call minpac#add('airblade/vim-gitgutter')
   call minpac#add('junegunn/fzf', { 'do': '!./install --all && ln -s $(pwd) ~/.fzf'})
   call minpac#add('junegunn/fzf.vim')
@@ -477,6 +478,8 @@ let g:fortify_PythonPath = "/usr/local/lib/python2.7/site-packages"
 let g:fortify_AndroidJarPath = "/Users/alvaro/Library/Android/sdk/platforms/android-26/android.jar"
 let g:fortify_DefaultJarPath = "/Applications/HP_Fortify/default_jars"
 let g:fortify_MemoryOpts = [ "-Xmx4096M", "-Xss24M", "-64" ]
+let g:fortify_JDKVersion = "1.8"
+let g:fortify_XCodeSDK = "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk"
 let g:fortify_AWBOpts = []
 let g:fortify_TranslationOpts = []
     " \ "-python-legacy",
@@ -498,21 +501,20 @@ let g:fortify_ScanOpts = [
     " \ "-Ddebug.dump-cg",
     " \ "-Ddebug.dump-call-targets",
     " \ "-Ddf3.debug=taint.log",
-let g:fortify_JDKVersion = "1.8"
-let g:fortify_XCodeSDK = "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk"
-autocmd BufNewFile,BufReadPost *.xml nested map R ,R
-autocmd BufNewFile,BufReadPost *.rules nested map R ,R
-autocmd BufNewFile,BufReadPost *.xml nested map r ,r
-autocmd BufNewFile,BufReadPost *.rules nested map r ,r
-autocmd FileType fortifydescription nested setlocal spell complete+=kspell
-autocmd FileType fortifyrulepack nested setlocal omnifunc=fortify#complete
-autocmd FileType fortifyauditpane nested nmap <buffer><expr> <S-l> ""
-autocmd FileType fortifyauditpane nested nmap <buffer><expr> <S-h> ""
-autocmd FileType fortifyauditpane nested nmap <buffer><expr> <S-k> ""
+augroup fortify
+    autocmd BufNewFile,BufReadPost *.xml nested map R ,R
+    autocmd BufNewFile,BufReadPost *.rules nested map R ,R
+    autocmd BufNewFile,BufReadPost *.xml nested map r ,r
+    autocmd BufNewFile,BufReadPost *.rules nested map r ,r
+    autocmd FileType fortifydescription nested setlocal spell complete+=kspell
+    autocmd FileType fortifyrulepack nested setlocal omnifunc=fortify#complete
+    autocmd FileType fortifyauditpane nested nmap <buffer><expr> <S-l> ""
+    autocmd FileType fortifyauditpane nested nmap <buffer><expr> <S-h> ""
+    autocmd FileType fortifyauditpane nested nmap <buffer><expr> <S-k> ""
+augroup END
 noremap <C-s> :execute substitute('/'.@0,'0$','','g')<CR>                       " search for contents of register 0 (where AuditPane copies the RuleIDs)
 
 " ALE
-nnoremap <Leader>R :ALEFix<CR>
 let g:ale_linters = {'javascript': ['eslint']}                                  "Lint js with eslint
 let g:ale_fixers = {'javascript': ['prettier', 'eslint']}                       "Fix eslint errors
 let g:ale_javascript_prettier_options = '--print-width 100'                     "Set max width to 100 chars for prettier
@@ -546,5 +548,7 @@ map g# <Plug>(asterisk-gz#)<Plug>(anzu-update-search-status)
 " CTRLSF
 let g:ctrlsf_auto_close = 0                                                     "Do not close search when file is opened
 let g:ctrlsf_mapping = {'vsplit': 's'}                                          "Mapping for opening search result in vertical split
+
+
 "}}}
 
