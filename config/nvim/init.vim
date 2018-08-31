@@ -37,7 +37,7 @@ if exists('*minpac#init')
   call minpac#add('maximbaz/lightline-ale')
   call minpac#add('t9md/vim-choosewin')
   call minpac#add('chaoren/vim-wordmotion')
-  call minpac#add('junegunn/rainbow_parentheses.vim')
+  call minpac#add('luochen1990/rainbow')
   call minpac#add('alvan/vim-closetag')
   call minpac#add('christoomey/vim-tmux-navigator')
   call minpac#add('benmills/vimux')
@@ -57,6 +57,9 @@ if exists('*minpac#init')
   call minpac#add('tfnico/vim-gradle')
   call minpac#add('dyng/ctrlsf.vim')
   call minpac#add('autozimu/LanguageClient-neovim', { 'do': '!bash install.sh' })
+  call minpac#add('ochaloup/vim-syntax-match')
+  call minpac#add('ludovicchabant/vim-gutentags')
+  call minpac#add('majutsushi/tagbar')
 endif
 
 command! PackUpdate packadd minpac | source $MYVIMRC | call minpac#update()
@@ -131,7 +134,7 @@ endif
 " }}}
 
 " ================ AUTOCOMPLETION ==================== {{{
-set wildmode=list:full
+set wildmode=longest
 set wildoptions=tagfile
 set wildignorecase
 set complete=.,w,b,u,U,i,d,t
@@ -180,21 +183,34 @@ set smarttab                                                      " Reset autoin
 
 " ================ AUTOCOMMANDS ==================== {{{
 augroup vimrc
-    autocmd BufEnter *.* :set colorcolumn=0                       " Dont show column
-    autocmd BufWritePre * call StripTrailingWhitespaces()         " Auto-remove trailing spaces
+    "autocmd BufWritePre * call StripTrailingWhitespaces()         " Auto-remove trailing spaces
     autocmd FocusGained,BufEnter * checktime                      " Refresh file when vim gets focus
-    autocmd VimEnter * nested colorscheme cobalt2
-    autocmd BufEnter * nested :RainbowParentheses
     autocmd FileType markdown nested setlocal spell complete+=kspell
     autocmd BufNewFile,BufRead *.gradle nested set filetype=groovy
+    " cobalt2
+    autocmd VimEnter * nested colorscheme cobalt2
+    " deoplete
     autocmd BufEnter *.* nested if getfsize(@%) > 1000000 | call deoplete#disable() | endif
+    " defx
     autocmd FileType defx call DefxSettings()
     autocmd VimEnter * if argc() ==? 0 || isdirectory(expand('%:p')) | call DefxOpen() | endif
     autocmd BufReadPre,FileReadPre * call s:DelDefxBuffer()
+    " fortify
+    autocmd BufNewFile,BufReadPost *.xml nested map R ,R
+    autocmd BufNewFile,BufReadPost *.rules nested map R ,R
+    autocmd BufNewFile,BufReadPost *.xml nested map r ,r
+    autocmd BufNewFile,BufReadPost *.rules nested map r ,r
+    autocmd FileType fortifydescription nested setlocal spell complete+=kspell
+    autocmd FileType fortifyrulepack nested setlocal omnifunc=fortify#complete
+    autocmd FileType fortifyauditpane nested nmap <buffer><expr> <S-l> ""
+    autocmd FileType fortifyauditpane nested nmap <buffer><expr> <S-h> ""
+    autocmd FileType fortifyauditpane nested nmap <buffer><expr> <S-k> ""
 augroup END
 
 augroup windows
     autocmd!
+    " Dont show column
+    autocmd BufEnter *.* :set colorcolumn=0
     " Show cursor line only in active windows
     autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline
     autocmd WinLeave * setlocal nocursorline
@@ -310,6 +326,8 @@ nnoremap <Leader>k 15k
 
 " refresh syntax highlighting
 "noremap <Leader>s <ESC>:syntax sync fromstart<Return>
+
+nnoremap <Leader>t :TagbarToggle<Return>
 
 " remove trailing spaces
 nnoremap <Leader>c :%s/\s\+$//<Return>
@@ -501,30 +519,20 @@ let g:fortify_ScanOpts = [
     " \ "-Ddebug.dump-cg",
     " \ "-Ddebug.dump-call-targets",
     " \ "-Ddf3.debug=taint.log",
-augroup fortify
-    autocmd BufNewFile,BufReadPost *.xml nested map R ,R
-    autocmd BufNewFile,BufReadPost *.rules nested map R ,R
-    autocmd BufNewFile,BufReadPost *.xml nested map r ,r
-    autocmd BufNewFile,BufReadPost *.rules nested map r ,r
-    autocmd FileType fortifydescription nested setlocal spell complete+=kspell
-    autocmd FileType fortifyrulepack nested setlocal omnifunc=fortify#complete
-    autocmd FileType fortifyauditpane nested nmap <buffer><expr> <S-l> ""
-    autocmd FileType fortifyauditpane nested nmap <buffer><expr> <S-h> ""
-    autocmd FileType fortifyauditpane nested nmap <buffer><expr> <S-k> ""
-augroup END
 noremap <C-s> :execute substitute('/'.@0,'0$','','g')<CR>                       " search for contents of register 0 (where AuditPane copies the RuleIDs)
 
 " ALE
-let g:ale_linters = {'javascript': ['eslint']}                                  "Lint js with eslint
-let g:ale_fixers = {'javascript': ['prettier', 'eslint']}                       "Fix eslint errors
-let g:ale_javascript_prettier_options = '--print-width 100'                     "Set max width to 100 chars for prettier
-let g:ale_sign_error = '✖'                                                      "Lint error sign
-let g:ale_sign_warning = '⚠'                                                    "Lint warning sign
+let g:ale_linters = {'javascript': ['eslint']}                                  " Lint js with eslint
+let g:ale_fixers = {'javascript': ['prettier', 'eslint']}                       " Fix eslint errors
+let g:ale_javascript_prettier_options = '--print-width 100'                     " Set max width to 100 chars for prettier
+let g:ale_sign_error = '✖'                                                      " Lint error sign
+let g:ale_sign_warning = '⚠'                                                    " Lint warning sign
+let g:ale_lint_on_enter = 0                                                     " Do not lint on enter
 
 " MATCHUP
-let g:matchup_matchparen_status_offscreen = 0                                   "Do not show offscreen closing match in statusline
-let g:matchup_matchparen_nomode = "ivV\<c-v>"                                   "Enable matchup only in normal mode
-let g:matchup_matchparen_deferred = 1                                           "Defer matchup highlights to allow better cursor movement performance
+let g:matchup_matchparen_status_offscreen = 0                                   " Do not show offscreen closing match in statusline
+let g:matchup_matchparen_nomode = "ivV\<c-v>"                                   " Enable matchup only in normal mode
+let g:matchup_matchparen_deferred = 1                                           " Defer matchup highlights to allow better cursor movement performance
 
 " LANGUAGE CLIENT
 nnoremap <Leader>r :call LanguageClient_contextMenu()<CR>
@@ -546,9 +554,32 @@ map g* <Plug>(asterisk-gz*)<Plug>(anzu-update-search-status)
 map g# <Plug>(asterisk-gz#)<Plug>(anzu-update-search-status)
 
 " CTRLSF
-let g:ctrlsf_auto_close = 0                                                     "Do not close search when file is opened
-let g:ctrlsf_mapping = {'vsplit': 's'}                                          "Mapping for opening search result in vertical split
+let g:ctrlsf_auto_close = 0                                                     " Do not close search when file is opened
+let g:ctrlsf_mapping = {'vsplit': 's'}                                          " Mapping for opening search result in vertical split
 
-
+" RAINBOW
+let g:rainbow_active = 1
+let g:rainbow_conf = {
+	\	'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick'],
+	\	'ctermfgs': ['lightblue', 'lightyellow', 'lightcyan', 'lightmagenta'],
+	\	'operators': '_,_',
+	\	'parentheses': ['start=/(/ end=/)/ fold', 'start=/\[/ end=/\]/ fold', 'start=/{/ end=/}/ fold'],
+	\	'separately': {
+	\		'*': {},
+	\		'tex': {
+	\			'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/'],
+	\		},
+	\		'lisp': {
+	\			'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick', 'darkorchid3'],
+	\		},
+	\		'vim': {
+	\			'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/', 'start=/{/ end=/}/ fold', 'start=/(/ end=/)/ containedin=vimFuncBody', 'start=/\[/ end=/\]/ containedin=vimFuncBody', 'start=/{/ end=/}/ fold containedin=vimFuncBody'],
+	\		},
+	\		'html': {
+	\			'parentheses': ['start=/\v\<((area|base|br|col|embed|hr|img|input|keygen|link|menuitem|meta|param|source|track|wbr)[ >])@!\z([-_:a-zA-Z0-9]+)(\s+[-_:a-zA-Z0-9]+(\=("[^"]*"|'."'".'[^'."'".']*'."'".'|[^ '."'".'"><=`]*))?)*\>/ end=#</\z1># fold'],
+	\		},
+	\		'css': 0,
+	\	}
+	\}
 "}}}
 
