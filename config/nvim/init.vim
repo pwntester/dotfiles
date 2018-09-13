@@ -25,7 +25,7 @@ if exists('*minpac#init')
   call minpac#add('airblade/vim-gitgutter')
   call minpac#add('junegunn/fzf', { 'do': '!./install --all && ln -s $(pwd) ~/.fzf'})
   call minpac#add('junegunn/fzf.vim')
-  call minpac#add('pbogut/fzf-mru.vim')
+  "call minpac#add('pbogut/fzf-mru.vim')
   call minpac#add('tomtom/tcomment_vim')
   call minpac#add('osyo-manga/vim-anzu')
   call minpac#add('haya14busa/vim-asterisk')
@@ -418,10 +418,11 @@ let g:indentLine_color_gui = '#17252c'
 let g:indentLine_fileTypeExclude = ['fortifytestpane', 'fortifyauditpane']
 
 " FZF
+nnoremap <leader>m :History<Return>
 nnoremap <leader>h :History<Return>
 nnoremap <leader>b :Buffers<Return>
 nnoremap <leader>s :Snippets<Return>
-nnoremap <leader>d :Files<Return>
+nnoremap <leader>f :Files<Return>
 
 let g:fzf_action = {
   \ 'ctrl-t': 'tab split',
@@ -443,9 +444,6 @@ let g:fzf_colors =
   \ 'marker':  ['fg', 'Keyword'],
   \ 'spinner': ['fg', 'Label'],
   \ 'header':  ['fg', 'Comment'] }
-
-" FZF-MRU
-nnoremap <leader>m :FZFMru<Return>
 
 " VIM-MOVE
 let g:move_map_keys = 0
@@ -504,10 +502,13 @@ let g:fortify_TranslationOpts = []
 let g:fortify_ScanOpts = [
     \ "-Dcom.fortify.sca.limiters.MaxChainDepth=10",
     \ "-Dcom.fortify.sca.limiters.MaxPassthroughChainDepth=10",
+    \ "-Dcom.fortify.sca.limiters.MaxIndirectResolutionsForCall=512",
     \ "-Dcom.fortify.sca.DebugNumericTaint=true",
     \ "-Dcom.fortify.sca.ReportTrippedDepthLimiters=true",
     \ "-Dcom.fortify.sca.ReportTrippedNodeLimiters=true",
     \ "-Dcom.fortify.sca.ReportTightenedLimits=true",
+    \ "-Dcom.fortify.sca.ReportUnresolvedCalls=true",
+    \ "-Dcom.fortify.sca.ReportTightenedLimits",
     \ "-Dcom.fortify.sca.alias.mode.scala=fi",
     \ "-Dcom.fortify.sca.alias.mode.swift=fi",
     \ "-Dcom.fortify.sca.Phase0HigherOrder.Level=1",
@@ -515,10 +516,17 @@ let g:fortify_ScanOpts = [
     \ "-Dcom.fortify.sca.EnableDOMModeling=true",
 \]
     " \ "-debug", "-debug-verbose", "-logfile", "scan.log",
-    " \ "-Ddebug.dump-nst",
-    " \ "-Ddebug.dump-cg",
-    " \ "-Ddebug.dump-call-targets",
+    " \ "-Ddebug.dump-nst",                                                     " For debugging purposes dumps NST files between Phase 1 and Phase 2 of analysis.
+    " \ "-Ddebug.dump-cfg",                                                     " For debugging purposes controls dumping Basic Block Graph to file.
+    " \ "-Ddebug.dump-raw-cfg",                                                 " dump the cfg which is not optimized by dead code elimination
+    " \ "-Ddebug.dump-ssi",                                                     " For debugging purposes dump ssi graph.
+    " \ "-Ddebug.dump-cg",                                                      " For debugging purposes dump call graph.
+    " \ "-Ddebug.dump-vcg",                                                     " For debugging purposes dump virtual call graph deferred items.
+    " \ "-Ddebug.dump-model",                                                   " For debugging purposes data dump of model attributes.
+    " \ "-Ddebug.dump-call-targets",                                            " For debugging purposes dump call targets for each call site.
+    " \ "-Dic.debug=issue_calculator.log",
     " \ "-Ddf3.debug=taint.log",
+    " \ "-Dcom.fortify.sca.ThreadCount=1",
 noremap <C-s> :execute substitute('/'.@0,'0$','','g')<CR>                       " search for contents of register 0 (where AuditPane copies the RuleIDs)
 
 " ALE
