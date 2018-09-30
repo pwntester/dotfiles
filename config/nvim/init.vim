@@ -25,7 +25,7 @@ if exists('*minpac#init')
   call minpac#add('airblade/vim-gitgutter')
   call minpac#add('junegunn/fzf', { 'do': '!./install --all && ln -s $(pwd) ~/.fzf'})
   call minpac#add('junegunn/fzf.vim')
-  "call minpac#add('pbogut/fzf-mru.vim')
+  call minpac#add('terryma/vim-multiple-cursors')
   call minpac#add('tomtom/tcomment_vim')
   call minpac#add('osyo-manga/vim-anzu')
   call minpac#add('haya14busa/vim-asterisk')
@@ -56,10 +56,12 @@ if exists('*minpac#init')
   call minpac#add('ekalinin/Dockerfile.vim')
   call minpac#add('tfnico/vim-gradle')
   call minpac#add('dyng/ctrlsf.vim')
+  call minpac#add('brooth/far.vim')
   call minpac#add('autozimu/LanguageClient-neovim', { 'do': '!bash install.sh' })
   call minpac#add('ochaloup/vim-syntax-match')
   call minpac#add('ludovicchabant/vim-gutentags')
   call minpac#add('majutsushi/tagbar')
+  call minpac#add('gcmt/wildfire.vim')
 endif
 
 command! PackUpdate packadd minpac | source $MYVIMRC | call minpac#update()
@@ -134,11 +136,9 @@ endif
 " }}}
 
 " ================ AUTOCOMPLETION ==================== {{{
-set wildmode=longest
+set wildmode=longest,full
 set wildoptions=tagfile
 set wildignorecase
-set complete=.,w,b,u,U,i,d,t
-set completeopt=menu,longest
 set wildignore+=*.swp,*.pyc,*.bak,*.class,*.orig
 set wildignore+=.git,.hg,.bzr,.svn
 set wildignore+=build/*,tmp/*,vendor/cache/*,bin/*
@@ -156,6 +156,9 @@ set wildignore+=*.gem
 set wildignore+=log/**
 set wildignore+=tmp/**
 set wildignore+=*.jpg,*.bmp,*.gif,*.png,*.jpeg,*.svg
+
+set complete=.,w,b,u,U,i,d,t
+set completeopt=menu,longest
 " }}}
 
 " ================ TURN OFF SWAP FILES ==================== {{{
@@ -279,10 +282,11 @@ inoremap <down> <nop>
 inoremap <left> <nop>
 inoremap <right> <nop>
 
-map <silent> <C-E> :Defx<CR>
+nnoremap <silent> <C-e> :Defx -split=vertical -winwidth=50 -toggle<Return>
+nnoremap <silent> <C-f> :call execute(printf('Defx -split=vertical -winwidth=50 -toggle %s -search=%s', expand('%:p:h'), expand('%:p')))<Return>
 
 " remove search highlights
-noremap <silent>./ :nohlsearch<Return>
+nnoremap <silent>./ :nohlsearch<Return>
 
 " disable paste mode when leaving Insert mode
 autocmd InsertLeave * set nopaste
@@ -372,21 +376,11 @@ function! StripTrailingWhitespaces()
   endif
 endfunction
 
-function! DefxOpen(...) abort
-  let l:find_current_file = a:0 > 0
-
-  if !l:find_current_file
-    return execute(printf('Defx %s', getcwd()))
-  endif
-
-  let l:current_file_name = escape(expand('%:p:t'), './')
-  call execute(printf('Defx %s', expand('%:p:h')))
-  return search(l:current_file_name)
-endfunction
-
 function! DefxSettings() abort
-    nnoremap <silent><buffer><expr> <CR> defx#do_action('open')
-    nnoremap <silent><buffer><expr> o defx#do_action('open')
+    nnoremap <silent><buffer><expr> <CR> defx#do_action('open', 'wincmd w \| drop')
+    nnoremap <silent><buffer><expr> y defx#do_action('copy')
+	nnoremap <silent><buffer><expr> m defx#do_action('move')
+	nnoremap <silent><buffer><expr> p defx#do_action('paste')
     nnoremap <silent><buffer><expr> N defx#do_action('new_directory')
     nnoremap <silent><buffer><expr> n defx#do_action('new_file')
     nnoremap <silent><buffer><expr> d defx#do_action('remove')
@@ -400,12 +394,23 @@ function! DefxSettings() abort
     setlocal nobuflisted
 endfunction
 
+function! DefxOpen(...) abort
+  let l:find_current_file = a:0 > 0
+
+  if !l:find_current_file
+    return execute(printf('Defx %s', getcwd()))
+  endif
+
+  let l:current_file_name = escape(expand('%:p:t'), './')
+  call execute(printf('Defx %s', expand('%:p:h')))
+  return search(l:current_file_name)
+endfunction
+
 function! s:DelDefxBuffer()
   if bufexists("[defx]")
     exe 'bdelete \[defx\]'
   endif
 endfunction
-
 " }}}
 
 " ================ PLUGIN SETUPS ======================== {{{
@@ -489,6 +494,7 @@ let g:vim_markdown_folding_disabled = 1
 
 " VIM-FORTIFY
 nnoremap <leader>i :NewRuleID<Return>
+noremap <C-s> :execute substitute('/'.@0,'0$','','g')<CR>                                   " search for contents of register 0 (where AuditPane copies the RuleIDs)
 let g:fortify_SCAPath = "/Applications/HP_Fortify/sca"
 let g:fortify_PythonPath = "/usr/local/lib/python2.7/site-packages"
 let g:fortify_AndroidJarPath = "/Users/alvaro/Library/Android/sdk/platforms/android-26/android.jar"
@@ -497,37 +503,38 @@ let g:fortify_MemoryOpts = [ "-Xmx4096M", "-Xss24M", "-64" ]
 let g:fortify_JDKVersion = "1.8"
 let g:fortify_XCodeSDK = "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk"
 let g:fortify_AWBOpts = []
+
 let g:fortify_TranslationOpts = []
-    " \ "-python-legacy",
-let g:fortify_ScanOpts = [
-    \ "-Dcom.fortify.sca.limiters.MaxChainDepth=10",
-    \ "-Dcom.fortify.sca.limiters.MaxPassthroughChainDepth=10",
-    \ "-Dcom.fortify.sca.limiters.MaxIndirectResolutionsForCall=512",
-    \ "-Dcom.fortify.sca.DebugNumericTaint=true",
-    \ "-Dcom.fortify.sca.ReportTrippedDepthLimiters=true",
-    \ "-Dcom.fortify.sca.ReportTrippedNodeLimiters=true",
-    \ "-Dcom.fortify.sca.ReportTightenedLimits=true",
-    \ "-Dcom.fortify.sca.ReportUnresolvedCalls=true",
-    \ "-Dcom.fortify.sca.ReportTightenedLimits",
-    \ "-Dcom.fortify.sca.alias.mode.scala=fi",
-    \ "-Dcom.fortify.sca.alias.mode.swift=fi",
-    \ "-Dcom.fortify.sca.Phase0HigherOrder.Level=1",
-    \ "-Dcom.fortify.sca.Phase0HigherOrder.Languages=javascript",
-    \ "-Dcom.fortify.sca.EnableDOMModeling=true",
-\]
-    " \ "-debug", "-debug-verbose", "-logfile", "scan.log",
-    " \ "-Ddebug.dump-nst",                                                     " For debugging purposes dumps NST files between Phase 1 and Phase 2 of analysis.
-    " \ "-Ddebug.dump-cfg",                                                     " For debugging purposes controls dumping Basic Block Graph to file.
-    " \ "-Ddebug.dump-raw-cfg",                                                 " dump the cfg which is not optimized by dead code elimination
-    " \ "-Ddebug.dump-ssi",                                                     " For debugging purposes dump ssi graph.
-    " \ "-Ddebug.dump-cg",                                                      " For debugging purposes dump call graph.
-    " \ "-Ddebug.dump-vcg",                                                     " For debugging purposes dump virtual call graph deferred items.
-    " \ "-Ddebug.dump-model",                                                   " For debugging purposes data dump of model attributes.
-    " \ "-Ddebug.dump-call-targets",                                            " For debugging purposes dump call targets for each call site.
-    " \ "-Dic.debug=issue_calculator.log",
-    " \ "-Ddf3.debug=taint.log",
-    " \ "-Dcom.fortify.sca.ThreadCount=1",
-noremap <C-s> :execute substitute('/'.@0,'0$','','g')<CR>                       " search for contents of register 0 (where AuditPane copies the RuleIDs)
+let g:fortify_TranslationOpts += ["-python-legacy"]
+
+let g:fortify_ScanOpts = []
+let g:fortify_ScanOpts += ["-Dcom.fortify.sca.limiters.MaxChainDepth=10"]
+let g:fortify_ScanOpts += ["-Dcom.fortify.sca.limiters.MaxPassthroughChainDepth=10"]
+let g:fortify_ScanOpts += ["-Dcom.fortify.sca.limiters.MaxIndirectResolutionsForCall=512"]
+let g:fortify_ScanOpts += ["-Dcom.fortify.sca.DebugNumericTaint=true"]
+let g:fortify_ScanOpts += ["-Dcom.fortify.sca.ReportTrippedDepthLimiters=true"]
+let g:fortify_ScanOpts += ["-Dcom.fortify.sca.ReportTrippedNodeLimiters=true"]
+let g:fortify_ScanOpts += ["-Dcom.fortify.sca.ReportTightenedLimits=true"]
+let g:fortify_ScanOpts += ["-Dcom.fortify.sca.ReportUnresolvedCalls=true"]
+let g:fortify_ScanOpts += ["-Dcom.fortify.sca.ReportTightenedLimits"]
+let g:fortify_ScanOpts += ["-Dcom.fortify.sca.alias.mode.scala=fi"]
+let g:fortify_ScanOpts += ["-Dcom.fortify.sca.alias.mode.swift=fi"]
+let g:fortify_ScanOpts += ["-Dcom.fortify.sca.Phase0HigherOrder.Level=1"]
+let g:fortify_ScanOpts += ["-Dcom.fortify.sca.Phase0HigherOrder.Languages=javascript"]
+let g:fortify_ScanOpts += ["-Dcom.fortify.sca.EnableDOMModeling=true"]
+" let g:fortify_ScanOpts += ["-Dcom.fortify.sca.followImports=false"]                            " Do not translate and analyze all libraries that you require in your code
+" let g:fortify_ScanOpts += ["-debug", "-debug-verbose", "-logfile", "scan.log"]                 " Generate scan logs
+" let g:fortify_ScanOpts += ["-Ddebug.dump-nst"]                                                 " For debugging purposes dumps NST files between Phase 1 and Phase 2 of analysis.
+" let g:fortify_ScanOpts += ["-Ddebug.dump-cfg"]                                                 " For debugging purposes controls dumping Basic Block Graph to file.
+" let g:fortify_ScanOpts += ["-Ddebug.dump-raw-cfg"]                                             " dump the cfg which is not optimized by dead code elimination
+" let g:fortify_ScanOpts += ["-Ddebug.dump-ssi"]                                                 " For debugging purposes dump ssi graph.
+" let g:fortify_ScanOpts += ["-Ddebug.dump-cg"]                                                  " For debugging purposes dump call graph.
+" let g:fortify_ScanOpts += ["-Ddebug.dump-vcg"]                                                 " For debugging purposes dump virtual call graph deferred items.
+" let g:fortify_ScanOpts += ["-Ddebug.dump-model"]                                               " For debugging purposes data dump of model attributes.
+" let g:fortify_ScanOpts += ["-Ddebug.dump-call-targets"]                                        " For debugging purposes dump call targets for each call site.
+" let g:fortify_ScanOpts += ["-Dic.debug=issue_calculator.log"]                                  " Dump issue calculator log
+" let g:fortify_ScanOpts += ["-Ddf3.debug=taint.log"]                                            " Dump taint log
+" let g:fortify_ScanOpts += ["-Dcom.fortify.sca.ThreadCount=1"]                                  " Disable multi-threading
 
 " ALE
 let g:ale_linters = {'javascript': ['eslint']}                                  " Lint js with eslint
@@ -589,5 +596,11 @@ let g:rainbow_conf = {
 	\		'css': 0,
 	\	}
 	\}
+
+" WILDFIRE
+let g:wildfire_objects = {
+    \ "*" : ["i'", 'i"', "i)", "i]", "i}"],
+    \ "fortifyrulepack,html,xml" : ["at", "it"],
+    \ }
 "}}}
 
