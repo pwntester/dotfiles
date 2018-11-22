@@ -353,7 +353,8 @@ function! StripTrailingWhitespaces()
 endfunction
 
 function! DefxSettings() abort
-    nnoremap <silent><buffer><expr> <CR> defx#do_action('open', 'wincmd w \| drop')
+    nnoremap <silent><buffer><expr> <CR> defx#do_action('open', 'DefxOpenCommand')
+    "nnoremap <silent><buffer><expr> <CR> defx#do_action('open', 'wincmd w \| drop')
     nnoremap <silent><buffer><expr> y defx#do_action('copy')
 	nnoremap <silent><buffer><expr> m defx#do_action('move')
 	nnoremap <silent><buffer><expr> p defx#do_action('paste')
@@ -369,6 +370,25 @@ function! DefxSettings() abort
     nnoremap <silent><buffer> q :call execute("bn\<BAR>bw#")<CR>
     setlocal nobuflisted
 endfunction
+
+function! DefxOpenAction(path)
+    set splitright
+    let winnrs = range(1, tabpagewinnr(tabpagenr(), '$'))
+    if len(winnrs) > 1
+        for winnr in winnrs
+            if index(['fortifyauditpane', 'fortifytestpane', 'tagbar', 'defx'], getbufvar(winbufnr(winnr), '&filetype')) == -1
+                execute printf('%swincmd w', winnr)
+                execute printf('%dvsplit %s', str2nr(&columns) - 50, a:path)
+                return
+            endif
+        endfor
+    endif
+
+    " can't find suitable buffer.
+    execute printf('%dvsplit %s', str2nr(&columns) - 50, a:path)
+    set splitright&
+endfunction
+command! -nargs=* -range DefxOpenCommand call DefxOpenAction(<q-args>)
 
 function! DefxOpen(...) abort
   let l:find_current_file = a:0 > 0
@@ -396,7 +416,7 @@ nmap <leader>z <Plug>ZoomWin
 
 " INDENTLINE
 let g:indentLine_color_gui = '#17252c'
-let g:indentLine_fileTypeExclude = ['fortifytestpane', 'fortifyauditpane']
+let g:indentLine_fileTypeExclude = ['fortifytestpane', 'fortifyauditpane', 'tagbar', 'defx']
 
 " FZF
 nnoremap <leader>m :History<Return>
@@ -498,9 +518,9 @@ let g:fortify_ScanOpts += ["-Dcom.fortify.sca.alias.mode.swift=fi"]
 let g:fortify_ScanOpts += ["-Dcom.fortify.sca.Phase0HigherOrder.Level=1"]
 let g:fortify_ScanOpts += ["-Dcom.fortify.sca.Phase0HigherOrder.Languages=javascript,typescript"]
 let g:fortify_ScanOpts += ["-Dcom.fortify.sca.EnableDOMModeling=true"]
-" let g:fortify_ScanOpts += ["-Dcom.fortify.sca.followImports=false"]                            " Do not translate and analyze all libraries that you require in your code
-" let g:fortify_ScanOpts += ["-debug", "-debug-verbose", "-logfile", "sca_build/scan.log"]                 " Generate scan logs
-let g:fortify_ScanOpts += ["-Ddebug.dump-nst"]                                                 " For debugging purposes dumps NST files between Phase 1 and Phase 2 of analysis.
+let g:fortify_ScanOpts += ["-Dcom.fortify.sca.followImports=false"]                              " Do not translate and analyze all libraries that you require in your code
+let g:fortify_ScanOpts += ["-Ddebug.dump-nst", "sca_build"]                                      " For debugging purposes dumps NST files between Phase 1 and Phase 2 of analysis.
+" let g:fortify_ScanOpts += ["-debug", "-debug-verbose", "-logfile", "sca_build/scan.log"]       " Generate scan logs
 " let g:fortify_ScanOpts += ["-Ddebug.dump-cfg"]                                                 " For debugging purposes controls dumping Basic Block Graph to file.
 " let g:fortify_ScanOpts += ["-Ddebug.dump-raw-cfg"]                                             " dump the cfg which is not optimized by dead code elimination
 " let g:fortify_ScanOpts += ["-Ddebug.dump-ssi"]                                                 " For debugging purposes dump ssi graph.
