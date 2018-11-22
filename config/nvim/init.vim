@@ -25,7 +25,6 @@ if exists('*minpac#init')
   call minpac#add('airblade/vim-gitgutter')
   call minpac#add('junegunn/fzf', { 'do': '!./install --all && ln -s $(pwd) ~/.fzf'})
   call minpac#add('junegunn/fzf.vim')
-  call minpac#add('terryma/vim-multiple-cursors')
   call minpac#add('tomtom/tcomment_vim')
   call minpac#add('osyo-manga/vim-anzu')
   call minpac#add('haya14busa/vim-asterisk')
@@ -40,13 +39,16 @@ if exists('*minpac#init')
   call minpac#add('luochen1990/rainbow')
   call minpac#add('alvan/vim-closetag')
   call minpac#add('christoomey/vim-tmux-navigator')
-  call minpac#add('benmills/vimux')
   call minpac#add('ap/vim-css-color')
   call minpac#add('cohama/lexima.vim')
   call minpac#add('SirVer/ultisnips')
   call minpac#add('honza/vim-snippets')
   call minpac#add('AndrewRadev/linediff.vim')
   call minpac#add('rbgrouleff/bclose.vim')
+  call minpac#add('dyng/ctrlsf.vim')
+  call minpac#add('brooth/far.vim')
+  call minpac#add('ludovicchabant/vim-gutentags')
+  call minpac#add('majutsushi/tagbar')
   call minpac#add('plasticboy/vim-markdown')
   call minpac#add('elzr/vim-json')
   call minpac#add('b4winckler/vim-objc')
@@ -55,13 +57,6 @@ if exists('*minpac#init')
   call minpac#add('derekwyatt/vim-scala')
   call minpac#add('ekalinin/Dockerfile.vim')
   call minpac#add('tfnico/vim-gradle')
-  call minpac#add('dyng/ctrlsf.vim')
-  call minpac#add('brooth/far.vim')
-  call minpac#add('autozimu/LanguageClient-neovim', { 'do': '!bash install.sh' })
-  call minpac#add('ochaloup/vim-syntax-match')
-  call minpac#add('ludovicchabant/vim-gutentags')
-  call minpac#add('majutsushi/tagbar')
-  call minpac#add('gcmt/wildfire.vim')
 endif
 
 command! PackUpdate packadd minpac | source $MYVIMRC | call minpac#update()
@@ -82,7 +77,8 @@ set nottimeout
 let g:loaded_netrwPlugin = 1                                      " Do not load netrw
 let g:loaded_matchit = 1                                          " Do not load matchit, use matchup plugin
 set signcolumn=yes                                                " Always draw the signcolumn
-
+set ignorecase                                                    " Disable case-sensitive searches (override with \c or \C)
+set smartcase                                                     " If the search term contains uppercase letters, do case-sensitive search
 " }}}
 
 " ================ SYNTAX ==================== {{{
@@ -93,23 +89,6 @@ set scrolloff=8                                                   " Start scroll
 set linebreak                                                     " Wrap lines at special characters instead of at max width
 set listchars=tab:>-,trail:.,extends:>,precedes:<,nbsp:%          " Showing trailing whitespace
 "autocmd BufEnter *.* if getfsize(@%) < 1000000 | :syntax sync fromstart | endif " Detect syntax from start of file
-" }}}
-
-" ================ LANGUAGE SPECIFICS ==================== {{{
-let msql_sql_query = 1                                            " Better mysql highlight
-let python_highlight_all = 1                                      " Better python highlight
-let c_comment_strings=1                                           " Strings and numbers inside a comment
-let c_syntax_for_h=1                                              " .h are C
-let php_htmlInStrings = 1                                         " Highlight HTML in PHP strings
-let php_sql_query = 1                                             " Highligh SQL in PHP
-let java_highlight_all=1                                          " Better java highlight
-let java_highlight_debug=1                                        " Highlight debug statement (println...)
-let java_highlight_java_lang_ids=1                                " Highlight identifiers in java.lang.*
-let java_highlight_functions="style"                              " Follow Java guidelines for Class and Function naming
-let java_minlines = 150                                           " Start syntax sync 150 above current line
-let java_comment_strings=1                                        " Strings and numbers inside a comment
-let g:sh_no_error = 1                                             " Shell scrpting highlighting fixes
-let g:markdown_fenced_languages = ['python', 'java', 'vim']       " Highlight fenced code
 " }}}
 
 " ================ FOLDING ==================== {{{
@@ -208,6 +187,8 @@ augroup vimrc
     autocmd FileType fortifyauditpane nested nmap <buffer><expr> <S-l> ""
     autocmd FileType fortifyauditpane nested nmap <buffer><expr> <S-h> ""
     autocmd FileType fortifyauditpane nested nmap <buffer><expr> <S-k> ""
+    " lexima
+    autocmd VimEnter *.* call lexima#add_rule({'char': '-', 'at': '<!-', 'input_after': ' -->', 'filetype': 'fortifyrulepack'})
 augroup END
 
 augroup windows
@@ -234,6 +215,9 @@ endif
 " center after search
 nnoremap n nzz
 nnoremap N Nzz
+
+" search for visual selection (exact matches, no regexp)
+vnoremap // y/\V<C-r>=escape(@",'/\')<CR><CR>
 
 " quit all windows
 command! Q execute "qa!"
@@ -354,14 +338,6 @@ nnoremap <Leader>r :call LanguageClient_contextMenu()<CR>
 " set paste mode
 nnoremap <Leader>p :set nopaste!<Return>
 
-" Show syntax highlighting groups for word under cursor
-nmap <Leader>z :call <SID>SynStack()<Return>
-function! <SID>SynStack()
-  if !exists("*synstack")
-    return
-  endif
-  echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
-endfunc
 " }}}
 
 " ================ FUNCTIONS ======================== {{{
@@ -470,13 +446,10 @@ nmap <C-w><C-w> <Plug>(choosewin)
 let g:wordmotion_prefix = '<Leader>'
 
 " VIM-CLOSETAG
-let g:closetag_filenames = "*.xml,*.html,*.xhtml,*.phtml"
-
-" LEXIMA
-let g:lexima_enable_basic_rules = 1
-let g:lexima_enable_space_rules = 1
-let g:lexima_enable_endwise_rules = 1
-let g:lexima_enable_newline_rules = 1
+let g:closetag_filenames = '*.html,*.xhtml,*.phtml,*.xml,*.jsp'
+let g:closetag_filetypes = 'html,xhtml,phtml,fortifyrulepack,xml,jsp'
+let g:closetag_xhtml_filenames = '*.xml,*.xhtml,*.jsp,*.html'
+let g:closetag_xhtml_filetypes = 'xhtml,jsx,fortifyrulepack'
 
 " ULTISNIPS
 let g:UltiSnipsExpandTrigger="<tab>"
@@ -504,10 +477,13 @@ let g:fortify_JDKVersion = "1.8"
 let g:fortify_XCodeSDK = "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk"
 let g:fortify_AWBOpts = []
 
-let g:fortify_TranslationOpts = []
-let g:fortify_TranslationOpts += ["-python-legacy"]
-
-let g:fortify_ScanOpts = []
+let g:fortify_TranslationOpts = ["-Dcom.fortify.sca.fileextensions.csproj=XML"]
+let g:fortify_TranslationOpts = ["-project-root", "sca_build"]
+"let g:fortify_TranslationOpts = ["-debug", "-verbose", "-debug-verbose", "-logfile","sca_build/build.log"]
+let g:fortify_TranslationOpts += ["-Dcom.fortify.sca.DefaultFileTypes=java,rb,jsp,jspx,tag,tagx,tld,sql,cfm,php,csproj,phtml,ctp,pks,pkh,pkb,xml,config,Config,settings,properties,dll,exe,winmd,cs,vb,asax,ascx,ashx,asmx,aspx,master,Master,xaml,baml,cshtml,vbhtml,inc,asp,vbscript,js,ini,bas,cls,vbs,frm,ctl,html,htm,xsd,wsdd,xmi,py,cfml,cfc,abap,xhtml,cpx,xcfg,jsff,as,mxml,cbl,cscfg,csdef,wadcfg,wadcfgx,appxmanifest,wsdl,plist,bsp,ABAP,BSP,swift,page,trigger,scala"]
+"let g:fortify_TranslationOpts += ["-python-legacy"]
+"let g:fortify_TranslationOpts += ["-python-version 3"]
+let g:fortify_ScanOpts = ["-project-root", "sca_build"]
 let g:fortify_ScanOpts += ["-Dcom.fortify.sca.limiters.MaxChainDepth=10"]
 let g:fortify_ScanOpts += ["-Dcom.fortify.sca.limiters.MaxPassthroughChainDepth=10"]
 let g:fortify_ScanOpts += ["-Dcom.fortify.sca.limiters.MaxIndirectResolutionsForCall=512"]
@@ -520,11 +496,11 @@ let g:fortify_ScanOpts += ["-Dcom.fortify.sca.ReportTightenedLimits"]
 let g:fortify_ScanOpts += ["-Dcom.fortify.sca.alias.mode.scala=fi"]
 let g:fortify_ScanOpts += ["-Dcom.fortify.sca.alias.mode.swift=fi"]
 let g:fortify_ScanOpts += ["-Dcom.fortify.sca.Phase0HigherOrder.Level=1"]
-let g:fortify_ScanOpts += ["-Dcom.fortify.sca.Phase0HigherOrder.Languages=javascript"]
+let g:fortify_ScanOpts += ["-Dcom.fortify.sca.Phase0HigherOrder.Languages=javascript,typescript"]
 let g:fortify_ScanOpts += ["-Dcom.fortify.sca.EnableDOMModeling=true"]
 " let g:fortify_ScanOpts += ["-Dcom.fortify.sca.followImports=false"]                            " Do not translate and analyze all libraries that you require in your code
-" let g:fortify_ScanOpts += ["-debug", "-debug-verbose", "-logfile", "scan.log"]                 " Generate scan logs
-" let g:fortify_ScanOpts += ["-Ddebug.dump-nst"]                                                 " For debugging purposes dumps NST files between Phase 1 and Phase 2 of analysis.
+" let g:fortify_ScanOpts += ["-debug", "-debug-verbose", "-logfile", "sca_build/scan.log"]                 " Generate scan logs
+let g:fortify_ScanOpts += ["-Ddebug.dump-nst"]                                                 " For debugging purposes dumps NST files between Phase 1 and Phase 2 of analysis.
 " let g:fortify_ScanOpts += ["-Ddebug.dump-cfg"]                                                 " For debugging purposes controls dumping Basic Block Graph to file.
 " let g:fortify_ScanOpts += ["-Ddebug.dump-raw-cfg"]                                             " dump the cfg which is not optimized by dead code elimination
 " let g:fortify_ScanOpts += ["-Ddebug.dump-ssi"]                                                 " For debugging purposes dump ssi graph.
@@ -548,15 +524,6 @@ let g:ale_lint_on_enter = 0                                                     
 let g:matchup_matchparen_status_offscreen = 0                                   " Do not show offscreen closing match in statusline
 let g:matchup_matchparen_nomode = "ivV\<c-v>"                                   " Enable matchup only in normal mode
 let g:matchup_matchparen_deferred = 1                                           " Defer matchup highlights to allow better cursor movement performance
-
-" LANGUAGE CLIENT
-nnoremap <Leader>r :call LanguageClient_contextMenu()<CR>
-let g:LanguageClient_serverCommands = {
-\ 'javascript': ['javascript-typescript-stdio'],
-\ 'javascript.jsx': ['javascript-typescript-stdio'],
-\ 'typescript': ['javascript-typescript-stdio'],
-\ 'python': ['/usr/local/bin/pyls'],
-\ }
 
 " ANZU
 nmap n <Plug>(anzu-n)zz
@@ -597,10 +564,12 @@ let g:rainbow_conf = {
 	\	}
 	\}
 
-" WILDFIRE
-let g:wildfire_objects = {
-    \ "*" : ["i'", 'i"', "i)", "i]", "i}"],
-    \ "fortifyrulepack,html,xml" : ["at", "it"],
-    \ }
+
+" LEXIMA
+let g:lexima_enable_basic_rules = 1
+let g:lexima_enable_space_rules = 1
+let g:lexima_enable_endwise_rules = 1
+let g:lexima_enable_newline_rules = 1
+
 "}}}
 
