@@ -28,6 +28,7 @@ let g:lightline = {
     \   'linter_ok': 'left',
     \ },
     \ 'component_function': {
+    \   'filetype': 'LightlineFiletype',
     \   'cwd': 'LightlineCwd',
     \   'filename': 'LightlineFilename',
     \   'anzu': 'LightlineAnzu',
@@ -78,17 +79,37 @@ function! LightlineBufferTabs()
     return [tabline_before, tabline_current, tabline_after]
 endfunction
 
+function! LightlineFiletype()
+    return winwidth(0) > 70 ? (&filetype !=# '' ? &filetype : 'no ft') : ''
+endfunction
+
 function! LightlineFilename()
-  let fname = fnamemodify(expand("%"), ":~:.")
-  return
-        \ fname == '__Tagbar__' ? g:lightline.fname :
-        \ fname == '__TestPane__' ? '' :
-        \ fname == '__AuditPane__' ? '' :
-        \ &ft == 'vimfiler' ? vimfiler#get_status_string() :
-        \ ('' != fname ? fname : '[No Name]')
+    "let fname = fnamemodify(expand("%"), ":~:.")
+    "let fname = winwidth(0) > 120 ? expand('%:p') : expand('%:t')
+    let fname = expand('%:p')
+    if (fname == '__Tagbar__' || fname == '__TestPane__' || fname == '__AuditPane__')
+        let fname = ''
+    else
+        let width = winwidth(0) / 3 
+        if strlen(fname) > width 
+            let segments = reverse(split(fname, "/"))
+            let truncated = ""
+            for segment in segments
+                let truncated  = "/" . segment . truncated 
+                if strlen(truncated) > width
+                    break
+                endif
+            endfor
+            let fname = "..." . truncated
+        endif
+    endif
+    return '' != fname ? fname : '[No Name]'
 endfunction
 
 function! LightlineCwd()
-    return fnamemodify(getcwd(), ':~')
+    "return fnamemodify(getcwd(), ':~')
+    return winwidth(0) < 120 ? '' : getcwd()
 endfunction
+
+
 
