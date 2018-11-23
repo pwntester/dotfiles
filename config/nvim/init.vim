@@ -57,10 +57,9 @@ if exists('*minpac#init')
   call minpac#add('derekwyatt/vim-scala')
   call minpac#add('ekalinin/Dockerfile.vim')
   call minpac#add('tfnico/vim-gradle')
+  call minpac#add('tfnico/vim-gradle')
 endif
 
-command! PackUpdate packadd minpac | source $MYVIMRC | call minpac#update()
-command! PackClean packadd minpac | source $MYVIMRC | call minpac#clean()
 " }}}
 
 " ================ GENERAL ==================== {{{
@@ -115,6 +114,7 @@ endif
 " }}}
 
 " ================ AUTOCOMPLETION ==================== {{{
+"stuff to ignore when tab completing
 set wildmode=longest,full
 set wildoptions=tagfile
 set wildignorecase
@@ -122,7 +122,7 @@ set wildignore+=*.swp,*.pyc,*.bak,*.class,*.orig
 set wildignore+=.git,.hg,.bzr,.svn
 set wildignore+=build/*,tmp/*,vendor/cache/*,bin/*
 set wildignore+=.sass-cache/*
-set wildignore=*.o,*.obj,*~                                                     "stuff to ignore when tab completing
+set wildignore=*.o,*.obj,*~                                                     
 set wildignore+=*.git*
 set wildignore+=*.meteor*
 set wildignore+=*vim/backups*
@@ -165,12 +165,12 @@ set smarttab                                                      " Reset autoin
 
 " ================ AUTOCOMMANDS ==================== {{{
 augroup vimrc
-    "autocmd BufWritePre * call StripTrailingWhitespaces()         " Auto-remove trailing spaces
+    " check if buffer was changed outside of vim
     autocmd FocusGained,BufEnter * checktime                      " Refresh file when vim gets focus
+    " spell 
     autocmd FileType markdown nested setlocal spell complete+=kspell
-    autocmd BufNewFile,BufRead *.gradle nested set filetype=groovy
     " cobalt2
-    autocmd VimEnter * nested colorscheme cobalt2
+    "autocmd VimEnter * nested colorscheme cobalt2
     " deoplete
     autocmd BufEnter *.* nested if getfsize(@%) > 1000000 | call deoplete#disable() | endif
     " defx
@@ -218,6 +218,12 @@ nnoremap N Nzz
 
 " search for visual selection (exact matches, no regexp)
 vnoremap // y/\V<C-r>=escape(@",'/\')<CR><CR>
+
+" search for contents of register 0 (where AuditPane copies the RuleIDs)
+noremap /0 :execute substitute('/'.@0,'0$','','g')<CR>                                   
+
+" remove search highlights
+nnoremap <silent>./ :nohlsearch<Return>
 
 " quit all windows
 command! Q execute "qa!"
@@ -268,9 +274,6 @@ inoremap <right> <nop>
 
 nnoremap <silent> <C-e> :Defx -split=vertical -winwidth=50 -toggle<Return>
 nnoremap <silent> <C-f> :call execute(printf('Defx -split=vertical -winwidth=50 -toggle %s -search=%s', expand('%:p:h'), expand('%:p')))<Return>
-
-" remove search highlights
-nnoremap <silent>./ :nohlsearch<Return>
 
 " disable paste mode when leaving Insert mode
 autocmd InsertLeave * set nopaste
@@ -332,15 +335,13 @@ vmap <Leader>y "*y
 " show/hide line numbers
 nnoremap <Leader>n :set nonumber!<Return>
 
-" Language client context menu
-nnoremap <Leader>r :call LanguageClient_contextMenu()<CR>
-
 " set paste mode
 nnoremap <Leader>p :set nopaste!<Return>
 
 " }}}
 
 " ================ FUNCTIONS ======================== {{{
+let g:special_buffers = ['fortifytestpane', 'fortifyauditpane', 'tagbar', 'defx']
 
 function! StripTrailingWhitespaces()
   if &modifiable
@@ -354,7 +355,6 @@ endfunction
 
 function! DefxSettings() abort
     nnoremap <silent><buffer><expr> <CR> defx#do_action('open', 'DefxOpenCommand')
-    "nnoremap <silent><buffer><expr> <CR> defx#do_action('open', 'wincmd w \| drop')
     nnoremap <silent><buffer><expr> y defx#do_action('copy')
 	nnoremap <silent><buffer><expr> m defx#do_action('move')
 	nnoremap <silent><buffer><expr> p defx#do_action('paste')
@@ -376,7 +376,7 @@ function! DefxOpenAction(path)
     let winnrs = range(1, tabpagewinnr(tabpagenr(), '$'))
     if len(winnrs) > 1
         for winnr in winnrs
-            if index(['fortifyauditpane', 'fortifytestpane', 'tagbar', 'defx'], getbufvar(winbufnr(winnr), '&filetype')) == -1
+            if index(g:special_buffers, getbufvar(winbufnr(winnr), '&filetype')) == -1
                 execute printf('%swincmd w', winnr)
                 execute printf('%dvsplit %s', str2nr(&columns) - 50, a:path)
                 return
@@ -407,6 +407,18 @@ function! s:DelDefxBuffer()
     exe 'bdelete \[defx\]'
   endif
 endfunction
+
+function! FZFOpen(command_str)
+    let winnrs = range(1, tabpagewinnr(tabpagenr(), '$'))
+    if len(winnrs) > 1
+        for winnr in winnrs
+            if index(g:special_buffers, getbufvar(winbufnr(winnr), '&filetype')) != -1 
+                execute "normal! \<c-w>\<c-w>"
+            endif
+        endfor
+    endif
+    exe 'normal! ' . a:command_str . "\<cr>"
+endfunction
 " }}}
 
 " ================ PLUGIN SETUPS ======================== {{{
@@ -416,14 +428,14 @@ nmap <leader>z <Plug>ZoomWin
 
 " INDENTLINE
 let g:indentLine_color_gui = '#17252c'
-let g:indentLine_fileTypeExclude = ['fortifytestpane', 'fortifyauditpane', 'tagbar', 'defx']
+let g:indentLine_fileTypeExclude = g:special_buffers 
 
 " FZF
-nnoremap <leader>m :History<Return>
-nnoremap <leader>h :History<Return>
-nnoremap <leader>b :Buffers<Return>
-nnoremap <leader>s :Snippets<Return>
-nnoremap <leader>f :Files<Return>
+nnoremap <leader>m :call FZFOpen(':History')<Return>
+nnoremap <leader>h :call FZFOpen(':History')<Return>
+nnoremap <leader>b :call FZFOpen(':Buffers')<Return>
+nnoremap <leader>s :call FZFOpen(':Snippets')<Return>
+nnoremap <leader>f :call FZFOpen('Files')<Return>
 
 let g:fzf_action = {
   \ 'ctrl-t': 'tab split',
@@ -455,6 +467,7 @@ nmap ˚ <Plug>MoveLineUp
 
 " COBALT2
 set background=dark
+colorscheme cobalt2
 
 " LIGHTLINE
 execute 'source' fnameescape(expand('~/.config/nvim/lightline.vim'))
@@ -487,7 +500,6 @@ let g:vim_markdown_folding_disabled = 1
 
 " VIM-FORTIFY
 nnoremap <leader>i :NewRuleID<Return>
-noremap <C-s> :execute substitute('/'.@0,'0$','','g')<CR>                                   " search for contents of register 0 (where AuditPane copies the RuleIDs)
 let g:fortify_SCAPath = "/Applications/HP_Fortify/sca"
 let g:fortify_PythonPath = "/usr/local/lib/python2.7/site-packages"
 let g:fortify_AndroidJarPath = "/Users/alvaro/Library/Android/sdk/platforms/android-26/android.jar"
@@ -536,9 +548,16 @@ let g:fortify_ScanOpts += ["-Ddebug.dump-nst", "sca_build"]                     
 let g:ale_linters = {'javascript': ['eslint']}                                  " Lint js with eslint
 let g:ale_fixers = {'javascript': ['prettier', 'eslint']}                       " Fix eslint errors
 let g:ale_javascript_prettier_options = '--print-width 100'                     " Set max width to 100 chars for prettier
+let g:ale_sign_column_always = 1
 let g:ale_sign_error = '✖'                                                      " Lint error sign
 let g:ale_sign_warning = '⚠'                                                    " Lint warning sign
 let g:ale_lint_on_enter = 0                                                     " Do not lint on enter
+let g:ale_virtualtext_cursor= 1                                                 " Enable virtual text (EOL overlay)
+let g:ale_echo_cursor= 0                                                        " Disble echoing errors in command line
+let g:ale_virtualtext_prefix = '    < '                                         " Do not show any separators for virtual text
+let g:ale_set_signs = 1
+hi ALEVirtualTextError ctermfg=9  guifg=#FF0000
+hi ALEVirtualTextWarning ctermfg=33 guifg=#0088FF
 
 " MATCHUP
 let g:matchup_matchparen_status_offscreen = 0                                   " Do not show offscreen closing match in statusline
@@ -568,12 +587,6 @@ let g:rainbow_conf = {
 	\	'parentheses': ['start=/(/ end=/)/ fold', 'start=/\[/ end=/\]/ fold', 'start=/{/ end=/}/ fold'],
 	\	'separately': {
 	\		'*': {},
-	\		'tex': {
-	\			'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/'],
-	\		},
-	\		'lisp': {
-	\			'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick', 'darkorchid3'],
-	\		},
 	\		'vim': {
 	\			'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/', 'start=/{/ end=/}/ fold', 'start=/(/ end=/)/ containedin=vimFuncBody', 'start=/\[/ end=/\]/ containedin=vimFuncBody', 'start=/{/ end=/}/ fold containedin=vimFuncBody'],
 	\		},
@@ -584,12 +597,14 @@ let g:rainbow_conf = {
 	\	}
 	\}
 
-
 " LEXIMA
 let g:lexima_enable_basic_rules = 1
 let g:lexima_enable_space_rules = 1
 let g:lexima_enable_endwise_rules = 1
 let g:lexima_enable_newline_rules = 1
 
+" MINPAC
+command! PackUpdate packadd minpac | source $MYVIMRC | call minpac#update()
+command! PackClean packadd minpac | source $MYVIMRC | call minpac#clean()
 "}}}
 
