@@ -341,7 +341,7 @@ nnoremap <Leader>p :set nopaste!<Return>
 " }}}
 
 " ================ FUNCTIONS ======================== {{{
-let g:special_buffers = ['fortifytestpane', 'fortifyauditpane', 'tagbar', 'defx']
+let g:special_buffers = ['help', 'fortifytestpane', 'fortifyauditpane', 'tagbar', 'defx']
 
 function! StripTrailingWhitespaces()
   if &modifiable
@@ -409,15 +409,18 @@ function! s:DelDefxBuffer()
 endfunction
 
 function! FZFOpen(command_str)
-    let winnrs = range(1, tabpagewinnr(tabpagenr(), '$'))
+    let winnrs = range(1, tabpagewinnr(tabpagenr(), '$')) 
     if len(winnrs) > 1
         for winnr in winnrs
-            if index(g:special_buffers, getbufvar(winbufnr(winnr), '&filetype')) != -1 
-                execute "normal! \<c-w>\<c-w>"
+            if index(g:special_buffers, getbufvar(winbufnr(winnr), '&filetype')) > -1 
+                let next_win = winnr + 1
+                execute next_win.'wincmd w'
+            else
+                break
             endif
         endfor
     endif
-    exe 'normal! ' . a:command_str . "\<cr>"
+    execute 'normal! ' . a:command_str . "\<cr>"
 endfunction
 " }}}
 
@@ -501,18 +504,15 @@ let g:vim_markdown_folding_disabled = 1
 " VIM-FORTIFY
 nnoremap <leader>i :NewRuleID<Return>
 let g:fortify_SCAPath = "/Applications/HP_Fortify/sca"
-let g:fortify_PythonPath = "/usr/local/lib/python2.7/site-packages"
+let g:fortify_PythonPath = "/usr/local/lib/python3.7/site-packages"
 let g:fortify_AndroidJarPath = "/Users/alvaro/Library/Android/sdk/platforms/android-26/android.jar"
 let g:fortify_DefaultJarPath = "/Applications/HP_Fortify/default_jars"
 let g:fortify_MemoryOpts = [ "-Xmx4096M", "-Xss24M", "-64" ]
 let g:fortify_JDKVersion = "1.8"
 let g:fortify_XCodeSDK = "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk"
 let g:fortify_AWBOpts = []
-
-let g:fortify_TranslationOpts = ["-Dcom.fortify.sca.fileextensions.csproj=XML"]
 let g:fortify_TranslationOpts = ["-project-root", "sca_build"]
 "let g:fortify_TranslationOpts = ["-debug", "-verbose", "-debug-verbose", "-logfile","sca_build/build.log"]
-let g:fortify_TranslationOpts += ["-Dcom.fortify.sca.DefaultFileTypes=java,rb,jsp,jspx,tag,tagx,tld,sql,cfm,php,csproj,phtml,ctp,pks,pkh,pkb,xml,config,Config,settings,properties,dll,exe,winmd,cs,vb,asax,ascx,ashx,asmx,aspx,master,Master,xaml,baml,cshtml,vbhtml,inc,asp,vbscript,js,ini,bas,cls,vbs,frm,ctl,html,htm,xsd,wsdd,xmi,py,cfml,cfc,abap,xhtml,cpx,xcfg,jsff,as,mxml,cbl,cscfg,csdef,wadcfg,wadcfgx,appxmanifest,wsdl,plist,bsp,ABAP,BSP,swift,page,trigger,scala"]
 "let g:fortify_TranslationOpts += ["-python-legacy"]
 "let g:fortify_TranslationOpts += ["-python-version 3"]
 let g:fortify_ScanOpts = ["-project-root", "sca_build"]
@@ -531,7 +531,7 @@ let g:fortify_ScanOpts += ["-Dcom.fortify.sca.Phase0HigherOrder.Level=1"]
 let g:fortify_ScanOpts += ["-Dcom.fortify.sca.Phase0HigherOrder.Languages=javascript,typescript"]
 let g:fortify_ScanOpts += ["-Dcom.fortify.sca.EnableDOMModeling=true"]
 let g:fortify_ScanOpts += ["-Dcom.fortify.sca.followImports=false"]                              " Do not translate and analyze all libraries that you require in your code
-let g:fortify_ScanOpts += ["-Ddebug.dump-nst", "sca_build"]                                      " For debugging purposes dumps NST files between Phase 1 and Phase 2 of analysis.
+let g:fortify_ScanOpts += ["-Ddebug.dump-nst"]                                                   " For debugging purposes dumps NST files between Phase 1 and Phase 2 of analysis.
 " let g:fortify_ScanOpts += ["-debug", "-debug-verbose", "-logfile", "sca_build/scan.log"]       " Generate scan logs
 " let g:fortify_ScanOpts += ["-Ddebug.dump-cfg"]                                                 " For debugging purposes controls dumping Basic Block Graph to file.
 " let g:fortify_ScanOpts += ["-Ddebug.dump-raw-cfg"]                                             " dump the cfg which is not optimized by dead code elimination
