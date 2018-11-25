@@ -1,11 +1,3 @@
 #!/usr/bin/env sh
 
-/usr/bin/java \
-    -Declipse.application=org.eclipse.jdt.ls.core.id1 \
-    -Dosgi.bundles.defaultStartLevel=4 \
-    -noverify \
-    -Declipse.product=org.eclipse.jdt.ls.core.product \
-    -Xmx1G \
-    -jar /Users/pwntester/JDT/plugins/org.eclipse.equinox.launcher_1.5.200.v20180922-1751.jar \
-    -configuration /Users/pwntester/JDT/config_mac \
-    "@"
+/Library/Java/JavaVirtualMachines/jdk1.8.0_102.jdk/Contents/Home/bin/java -Declipse.application=org.eclipse.jdt.ls.core.id1 -Dosgi.bundles.defaultStartLevel=4 -Declipse.product=org.eclipse.jdt.ls.core.product -noverify -Xmx1G -XX:+UseG1GC -XX:+UseStringDeduplication -jar /Users/pwntester/.vscode/extensions/redhat.java-0.34.0/server/plugins/org.eclipse.equinox.launcher_1.5.200.v20180922-1751.jar -configuration /Users/pwntester/.vscode/extensions/redhat.java-0.34.0/server/config_mac -data /Users/pwntester/Dev/jdt_ws

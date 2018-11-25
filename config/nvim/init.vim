@@ -1,65 +1,54 @@
 " ================ PLUGINS ==================== {{{
-" For a paranoia.
-" Normally `:set nocp` is not needed, because it is done automatically
-" when .vimrc is found.
 if &compatible
-  " `:set nocp` has many side effects. Therefore this should be done
-  " only when 'compatible' is set.
   set nocompatible
 endif
 
-if exists('*minpac#init')
-  call minpac#init()
-
-  " Manually loaded plugins
-  call minpac#add('k-takata/minpac', {'type': 'opt'})
-
-  " Auto loaded plugins
-  call minpac#add('w0rp/ale', { 'do': '!npm install -g prettier' })
-  call minpac#add('Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins'})
-  call minpac#add('autozimu/LanguageClient-neovim', { 'do': 'bash install.sh' })
-  call minpac#add('Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins'})
-  call minpac#add('zchee/deoplete-jedi')
-  call minpac#add('andymass/vim-matchup')
-  call minpac#add('tpope/vim-surround')
-  call minpac#add('tpope/vim-repeat')
-  call minpac#add('airblade/vim-gitgutter')
-  call minpac#add('junegunn/fzf', { 'do': '!./install --all && ln -s $(pwd) ~/.fzf'})
-  call minpac#add('junegunn/fzf.vim')
-  call minpac#add('tomtom/tcomment_vim')
-  call minpac#add('osyo-manga/vim-anzu')
-  call minpac#add('haya14busa/vim-asterisk')
-  call minpac#add('regedarek/ZoomWin')
-  call minpac#add('Yggdroot/indentLine')
-  call minpac#add('matze/vim-move')
-  call minpac#add('pwntester/cobalt2.vim')
-  call minpac#add('itchyny/lightline.vim')
-  call minpac#add('maximbaz/lightline-ale')
-  call minpac#add('t9md/vim-choosewin')
-  call minpac#add('chaoren/vim-wordmotion')
-  call minpac#add('luochen1990/rainbow')
-  call minpac#add('alvan/vim-closetag')
-  call minpac#add('christoomey/vim-tmux-navigator')
-  call minpac#add('ap/vim-css-color')
-  call minpac#add('cohama/lexima.vim')
-  call minpac#add('SirVer/ultisnips')
-  call minpac#add('honza/vim-snippets')
-  call minpac#add('AndrewRadev/linediff.vim')
-  call minpac#add('rbgrouleff/bclose.vim')
-  call minpac#add('dyng/ctrlsf.vim')
-  call minpac#add('brooth/far.vim', { 'do': ':UpdateRemotePlugins' })
-  call minpac#add('ludovicchabant/vim-gutentags')
-  call minpac#add('majutsushi/tagbar')
-  call minpac#add('plasticboy/vim-markdown')
-  call minpac#add('elzr/vim-json')
-  call minpac#add('b4winckler/vim-objc')
-  call minpac#add('kballard/vim-swift')
-  call minpac#add('othree/xml.vim')
-  call minpac#add('derekwyatt/vim-scala')
-  call minpac#add('ekalinin/Dockerfile.vim')
-  call minpac#add('tfnico/vim-gradle')
-  call minpac#add('tfnico/vim-gradle')
-endif
+call plug#begin('~/.vim/plugged')
+  Plug 'w0rp/ale', { 'do': '!npm install -g prettier' }
+  Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins'}
+  Plug 'autozimu/LanguageClient-neovim', { 'do': 'bash install.sh' }
+  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins'}
+  Plug 'zchee/deoplete-jedi'
+  Plug 'andymass/vim-matchup'
+  Plug 'tpope/vim-surround'
+  Plug 'tpope/vim-repeat'
+  Plug 'airblade/vim-gitgutter'
+  Plug 'junegunn/fzf', { 'do': '!./install --all && ln -s $(pwd) ~/.fzf'}
+  Plug 'junegunn/fzf.vim'
+  Plug 'tomtom/tcomment_vim'
+  Plug 'osyo-manga/vim-anzu'
+  Plug 'haya14busa/vim-asterisk'
+  Plug 'regedarek/ZoomWin'
+  Plug 'Yggdroot/indentLine'
+  Plug 'matze/vim-move'
+  Plug 'pwntester/cobalt2.vim'
+  Plug 'itchyny/lightline.vim'
+  Plug 'maximbaz/lightline-ale'
+  Plug 't9md/vim-choosewin'
+  Plug 'chaoren/vim-wordmotion'
+  Plug 'luochen1990/rainbow'
+  Plug 'alvan/vim-closetag'
+  Plug 'christoomey/vim-tmux-navigator'
+  Plug 'ap/vim-css-color'
+  Plug 'cohama/lexima.vim'
+  Plug 'SirVer/ultisnips'
+  Plug 'honza/vim-snippets'
+  Plug 'AndrewRadev/linediff.vim'
+  Plug 'rbgrouleff/bclose.vim'
+  Plug 'dyng/ctrlsf.vim'
+  Plug 'brooth/far.vim', { 'do': ':UpdateRemotePlugins' }
+  Plug 'ludovicchabant/vim-gutentags'
+  Plug 'majutsushi/tagbar'
+  Plug 'plasticboy/vim-markdown'
+  Plug 'elzr/vim-json'
+  Plug 'b4winckler/vim-objc'
+  Plug 'kballard/vim-swift'
+  Plug 'othree/xml.vim'
+  Plug 'derekwyatt/vim-scala'
+  Plug 'ekalinin/Dockerfile.vim'
+  Plug 'tfnico/vim-gradle'
+  Plug 'tfnico/vim-gradle'
+call plug#end()
 
 " }}}
 
@@ -206,12 +195,10 @@ augroup END
 " }}}
 
 " ================ MAPPINGS ==================== {{{
-if has('nvim')
-    " in OSX/tmux, c-h is mapped to bs, so mappping bs to C-w
-    nmap <bs> <C-w>h
-    " terminal mode escape (neovim)
-    tnoremap jk <C-\><C-n>
-endif
+" in OSX/tmux, c-h is mapped to bs, so mappping bs to C-w
+nmap <bs> <C-w>h
+" terminal mode escape (neovim)
+tnoremap jk <C-\><C-n>
 
 " center after search
 nnoremap n nzz
@@ -546,8 +533,13 @@ let g:fortify_ScanOpts += ["-Ddebug.dump-nst", "sca_build"]                     
 " let g:fortify_ScanOpts += ["-Dcom.fortify.sca.ThreadCount=1"]                                  " Disable multi-threading
 
 " ALE
-let g:ale_linters = {'javascript': ['eslint']}                                  " Lint js with eslint
-let g:ale_fixers = {'javascript': ['prettier', 'eslint']}                       " Fix eslint errors
+let g:ale_linters = {
+\   'javascript': ['eslint'],
+\   'fortifyrulepack': ['ftfylinter'],
+\}
+"\   'java': ['javac'],
+let g:ale_linters_explicit = 1                                                  " Only run linters named in ale_linters settings.
+"let g:ale_fixers = {'javascript': ['prettier', 'eslint']}                       " Fix eslint errors
 let g:ale_javascript_prettier_options = '--print-width 100'                     " Set max width to 100 chars for prettier
 let g:ale_sign_column_always = 1
 let g:ale_sign_error = '✖'                                                      " Lint error sign
@@ -559,6 +551,10 @@ let g:ale_virtualtext_prefix = '    < '                                         
 let g:ale_set_signs = 1
 hi ALEVirtualTextError ctermfg=9  guifg=#FF0000
 hi ALEVirtualTextWarning ctermfg=33 guifg=#0088FF
+hi ALEError ctermfg=9  guifg=#FF0000
+hi ALEErrorSign ctermfg=9  guifg=#FF0000
+hi ALEWarning ctermfg=226  guifg=#FFFF00
+hi ALEWarningSign ctermfg=226  guifg=#FFFF00
 
 " MATCHUP
 let g:matchup_matchparen_status_offscreen = 0                                   " Do not show offscreen closing match in statusline
@@ -610,15 +606,15 @@ command! PackClean packadd minpac | source $MYVIMRC | call minpac#clean()
 
 " LANGUAGE-CLIENT
 set hidden " Required for operations modifying multiple buffers like rename.
-
 let g:LanguageClient_serverCommands = {
     \ 'java': ['/Users/pwntester/dotfiles/config/lts/jdtls'],
     \ }
 
-let g:LanguageClient_autoStart = 1 
-let g:LanguageClient_loggingLevel = 'INFO'
-let g:LanguageClient_loggingFile =  expand('~/LanguageClient.log')
-let g:LanguageClient_serverStderr = expand('~/LanguageServer.log')
+" let g:LanguageClient_loggingLevel = 'INFO'
+" let g:LanguageClient_loggingFile =  expand('~/LanguageClient.log')
+" let g:LanguageClient_serverStderr = expand('~/LanguageServer.log')
+let g:LanguageClient_hoverPreview = 'Always'
+let g:LanguageClient_completionPreferTextEdit = 1
 
 nnoremap <leader>ld :call LanguageClient#textDocument_definition()<CR>
 nnoremap <leader>lr :call LanguageClient#textDocument_rename()<CR>
