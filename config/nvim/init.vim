@@ -16,8 +16,9 @@ if exists('*minpac#init')
 
   " Auto loaded plugins
   call minpac#add('w0rp/ale', { 'do': '!npm install -g prettier' })
-  call minpac#add('Shougo/defx.nvim')
-  call minpac#add('Shougo/deoplete.nvim')
+  call minpac#add('Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins'})
+  call minpac#add('autozimu/LanguageClient-neovim', { 'do': 'bash install.sh' })
+  call minpac#add('Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins'})
   call minpac#add('zchee/deoplete-jedi')
   call minpac#add('andymass/vim-matchup')
   call minpac#add('tpope/vim-surround')
@@ -46,7 +47,7 @@ if exists('*minpac#init')
   call minpac#add('AndrewRadev/linediff.vim')
   call minpac#add('rbgrouleff/bclose.vim')
   call minpac#add('dyng/ctrlsf.vim')
-  call minpac#add('brooth/far.vim')
+  call minpac#add('brooth/far.vim', { 'do': ':UpdateRemotePlugins' })
   call minpac#add('ludovicchabant/vim-gutentags')
   call minpac#add('majutsushi/tagbar')
   call minpac#add('plasticboy/vim-markdown')
@@ -606,5 +607,28 @@ let g:lexima_enable_newline_rules = 1
 " MINPAC
 command! PackUpdate packadd minpac | source $MYVIMRC | call minpac#update()
 command! PackClean packadd minpac | source $MYVIMRC | call minpac#clean()
+
+" LANGUAGE-CLIENT
+set hidden " Required for operations modifying multiple buffers like rename.
+
+let g:LanguageClient_serverCommands = {
+    \ 'java': ['/Users/pwntester/dotfiles/config/lts/jdtls'],
+    \ }
+
+let g:LanguageClient_autoStart = 1 
+let g:LanguageClient_loggingLevel = 'INFO'
+let g:LanguageClient_loggingFile =  expand('~/LanguageClient.log')
+let g:LanguageClient_serverStderr = expand('~/LanguageServer.log')
+
+nnoremap <leader>ld :call LanguageClient#textDocument_definition()<CR>
+nnoremap <leader>lr :call LanguageClient#textDocument_rename()<CR>
+nnoremap <leader>lf :call LanguageClient#textDocument_formatting()<CR>
+nnoremap <leader>lt :call LanguageClient#textDocument_typeDefinition()<CR>
+nnoremap <leader>lx :call LanguageClient#textDocument_references()<CR>
+nnoremap <leader>la :call LanguageClient_workspace_applyEdit()<CR>
+nnoremap <leader>lc :call LanguageClient#textDocument_completion()<CR>
+nnoremap <leader>lh :call LanguageClient#textDocument_hover()<CR>
+nnoremap <leader>ls :call LanguageClient_textDocument_documentSymbol()<CR>
+nnoremap <leader>lm :call LanguageClient_contextMenu()<CR>
 "}}}
 
