@@ -1,4 +1,17 @@
 " VIM-FORTIFY
+augroup fortify
+    " fortify
+    autocmd BufNewFile,BufReadPost *.xml nested map R ,R
+    autocmd BufNewFile,BufReadPost *.rules nested map R ,R
+    autocmd BufNewFile,BufReadPost *.xml nested map r ,r
+    autocmd BufNewFile,BufReadPost *.rules nested map r ,r
+    autocmd FileType fortifydescription nested setlocal spell complete+=kspell
+    autocmd FileType fortifyrulepack nested setlocal omnifunc=fortify#complete
+    autocmd FileType fortifyauditpane nested nmap <buffer><expr> <S-l> ""
+    autocmd FileType fortifyauditpane nested nmap <buffer><expr> <S-h> ""
+    autocmd FileType fortifyauditpane nested nmap <buffer><expr> <S-k> ""
+augroup END
+
 nnoremap <leader>i :NewRuleID<Return>
 let g:fortify_SCAPath = "/Applications/HP_Fortify/sca"
 let g:fortify_PythonPath = "/usr/local/lib/python3.7/site-packages"

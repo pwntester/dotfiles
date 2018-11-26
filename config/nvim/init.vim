@@ -4,16 +4,17 @@ if &compatible
 endif
 
 call plug#begin('~/.nvim/plugged')
-  Plug 'w0rp/ale'
-  Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins'}
+  Plug '/usr/local/opt/fzf' " Fzf installed with brew
+  Plug 'junegunn/fzf.vim'
   Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh' }
   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins'}
+  Plug 'brooth/far.vim', { 'do': ':UpdateRemotePlugins' }
+  Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins'}
+  Plug 'w0rp/ale'
   Plug 'andymass/vim-matchup'
   Plug 'tpope/vim-surround'
   Plug 'tpope/vim-repeat'
   Plug 'airblade/vim-gitgutter'
-  Plug 'junegunn/fzf', { 'do': '!./install --all && ln -s $(pwd) ~/.fzf'}
-  Plug 'junegunn/fzf.vim'
   Plug 'tomtom/tcomment_vim'
   Plug 'osyo-manga/vim-anzu'
   Plug 'haya14busa/vim-asterisk'
@@ -23,7 +24,6 @@ call plug#begin('~/.nvim/plugged')
   Plug 'pwntester/cobalt2.vim'
   Plug 'itchyny/lightline.vim'
   Plug 'maximbaz/lightline-ale'
-  Plug 't9md/vim-choosewin'
   Plug 'chaoren/vim-wordmotion'
   Plug 'luochen1990/rainbow'
   Plug 'alvan/vim-closetag'
@@ -35,9 +35,9 @@ call plug#begin('~/.nvim/plugged')
   Plug 'AndrewRadev/linediff.vim'
   Plug 'rbgrouleff/bclose.vim'
   Plug 'dyng/ctrlsf.vim'
-  Plug 'brooth/far.vim', { 'do': ':UpdateRemotePlugins' }
   Plug 'ludovicchabant/vim-gutentags'
   Plug 'majutsushi/tagbar'
+  Plug 'airblade/vim-rooter'
   Plug 'plasticboy/vim-markdown'
   Plug 'elzr/vim-json'
   Plug 'b4winckler/vim-objc'
@@ -48,7 +48,6 @@ call plug#begin('~/.nvim/plugged')
   Plug 'tfnico/vim-gradle'
   Plug '~/Development/GitRepos/vim-fortify'
 call plug#end()
-
 " }}}
 
 " ================ GENERAL ==================== {{{
@@ -64,7 +63,6 @@ set encoding=utf-8
 set nottimeout
 let g:loaded_netrwPlugin = 1                                      " Do not load netrw
 let g:loaded_matchit = 1                                          " Do not load matchit, use matchup plugin
-set signcolumn=yes                                                " Always draw the signcolumn
 set ignorecase                                                    " Disable case-sensitive searches (override with \c or \C)
 set smartcase                                                     " If the search term contains uppercase letters, do case-sensitive search
 " }}}
@@ -96,10 +94,8 @@ set t_Co=256                                                      " 256 colors
 set ttyfast                                                       " Faster redraw
 set showcmd                                                       " Show partial commands in status line
 set noshowmode                                                    " Dont show the mode in the command line
-if (has("termguicolors"))                                         " Set true colors
-    set termguicolors
-endif
-
+set signcolumn=auto                                               " Only sho sign column if there are signs to be shown
+set termguicolors
 " }}}
 
 " ================ AUTOCOMPLETION ==================== {{{
@@ -155,59 +151,40 @@ set smarttab                                                      " Reset autoin
 " ================ AUTOCOMMANDS ==================== {{{
 augroup vimrc
     " check if buffer was changed outside of vim
-    autocmd FocusGained,BufEnter * checktime                      " Refresh file when vim gets focus
+    autocmd FocusGained,BufEnter * checktime
     " spell 
     autocmd FileType markdown nested setlocal spell complete+=kspell
-    " cobalt2
-    "autocmd VimEnter * nested colorscheme cobalt2
+    " enable buffer cycling on non-special buffers
+    autocmd BufEnter *.* call BufferSettings()
     " deoplete
     autocmd BufEnter *.* nested if getfsize(@%) > 1000000 | call deoplete#disable() | endif
     " defx
     autocmd FileType defx call DefxSettings()
-    autocmd VimEnter * if argc() ==? 0 || isdirectory(expand('%:p')) | call DefxOpen() | endif
-    autocmd BufReadPre,FileReadPre * call s:DelDefxBuffer()
-    " fortify
-    autocmd BufNewFile,BufReadPost *.xml nested map R ,R
-    autocmd BufNewFile,BufReadPost *.rules nested map R ,R
-    autocmd BufNewFile,BufReadPost *.xml nested map r ,r
-    autocmd BufNewFile,BufReadPost *.rules nested map r ,r
-    autocmd FileType fortifydescription nested setlocal spell complete+=kspell
-    autocmd FileType fortifyrulepack nested setlocal omnifunc=fortify#complete
-    autocmd FileType fortifyauditpane nested nmap <buffer><expr> <S-l> ""
-    autocmd FileType fortifyauditpane nested nmap <buffer><expr> <S-h> ""
-    autocmd FileType fortifyauditpane nested nmap <buffer><expr> <S-k> ""
-    " lexima
-    autocmd VimEnter *.* call lexima#add_rule({'char': '-', 'at': '<!-', 'input_after': ' -->', 'filetype': 'fortifyrulepack'})
 augroup END
 
 augroup windows
     autocmd!
-    " Dont show column
+    " dont show column
     autocmd BufEnter *.* :set colorcolumn=0
-    " Show cursor line only in active windows
+    " show cursor line only in active windows
     autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline
     autocmd WinLeave * setlocal nocursorline
-    " Highlight active window
+    " highlight active window
     autocmd BufEnter,FocusGained,VimEnter,WinEnter * let &l:colorcolumn=join(range(1, 800), ',')
     autocmd FocusLost,WinLeave * let &l:colorcolumn='+' . join(range(0, 800), ',+')
 augroup END
 " }}}
 
 " ================ MAPPINGS ==================== {{{
-" in OSX/tmux, c-h is mapped to bs, so mappping bs to C-w
-nmap <bs> <C-w>h
-" terminal mode escape (neovim)
-tnoremap jk <C-\><C-n>
-
 " center after search
 nnoremap n nzz
 nnoremap N Nzz
 
 " search for visual selection (exact matches, no regexp)
-vnoremap // y/\V<C-r>=escape(@",'/\')<CR><CR>
+vnoremap // y/\V<C-r>=escape(@",'/\')<Return><Return>
 
 " search for contents of register 0 (where AuditPane copies the RuleIDs)
-noremap /0 :execute substitute('/'.@0,'0$','','g')<CR>                                   
+noremap /0 :execute substitute('/'.@0,'0$','','g')<Return>                                   
 
 " remove search highlights
 nnoremap <silent>./ :nohlsearch<Return>
@@ -227,9 +204,6 @@ inoremap jk <ESC>
 vnoremap < <gv
 vnoremap > >gv
 
-" allow the . to execute once for each line of a visual selection
-vnoremap . :normal .<Return>
-
 " automatically jump to end of text you pasted
 vnoremap <silent> y y`]
 vnoremap <silent> p p`]
@@ -245,7 +219,7 @@ nnoremap gI `[v`]
 map j gj
 map k gk
 
-" go to Beggining or End of line
+" go to eeggining or End of line
 nnoremap B ^
 nnoremap E $
 
@@ -259,15 +233,8 @@ inoremap <down> <nop>
 inoremap <left> <nop>
 inoremap <right> <nop>
 
-nnoremap <silent> <C-e> :Defx -split=vertical -winwidth=50 -toggle<Return>
-nnoremap <silent> <C-f> :call execute(printf('Defx -split=vertical -winwidth=50 -toggle %s -search=%s', expand('%:p:h'), expand('%:p')))<Return>
-
 " disable paste mode when leaving Insert mode
 autocmd InsertLeave * set nopaste
-
-" cycle through buffers
-nnoremap <S-l> :bnext<Return>
-nnoremap <S-h> :bprevious<Return>
 
 " jump to last visited location
 nnoremap <S-k> <C-^>
@@ -284,12 +251,12 @@ nnoremap <silent> - :exe "resize -5"<Return>
 " do not close windows when closing buffers
 cabbrev bd <C-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'Bclose' : 'bdelete')<Return>
 
+" close window
+cabbrev q <c-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'call CloseWin()' : 'q')<Return>
+cabbrev wq <c-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'w \| call CloseWin()' : 'wq')<Return>
+
 " save me from 1 files :)
 cabbrev w1 <C-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'w!' : 'w1')<Return>
-cnoreabbrev Wq wq
-cnoreabbrev WQ wq
-cnoreabbrev Wqa wqa
-cnoreabbrev W w
 " }}}
 
 " ================ LEADER MAPPINGS ==================== {{{
@@ -327,18 +294,16 @@ nnoremap <Leader>p :set nopaste!<Return>
 " ================ FUNCTIONS ======================== {{{
 let g:special_buffers = ['help', 'fortifytestpane', 'fortifyauditpane', 'tagbar', 'defx']
 
-function! StripTrailingWhitespaces()
-  if &modifiable
-    let l:l = line('.')
-    let l:c = col('.')
-    call execute('%s/\s\+$//e')
-    call histdel('/', -1)
-    call cursor(l:l, l:c)
-  endif
+function! BufferSettings() abort
+    if index(g:special_buffers, &filetype) == -1
+        " cycle through buffers
+        nnoremap <silent><buffer><S-l> :bnext<Return>
+        nnoremap <silent><buffer><S-h> :bprevious<Return>
+    endif
 endfunction
 
 function! DefxSettings() abort
-    nnoremap <silent><buffer><expr> <CR> defx#do_action('open', 'DefxOpenCommand')
+    nnoremap <silent><buffer><expr> <Return> defx#do_action('open', 'DefxOpenCommand')
     nnoremap <silent><buffer><expr> y defx#do_action('copy')
 	nnoremap <silent><buffer><expr> m defx#do_action('move')
 	nnoremap <silent><buffer><expr> p defx#do_action('paste')
@@ -351,45 +316,25 @@ function! DefxSettings() abort
     nnoremap <silent><buffer><expr> h defx#do_action('cd', ['..'])
     nnoremap <silent><buffer><expr> j line('.') == line('$') ? 'gg' : 'j'
     nnoremap <silent><buffer><expr> k line('.') == 1 ? 'G' : 'k'
-    nnoremap <silent><buffer> q :call execute("bn\<BAR>bw#")<CR>
+    nnoremap <silent><buffer> q :call execute("bn\<BAR>bw#")<Return>
     setlocal nobuflisted
 endfunction
 
-function! DefxOpenAction(path)
-    set splitright
+function! DefxOpen(path)
     let winnrs = range(1, tabpagewinnr(tabpagenr(), '$'))
     if len(winnrs) > 1
         for winnr in winnrs
             if index(g:special_buffers, getbufvar(winbufnr(winnr), '&filetype')) == -1
-                execute printf('%swincmd w', winnr)
-                execute printf('%dvsplit %s', str2nr(&columns) - 50, a:path)
+                " found a window with a non-special buffer to open the file to
+                execute printf('%swincmd w | drop %s', winnr, a:path)
                 return
             endif
         endfor
     endif
-
-    " can't find suitable buffer.
+    " can't find suitable window, create a new one.
+    set splitright
     execute printf('%dvsplit %s', str2nr(&columns) - 50, a:path)
     set splitright&
-endfunction
-command! -nargs=* -range DefxOpenCommand call DefxOpenAction(<q-args>)
-
-function! DefxOpen(...) abort
-  let l:find_current_file = a:0 > 0
-
-  if !l:find_current_file
-    return execute(printf('Defx %s', getcwd()))
-  endif
-
-  let l:current_file_name = escape(expand('%:p:t'), './')
-  call execute(printf('Defx %s', expand('%:p:h')))
-  return search(l:current_file_name)
-endfunction
-
-function! s:DelDefxBuffer()
-  if bufexists("[defx]")
-    exe 'bdelete \[defx\]'
-  endif
 endfunction
 
 function! FZFOpen(command_str)
@@ -397,14 +342,42 @@ function! FZFOpen(command_str)
     if len(winnrs) > 1
         for winnr in winnrs
             if index(g:special_buffers, getbufvar(winbufnr(winnr), '&filetype')) > -1 
+                " window with a special filetype buffer, we dont want to open the file here
                 let next_win = winnr + 1
                 execute next_win.'wincmd w'
             else
+                " found a window with a non-special buffer to open the file to
                 break
             endif
         endfor
     endif
     execute 'normal! ' . a:command_str . "\<cr>"
+endfunction
+
+function! CloseWin()
+    if index(g:special_buffers, &filetype) > -1 
+        " closing window with special buffer
+        quit
+    else
+        let winnrs = range(1, tabpagewinnr(tabpagenr(), '$')) 
+        if len(winnrs) == 1
+            " closing window with normal buffer
+            quit
+        elseif len(winnrs) > 1
+            let non_special_buffers_count = 0
+            for winnr in winnrs
+                if index(g:special_buffers, getbufvar(winbufnr(winnr), '&filetype')) == -1 
+                    let non_special_buffers_count = non_special_buffers_count + 1
+                endif
+            endfor
+            if non_special_buffers_count == 1
+                echo "Last window, not closing"
+            else 
+                " closing window since there are more non-special windows
+                quit
+            endif
+        endif
+    endif
 endfunction
 " }}}
 
@@ -424,43 +397,12 @@ nnoremap <leader>b :call FZFOpen(':Buffers')<Return>
 nnoremap <leader>s :call FZFOpen(':Snippets')<Return>
 nnoremap <leader>f :call FZFOpen('Files')<Return>
 
-let g:fzf_action = {
-  \ 'ctrl-t': 'tab split',
-  \ 'ctrl-x': 'split',
-  \ 'ctrl-v': 'vsplit' }
-
-let g:fzf_layout = { 'down': '~40%' }
-
-let g:fzf_colors =
-\ { 'fg':      ['fg', 'Normal'],
-  \ 'bg':      ['bg', 'Normal'],
-  \ 'hl':      ['fg', 'Comment'],
-  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
-  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
-  \ 'hl+':     ['fg', 'Statement'],
-  \ 'info':    ['fg', 'PreProc'],
-  \ 'prompt':  ['fg', 'Conditional'],
-  \ 'pointer': ['fg', 'Exception'],
-  \ 'marker':  ['fg', 'Keyword'],
-  \ 'spinner': ['fg', 'Label'],
-  \ 'header':  ['fg', 'Comment'] }
-
 " VIM-MOVE
 let g:move_map_keys = 0
 vmap ∆ <Plug>MoveBlockDown
 vmap ˚ <Plug>MoveBlockUp
 nmap ∆ <Plug>MoveLineDown
 nmap ˚ <Plug>MoveLineUp
-
-" COBALT2
-set background=dark
-colorscheme cobalt2
-highlight ALEVirtualTextError ctermfg=9 guifg=#FF0000
-highlight ALEVirtualTextWarning ctermfg=33 guifg=#0088FF
-highlight ALEError ctermfg=9 guifg=#FF0000
-highlight ALEErrorSign ctermfg=9 guifg=#FF0000
-highlight ALEWarning ctermfg=33 guifg=#0088FF
-highlight ALEWarningSign ctermfg=33 guifg=#0088FF
 
 " LIGHTLINE
 execute 'source' fnameescape(expand('~/.config/nvim/lightline.vim'))
@@ -532,6 +474,7 @@ let g:lexima_enable_basic_rules = 1
 let g:lexima_enable_space_rules = 1
 let g:lexima_enable_endwise_rules = 1
 let g:lexima_enable_newline_rules = 1
+call lexima#add_rule({'char': '-', 'at': '<!-', 'input_after': ' -->', 'filetype': 'fortifyrulepack'})
 
 " MINPAC
 command! PackUpdate packadd minpac | source $MYVIMRC | call minpac#update()
@@ -549,19 +492,51 @@ let g:LanguageClient_serverCommands.javascript = ['javascript-typescript-stdio']
 let g:LanguageClient_serverCommands.python = ['pyls']
 let g:LanguageClient_hoverPreview = 'Always'
 let g:LanguageClient_loggingLevel = 'INFO'
-" let g:LanguageClient_loggingFile =  expand('~/LanguageClient.log')
-" let g:LanguageClient_serverStderr = expand('~/LanguageServer.log')
 
-nnoremap <leader>ld :call LanguageClient#textDocument_definition()<CR>
-nnoremap <leader>lr :call LanguageClient#textDocument_rename()<CR>
-nnoremap <leader>lf :call LanguageClient#textDocument_formatting()<CR>
-nnoremap <leader>lt :call LanguageClient#textDocument_typeDefinition()<CR>
-nnoremap <leader>lx :call LanguageClient#textDocument_references()<CR>
-nnoremap <leader>le :call LanguageClient_workspace_applyEdit()<CR>
-nnoremap <leader>lc :call LanguageClient#textDocument_completion()<CR>
-nnoremap <leader>lh :call LanguageClient#textDocument_hover()<CR>
-nnoremap <leader>ls :call LanguageClient_textDocument_documentSymbol()<CR>
-nnoremap <leader>la :call LanguageClient_textDocument_codeAction()<CR>
-nnoremap <leader>lm :call LanguageClient_contextMenu()<CR>
+nnoremap <leader>ld :call LanguageClient#textDocument_definition()<Return>
+nnoremap <leader>lr :call LanguageClient#textDocument_rename()<Return>
+nnoremap <leader>lf :call LanguageClient#textDocument_formatting()<Return>
+nnoremap <leader>lt :call LanguageClient#textDocument_typeDefinition()<Return>
+nnoremap <leader>lx :call LanguageClient#textDocument_references()<Return>
+nnoremap <leader>le :call LanguageClient_workspace_applyEdit()<Return>
+nnoremap <leader>lc :call LanguageClient#textDocument_completion()<Return>
+nnoremap <leader>lh :call LanguageClient#textDocument_hover()<Return>
+nnoremap <leader>ls :call LanguageClient_textDocument_documentSymbol()<Return>
+nnoremap <leader>la :call LanguageClient_textDocument_codeAction()<Return>
+nnoremap <leader>lm :call LanguageClient_contextMenu()<Return>
+
+" VIM-ROOTER
+let g:rooter_use_lcd = 1
+let g:rooter_patterns = ['pom.xml', '.git/']
+let g:rooter_silent_chdir = 1
+
+" DEFX
+nnoremap <silent> <C-e> :Defx -split=vertical -winwidth=50 -toggle<Return>
+nnoremap <silent> <C-f> :call execute(printf('Defx -split=vertical -winwidth=50 -toggle %s -search=%s', expand('%:p:h'), expand('%:p')))<Return>
+command! -nargs=* -range DefxOpenCommand call DefxOpen(<q-args>)
+
+" COBALT2
+set background=dark
+colorscheme cobalt2
+highlight ALEVirtualTextError ctermfg=9 guifg=#FF0000
+highlight ALEVirtualTextWarning ctermfg=33 guifg=#0088FF
+highlight ALEError ctermfg=9 guifg=#FF0000
+highlight ALEErrorSign ctermfg=9 guifg=#FF0000
+highlight ALEWarning ctermfg=33 guifg=#0088FF
+highlight ALEWarningSign ctermfg=33 guifg=#0088FF
+let g:fzf_colors = {}
+let g:fzf_colors.fg = ['fg', 'Normal']
+let g:fzf_colors.bg = ['bg', 'Normal']
+let g:fzf_colors.hl = ['fg', 'Comment']
+let g:fzf_colors['fg+'] = ['fg', 'CursorLine', 'CursorColumn', 'Normal']
+let g:fzf_colors['bg+'] = ['bg', 'CursorLine', 'CursorColumn']
+let g:fzf_colors['hl+'] = ['fg', 'Statement']
+let g:fzf_colors.info = ['fg', 'PreProc']
+let g:fzf_colors.prompt = ['fg', 'Conditional']
+let g:fzf_colors.pointer = ['fg', 'Exception']
+let g:fzf_colors.marker = ['fg', 'Keyword']
+let g:fzf_colors.spinner = ['fg', 'Label']
+let g:fzf_colors.header = ['fg', 'Comment']
+
 "}}}
 
