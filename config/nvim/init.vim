@@ -38,6 +38,7 @@ call plug#begin('~/.nvim/plugged')
   Plug 'ludovicchabant/vim-gutentags'
   Plug 'majutsushi/tagbar'
   Plug 'airblade/vim-rooter'
+  Plug 'Konfekt/vim-alias'
   Plug 'plasticboy/vim-markdown'
   Plug 'elzr/vim-json'
   Plug 'b4winckler/vim-objc'
@@ -189,9 +190,6 @@ noremap /0 :execute substitute('/'.@0,'0$','','g')<Return>
 " remove search highlights
 nnoremap <silent>./ :nohlsearch<Return>
 
-" quit all windows
-command! Q execute "qa!"
-
 " debug syntax
 map <F10> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
         \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
@@ -248,15 +246,28 @@ nnoremap <silent> < :exe "vertical resize -5"<Return>
 nnoremap <silent> + :exe "resize +5"<Return>
 nnoremap <silent> - :exe "resize -5"<Return>
 
-" do not close windows when closing buffers
-cabbrev bd <C-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'Bclose' : 'bdelete')<Return>
+" }}}
 
-" close window
-cabbrev q <c-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'call CloseWin()' : 'q')<Return>
-cabbrev wq <c-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'w \| call CloseWin()' : 'wq')<Return>
+" ================ ALIASES ==================== {{{
+
+" do not close windows when closing buffers
+Alias bd Bclose
+
+" close window 
+Alias q call\ CloseWin()<Return>
+Alias q! quit!
+Alias wq write|call\ CloseWin()<Return>
+Alias wq! write|quit!
 
 " save me from 1 files :)
-cabbrev w1 <C-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'w!' : 'w1')<Return>
+Alias w1 w!
+
+" super save
+Alias W write\ !sudo\ tee\ >\ /dev/null\ %
+
+" quit all windows
+Alias Q qa!
+
 " }}}
 
 " ================ LEADER MAPPINGS ==================== {{{
@@ -269,14 +280,6 @@ let mapleader = "\<Space>"
 nnoremap <Leader>j 15j
 nnoremap <Leader>k 15k
 
-nnoremap <Leader>t :TagbarToggle<Return>
-
-" remove trailing spaces
-nnoremap <Leader>c :%s/\s\+$//<Return>
-
-" save file
-nnoremap w!! w !sudo tee % >/dev/null
-
 " paste keeping the default register
 vnoremap <Leader>p "_dP
 
@@ -285,9 +288,6 @@ vmap <Leader>y "*y
 
 " show/hide line numbers
 nnoremap <Leader>n :set nonumber!<Return>
-
-" set paste mode
-nnoremap <Leader>p :set nopaste!<Return>
 
 " }}}
 
@@ -475,10 +475,6 @@ let g:lexima_enable_space_rules = 1
 let g:lexima_enable_endwise_rules = 1
 let g:lexima_enable_newline_rules = 1
 call lexima#add_rule({'char': '-', 'at': '<!-', 'input_after': ' -->', 'filetype': 'fortifyrulepack'})
-
-" MINPAC
-command! PackUpdate packadd minpac | source $MYVIMRC | call minpac#update()
-command! PackClean packadd minpac | source $MYVIMRC | call minpac#clean()
 
 " VIM-FORTIFY
 execute 'source' fnameescape(expand('~/.config/nvim/fortify.vim'))
