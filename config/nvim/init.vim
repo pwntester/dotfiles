@@ -157,6 +157,8 @@ augroup vimrc
     autocmd FileType markdown nested setlocal spell complete+=kspell
     " enable buffer cycling on non-special buffers
     autocmd BufEnter *.* call BufferSettings()
+    " set aliases
+    autocmd VimEnter * call SetAliases()
     " deoplete
     autocmd BufEnter *.* nested if getfsize(@%) > 1000000 | call deoplete#disable() | endif
     " defx
@@ -250,23 +252,6 @@ nnoremap <silent> - :exe "resize -5"<Return>
 
 " ================ ALIASES ==================== {{{
 
-" do not close windows when closing buffers
-Alias bd Bclose
-
-" close window 
-Alias q call\ CloseWin()<Return>
-Alias q! quit!
-Alias wq write|call\ CloseWin()<Return>
-Alias wq! write|quit!
-
-" save me from 1 files :)
-Alias w1 w!
-
-" super save
-Alias W write\ !sudo\ tee\ >\ /dev/null\ %
-
-" quit all windows
-Alias Q qa!
 
 " }}}
 
@@ -293,6 +278,26 @@ nnoremap <Leader>n :set nonumber!<Return>
 
 " ================ FUNCTIONS ======================== {{{
 let g:special_buffers = ['help', 'fortifytestpane', 'fortifyauditpane', 'tagbar', 'defx']
+
+function! SetAliases() abort
+    " do not close windows when closing buffers
+    Alias bd Bclose
+
+    " close window 
+    Alias q call\ CloseWin()<Return>
+    Alias q! quit!
+    Alias wq write|call\ CloseWin()<Return>
+    Alias wq! write|quit!
+
+    " save me from 1 files :)
+    Alias w1 w!
+
+    " super save
+    Alias W write\ !sudo\ tee\ >\ /dev/null\ %
+
+    " quit all windows
+    Alias Q qa!
+endfunction
 
 function! BufferSettings() abort
     if index(g:special_buffers, &filetype) == -1
@@ -395,7 +400,7 @@ nnoremap <leader>m :call FZFOpen(':History')<Return>
 nnoremap <leader>h :call FZFOpen(':History')<Return>
 nnoremap <leader>b :call FZFOpen(':Buffers')<Return>
 nnoremap <leader>s :call FZFOpen(':Snippets')<Return>
-nnoremap <leader>f :call FZFOpen('Files')<Return>
+nnoremap <leader>f :call FZFOpen(':Files')<Return>
 
 " VIM-MOVE
 let g:move_map_keys = 0
