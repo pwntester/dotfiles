@@ -10,7 +10,6 @@ call plug#begin('~/.nvim/plugged')
   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins'}
   Plug 'brooth/far.vim', { 'do': ':UpdateRemotePlugins' }
   Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins'}
-  Plug 'w0rp/ale'
   Plug 'andymass/vim-matchup'
   Plug 'tpope/vim-surround'
   Plug 'tpope/vim-repeat'
@@ -23,7 +22,6 @@ call plug#begin('~/.nvim/plugged')
   Plug 'matze/vim-move'
   Plug 'pwntester/cobalt2.vim'
   Plug 'itchyny/lightline.vim'
-  Plug 'maximbaz/lightline-ale'
   Plug 'chaoren/vim-wordmotion'
   Plug 'luochen1990/rainbow'
   Plug 'alvan/vim-closetag'
@@ -123,7 +121,9 @@ set wildignore+=tmp/**
 set wildignore+=*.jpg,*.bmp,*.gif,*.png,*.jpeg,*.svg
 
 set complete=.,w,b,u,U,i,d,t
-set completeopt=menu,longest
+set completeopt=noinsert,menuone,noselect                           " show the popup menu even if there's only one match), prevent automatic selection and prevent automatic text injection into the current line.
+
+set shortmess+=c                                                    " suppress the annoying 'match x of y', 'The only match' and 'Pattern not found' messages
 " }}}
 
 " ================ TURN OFF SWAP FILES ==================== {{{
@@ -160,7 +160,7 @@ augroup vimrc
     " set aliases
     autocmd VimEnter * call SetAliases()
     " deoplete
-    autocmd BufEnter *.* nested if getfsize(@%) > 1000000 | call deoplete#disable() | endif
+    autocmd BufEnter * nested if getfsize(@%) > 1000000 | call deoplete#disable() | endif
     " defx
     autocmd FileType defx call DefxSettings()
 augroup END
@@ -250,10 +250,6 @@ nnoremap <silent> - :exe "resize -5"<Return>
 
 " }}}
 
-" ================ ALIASES ==================== {{{
-
-
-" }}}
 
 " ================ LEADER MAPPINGS ==================== {{{
 
@@ -429,28 +425,17 @@ let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<c-j>"
 let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 
+
+" NCM2
+
 " DEOPLETE
 let g:deoplete#enable_at_startup = 1
-nnoremap <leader>c :call deoplete#toggle()<Cr>
+inoremap <expr> <CR> (pumvisible() ? "\<c-y>\<cr>" : "\<CR>")
 inoremap <silent><expr> <C-k> pumvisible() ? "\<C-p>" : ""
 inoremap <silent><expr> <C-j> pumvisible() ? "\<C-n>" : ">"
 
 " VIM-MARKDOWN
 let g:vim_markdown_folding_disabled = 1
-
-" ALE
-let g:ale_linters = {}
-let g:ale_linters.javascript = ['eslint']
-let g:ale_linters.fortifyrulepack = ['ftfylinter']
-let g:ale_fixers = {}
-let g:ale_fixers.javascript = ['prettier', 'eslint']
-let g:ale_linters_explicit = 1                                                  " Only run linters named in ale_linters settings.
-let g:ale_sign_column_always = 1
-let g:ale_sign_error = '✖'                                                      " Lint error sign
-let g:ale_sign_warning = '⚠'                                                    " Lint warning sign
-let g:ale_echo_cursor= 0                                                        " Disble echoing errors in command line
-let g:ale_virtualtext_cursor= 1                                                 " Enable virtual text (EOL overlay)
-let g:ale_virtualtext_prefix = '    < '                                         " Do not show any separators for virtual text
 
 " MATCHUP
 let g:matchup_matchparen_status_offscreen = 0                                   " Do not show offscreen closing match in statusline
@@ -490,9 +475,12 @@ set hidden " Required for operations modifying multiple buffers like rename.
 let g:LanguageClient_serverCommands = {}
 let g:LanguageClient_serverCommands.java = ['~/dotfiles/config/lts/jdtls']
 let g:LanguageClient_serverCommands.javascript = ['javascript-typescript-stdio']
+let g:LanguageClient_serverCommands.fortifyrulepack = ['~/dotfiles/config/lts/fls']
 let g:LanguageClient_serverCommands.python = ['pyls']
-let g:LanguageClient_hoverPreview = 'Always'
-let g:LanguageClient_loggingLevel = 'INFO'
+call deoplete#custom#source('LanguageClient', 'input_pattern', '.+$')
+" let g:LanguageClient_loggingLevel = 'INFO'
+" let g:LanguageClient_loggingFile =  expand('~/.nvim/LanguageClient.log')
+" let g:LanguageClient_serverStderr = expand('~/.nvim/LanguageServer.log')
 
 nnoremap <leader>ld :call LanguageClient#textDocument_definition()<Return>
 nnoremap <leader>lr :call LanguageClient#textDocument_rename()<Return>
@@ -516,15 +504,35 @@ nnoremap <silent> <C-e> :Defx -split=vertical -winwidth=50 -toggle<Return>
 nnoremap <silent> <C-f> :call execute(printf('Defx -split=vertical -winwidth=50 -toggle %s -search=%s', expand('%:p:h'), expand('%:p')))<Return>
 command! -nargs=* -range DefxOpenCommand call DefxOpen(<q-args>)
 
-" COBALT2
+" ALE
+" Plug 'w0rp/ale'
+" Plug 'maximbaz/lightline-ale'
+" let g:ale_linters = {}
+" let g:ale_linters.javascript = ['eslint']
+" let g:ale_linters_explicit = 1                                                  " Only run linters named in ale_linters settings.
+" let g:ale_sign_column_always = 1
+" let g:ale_sign_error = '✖'                                                      " Lint error sign
+" let g:ale_sign_warning = '⚠'                                                    " Lint warning sign
+" let g:ale_echo_cursor= 0                                                        " Disble echoing errors in command line
+" let g:ale_virtualtext_cursor= 1                                                 " Enable virtual text (EOL overlay)
+" let g:ale_virtualtext_prefix = '    < '                                         " Do not show any separators for virtual text
+
+" }}}
+
+" ================ COLOR SCHEME ======================== {{{
+
 set background=dark
 colorscheme cobalt2
-highlight ALEVirtualTextError ctermfg=9 guifg=#FF0000
+
+" used by neovim-languageClient
+highlight ALEVirtualTextError ctermfg=9 guifg=#FF0000 
 highlight ALEVirtualTextWarning ctermfg=33 guifg=#0088FF
 highlight ALEError ctermfg=9 guifg=#FF0000
 highlight ALEErrorSign ctermfg=9 guifg=#FF0000
 highlight ALEWarning ctermfg=33 guifg=#0088FF
 highlight ALEWarningSign ctermfg=33 guifg=#0088FF
+
+"fzf
 let g:fzf_colors = {}
 let g:fzf_colors.fg = ['fg', 'Normal']
 let g:fzf_colors.bg = ['bg', 'Normal']
