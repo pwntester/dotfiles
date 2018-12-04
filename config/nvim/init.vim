@@ -1,7 +1,20 @@
-" ================ PLUGINS ==================== {{{
 if &compatible
   set nocompatible
 endif
+
+
+" ================ PLUGINS ==================== {{{
+
+" Disable built-in plugins
+let g:loaded_matchit = 1
+let g:loaded_gzip = 1
+let g:loaded_zipPlugin = 1
+let g:loaded_logipat = 1
+let g:loaded_2html_plugin = 1
+let g:loaded_rrhelper = 1
+let g:loaded_getscriptPlugin = 1
+let g:loaded_tarPlugin = 1
+let g:loaded_netrwPlugin = 1
 
 call plug#begin('~/.nvim/plugged')
   Plug '/usr/local/opt/fzf' " Fzf installed with brew
@@ -30,11 +43,9 @@ call plug#begin('~/.nvim/plugged')
   Plug 'cohama/lexima.vim'
   Plug 'SirVer/ultisnips'
   Plug 'honza/vim-snippets'
+  Plug 'eugen0329/vim-esearch'
   Plug 'AndrewRadev/linediff.vim'
   Plug 'rbgrouleff/bclose.vim'
-  Plug 'dyng/ctrlsf.vim'
-  Plug 'ludovicchabant/vim-gutentags'
-  Plug 'majutsushi/tagbar'
   Plug 'airblade/vim-rooter'
   Plug 'Konfekt/vim-alias'
   Plug 'plasticboy/vim-markdown'
@@ -60,28 +71,12 @@ set inccommand=nosplit                                            " Live preview
 set fileencoding=utf-8
 set encoding=utf-8
 set nottimeout
-let g:loaded_netrwPlugin = 1                                      " Do not load netrw
-let g:loaded_matchit = 1                                          " Do not load matchit, use matchup plugin
-set ignorecase                                                    " Disable case-sensitive searches (override with \c or \C)
-set smartcase                                                     " If the search term contains uppercase letters, do case-sensitive search
-" }}}
-
-" ================ SYNTAX ==================== {{{
-syntax enable
-set wrap                                                          " Wrap lines visually
-set sidescroll=5                                                  " Side scroll when wrap is disabled
-set scrolloff=8                                                   " Start scrolling when we're 8 lines away from margins
-set linebreak                                                     " Wrap lines at special characters instead of at max width
-set listchars=tab:>-,trail:.,extends:>,precedes:<,nbsp:%          " Showing trailing whitespace
-"autocmd BufEnter *.* if getfsize(@%) < 1000000 | :syntax sync fromstart | endif " Detect syntax from start of file
-" }}}
-
-" ================ FOLDING ==================== {{{
-set foldmethod=manual                                             " Fold manually (zf)
-set foldcolumn=0                                                  " Do not show fold levels in side bar
 " }}}
 
 " ================ UI ==================== {{{
+syntax enable
+set foldmethod=manual                                             " Fold manually (zf)
+set foldcolumn=0                                                  " Do not show fold levels in side bar
 set cursorline                                                    " Print cursorline
 set guioptions=-Mfl                                               " nomenu, nofork, scrollbar
 set laststatus=2                                                  " status line always on
@@ -95,12 +90,26 @@ set showcmd                                                       " Show partial
 set noshowmode                                                    " Dont show the mode in the command line
 set signcolumn=auto                                               " Only sho sign column if there are signs to be shown
 set termguicolors
+set wrap                                                          " Wrap lines visually
+set sidescroll=5                                                  " Side scroll when wrap is disabled
+set scrolloff=8                                                   " Start scrolling when we're 8 lines away from margins
+set linebreak                                                     " Wrap lines at special characters instead of at max width
+set listchars=tab:>-,trail:.,extends:>,precedes:<,nbsp:%          " Showing trailing whitespace
+" }}}
+
+" ================ IDENT/STYLE ==================== {{{
+set shiftwidth=4                                                  " Reduntant with above
+set tabstop=4                                                     " How many spaces on tab
+set softtabstop=4                                                 " One tab = 4 spaces
+set expandtab                                                     " Tabs are spaces
+set autoindent                                                    " Auto-ident
+set smartindent                                                   " Smart ident
+set shiftround                                                    " Round indent to multiple of 'shiftwidth'
+set smarttab                                                      " Reset autoindent after a blank line
 " }}}
 
 " ================ AUTOCOMPLETION ==================== {{{
-"stuff to ignore when tab completing
-set wildmode=longest,full
-set wildoptions=tagfile
+set wildmode=longest,full                                         "stuff to ignore when tab completing
 set wildignorecase
 set wildignore+=*.swp,*.pyc,*.bak,*.class,*.orig
 set wildignore+=.git,.hg,.bzr,.svn
@@ -126,31 +135,24 @@ set completeopt=noinsert,menuone,noselect                           " show the p
 set shortmess+=c                                                    " suppress the annoying 'match x of y', 'The only match' and 'Pattern not found' messages
 " }}}
 
-" ================ TURN OFF SWAP FILES ==================== {{{
+" ================ SWAP/UNDO FILES ==================== {{{
 set noswapfile
 set nobackup
 set nowritebackup
-" }}}
-
-" ================ PERSISTENT UNDO ==================== {{{
 silent !mkdir ~/.nvim/backups > /dev/null 2>&1
 set undodir=~/.nvim/backups
 set undofile
 " }}}
 
-" ================ IDENT/STYLE ==================== {{{
-set shiftwidth=4                                                  " Reduntant with above
-set tabstop=4                                                     " How many spaces on tab
-set softtabstop=4                                                 " One tab = 4 spaces
-set expandtab                                                     " Tabs are spaces
-set autoindent                                                    " Auto-ident
-set smartindent                                                   " Smart ident
-set shiftround                                                    " Round indent to multiple of 'shiftwidth'
-set smarttab                                                      " Reset autoindent after a blank line
+" ================ SEARCH ==================== {{{
+set ignorecase                                                    " Disable case-sensitive searches (override with \c or \C)
+set smartcase                                                     " If the search term contains uppercase letters, do case-sensitive search
 " }}}
 
 " ================ AUTOCOMMANDS ==================== {{{
 augroup vimrc
+    " disable paste mode when leaving Insert mode
+    autocmd InsertLeave * set nopaste
     " check if buffer was changed outside of vim
     autocmd FocusGained,BufEnter * checktime
     " spell 
@@ -163,6 +165,8 @@ augroup vimrc
     autocmd BufEnter * nested if getfsize(@%) > 1000000 | call deoplete#disable() | endif
     " defx
     autocmd FileType defx call DefxSettings()
+    " update lightline on LC diagnostic update
+    autocmd User LanguageClientDiagnosticsChanged call lightline#update()
 augroup END
 
 augroup windows
@@ -210,10 +214,7 @@ vnoremap <silent> p p`]
 nnoremap <silent> p p`]
 
 " quickly select text you pasted
-noremap gP `[v`]`]`
-
-" highlight last inserted text
-nnoremap gI `[v`]
+nnoremap <expr> gp '`[' . strpart(getregtype(), 0, 1) . '`]'
 
 " go up/down onw visual line
 map j gj
@@ -233,9 +234,6 @@ inoremap <down> <nop>
 inoremap <left> <nop>
 inoremap <right> <nop>
 
-" disable paste mode when leaving Insert mode
-autocmd InsertLeave * set nopaste
-
 " jump to last visited location
 nnoremap <S-k> <C-^>
 
@@ -250,10 +248,8 @@ nnoremap <silent> - :exe "resize -5"<Return>
 
 " }}}
 
-
 " ================ LEADER MAPPINGS ==================== {{{
 
-" space is your leader
 nnoremap <SPACE> <Nop>
 let mapleader = "\<Space>"
 
@@ -270,10 +266,14 @@ vmap <Leader>y "*y
 " show/hide line numbers
 nnoremap <Leader>n :set nonumber!<Return>
 
+" jump to the beggining/end  of changed text
+nnoremap <Leader>< `[
+nnoremap <Leader>> `]
+
 " }}}
 
 " ================ FUNCTIONS ======================== {{{
-let g:special_buffers = ['help', 'fortifytestpane', 'fortifyauditpane', 'tagbar', 'defx']
+let g:special_buffers = ['help', 'fortifytestpane', 'fortifyauditpane', 'defx', 'qf']
 
 function! SetAliases() abort
     " do not close windows when closing buffers
@@ -318,6 +318,7 @@ function! DefxSettings() abort
     nnoremap <silent><buffer><expr> j line('.') == line('$') ? 'gg' : 'j'
     nnoremap <silent><buffer><expr> k line('.') == 1 ? 'G' : 'k'
     nnoremap <silent><buffer> q :call execute("bn\<BAR>bw#")<Return>
+    nnoremap <silent><buffer><expr> ~ defx#do_action('change_vim_cwd')
     setlocal nobuflisted
 endfunction
 
@@ -382,7 +383,7 @@ function! CloseWin()
 endfunction
 " }}}
 
-" ================ PLUGIN SETUPS ======================== {{{
+" ================ PLUGIN SETUP ======================== {{{
 
 " ZOOMWIN
 nmap <leader>z <Plug>ZoomWin
@@ -392,20 +393,22 @@ let g:indentLine_color_gui = '#17252c'
 let g:indentLine_fileTypeExclude = g:special_buffers 
 
 " FZF
-nnoremap <leader>m :call FZFOpen(':History')<Return>
 nnoremap <leader>h :call FZFOpen(':History')<Return>
-nnoremap <leader>b :call FZFOpen(':Buffers')<Return>
-nnoremap <leader>s :call FZFOpen(':Snippets')<Return>
 nnoremap <leader>f :call FZFOpen(':Files')<Return>
 
 " VIM-MOVE
+" run `sed -n l` in terminal and then the <Opt> combos to find out the char to use
 let g:move_map_keys = 0
 vmap ∆ <Plug>MoveBlockDown
-vmap ˚ <Plug>MoveBlockUp
 nmap ∆ <Plug>MoveLineDown
+vmap ˚ <Plug>MoveBlockUp
 nmap ˚ <Plug>MoveLineUp
+vmap ˙ <Plug>MoveBlockLeft
+nmap ˙ <Plug>MoveBlockLeft
+vmap ¬ <Plug>MoveBlockRight
+nmap ¬ <Plug>MoveBlockRight
 
-" LIGHTLINE
+" LIGHTLINE 
 execute 'source' fnameescape(expand('~/.config/nvim/lightline.vim'))
 
 " CHOOSEWIN
@@ -425,9 +428,6 @@ let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<c-j>"
 let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 
-
-" NCM2
-
 " DEOPLETE
 let g:deoplete#enable_at_startup = 1
 inoremap <expr> <CR> (pumvisible() ? "\<c-y>\<cr>" : "\<CR>")
@@ -445,16 +445,13 @@ let g:matchup_matchparen_deferred = 1                                           
 " ANZU
 nmap n <Plug>(anzu-n)zz
 nmap N <Plug>(anzu-N)zz
+let g:anzu_enable_CursorMoved_AnzuUpdateSearchStatus=1
 
 " ASTERISK
 map * <Plug>(asterisk-z*)<Plug>(anzu-update-search-status)
 map # <Plug>(asterisk-z#)<Plug>(anzu-update-search-status)
 map g* <Plug>(asterisk-gz*)<Plug>(anzu-update-search-status)
 map g# <Plug>(asterisk-gz#)<Plug>(anzu-update-search-status)
-
-" CTRLSF
-let g:ctrlsf_auto_close = 0                                                     " Do not close search when file is opened
-let g:ctrlsf_mapping = {'vsplit': 's'}                                          " Mapping for opening search result in vertical split
 
 " RAINBOW
 let g:rainbow_active = 1
@@ -470,8 +467,6 @@ call lexima#add_rule({'char': '-', 'at': '<!-', 'input_after': ' -->', 'filetype
 execute 'source' fnameescape(expand('~/.config/nvim/fortify.vim'))
 
 " LANGUAGE-CLIENT
-set hidden " Required for operations modifying multiple buffers like rename.
-
 let g:LanguageClient_serverCommands = {}
 let g:LanguageClient_serverCommands.java = ['~/dotfiles/config/lts/jdtls']
 let g:LanguageClient_serverCommands.javascript = ['javascript-typescript-stdio']
@@ -504,18 +499,22 @@ nnoremap <silent> <C-e> :Defx -split=vertical -winwidth=50 -toggle<Return>
 nnoremap <silent> <C-f> :call execute(printf('Defx -split=vertical -winwidth=50 -toggle %s -search=%s', expand('%:p:h'), expand('%:p')))<Return>
 command! -nargs=* -range DefxOpenCommand call DefxOpen(<q-args>)
 
-" ALE
-" Plug 'w0rp/ale'
-" Plug 'maximbaz/lightline-ale'
-" let g:ale_linters = {}
-" let g:ale_linters.javascript = ['eslint']
-" let g:ale_linters_explicit = 1                                                  " Only run linters named in ale_linters settings.
-" let g:ale_sign_column_always = 1
-" let g:ale_sign_error = '✖'                                                      " Lint error sign
-" let g:ale_sign_warning = '⚠'                                                    " Lint warning sign
-" let g:ale_echo_cursor= 0                                                        " Disble echoing errors in command line
-" let g:ale_virtualtext_cursor= 1                                                 " Enable virtual text (EOL overlay)
-" let g:ale_virtualtext_prefix = '    < '                                         " Do not show any separators for virtual text
+" ESEARCH
+let g:esearch = {
+  \ 'adapter':    'ag',
+  \ 'backend':    'nvim',
+  \ 'out':        'qflist',
+  \ 'batch_size': 1000,
+  \ 'use':        [],
+  \}
+let g:esearch = {'default_mappings': 0}
+call esearch#map('r/', 'esearch')
+
+" VIM-GUTTER
+let g:gitgutter_map_keys = 0
+
+" BCLOSE
+let g:bclose_no_plugin_maps = 1
 
 " }}}
 

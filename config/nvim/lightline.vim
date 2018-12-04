@@ -3,7 +3,7 @@ let g:lightline = {
     \ 'colorscheme': 'cobalt2',
     \ 'active': {
     \   'left': [ [ 'mode', 'paste', ], [ 'anzu', 'filetype', ], [ 'filename', ], ],
-    \   'right': [ [ 'linter_checking', 'linter_errors', 'linter_warnings', 'linter_ok', 'column' ], [ 'percent' ], [ 'cwd', ] ]
+    \   'right': [ [ 'linter_errors', 'linter_warnings', 'column' ], [ 'percent' ], [ 'cwd', ] ]
     \ },
     \ 'inactive': {
     \   'left': [ [ ] ],
@@ -16,10 +16,8 @@ let g:lightline = {
     \ 'component_expand': {
     \   'tabs': 'LightlineBufferTabs',
     \   'tabs_usage': 'LightlineBufferTitle',
-    \   'linter_checking': 'lightline#ale#checking',
-    \   'linter_warnings': 'lightline#ale#warnings',
-    \   'linter_errors': 'lightline#ale#errors',
-    \   'linter_ok': 'lightline#ale#ok',
+    \   'linter_warnings': 'LightlineLanguageClientWarnings',
+    \   'linter_errors': 'LightlineLanguageClientErrors',
     \ },
     \ 'component_type': {
     \   'linter_checking': 'left',
@@ -32,20 +30,12 @@ let g:lightline = {
     \   'cwd': 'LightlineCwd',
     \   'filename': 'LightlineFilename',
     \   'anzu': 'LightlineAnzu',
-    \   'deoplete': 'LightlineDeoplete',
     \ },
     \ 'separator': { 'left': "\ue0b0", 'right': "\ue0b2" },
 	\ 'subseparator': { 'left': "\ue0b1", 'right': "\ue0b3" },
     \ 'tabline_separator': { 'left': ' ', 'right': ' ' },
     \ 'tabline_subseparator': { 'left': ' ', 'right': ' ' },
     \ }
-
-function! LightlineDeoplete()
-  if deoplete#is_enabled()
-    return 'Deoplete enabled'
-  endif
-  return 'Deoplete disabled'
-endfunction
 
 function! LightlineAnzu()
   return anzu#search_status()
@@ -80,14 +70,12 @@ function! LightlineBufferTabs()
 endfunction
 
 function! LightlineFiletype()
-    return winwidth(0) > 70 ? (&filetype !=# '' ? &filetype : 'no ft') : ''
+    return winwidth(0) > 70 ? (&filetype !=# '' ? &filetype : '') : ''
 endfunction
 
 function! LightlineFilename()
-    "let fname = fnamemodify(expand("%"), ":~:.")
-    "let fname = winwidth(0) > 120 ? expand('%:p') : expand('%:t')
     let fname = expand('%:p')
-    if (fname == '__Tagbar__' || fname == '__TestPane__' || fname == '__AuditPane__')
+    if (fname == '__Tagbar__' || fname == '__TestPane__' || fname == '__AuditPane__' || fname =~ '[defx]')
         let fname = ''
     else
         let width = winwidth(0) / 3 
@@ -103,13 +91,25 @@ function! LightlineFilename()
             let fname = "..." . truncated
         endif
     endif
-    return '' != fname ? fname : '[No Name]'
+    return fname
 endfunction
 
 function! LightlineCwd()
-    "return fnamemodify(getcwd(), ':~')
     return winwidth(0) < 120 ? '' : getcwd()
 endfunction
 
+function! LightlineLanguageClientWarnings()
+  let current_buf_number = bufnr('%')
+  let qflist = getqflist()
+  let current_buf_diagnostics = filter(qflist, {index, dict -> dict['bufnr'] == current_buf_number && dict['type'] == 'W'})
+  let count = len(current_buf_diagnostics)
+  return count > 0 && g:LanguageClient_loaded ? 'W: ' . count : ''
+endfunction
 
-
+function! LightlineLanguageClientErrors()
+  let current_buf_number = bufnr('%')
+  let qflist = getqflist()
+  let current_buf_diagnostics = filter(qflist, {index, dict -> dict['bufnr'] == current_buf_number && dict['type'] == 'E'})
+  let count = len(current_buf_diagnostics)
+  return count > 0 && g:LanguageClient_loaded ? 'E: ' . count : ''
+endfunction
