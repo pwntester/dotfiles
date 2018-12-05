@@ -21,7 +21,6 @@ call plug#begin('~/.nvim/plugged')
   Plug 'junegunn/fzf.vim'
   Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh' }
   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins'}
-  Plug 'brooth/far.vim', { 'do': ':UpdateRemotePlugins' }
   Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins'}
   Plug 'tpope/vim-fugitive'
   Plug 'andymass/vim-matchup'
@@ -39,7 +38,6 @@ call plug#begin('~/.nvim/plugged')
   Plug 'luochen1990/rainbow'
   Plug 'alvan/vim-closetag'
   Plug 'christoomey/vim-tmux-navigator'
-  Plug 'ap/vim-css-color'
   Plug 'cohama/lexima.vim'
   Plug 'SirVer/ultisnips'
   Plug 'honza/vim-snippets'
@@ -48,6 +46,8 @@ call plug#begin('~/.nvim/plugged')
   Plug 'rbgrouleff/bclose.vim'
   Plug 'airblade/vim-rooter'
   Plug 'Konfekt/vim-alias'
+
+  " Syntax plugins
   Plug 'plasticboy/vim-markdown'
   Plug 'elzr/vim-json'
   Plug 'b4winckler/vim-objc'
@@ -56,6 +56,9 @@ call plug#begin('~/.nvim/plugged')
   Plug 'derekwyatt/vim-scala'
   Plug 'ekalinin/Dockerfile.vim'
   Plug 'tfnico/vim-gradle'
+  Plug 'ap/vim-css-color'
+
+  " Local plugins
   Plug '~/Development/GitRepos/vim-fortify'
 call plug#end()
 " }}}
