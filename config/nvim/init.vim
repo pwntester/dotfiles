@@ -1,65 +1,64 @@
-if &compatible
-  set nocompatible
+if &compatible 
+	set nocompatible 
 endif
-
 
 " ================ PLUGINS ==================== {{{
 
 " Disable built-in plugins
-let g:loaded_matchit = 1
-let g:loaded_gzip = 1
-let g:loaded_zipPlugin = 1
-let g:loaded_logipat = 1
-let g:loaded_2html_plugin = 1
-let g:loaded_rrhelper = 1
-let g:loaded_getscriptPlugin = 1
-let g:loaded_tarPlugin = 1
+let g:loaded_matchit = 1 
+let g:loaded_gzip = 1 
+let g:loaded_zipPlugin = 1 
+let g:loaded_logipat = 1 
+let g:loaded_2html_plugin = 1 
+let g:loaded_rrhelper = 1 
+let g:loaded_getscriptPlugin = 1 
+let g:loaded_tarPlugin = 1 
 let g:loaded_netrwPlugin = 1
 
-call plug#begin('~/.nvim/plugged')
-  Plug '/usr/local/opt/fzf' " fzf installed with brew
-  Plug 'junegunn/fzf.vim'
-  Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh' }
-  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins'}
-  Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins'}
-  Plug 'tpope/vim-fugitive'
-  Plug 'andymass/vim-matchup'
-  Plug 'tpope/vim-surround'
-  Plug 'tpope/vim-repeat'
-  Plug 'airblade/vim-gitgutter'
-  Plug 'tomtom/tcomment_vim'
-  Plug 'osyo-manga/vim-anzu'
-  Plug 'regedarek/ZoomWin'
-  Plug 'Yggdroot/indentLine'
-  Plug 'matze/vim-move'
-  Plug 'pwntester/cobalt2.vim'
-  Plug 'itchyny/lightline.vim'
-  Plug 'chaoren/vim-wordmotion'
-  Plug 'luochen1990/rainbow'
-  Plug 'alvan/vim-closetag'
-  Plug 'christoomey/vim-tmux-navigator'
-  Plug 'cohama/lexima.vim'
-  Plug 'SirVer/ultisnips'
-  Plug 'honza/vim-snippets'
-  Plug 'eugen0329/vim-esearch'
-  Plug 'AndrewRadev/linediff.vim'
-  Plug 'rbgrouleff/bclose.vim'
-  Plug 'airblade/vim-rooter'
-  Plug 'Konfekt/vim-alias'
+call plug#begin('~/.nvim/plugged') 
+	Plug '/usr/local/opt/fzf' " fzf installed with brew 
+	Plug 'junegunn/fzf.vim' 
+	Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh' } 
+	Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins'} 
+	Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins'} 
+	Plug 'tpope/vim-fugitive' 
+	Plug 'andymass/vim-matchup' 
+	Plug 'tpope/vim-surround'
+    Plug 'tpope/vim-repeat'
+    Plug 'airblade/vim-gitgutter'
+    Plug 'tomtom/tcomment_vim'
+    Plug 'osyo-manga/vim-anzu'
+    Plug 'regedarek/ZoomWin'
+    Plug 'Yggdroot/indentLine'
+    Plug 'matze/vim-move'
+    Plug 'pwntester/cobalt2.vim'
+    Plug 'itchyny/lightline.vim'
+    Plug 'chaoren/vim-wordmotion'
+    Plug 'luochen1990/rainbow'
+    Plug 'alvan/vim-closetag'
+    Plug 'christoomey/vim-tmux-navigator'
+    Plug 'cohama/lexima.vim'
+    Plug 'SirVer/ultisnips'
+    Plug 'honza/vim-snippets'
+    Plug 'eugen0329/vim-esearch'
+    Plug 'AndrewRadev/linediff.vim'
+    Plug 'rbgrouleff/bclose.vim'
+    Plug 'airblade/vim-rooter'
+    Plug 'Konfekt/vim-alias'
 
-  " Syntax plugins
-  Plug 'plasticboy/vim-markdown'
-  Plug 'elzr/vim-json'
-  Plug 'b4winckler/vim-objc'
-  Plug 'kballard/vim-swift'
-  Plug 'othree/xml.vim'
-  Plug 'derekwyatt/vim-scala'
-  Plug 'ekalinin/Dockerfile.vim'
-  Plug 'tfnico/vim-gradle'
-  Plug 'ap/vim-css-color'
+    " Syntax plugins
+    Plug 'plasticboy/vim-markdown'
+    Plug 'elzr/vim-json'
+    Plug 'b4winckler/vim-objc'
+    Plug 'kballard/vim-swift'
+    Plug 'othree/xml.vim'
+    Plug 'derekwyatt/vim-scala'
+    Plug 'ekalinin/Dockerfile.vim'
+    Plug 'tfnico/vim-gradle'
+    Plug 'ap/vim-css-color'
 
-  " Local plugins
-  Plug '~/Development/GitRepos/vim-fortify'
+    " Local plugins
+    Plug '~/Development/GitRepos/vim-fortify'
 call plug#end()
 " }}}
 
