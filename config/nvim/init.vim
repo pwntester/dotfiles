@@ -513,7 +513,6 @@ let g:bclose_no_plugin_maps = 1
 
 " VIM-FUGITIVE
 nnoremap <Leader>gc :Gcommit -v -q<CR>
-nnoremap <Leader>gt :Gcommit -v -q %:p<CR>
 nnoremap <Leader>ge :Gedit<CR>
 nnoremap <Leader>gp :Ggrep<Space>
 nnoremap <Leader>gs :Gstatus<CR>
