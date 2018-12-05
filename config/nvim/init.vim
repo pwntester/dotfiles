@@ -30,7 +30,6 @@ call plug#begin('~/.nvim/plugged')
   Plug 'airblade/vim-gitgutter'
   Plug 'tomtom/tcomment_vim'
   Plug 'osyo-manga/vim-anzu'
-  Plug 'haya14busa/vim-asterisk'
   Plug 'regedarek/ZoomWin'
   Plug 'Yggdroot/indentLine'
   Plug 'matze/vim-move'
@@ -444,12 +443,6 @@ let g:matchup_matchparen_deferred = 1                                           
 nmap n <Plug>(anzu-n)zz
 nmap N <Plug>(anzu-N)zz
 let g:anzu_enable_CursorMoved_AnzuUpdateSearchStatus=1
-
-" ASTERISK
-map * <Plug>(asterisk-z*)<Plug>(anzu-update-search-status)
-map # <Plug>(asterisk-z#)<Plug>(anzu-update-search-status)
-map g* <Plug>(asterisk-gz*)<Plug>(anzu-update-search-status)
-map g# <Plug>(asterisk-gz#)<Plug>(anzu-update-search-status)
 
 " ESEARCH
 let g:esearch = {}
