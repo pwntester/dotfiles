@@ -17,12 +17,13 @@ let g:loaded_tarPlugin = 1
 let g:loaded_netrwPlugin = 1
 
 call plug#begin('~/.nvim/plugged')
-  Plug '/usr/local/opt/fzf' " Fzf installed with brew
+  Plug '/usr/local/opt/fzf' " fzf installed with brew
   Plug 'junegunn/fzf.vim'
   Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh' }
   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins'}
   Plug 'brooth/far.vim', { 'do': ':UpdateRemotePlugins' }
   Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins'}
+  Plug 'tpope/vim-fugitive'
   Plug 'andymass/vim-matchup'
   Plug 'tpope/vim-surround'
   Plug 'tpope/vim-repeat'
@@ -411,9 +412,6 @@ nmap ¬ <Plug>MoveBlockRight
 " LIGHTLINE 
 execute 'source' fnameescape(expand('~/.config/nvim/lightline.vim'))
 
-" CHOOSEWIN
-nmap <C-w><C-w> <Plug>(choosewin)
-
 " VIM-WORDMOTION
 let g:wordmotion_prefix = '<Leader>'
 
@@ -453,6 +451,18 @@ map # <Plug>(asterisk-z#)<Plug>(anzu-update-search-status)
 map g* <Plug>(asterisk-gz*)<Plug>(anzu-update-search-status)
 map g# <Plug>(asterisk-gz#)<Plug>(anzu-update-search-status)
 
+" ESEARCH
+let g:esearch = {}
+let g:esearch.adapter = 'ag'
+let g:esearch.backend = 'nvim'
+let g:esearch.out = 'qflist'
+let g:esearch.batch_size = 1000
+let g:esearch.use = []
+let g:esearch.default_mappings = 0
+  
+call esearch#map('r/', 'esearch')
+call esearch#map('r*', 'esearch-word-under-cursor')
+
 " RAINBOW
 let g:rainbow_active = 1
 
@@ -473,10 +483,6 @@ let g:LanguageClient_serverCommands.javascript = ['javascript-typescript-stdio']
 let g:LanguageClient_serverCommands.fortifyrulepack = ['~/dotfiles/config/lts/fls']
 let g:LanguageClient_serverCommands.python = ['pyls']
 call deoplete#custom#source('LanguageClient', 'input_pattern', '.+$')
-" let g:LanguageClient_loggingLevel = 'INFO'
-" let g:LanguageClient_loggingFile =  expand('~/.nvim/LanguageClient.log')
-" let g:LanguageClient_serverStderr = expand('~/.nvim/LanguageServer.log')
-
 nnoremap <leader>ld :call LanguageClient#textDocument_definition()<Return>
 nnoremap <leader>lr :call LanguageClient#textDocument_rename()<Return>
 nnoremap <leader>lf :call LanguageClient#textDocument_formatting()<Return>
@@ -499,23 +505,26 @@ nnoremap <silent> <C-e> :Defx -split=vertical -winwidth=50 -toggle<Return>
 nnoremap <silent> <C-f> :call execute(printf('Defx -split=vertical -winwidth=50 -toggle %s -search=%s', expand('%:p:h'), expand('%:p')))<Return>
 command! -nargs=* -range DefxOpenCommand call DefxOpen(<q-args>)
 
-" ESEARCH
-let g:esearch = {
-  \ 'adapter':    'ag',
-  \ 'backend':    'nvim',
-  \ 'out':        'qflist',
-  \ 'batch_size': 1000,
-  \ 'use':        [],
-  \}
-let g:esearch = {'default_mappings': 0}
-call esearch#map('r/', 'esearch')
-
 " VIM-GUTTER
 let g:gitgutter_map_keys = 0
 
 " BCLOSE
 let g:bclose_no_plugin_maps = 1
 
+" VIM-FUGITIVE
+nnoremap <Leader>gc :Gcommit -v -q<CR>
+nnoremap <Leader>gt :Gcommit -v -q %:p<CR>
+nnoremap <Leader>ge :Gedit<CR>
+nnoremap <Leader>gp :Ggrep<Space>
+nnoremap <Leader>gs :Gstatus<CR>
+nnoremap <Leader>gd :Gdiff<CR>
+nnoremap <Leader>gb :Gblame<CR>
+nnoremap <Leader>gh :Silent Glog<CR>
+nnoremap <Leader>gH :Silent Glog<CR>:set nofoldenable<CR>
+nnoremap <Leader>gl :silent! Glog<CR>:bot copen<CR>
+nnoremap <Leader>gr :Gread<CR>
+nnoremap <Leader>gw :Gwrite<CR><CR>
+nnoremap <Leader>gp :Git push<CR>
 " }}}
 
 " ================ COLOR SCHEME ======================== {{{
