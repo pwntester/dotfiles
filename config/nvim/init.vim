@@ -16,7 +16,6 @@ let g:loaded_tarPlugin = 1
 let g:loaded_netrwPlugin = 1
 
 call plug#begin('~/.nvim/plugged') 
-	Plug '/usr/local/opt/fzf' " fzf installed with brew 
 	Plug 'junegunn/fzf.vim' 
     Plug 'pbogut/fzf-mru.vim'
 	Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh' } 
@@ -62,6 +61,7 @@ call plug#begin('~/.nvim/plugged')
 
     " Local plugins
     Plug '~/Development/GitRepos/vim-fortify'
+	Plug '/usr/local/opt/fzf'                                     " fzf installed with brew 
 call plug#end()
 " }}}
 
@@ -249,7 +249,6 @@ nnoremap <silent> - :exe "resize -5"<Return>
 " }}}
 
 " ================ LEADER MAPPINGS ==================== {{{
-
 nnoremap <SPACE> <Nop>
 let mapleader = "\<Space>"
 
@@ -401,6 +400,19 @@ command! -bang -nargs=* Rg
   \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
   \   fzf#vim#with_preview('right:50%', '?'),
   \   <bang>0)
+let g:fzf_colors = {}
+let g:fzf_colors.fg = ['fg', 'Normal']
+let g:fzf_colors.bg = ['bg', 'Normal']
+let g:fzf_colors.hl = ['fg', 'Comment']
+let g:fzf_colors['fg+'] = ['fg', 'CursorLine', 'CursorColumn', 'Normal']
+let g:fzf_colors['bg+'] = ['bg', 'CursorLine', 'CursorColumn']
+let g:fzf_colors['hl+'] = ['fg', 'Statement']
+let g:fzf_colors.info = ['fg', 'PreProc']
+let g:fzf_colors.prompt = ['fg', 'Conditional']
+let g:fzf_colors.pointer = ['fg', 'Exception']
+let g:fzf_colors.marker = ['fg', 'Keyword']
+let g:fzf_colors.spinner = ['fg', 'Label']
+let g:fzf_colors.header = ['fg', 'Comment']
 nnoremap <leader>h :call FZFOpen(':History')<Return>
 nnoremap <leader>f :call FZFOpen(':Files')<Return>
 nnoremap <leader>c :call FZFOpen(':BCommits')<Return>
@@ -468,7 +480,6 @@ let g:esearch.out = 'qflist'
 let g:esearch.batch_size = 1000
 let g:esearch.use = []
 let g:esearch.default_mappings = 0
-  
 call esearch#map('r/', 'esearch')
 call esearch#map('r*', 'esearch-word-under-cursor')
 
@@ -531,19 +542,5 @@ let g:signify_sign_show_count = 0
 " ================ COLOR SCHEME ======================== {{{
 set background=dark
 colorscheme cobalt2
-let g:fzf_colors = {}
-let g:fzf_colors.fg = ['fg', 'Normal']
-let g:fzf_colors.bg = ['bg', 'Normal']
-let g:fzf_colors.hl = ['fg', 'Comment']
-let g:fzf_colors['fg+'] = ['fg', 'CursorLine', 'CursorColumn', 'Normal']
-let g:fzf_colors['bg+'] = ['bg', 'CursorLine', 'CursorColumn']
-let g:fzf_colors['hl+'] = ['fg', 'Statement']
-let g:fzf_colors.info = ['fg', 'PreProc']
-let g:fzf_colors.prompt = ['fg', 'Conditional']
-let g:fzf_colors.pointer = ['fg', 'Exception']
-let g:fzf_colors.marker = ['fg', 'Keyword']
-let g:fzf_colors.spinner = ['fg', 'Label']
-let g:fzf_colors.header = ['fg', 'Comment']
-
 "}}}
 
