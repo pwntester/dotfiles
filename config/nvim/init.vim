@@ -18,6 +18,7 @@ let g:loaded_netrwPlugin = 1
 call plug#begin('~/.nvim/plugged') 
 	Plug '/usr/local/opt/fzf' " fzf installed with brew 
 	Plug 'junegunn/fzf.vim' 
+    Plug 'pbogut/fzf-mru.vim'
 	Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh' } 
 	Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins'} 
 	Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins'} 
@@ -392,8 +393,20 @@ let g:indentLine_color_gui = '#17252c'
 let g:indentLine_fileTypeExclude = g:special_buffers 
 
 " FZF
+let g:fzf_commits_log_options = '--graph --color=always
+  \ --format="%C(yellow)%h%C(red)%d%C(reset)
+  \ - %C(bold green)(%ar)%C(reset) %s %C(blue)<%an>%C(reset)"'
+command! -bang -nargs=* Rg
+  \ call fzf#vim#grep(
+  \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
+  \   fzf#vim#with_preview('right:50%', '?'),
+  \   <bang>0)
 nnoremap <leader>h :call FZFOpen(':History')<Return>
 nnoremap <leader>f :call FZFOpen(':Files')<Return>
+nnoremap <leader>c :call FZFOpen(':BCommits')<Return>
+nnoremap <leader>r :Rg<Space>
+nnoremap <leader>m :call FZFOpen(':FZFMru')<Return>
+nnoremap <leader>s :call FZFOpen(':Snippets')<Return>
 
 " VIM-MOVE
 " run `sed -n l` in terminal and then the <Opt> combos to find out the char to use
@@ -449,7 +462,7 @@ map g# <Plug>(asterisk-gz#)<Plug>(is-nohl-1)<Plug>(anzu-update-search-status)
 
 " ESEARCH
 let g:esearch = {}
-let g:esearch.adapter = 'ag'
+let g:esearch.adapter = 'rg'
 let g:esearch.backend = 'nvim'
 let g:esearch.out = 'qflist'
 let g:esearch.batch_size = 1000
@@ -500,6 +513,9 @@ let g:rooter_silent_chdir = 1
 nnoremap <silent> <C-e> :Defx -split=vertical -winwidth=50 -toggle<Return>
 nnoremap <silent> <C-f> :call execute(printf('Defx -split=vertical -winwidth=50 -toggle %s -search=%s', expand('%:p:h'), expand('%:p')))<Return>
 command! -nargs=* -range DefxOpenCommand call DefxOpen(<q-args>)
+" TODO: 
+" FZF Files in directory
+" nnoremap <silent> <leader>- :Files <C-r>=expand("%:h")<CR>/<CR>
 
 " BCLOSE
 let g:bclose_no_plugin_maps = 1
