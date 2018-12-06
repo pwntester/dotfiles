@@ -23,11 +23,13 @@ call plug#begin('~/.nvim/plugged')
 	Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins'} 
 	Plug 'tpope/vim-fugitive' 
 	Plug 'andymass/vim-matchup' 
-	Plug 'tpope/vim-surround'
+	Plug 'machakann/vim-sandwich'
     Plug 'tpope/vim-repeat'
-    Plug 'airblade/vim-gitgutter'
+    Plug 'mhinz/vim-signify'
     Plug 'tomtom/tcomment_vim'
     Plug 'osyo-manga/vim-anzu'
+    Plug 'haya14busa/vim-asterisk'
+    Plug 'haya14busa/is.vim'
     Plug 'regedarek/ZoomWin'
     Plug 'Yggdroot/indentLine'
     Plug 'matze/vim-move'
@@ -97,6 +99,7 @@ set sidescroll=5                                                  " Side scroll 
 set scrolloff=8                                                   " Start scrolling when we're 8 lines away from margins
 set linebreak                                                     " Wrap lines at special characters instead of at max width
 set listchars=tab:>-,trail:.,extends:>,precedes:<,nbsp:%          " Showing trailing whitespace
+set diffopt+=vertical                                             " Show vimdiff in vertical splits
 " }}}
 
 " ================ IDENT/STYLE ==================== {{{
@@ -190,10 +193,10 @@ nnoremap n nzz
 nnoremap N Nzz
 
 " search for visual selection (exact matches, no regexp)
-vnoremap // y/\V<C-r>=escape(@",'/\')<Return><Return>
+" vnoremap // y/\V<C-r>=escape(@",'/\')<Return><Return>
 
 " search for contents of register 0 (where AuditPane copies the RuleIDs)
-noremap /0 :execute substitute('/'.@0,'0$','','g')<Return>                                   
+noremap 0/ :execute substitute('/'.@0,'0$','','g')<Return>                                   
 
 " remove search highlights
 nnoremap <silent>./ :nohlsearch<Return>
@@ -275,7 +278,7 @@ nnoremap <Leader>> `]
 " }}}
 
 " ================ FUNCTIONS ======================== {{{
-let g:special_buffers = ['help', 'fortifytestpane', 'fortifyauditpane', 'defx', 'qf']
+let g:special_buffers = ['help', 'fortifytestpane', 'fortifyauditpane', 'defx', 'qf', 'vim-plug']
 
 function! SetAliases() abort
     " do not close windows when closing buffers
@@ -441,10 +444,14 @@ let g:matchup_matchparen_status_offscreen = 0                                   
 let g:matchup_matchparen_nomode = "ivV\<c-v>"                                   " Enable matchup only in normal mode
 let g:matchup_matchparen_deferred = 1                                           " Defer matchup highlights to allow better cursor movement performance
 
-" ANZU
-nmap n <Plug>(anzu-n)zz
-nmap N <Plug>(anzu-N)zz
+" ANZU / IS.VIM / ASTERISK
 let g:anzu_enable_CursorMoved_AnzuUpdateSearchStatus=1
+map n <Plug>(is-nohl)<Plug>(anzu-n-with-echo)
+map N <Plug>(is-nohl)<Plug>(anzu-N-with-echo)
+map * <Plug>(asterisk-z*)<Plug>(is-nohl-1)<Plug>(anzu-update-search-status)
+map # <Plug>(asterisk-z#)<Plug>(is-nohl-1)<Plug>(anzu-update-search-status)
+map g* <Plug>(asterisk-gz*)<Plug>(is-nohl-1)<Plug>(anzu-update-search-status)
+map g# <Plug>(asterisk-gz#)<Plug>(is-nohl-1)<Plug>(anzu-update-search-status)
 
 " ESEARCH
 let g:esearch = {}
@@ -500,9 +507,6 @@ nnoremap <silent> <C-e> :Defx -split=vertical -winwidth=50 -toggle<Return>
 nnoremap <silent> <C-f> :call execute(printf('Defx -split=vertical -winwidth=50 -toggle %s -search=%s', expand('%:p:h'), expand('%:p')))<Return>
 command! -nargs=* -range DefxOpenCommand call DefxOpen(<q-args>)
 
-" VIM-GUTTER
-let g:gitgutter_map_keys = 0
-
 " BCLOSE
 let g:bclose_no_plugin_maps = 1
 
@@ -533,6 +537,11 @@ highlight ALEError ctermfg=9 guifg=#FF0000
 highlight ALEErrorSign ctermfg=9 guifg=#FF0000
 highlight ALEWarning ctermfg=33 guifg=#0088FF
 highlight ALEWarningSign ctermfg=33 guifg=#0088FF
+highlight BadSpell gui=NONE ctermfg=0 cterm=NONE guibg=red guifg=white
+highlight DiffAdd    gui=none guifg=#00FF00 guibg=none
+highlight DiffDelete gui=none guifg=#FF0000 guibg=none
+highlight DiffChange gui=none guifg=#0088FF guibg=none
+highlight DiffText   gui=none guifg=#0088FF guibg=none
 
 "fzf
 let g:fzf_colors = {}
