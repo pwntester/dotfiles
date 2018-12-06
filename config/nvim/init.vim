@@ -525,28 +525,12 @@ let g:signify_vcs_list = ['git', 'perforce']
 let g:signify_realtime = 1
 let g:signify_sign_change = '~'
 let g:signify_sign_delete = '-'
+let g:signify_sign_show_count = 0
 " }}}
 
 " ================ COLOR SCHEME ======================== {{{
 set background=dark
 colorscheme cobalt2
-
-" used by neovim-languageClient
-highlight ALEVirtualTextError ctermfg=9 guifg=#FF0000 
-highlight ALEVirtualTextWarning ctermfg=33 guifg=#0088FF
-highlight ALEError ctermfg=9 guifg=#FF0000
-highlight ALEErrorSign ctermfg=9 guifg=#FF0000
-highlight ALEWarning ctermfg=33 guifg=#0088FF
-highlight ALEWarningSign ctermfg=33 guifg=#0088FF
-
-highlight SpellBad gui=NONE ctermfg=0 cterm=NONE guibg=red guifg=white
-highlight Search gui=NONE ctermfg=0 cterm=NONE guibg=#0088FF guifg=white
-highlight DiffAdd    gui=none guifg=#00FF00 guibg=none
-highlight DiffDelete gui=none guifg=#FF0000 guibg=none
-highlight DiffChange gui=none guifg=#0088FF guibg=none
-highlight DiffText   gui=none guifg=#0088FF guibg=none
-
-"fzf
 let g:fzf_colors = {}
 let g:fzf_colors.fg = ['fg', 'Normal']
 let g:fzf_colors.bg = ['bg', 'Normal']
