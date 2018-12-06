@@ -520,7 +520,7 @@ nnoremap <Leader>gp :Git push<CR>
 
 " SIGNIFY
 let g:signify_vcs_list = ['git', 'perforce']
-let g:signify_update_on_focusgained = 1
+let g:signify_realtime = 1
 let g:signify_sign_change = '~'
 let g:signify_sign_delete = '-'
 " }}}
