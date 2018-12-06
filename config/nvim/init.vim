@@ -293,9 +293,6 @@ function! SetAliases() abort
 
     " quit all windows
     Alias Q qa!
-
-    " Git push
-    Alias Gpush Git push
 endfunction
 
 function! BufferSettings() abort
