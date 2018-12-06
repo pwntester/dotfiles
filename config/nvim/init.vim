@@ -517,10 +517,15 @@ nnoremap <Leader>gl :silent! Glog<CR>:bot copen<CR>
 nnoremap <Leader>gr :Gread<CR>
 nnoremap <Leader>gw :Gwrite<CR><CR>
 nnoremap <Leader>gp :Git push<CR>
+
+" SIGNIFY
+let g:signify_vcs_list = ['git', 'perforce']
+let g:signify_update_on_focusgained = 1
+let g:signify_sign_change = '~'
+let g:signify_sign_delete = '-'
 " }}}
 
 " ================ COLOR SCHEME ======================== {{{
-
 set background=dark
 colorscheme cobalt2
 
@@ -531,6 +536,7 @@ highlight ALEError ctermfg=9 guifg=#FF0000
 highlight ALEErrorSign ctermfg=9 guifg=#FF0000
 highlight ALEWarning ctermfg=33 guifg=#0088FF
 highlight ALEWarningSign ctermfg=33 guifg=#0088FF
+
 highlight SpellBad gui=NONE ctermfg=0 cterm=NONE guibg=red guifg=white
 highlight Search gui=NONE ctermfg=0 cterm=NONE guibg=#0088FF guifg=white
 highlight DiffAdd    gui=none guifg=#00FF00 guibg=none
