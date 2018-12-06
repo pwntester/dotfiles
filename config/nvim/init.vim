@@ -293,6 +293,9 @@ function! SetAliases() abort
 
     " quit all windows
     Alias Q qa!
+
+    " Git push
+    Alias Gpush Git push
 endfunction
 
 function! BufferSettings() abort
@@ -519,20 +522,6 @@ command! -nargs=* -range DefxOpenCommand call DefxOpen(<q-args>)
 
 " BCLOSE
 let g:bclose_no_plugin_maps = 1
-
-" VIM-FUGITIVE
-nnoremap <Leader>gc :Gcommit -v -q<CR>
-nnoremap <Leader>ge :Gedit<CR>
-nnoremap <Leader>gp :Ggrep<Space>
-nnoremap <Leader>gs :Gstatus<CR>
-nnoremap <Leader>gd :Gdiff<CR>
-nnoremap <Leader>gb :Gblame<CR>
-nnoremap <Leader>gh :Silent Glog<CR>
-nnoremap <Leader>gH :Silent Glog<CR>:set nofoldenable<CR>
-nnoremap <Leader>gl :silent! Glog<CR>:bot copen<CR>
-nnoremap <Leader>gr :Gread<CR>
-nnoremap <Leader>gw :Gwrite<CR><CR>
-nnoremap <Leader>gp :Git push<CR>
 
 " SIGNIFY
 let g:signify_vcs_list = ['git', 'perforce']
