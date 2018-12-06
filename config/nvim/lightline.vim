@@ -2,8 +2,8 @@ let g:cobalt2_lightline = 1
 let g:lightline = {
     \ 'colorscheme': 'cobalt2',
     \ 'active': {
-    \   'left': [ [ 'mode', 'paste', ], [ 'anzu', 'filetype', ], [ 'filename', ], ],
-    \   'right': [ [ 'linter_errors', 'linter_warnings', 'column' ], [ 'percent' ], [ 'cwd', ] ]
+    \   'left': [ [ 'mode', 'paste', ], [ 'anzu', 'fugitive', ], [ 'filename', ], ],
+    \   'right': [ [ 'linter_errors', 'linter_warnings', 'column', 'percent' ], [ 'filetype' ], [ 'cwd', ] ]
     \ },
     \ 'inactive': {
     \   'left': [ [ ] ],
@@ -26,6 +26,7 @@ let g:lightline = {
     \   'linter_ok': 'left',
     \ },
     \ 'component_function': {
+    \   'fugitive': 'LightlineFugitive',
     \   'filetype': 'LightlineFiletype',
     \   'cwd': 'LightlineCwd',
     \   'filename': 'LightlineFilename',
@@ -74,10 +75,10 @@ function! LightlineFiletype()
 endfunction
 
 function! LightlineFilename()
-    let fname = expand('%:p')
-    if (fname == '__Tagbar__' || fname == '__TestPane__' || fname == '__AuditPane__' || fname =~ '[defx]')
-        let fname = ''
+    if index(g:special_buffers, &filetype) > -1
+        return ''
     else
+        let fname = expand('%:p')
         let width = winwidth(0) / 3 
         if strlen(fname) > width 
             let segments = reverse(split(fname, "/"))
@@ -90,8 +91,8 @@ function! LightlineFilename()
             endfor
             let fname = "..." . truncated
         endif
+        return fname
     endif
-    return fname
 endfunction
 
 function! LightlineCwd()
@@ -112,4 +113,12 @@ function! LightlineLanguageClientErrors()
   let current_buf_diagnostics = filter(qflist, {index, dict -> dict['bufnr'] == current_buf_number && dict['type'] == 'E'})
   let count = len(current_buf_diagnostics)
   return count > 0 && g:LanguageClient_loaded ? 'E: ' . count : ''
+endfunction
+
+function! LightlineFugitive() abort
+  if index(g:special_buffers, &filetype) > -1
+    return ''
+  else
+     return " ".fugitive#head()
+  endif
 endfunction
