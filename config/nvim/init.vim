@@ -47,6 +47,7 @@ call plug#begin('~/.nvim/plugged')
     Plug 'rbgrouleff/bclose.vim'
     Plug 'airblade/vim-rooter'
     Plug 'Konfekt/vim-alias'
+    Plug 'kshenoy/vim-signature'
 
     " Syntax plugins
     Plug 'plasticboy/vim-markdown'
@@ -88,7 +89,6 @@ set laststatus=2                                                  " status line 
 set showtabline=2                                                 " always shows tabline
 set lazyredraw                                                    " Don't update the display while executing macros
 set number                                                        " Print the line number
-set tw=1000                                                       " TextWitdh ulra high since its used for active window highlighting
 set t_Co=256                                                      " 256 colors
 set ttyfast                                                       " Faster redraw
 set showcmd                                                       " Show partial commands in status line
@@ -114,7 +114,7 @@ set shiftround                                                    " Round indent
 set smarttab                                                      " Reset autoindent after a blank line
 " }}}
 
-" ================ AUTOCOMPLETION ==================== {{{
+" ================ COMPLETION ==================== {{{
 set wildmode=longest,full                                         "stuff to ignore when tab completing
 set wildignorecase
 set wildignore+=*.swp,*.pyc,*.bak,*.class,*.orig
@@ -164,7 +164,7 @@ augroup vimrc
     " spell 
     autocmd FileType markdown nested setlocal spell complete+=kspell
     " enable buffer cycling on non-special buffers
-    autocmd BufEnter *.* call BufferSettings()
+    autocmd WinEnter,BufEnter *.* call BufferSettings()
     " set aliases
     autocmd VimEnter * call SetAliases()
     " deoplete
@@ -173,6 +173,8 @@ augroup vimrc
     autocmd FileType defx call DefxSettings()
     " update lightline on LC diagnostic update
     autocmd User LanguageClientDiagnosticsChanged call lightline#update()
+    " mark qf as not listed
+    autocmd FileType qf setlocal nobuflisted 
 augroup END
 
 augroup windows
@@ -183,8 +185,8 @@ augroup windows
     autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline
     autocmd WinLeave * setlocal nocursorline
     " highlight active window
-    autocmd BufEnter,FocusGained,VimEnter,WinEnter * let &l:colorcolumn=join(range(1, 800), ',')
-    autocmd FocusLost,WinLeave * let &l:colorcolumn='+' . join(range(0, 800), ',+')
+    autocmd BufEnter,FocusGained,VimEnter,WinEnter * set winhighlight=CursorLineNr:LineNr,EndOfBuffer:ColorColumn,IncSearch:ColorColumn,Normal:ColorColumn,NormalNC:ColorColumn,SignColumn:ColorColumn
+    autocmd FocusLost,WinLeave * set winhighlight=
 augroup END
 " }}}
 
@@ -392,33 +394,30 @@ let g:indentLine_color_gui = '#17252c'
 let g:indentLine_fileTypeExclude = g:special_buffers 
 
 " FZF
-let g:fzf_commits_log_options = '--graph --color=always
-  \ --format="%C(yellow)%h%C(red)%d%C(reset)
-  \ - %C(bold green)(%ar)%C(reset) %s %C(blue)<%an>%C(reset)"'
-command! -bang -nargs=* Rg
-  \ call fzf#vim#grep(
-  \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
-  \   fzf#vim#with_preview('right:50%', '?'),
-  \   <bang>0)
-let g:fzf_colors = {}
-let g:fzf_colors.fg = ['fg', 'Normal']
-let g:fzf_colors.bg = ['bg', 'Normal']
-let g:fzf_colors.hl = ['fg', 'Comment']
-let g:fzf_colors['fg+'] = ['fg', 'CursorLine', 'CursorColumn', 'Normal']
-let g:fzf_colors['bg+'] = ['bg', 'CursorLine', 'CursorColumn']
-let g:fzf_colors['hl+'] = ['fg', 'Statement']
-let g:fzf_colors.info = ['fg', 'PreProc']
-let g:fzf_colors.prompt = ['fg', 'Conditional']
-let g:fzf_colors.pointer = ['fg', 'Exception']
-let g:fzf_colors.marker = ['fg', 'Keyword']
-let g:fzf_colors.spinner = ['fg', 'Label']
-let g:fzf_colors.header = ['fg', 'Comment']
+let g:fzf_colors = { 
+    \ 'fg':      ['fg', 'Normal'],
+    \ 'bg':      ['bg', 'ColorColumn'],
+    \ 'hl':      ['fg', 'Comment'],
+    \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+    \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+    \ 'hl+':     ['fg', 'Statement'],
+    \ 'info':    ['fg', 'PreProc'],
+    \ 'border':  ['fg', 'Ignore'],
+    \ 'prompt':  ['fg', 'Conditional'],
+    \ 'pointer': ['fg', 'Exception'],
+    \ 'marker':  ['fg', 'Keyword'],
+    \ 'spinner': ['fg', 'Label'],
+    \ 'header':  ['fg', 'Comment'] }
+
 nnoremap <leader>h :call FZFOpen(':History')<Return>
 nnoremap <leader>f :call FZFOpen(':Files')<Return>
 nnoremap <leader>c :call FZFOpen(':BCommits')<Return>
 nnoremap <leader>r :Rg<Space>
 nnoremap <leader>m :call FZFOpen(':FZFMru')<Return>
 nnoremap <leader>s :call FZFOpen(':Snippets')<Return>
+nnoremap <leader>d :call FZFOpen(':Buffers')<Return>
+nnoremap <leader>/ :call fzf#vim#search_history()<Return>
+nnoremap <leader>: :call fzf#vim#command_history()<Return>
 
 " VIM-MOVE
 " run `sed -n l` in terminal and then the <Opt> combos to find out the char to use
@@ -542,5 +541,6 @@ let g:signify_sign_show_count = 0
 " ================ COLOR SCHEME ======================== {{{
 set background=dark
 colorscheme cobalt2
+"highlight CursorLine cterm=NONE ctermbg=darkred ctermfg=white gui=NONE guibg=#111122 guifg=0
 "}}}
 
