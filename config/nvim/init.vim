@@ -65,7 +65,7 @@ call plug#begin('~/.nvim/plugged')
 
     " Local plugins
     Plug '~/Development/GitRepos/vim-fortify'
-	Plug '/usr/local/opt/fzf'                                     " fzf installed with brew 
+	Plug '/usr/local/opt/fzf'
 call plug#end()
 " }}}
 
