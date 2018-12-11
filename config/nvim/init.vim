@@ -423,7 +423,7 @@ nnoremap <leader>/ :call fzf#vim#search_history()<Return>
 nnoremap <leader>: :call fzf#vim#command_history()<Return>
 
 " VIM-MOVE
-" run `sed -n l` in terminal and then the <Opt> combos to find out the char to use
+" run `cat -v` in terminal and then the <Opt> combos to find out the char to use
 let g:move_map_keys = 0
 vmap ∆ <Plug>MoveBlockDown
 nmap ∆ <Plug>MoveLineDown
