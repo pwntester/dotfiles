@@ -40,9 +40,10 @@ let g:fortify_ScanOpts += ["-Dcom.fortify.sca.alias.mode.swift=fi"]
 let g:fortify_ScanOpts += ["-Dcom.fortify.sca.Phase0HigherOrder.Level=1"]
 let g:fortify_ScanOpts += ["-Dcom.fortify.sca.Phase0HigherOrder.Languages=javascript,typescript"]
 let g:fortify_ScanOpts += ["-Dcom.fortify.sca.EnableDOMModeling=true"]
-let g:fortify_ScanOpts += ["-Dcom.fortify.sca.followImports=false"]                              " Do not translate and analyze all libraries that you require in your code
-let g:fortify_ScanOpts += ["-Ddebug.dump-nst"]                                                   " For debugging purposes dumps NST files between Phase 1 and Phase 2 of analysis.
 " let g:fortify_ScanOpts += ["-debug", "-debug-verbose", "-logfile", "sca_build/scan.log"]       " Generate scan logs
+" let g:fortify_ScanOpts += ["-Ddf3.debug=sca_build/taint.log"]                                  " Dump taint log
+" let g:fortify_ScanOpts += ["-Dcom.fortify.sca.followImports=false"]                            " Do not translate and analyze all libraries that you require in your code
+" let g:fortify_ScanOpts += ["-Ddebug.dump-nst"]                                                 " For debugging purposes dumps NST files between Phase 1 and Phase 2 of analysis.
 " let g:fortify_ScanOpts += ["-Ddebug.dump-cfg"]                                                 " For debugging purposes controls dumping Basic Block Graph to file.
 " let g:fortify_ScanOpts += ["-Ddebug.dump-raw-cfg"]                                             " dump the cfg which is not optimized by dead code elimination
 " let g:fortify_ScanOpts += ["-Ddebug.dump-ssi"]                                                 " For debugging purposes dump ssi graph.
@@ -51,6 +52,5 @@ let g:fortify_ScanOpts += ["-Ddebug.dump-nst"]                                  
 " let g:fortify_ScanOpts += ["-Ddebug.dump-model"]                                               " For debugging purposes data dump of model attributes.
 " let g:fortify_ScanOpts += ["-Ddebug.dump-call-targets"]                                        " For debugging purposes dump call targets for each call site.
 " let g:fortify_ScanOpts += ["-Dic.debug=issue_calculator.log"]                                  " Dump issue calculator log
-" let g:fortify_ScanOpts += ["-Ddf3.debug=taint.log"]                                            " Dump taint log
 " let g:fortify_ScanOpts += ["-Dcom.fortify.sca.ThreadCount=1"]                                  " Disable multi-threading
 
