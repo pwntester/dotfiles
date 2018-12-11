@@ -10,16 +10,24 @@ else
 fi
 
 zplug 'zplug/zplug',                            hook-build:'zplug --self-manage'
-zplug "BurntSushi/ripgrep",                     defer:3, from:"gh-r", as:"command", use:"*darwin*", rename-to:"rg"
-zplug "junegunn/fzf-bin",                       defer:3, from:"gh-r", as:"command", use:"*darwin*", rename-to:"fzf"
+zplug "modules/tmux",                           from:prezto
+zplug "modules/history",                        from:prezto
+zplug "modules/utility",                        from:prezto
+zplug "modules/ruby",                           from:prezto
+zplug "modules/ssh",                            from:prezto
+zplug "modules/terminal",                       from:prezto
+zplug "modules/directory",                      from:prezto
+zplug "modules/completion",                     from:prezto
 zplug "mafredri/zsh-async",                     from:github
 zplug "sindresorhus/pure",                      use:pure.zsh, from:github, as:theme
-zplug "plugins/docker",                         from:oh-my-zsh, if:'[[ $commands[docker] ]]'
-zplug "plugins/docker-compose",                 from:oh-my-zsh, if:'[[ $commands[docker-compose] ]]'
-zplug "zsh-users/zsh-syntax-highlighting",      defer:3
-zplug "zsh-users/zsh-autosuggestions"
 zplug "zsh-users/zsh-completions"
-zplug "zsh-users/zsh-history-substring-search"
+zplug "zdharma/fast-syntax-highlighting"
+zplug "tarruda/zsh-autosuggestions"           
+zplug "felixr/docker-zsh-completion"
+zplug "davidparsson/zsh-pyenv-lazy"
+zplug "BurntSushi/ripgrep",                     defer:3, from:"gh-r", as:"command", use:"*darwin*", rename-to:"rg"
+zplug "junegunn/fzf-bin",                       defer:3, from:"gh-r", as:"command", use:"*darwin*", rename-to:"fzf"
+zplug "zsh-users/zsh-history-substring-search", defer:3
 
 if ! zplug check --verbose; then
     printf "Install? [y/N]: "
@@ -30,12 +38,26 @@ fi
 
 zplug load 
 
+if zplug check zsh-users/zsh-autosuggestions; then
+    ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(history-substring-search-up history-substring-search-down)
+    ZSH_AUTOSUGGEST_CLEAR_WIDGETS=("${(@)ZSH_AUTOSUGGEST_CLEAR_WIDGETS:#(up|down)-line-or-history}")
+fi
+
+if zplug check zsh-users/zsh-history-substring-search; then
+    bindkey '\eOA' history-substring-search-up
+    bindkey '\eOB' history-substring-search-down
+fi
+
 # autoload
 fpath=(~/.zsh "${fpath[@]}")
 autoload -Uz bip tmuxify
 
 # every time we load .zshrc, ditch duplicate path entries
 typeset -U PATH fpath
+
+# bindings
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
 
 # aliases 
 alias awb="auditworkbench"
@@ -84,7 +106,7 @@ export JAVA_HOME=$JAVA_8_HOME
 export ANT_OPTS="-XX:MaxPermSize=256m -Dhttp.proxyHost=proxy.houston.hpecorp.net -Dhttp.proxyPort=8080 -Dhttps.proxyHost=proxy.houston.hpecorp.net -Dhttps.proxyPort=8080" 
 export PATH=/usr/local/bin:/usr/local/sbin:/usr/local/mysql/bin:/usr/local/share/npm/bin:/Applications/HP_Fortify/sca/bin:/Applications/HP_Fortify/awb_main/bin:$PATH:/Users/alvaro/bin
 export PATH="$HOME/.cargo/bin:$PATH"
-export EXA_COLORS="uu=38;5;249:un=38;5;241:gu=38;5;245:gn=38;5;241:da=38;5;245:sn=38;5;7:sb=38;5;7:ur=38;5;3;1:uw=38;5;5;1:ux=38;5;1;1:ue=38;5;1;1:gr=38;5;249:gw=38;5;249:gx=38;5;249:tr=38;5;249:tw=38;5;249:tx=38;5;249:fi=38;5;248:di=38;5;74:ex=38;5;1:xa=38;5;12:*.png=38;5;4:*.jpg=38;5;4:*.gif=38;5;4"
+export EXA_COLORS="uu=38;5;249:un=38;5;241:gu=38;5;245:gn=38;5;241:da=38;5;245:sn=38;5;7:sb=38;5;7:ur=38;5;3;1:uw=38;5;5;1:ux=38;5;1;1:ue=38;5;1;1:gr=38;5;249:gw=38;5;249:gx=38;5;249:tr=38;5;249:tw=38;5;249:tx=38;5;249:fi=38;5;255:di=38;5;74:ex=38;5;1:xa=38;5;12:*.png=38;5;4:*.jpg=38;5;4:*.gif=38;5;4"
 
 # options
 setopt SHARE_HISTORY
@@ -127,6 +149,11 @@ fkill() {
   then
     echo $pid | xargs kill -${1:-9}
   fi
+}
+
+# fh - repeat history
+fh() {
+  print -z $( ([ -n "$ZSH_NAME" ] && fc -l 1 || history) | fzf +s --tac | sed 's/ *[0-9]* *//')
 }
 
 tmuxify
