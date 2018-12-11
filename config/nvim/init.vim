@@ -544,6 +544,9 @@ let g:markbar_width = 40
 let g:markbar_enable_peekaboo = v:false
 let g:markbar_marks_to_display = 'abcdefghijklmnopqrstuvwyzABCDEFGHIJKLMNOPQRSTUVWYZ'
 
+" VIMAGIT
+let g:magit_auto_foldopen = 0
+
 " }}}
 
 " ================ COLOR SCHEME ======================== {{{
