@@ -537,6 +537,13 @@ let g:signify_realtime = 1
 let g:signify_sign_change = '~'
 let g:signify_sign_delete = '-'
 let g:signify_sign_show_count = 0
+
+" MARKBAR
+nmap <Leader>t <Plug>ToggleMarkbar
+let g:markbar_width = 40
+let g:markbar_enable_peekaboo = 0
+let g:markbar_marks_to_display = 'abcdefghijklmnopqrstuvwyzABCDEFGHIJKLMNOPQRSTUVWYZ'
+
 " }}}
 
 " ================ COLOR SCHEME ======================== {{{
