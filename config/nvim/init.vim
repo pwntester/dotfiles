@@ -527,9 +527,6 @@ let g:rooter_silent_chdir = 1
 nnoremap <silent> <C-e> :Defx -split=vertical -winwidth=50 -toggle<Return>
 nnoremap <silent> <C-f> :call execute(printf('Defx -split=vertical -winwidth=50 -toggle %s -search=%s', expand('%:p:h'), expand('%:p')))<Return>
 command! -nargs=* -range DefxOpenCommand call DefxOpen(<q-args>)
-" TODO: 
-" FZF Files in directory
-" nnoremap <silent> <leader>- :Files <C-r>=expand("%:h")<CR>/<CR>
 
 " BCLOSE
 let g:bclose_no_plugin_maps = 1
