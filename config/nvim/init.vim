@@ -274,6 +274,8 @@ nnoremap <Leader>n :set nonumber!<Return>
 nnoremap <Leader>< `[
 nnoremap <Leader>> `]
 
+" change cwd to current buffer's path
+nnoremap <Leader>r :cd %:p:h<Return>
 " }}}
 
 " ================ FUNCTIONS ======================== {{{
@@ -415,7 +417,6 @@ let g:fzf_colors = {
 nnoremap <leader>h :call FZFOpen(':History')<Return>
 nnoremap <leader>f :call FZFOpen(':Files')<Return>
 nnoremap <leader>c :call FZFOpen(':BCommits')<Return>
-nnoremap <leader>r :Rg<Space>
 nnoremap <leader>m :call FZFOpen(':FZFMru')<Return>
 nnoremap <leader>s :call FZFOpen(':Snippets')<Return>
 nnoremap <leader>d :call FZFOpen(':Buffers')<Return>
