@@ -273,9 +273,6 @@ nnoremap <Leader>n :set nonumber!<Return>
 " jump to the beggining/end  of changed text
 nnoremap <Leader>< `[
 nnoremap <Leader>> `]
-
-" change cwd to current buffer's path
-nnoremap <Leader>r :cd %:p:h<Return>
 " }}}
 
 " ================ FUNCTIONS ======================== {{{
@@ -522,6 +519,7 @@ nnoremap <leader>lm :call LanguageClient_contextMenu()<Return>
 let g:rooter_use_lcd = 1
 let g:rooter_patterns = ['pom.xml', '.git/']
 let g:rooter_silent_chdir = 1
+let g:rooter_change_directory_for_non_project_files = 'current'
 
 " DEFX
 nnoremap <silent> <C-e> :Defx -split=vertical -winwidth=50 -toggle<Return>
@@ -546,6 +544,7 @@ let g:markbar_marks_to_display = 'abcdefghijklmnopqrstuvwyzABCDEFGHIJKLMNOPQRSTU
 
 " VIMAGIT
 let g:magit_auto_foldopen = 0
+nnoremap <Leader>r :Magit<Return> 
 
 " }}}
 
