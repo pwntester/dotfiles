@@ -22,6 +22,8 @@ call plug#begin('~/.nvim/plugged')
 	Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins'} 
 	Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins'} 
 	Plug 'tpope/vim-fugitive' 
+    Plug 'jreybert/vimagit'
+    Plug 'lambdalisue/gina.vim'
 	Plug 'andymass/vim-matchup' 
 	Plug 'machakann/vim-sandwich'
     Plug 'tpope/vim-repeat'
