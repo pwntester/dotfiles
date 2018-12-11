@@ -25,6 +25,7 @@ call plug#begin('~/.nvim/plugged')
     Plug 'jreybert/vimagit'
     Plug 'lambdalisue/gina.vim'
 	Plug 'andymass/vim-matchup' 
+    Plug 'Yilin-Yang/vim-markbar'
 	Plug 'machakann/vim-sandwich'
     Plug 'tpope/vim-repeat'
     Plug 'mhinz/vim-signify'
@@ -50,6 +51,7 @@ call plug#begin('~/.nvim/plugged')
     Plug 'airblade/vim-rooter'
     Plug 'Konfekt/vim-alias'
     Plug 'kshenoy/vim-signature'
+    Plug 'thinca/vim-qfreplace'
 
     " Syntax plugins
     Plug 'plasticboy/vim-markdown'
