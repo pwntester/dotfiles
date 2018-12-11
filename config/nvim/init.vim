@@ -552,6 +552,5 @@ let g:magit_auto_foldopen = 0
 " ================ COLOR SCHEME ======================== {{{
 set background=dark
 colorscheme cobalt2
-"highlight CursorLine cterm=NONE ctermbg=darkred ctermfg=white gui=NONE guibg=#111122 guifg=0
 "}}}
 
