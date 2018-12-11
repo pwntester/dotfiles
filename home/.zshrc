@@ -20,5 +20,4 @@ elif [[ "$unamestr" == 'Linux' ]]; then
    platform='linux'
 fi
 
-# fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

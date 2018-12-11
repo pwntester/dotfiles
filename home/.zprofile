@@ -19,8 +19,8 @@ if [[ "$OSTYPE" == darwin* ]]; then
 fi
 
 # Editors
-export EDITOR='vim'
-export VISUAL='vim'
+export EDITOR='vi'
+export VISUAL='vi'
 export PAGER='less'
 
 # Variables
@@ -45,19 +45,23 @@ export KEYTIMEOUT=1
 bindkey -M viins 'jk' vi-cmd-mode
 bindkey 'jk' vi-cmd-mode
 
+# fzf
+export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow -g "!{.git,node_modules}/*" 2> /dev/null'
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
-# fzf scripts
-
-# fv [FUZZY PATTERN] - Open the selected file with the default editor
-fv() {
+# fv [FUZZY PATTERN] - Open the selected file with neovim 
+fvi() {
   local files
   IFS=$'\n' files=($(fzf-tmux --query="$1" --multi --select-1 --exit-0))
-  [[ -n "$files" ]] && ${EDITOR:-vim} "${files[@]}"
+  [[ -n "$files" ]] && nvim "${files[@]}"
 }
 
-# fc - Searching file contents
-ffc() {
-    grep --line-buffered --color=never -r "" * | fzf
+# fd - cd to selected directory
+fcd() {
+  local dir
+  dir=$(find ${1:-.} -path '*/\.*' -prune \
+                  -o -type d -print 2> /dev/null | fzf +m) &&
+  cd "$dir"
 }
 
 # fkill - kill process
@@ -72,4 +76,23 @@ fkill() {
 }
 
 
-
+ll() {
+    if hash tree &>/dev/null; then
+        if [[ "x$1" != "x" ]]
+        then
+            local is_first="1"
+            for i
+            do
+            if [[ "$is_first" = "1" ]]
+            then
+                is_first="0"
+            else
+                print "\n"
+            fi
+            tree -ahpCI '*git' --dirsfirst $i
+            done
+        else
+            tree -ahpCI '*git' --dirsfirst
+        fi
+    fi
+}
