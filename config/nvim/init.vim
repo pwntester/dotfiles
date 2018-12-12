@@ -27,7 +27,7 @@ call plug#begin('~/.nvim/plugged')
     Plug 'Yilin-Yang/vim-markbar'
 	Plug 'machakann/vim-sandwich'
     Plug 'tpope/vim-repeat'
-    Plug 'mhinz/vim-signify'
+    Plug 'airblade/vim-gitgutter'
     Plug 'tomtom/tcomment_vim'
     Plug 'osyo-manga/vim-anzu'
     Plug 'haya14busa/vim-asterisk'
@@ -529,12 +529,8 @@ command! -nargs=* -range DefxOpenCommand call DefxOpen(<q-args>)
 " BCLOSE
 let g:bclose_no_plugin_maps = 1
 
-" SIGNIFY
-let g:signify_vcs_list = ['git', 'perforce']
-let g:signify_realtime = 1
-let g:signify_sign_change = '~'
-let g:signify_sign_delete = '-'
-let g:signify_sign_show_count = 0
+" GITGUTTER 
+let g:gitgutter_map_keys = 0
 
 " MARKBAR
 nmap <Leader>t <Plug>ToggleMarkbar
@@ -544,6 +540,8 @@ let g:markbar_marks_to_display = 'abcdefghijklmnopqrstuvwyzABCDEFGHIJKLMNOPQRSTU
 
 " VIMAGIT
 let g:magit_auto_foldopen = 0
+let g:magit_default_sections = ['info', 'global_help', 'commit', 'staged', 'unstaged']
+let g:magit_auto_close = 1
 nnoremap <Leader>r :Magit<Return> 
 
 " }}}
