@@ -23,7 +23,6 @@ call plug#begin('~/.nvim/plugged')
 	Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins'} 
 	Plug 'tpope/vim-fugitive' 
     Plug 'jreybert/vimagit'
-    Plug 'lambdalisue/gina.vim'
 	Plug 'andymass/vim-matchup' 
     Plug 'Yilin-Yang/vim-markbar'
 	Plug 'machakann/vim-sandwich'
