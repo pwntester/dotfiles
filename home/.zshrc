@@ -93,8 +93,8 @@ if [[ "$OSTYPE" == darwin* ]]; then
 fi
 
 # variables
-export EDITOR='vi'
-export VISUAL='vi'
+export EDITOR='nvim'
+export VISUAL='nvim'
 export PAGER='less'
 export SHELL=`which zsh`
 export TERM="screen-256color"  
