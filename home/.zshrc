@@ -18,6 +18,7 @@ zplug "modules/ssh",                            from:prezto
 zplug "modules/terminal",                       from:prezto
 zplug "modules/directory",                      from:prezto
 zplug "modules/completion",                     from:prezto
+zplug "modules/history-substring-search",       from:prezto, defer:3
 zplug "mafredri/zsh-async",                     from:github
 zplug "sindresorhus/pure",                      use:pure.zsh, from:github, as:theme
 zplug "zsh-users/zsh-completions"
@@ -27,7 +28,6 @@ zplug "felixr/docker-zsh-completion"
 zplug "davidparsson/zsh-pyenv-lazy"
 zplug "BurntSushi/ripgrep",                     defer:3, from:"gh-r", as:"command", use:"*darwin*", rename-to:"rg"
 zplug "junegunn/fzf-bin",                       defer:3, from:"gh-r", as:"command", use:"*darwin*", rename-to:"fzf"
-zplug "zsh-users/zsh-history-substring-search", defer:3
 
 if ! zplug check --verbose; then
     printf "Install? [y/N]: "
