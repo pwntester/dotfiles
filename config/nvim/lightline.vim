@@ -116,8 +116,8 @@ function! LightlineLanguageClientErrors()
 endfunction
 
 function! LightlineFugitive() abort
-  if index(g:special_buffers, &filetype) > -1
-    return ''
+  if index(g:special_buffers, &filetype) > -1 || fugitive#head() == "" 
+     return ''
   else
      return " ".fugitive#head()
   endif
