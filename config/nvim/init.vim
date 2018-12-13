@@ -545,6 +545,7 @@ let g:magit_auto_foldopen = 0
 let g:magit_default_sections = ['info', 'global_help', 'commit', 'staged', 'unstaged']
 let g:magit_auto_close = 1
 nnoremap <Leader>r :Magit<Return> 
+autocmd User VimagitEnterCommit startinsert
 
 " }}}
 
