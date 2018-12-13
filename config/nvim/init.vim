@@ -16,11 +16,11 @@ let g:loaded_tarPlugin = 1
 let g:loaded_netrwPlugin = 1
 
 call plug#begin('~/.nvim/plugged') 
+	Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh' } 
+	Plug 'Shougo/deoplete.nvim',           { 'do': ':UpdateRemotePlugins'} 
+	Plug 'Shougo/defx.nvim',               { 'do': ':UpdateRemotePlugins'} 
 	Plug 'junegunn/fzf.vim' 
     Plug 'pbogut/fzf-mru.vim'
-	Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh' } 
-	Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins'} 
-	Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins'} 
 	Plug 'tpope/vim-fugitive' 
     Plug 'jreybert/vimagit'
 	Plug 'andymass/vim-matchup' 
