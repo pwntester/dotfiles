@@ -178,6 +178,8 @@ augroup vimrc
     autocmd User LanguageClientDiagnosticsChanged call lightline#update()
     " mark qf as not listed
     autocmd FileType qf setlocal nobuflisted 
+    " force write shada on leaving nvim
+    autocmd VimLeave * wshada!
 augroup END
 
 augroup windows
