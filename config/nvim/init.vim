@@ -534,7 +534,6 @@ let g:markbar_marks_to_display = 'abcdefghijklmnopqrstuvwyzABCDEFGHIJKLMNOPQRSTU
 
 " VIMAGIT
 let g:magit_auto_foldopen = 0
-let g:magit_default_sections = ['info', 'commit', 'staged', 'unstaged']
 nnoremap <Leader>r :Magit<Return> 
 autocmd User VimagitEnterCommit startinsert
 
