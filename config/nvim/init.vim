@@ -96,6 +96,7 @@ set scrolloff=8                                                   " Start scroll
 set linebreak                                                     " Wrap lines at special characters instead of at max width
 set listchars=tab:>-,trail:.,extends:>,precedes:<,nbsp:%          " Showing trailing whitespace
 set diffopt+=vertical                                             " Show vimdiff in vertical splits
+set diffopt+=algorithm:patience                                   " Use git diffing algorithm
 " }}}
 
 " ================ IDENT/STYLE ==================== {{{
