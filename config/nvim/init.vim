@@ -51,18 +51,10 @@ call plug#begin('~/.nvim/plugged')
     Plug 'Konfekt/vim-alias'
     Plug 'kshenoy/vim-signature'
     Plug 'thinca/vim-qfreplace'
-
-    " Syntax plugins
-    Plug 'plasticboy/vim-markdown'
-    Plug 'elzr/vim-json'
-    Plug 'b4winckler/vim-objc'
-    Plug 'kballard/vim-swift'
-    Plug 'othree/xml.vim'
-    Plug 'derekwyatt/vim-scala'
-    Plug 'ekalinin/Dockerfile.vim'
-    Plug 'tfnico/vim-gradle'
     Plug 'ap/vim-css-color'
-
+    Plug 'sheerun/vim-polyglot'
+    Plug 'tfnico/vim-gradle'
+    
     " Local plugins
     Plug '~/Development/GitRepos/vim-fortify'
 	Plug '/usr/local/opt/fzf'
