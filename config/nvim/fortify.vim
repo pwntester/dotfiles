@@ -1,15 +1,8 @@
 " VIM-FORTIFY
 augroup fortify
-    " fortify
-    autocmd BufNewFile,BufReadPost *.xml nested map R ,R
-    autocmd BufNewFile,BufReadPost *.rules nested map R ,R
-    autocmd BufNewFile,BufReadPost *.xml nested map r ,r
-    autocmd BufNewFile,BufReadPost *.rules nested map r ,r
+    autocmd FileType fortifyrulepack nested map R ,R
+    autocmd FileType fortifyrulepack nested map r ,r
     autocmd FileType fortifydescription nested setlocal spell complete+=kspell
-    autocmd FileType fortifyrulepack nested setlocal omnifunc=fortify#complete
-    autocmd FileType fortifyauditpane nested nmap <buffer><expr> <S-l> ''
-    autocmd FileType fortifyauditpane nested nmap <buffer><expr> <S-h> ''
-    autocmd FileType fortifyauditpane nested nmap <buffer><expr> <S-k> ''
 augroup END
 
 nnoremap <leader>i :NewRuleID<Return>
@@ -22,8 +15,8 @@ let g:fortify_JDKVersion = '1.8'
 let g:fortify_XCodeSDK = '/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk'
 let g:fortify_AWBOpts = []
 let g:fortify_TranslationOpts = ['-project-root', 'sca_build']
-let g:fortify_TranslationOpts = ['-verbose']
-" let g:fortify_TranslationOpts = ['-debug', '-debug-verbose', '-logfile','sca_build/translation.log']
+let g:fortify_TranslationOpts += ['-verbose']
+" let g:fortify_TranslationOpts += ['-debug', '-debug-verbose', '-logfile','sca_build/translation.log']
 " let g:fortify_TranslationOpts += ['-python-legacy']
 " let g:fortify_TranslationOpts += ['-python-version 3']
 let g:fortify_ScanOpts = ['-project-root', 'sca_build']
