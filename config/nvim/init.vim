@@ -406,10 +406,9 @@ let g:fzf_colors = {
     \ 'spinner': ['fg', 'Label'],
     \ 'header':  ['fg', 'Comment'] }
 
-nnoremap <leader>h :call FZFOpen(':History')<Return>
 nnoremap <leader>f :call FZFOpen(':Files')<Return>
 nnoremap <leader>c :call FZFOpen(':BCommits')<Return>
-nnoremap <leader>m :call FZFOpen(':FZFMru')<Return>
+nnoremap <leader>h :call FZFOpen(':FZFMru')<Return>
 nnoremap <leader>s :call FZFOpen(':Snippets')<Return>
 nnoremap <leader>d :call FZFOpen(':Buffers')<Return>
 nnoremap <leader>/ :call fzf#vim#search_history()<Return>
