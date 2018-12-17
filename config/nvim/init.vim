@@ -38,7 +38,7 @@ call plug#begin('~/.nvim/plugged')
     Plug 'pwntester/cobalt2.vim'
     Plug 'itchyny/lightline.vim'
     Plug 'chaoren/vim-wordmotion'
-    Plug 'luochen1990/rainbow'
+    Plug 'junegunn/rainbow_parentheses.vim'
     Plug 'alvan/vim-closetag'
     Plug 'christoomey/vim-tmux-navigator'
     Plug 'cohama/lexima.vim'
@@ -160,7 +160,11 @@ augroup vimrc
     " spell 
     autocmd FileType markdown nested setlocal spell complete+=kspell
     " enable buffer cycling on non-special buffers
-    autocmd WinEnter,BufEnter *.* call BufferSettings()
+    autocmd WinEnter,BufEnter * nested call BufferSettings()
+    autocmd WinEnter,BufEnter {} nested call BufferSettings()
+    " enable rainbow parenthesis
+    autocmd WinEnter,BufEnter * nested call EnableRainbowParenthesis()
+    autocmd WinEnter,BufEnter {} nested call EnableRainbowParenthesis()
     " set aliases
     autocmd VimEnter * call SetAliases()
     " deoplete
@@ -298,6 +302,14 @@ function! BufferSettings() abort
         " cycle through buffers
         nnoremap <silent><buffer><S-l> :bnext<Return>
         nnoremap <silent><buffer><S-h> :bprevious<Return>
+    endif
+endfunction
+
+function! EnableRainbowParenthesis() abort
+    if index(g:special_buffers, &filetype) == -1
+        execute 'RainbowParentheses'
+    else
+        execute 'RainbowParentheses!'
     endif
 endfunction
 
@@ -476,9 +488,6 @@ let g:esearch.use = []
 let g:esearch.default_mappings = 0
 call esearch#map('r/', 'esearch')
 call esearch#map('r*', 'esearch-word-under-cursor')
-
-" RAINBOW
-let g:rainbow_active = 1
 
 " LEXIMA
 let g:lexima_enable_basic_rules = 1
