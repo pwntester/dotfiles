@@ -6,6 +6,8 @@ augroup fortify
 augroup END
 
 nnoremap <leader>i :NewRuleID<Return>
+let g:fortify_ruleweb_user = 'amunoz'
+let g:fortify_ruleweb_password = 'xxxxxx'
 let g:fortify_SCAPath = '/Applications/HP_Fortify/sca'
 let g:fortify_PythonPath = '/usr/local/lib/python3.7/site-packages'
 let g:fortify_AndroidJarPath = '/Users/alvaro/Library/Android/sdk/platforms/android-26/android.jar'
