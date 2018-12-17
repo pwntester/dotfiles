@@ -64,10 +64,14 @@ function! LightlineBufferTabs()
             endif
         endif
     endfor
-    let tabline_before = map(tabline_before, "(getbufvar(v:val, '&readonly')? '⭤ ':'') . fnamemodify(bufname(v:val), ':t') . (getbufvar(v:val, '&mod')?' *':'')")
-    let tabline_current = map(tabline_current, "(getbufvar(v:val, '&readonly')? '⭤ ':'') .fnamemodify(bufname(v:val), ':t') . (getbufvar(v:val, '&mod')?' *':'')")
-    let tabline_after = map(tabline_after, "(getbufvar(v:val, '&readonly')? '⭤ ':'') .fnamemodify(bufname(v:val), ':t') . (getbufvar(v:val, '&mod')?' *':'')")
+    let tabline_before = map(tabline_before, "NameBuffer(v:val)")
+    let tabline_current = map(tabline_current, "NameBuffer(v:val)")
+    let tabline_after = map(tabline_after, "NameBuffer(v:val)")
     return [tabline_before, tabline_current, tabline_after]
+endfunction
+
+function! NameBuffer(bufid)
+    return (getbufvar(a:bufid, '&readonly')? '⭤ ':'') . (fnamemodify(bufname(a:bufid), ':t')==''? '[no name]' : fnamemodify(bufname(a:bufid), ':t')) . (getbufvar(a:bufid, '&mod')?' *':'')
 endfunction
 
 function! LightlineFiletype()
