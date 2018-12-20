@@ -267,9 +267,6 @@ vnoremap <Leader>p "_dP
 " copy & paste to system clipboard
 vmap <Leader>y "*y
 
-" show/hide line numbers
-nnoremap <Leader>n :set nonumber!<Return>
-
 " jump to the beggining/end  of changed text
 nnoremap <Leader>< `[
 nnoremap <Leader>> `]
