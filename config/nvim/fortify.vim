@@ -24,7 +24,7 @@ let g:fortify_TranslationOpts = ['-verbose']
 " let g:fortify_TranslationOpts += ['-debug', '-debug-verbose', '-logfile','sca_build/translation.log']
 " let g:fortify_TranslationOpts += ['-python-legacy']
 " let g:fortify_TranslationOpts += ['-python-version 3']
-let g:fortify_TranslationOpts += ['-project-root', 'sca_build']
+" let g:fortify_TranslationOpts += ['-project-root', 'sca_build']
 
 
 let g:fortify_ScanOpts = ['-verbose']       
