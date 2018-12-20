@@ -54,6 +54,7 @@ call plug#begin('~/.nvim/plugged')
     Plug 'ap/vim-css-color'
     Plug 'sheerun/vim-polyglot'
     Plug 'tfnico/vim-gradle'
+    Plug 'mcchrish/nnn.vim'
     
     " Local plugins
     Plug '~/Development/GitRepos/vim-fortify'
@@ -545,6 +546,12 @@ let g:markbar_marks_to_display = 'abcdefghijklmnopqrstuvwyzABCDEFGHIJKLMNOPQRSTU
 let g:magit_auto_foldopen = 0
 nnoremap <Leader>r :Magit<Return> 
 autocmd User VimagitEnterCommit startinsert
+
+" NNN
+let g:nnn#set_default_mappings = 0
+nnoremap <silent> <leader>nn :NnnPicker<CR>
+" Start nnn in the current file's directory
+nnoremap <leader>n :NnnPicker '%:p:h'<CR>
 
 " }}}
 
