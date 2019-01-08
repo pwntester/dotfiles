@@ -54,7 +54,6 @@ call plug#begin('~/.nvim/plugged')
     Plug 'ap/vim-css-color'
     Plug 'sheerun/vim-polyglot'
     Plug 'tfnico/vim-gradle'
-    Plug 'mcchrish/nnn.vim'
     
     " Local plugins
     Plug '~/Development/GitRepos/vim-fortify'
