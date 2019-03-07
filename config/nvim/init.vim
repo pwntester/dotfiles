@@ -50,7 +50,6 @@ call plug#begin('~/.nvim/plugged')
     Plug 'airblade/vim-rooter'
     Plug 'Konfekt/vim-alias'
     Plug 'kshenoy/vim-signature'
-    Plug 'thinca/vim-qfreplace'
     Plug 'ap/vim-css-color'
     Plug 'sheerun/vim-polyglot'
     Plug 'tfnico/vim-gradle'
@@ -168,7 +167,9 @@ augroup vimrc
     " set aliases
     autocmd VimEnter * call SetAliases()
     " deoplete
-    autocmd BufEnter * nested if getfsize(@%) > 1000000 | call deoplete#disable() | endif
+    autocmd BufEnter * nested if getfsize(@%) < 1000000 | call deoplete#enable() | endif
+    " languageclient-neovim
+    autocmd BufEnter * nested if getfsize(@%) < 1000000 | call EnableLC() | endif
     " defx
     autocmd FileType defx call DefxSettings()
     " update lightline on LC diagnostic update
@@ -189,6 +190,9 @@ augroup windows
     " highlight active window
     autocmd BufEnter,FocusGained,VimEnter,WinEnter * set winhighlight=CursorLineNr:LineNr,EndOfBuffer:ColorColumn,IncSearch:ColorColumn,Normal:ColorColumn,NormalNC:ColorColumn,SignColumn:ColorColumn
     autocmd FocusLost,WinLeave * set winhighlight=
+    " prevent opening files on special windows 
+    autocmd BufEnter * call TrackSpecialWindows()
+    autocmd BufLeave * call UntrackSpecialWindows() 
 augroup END
 " }}}
 
@@ -273,6 +277,8 @@ nnoremap <Leader>> `]
 
 " ================ FUNCTIONS ======================== {{{
 let g:special_buffers = ['help', 'fortifytestpane', 'fortifyauditpane', 'defx', 'qf', 'vim-plug']
+let g:special_buffer_unloaded = -1
+"let g:on_special_window = 0
 
 function! SetAliases() abort
     " do not close windows when closing buffers
@@ -296,11 +302,82 @@ endfunction
 
 function! BufferSettings() abort
     if index(g:special_buffers, &filetype) == -1
-        " cycle through buffers
+        " cycle through buffers on regular buffers
         nnoremap <silent><buffer><S-l> :bnext<Return>
         nnoremap <silent><buffer><S-h> :bprevious<Return>
+    else
+        " disable buffer cycling on special buffers
+        nnoremap <silent><buffer><S-l> <Nop>
+        nnoremap <silent><buffer><S-h> <Nop>
     endif
 endfunction
+
+function! TrackSpecialWindows() abort
+    let bufnum = bufnr('%')
+    if index(g:special_buffers, &filetype) > -1
+        " Getting to a special buffer
+        return
+    endif
+    "call s:Log('Entering buffer ' . bufnum)
+    if g:special_buffer_unloaded > -1 && bufexists(g:special_buffer_unloaded)
+        "call s:Log('Comming from special buffer ' . g:special_buffer_unloaded)
+        " get special buffer back to this window
+        exe 'b ' . g:special_buffer_unloaded
+        " find non-special window
+        let winnrs = range(1, tabpagewinnr(tabpagenr(), '$')) 
+        if len(winnrs) > 1
+            for winnr in winnrs
+                if index(g:special_buffers, getbufvar(winbufnr(winnr), '&filetype')) == -1
+                    " found a window with a non-special buffer
+                    " set current window as inactive
+                    execute "setlocal nocursorline"
+                    execute "set winhighlight="
+                    " move to non-special window
+                    execute winnr.'wincmd w'
+                endif
+            endfor
+        endif
+        " open new buffer
+        exe 'b ' . bufnum
+        " reset special buffer number
+        let g:special_buffer_unloaded=-1
+    elseif g:special_buffer_unloaded > -1 
+        "call s:Log('Comming from special buffer (defunct)' . g:special_buffer_unloaded)
+        " close this window
+        try
+            silent close! 
+        catch
+        endtry
+        " find non-special window
+        let winnrs = range(1, tabpagewinnr(tabpagenr(), '$')) 
+        if len(winnrs) > 1
+            for winnr in winnrs
+                if index(g:special_buffers, getbufvar(winbufnr(winnr), '&filetype')) == -1
+                    " found a window with a non-special buffer
+                    " set current window as inactive
+                    execute "setlocal nocursorline"
+                    execute "set winhighlight="
+                    " move to non-special window
+                    execute winnr.'wincmd w'
+                endif
+            endfor
+        endif
+        " open new buffer
+        exe 'b ' . bufnum
+        " reset special buffer number
+        let g:special_buffer_unloaded=-1
+    endif
+endfunction
+
+function! UntrackSpecialWindows() abort
+    if index(g:special_buffers, &filetype) > -1
+        let g:special_buffer_unloaded=bufnr('%')
+        "call s:Log('Leaving special buffer ' . g:special_buffer_unloaded)
+    else
+        let g:special_buffer_unloaded=-1
+    endif
+endfunction
+
 
 function! EnableRainbowParenthesis() abort
     if index(g:special_buffers, &filetype) == -1
@@ -311,7 +388,7 @@ function! EnableRainbowParenthesis() abort
 endfunction
 
 function! DefxSettings() abort
-    nnoremap <silent><buffer><expr> <Return> defx#do_action('open', 'DefxOpenCommand')
+    nnoremap <silent><buffer><expr> <Return> defx#is_directory() ? defx#do_action('open') : defx#do_action('drop')
     nnoremap <silent><buffer><expr> y defx#do_action('copy')
 	nnoremap <silent><buffer><expr> m defx#do_action('move')
 	nnoremap <silent><buffer><expr> p defx#do_action('paste')
@@ -329,21 +406,14 @@ function! DefxSettings() abort
     setlocal nobuflisted
 endfunction
 
-function! DefxOpen(path)
-    let winnrs = range(1, tabpagewinnr(tabpagenr(), '$'))
-    if len(winnrs) > 1
-        for winnr in winnrs
-            if index(g:special_buffers, getbufvar(winbufnr(winnr), '&filetype')) == -1
-                " found a window with a non-special buffer to open the file to
-                execute printf('%swincmd w | drop %s', winnr, a:path)
-                return
-            endif
-        endfor
+function! s:Log(text) abort
+  silent execute '!echo '.a:text.' >> /tmp/log'
+endfunction
+
+function! EnableLC() abort
+    if index(['java', 'javascript', 'python', 'fortifyrulepack'], &filetype) > -1
+        call LanguageClient#startServer()
     endif
-    " can't find suitable window, create a new one.
-    set splitright
-    execute printf('%dvsplit %s', str2nr(&columns) - 50, a:path)
-    set splitright&
 endfunction
 
 function! FZFOpen(command_str)
@@ -353,7 +423,13 @@ function! FZFOpen(command_str)
             if index(g:special_buffers, getbufvar(winbufnr(winnr), '&filetype')) > -1 
                 " window with a special filetype buffer, we dont want to open the file here
                 let next_win = winnr + 1
-                execute next_win.'wincmd w'
+                if index(winnrs, next_win) > -1
+                    execute next_win.'wincmd w'
+                else
+                    " no more windows to test
+                    echo "Could not find a non-special window to move to"
+                    break
+                endif
             else
                 " found a window with a non-special buffer to open the file to
                 break
@@ -388,6 +464,17 @@ function! CloseWin()
         endif
     endif
 endfunction
+
+function! Refresh_MRU()
+  for l:file in fzf_mru#mrufiles#list('raw')
+    let l:to_remove = []
+    if !filereadable(l:file)
+      call add(l:to_remove, l:file)
+    endif
+    call fzf_mru#mrufiles#remove(l:to_remove)
+  endfor
+endfunction
+
 " }}}
 
 " ================ PLUGIN SETUP ======================== {{{
@@ -415,13 +502,18 @@ let g:fzf_colors = {
     \ 'spinner': ['fg', 'Label'],
     \ 'header':  ['fg', 'Comment'] }
 
-nnoremap <leader>f :call FZFOpen(':Files')<Return>
-nnoremap <leader>c :call FZFOpen(':BCommits')<Return>
-nnoremap <leader>h :call FZFOpen(':FZFMru')<Return>
-nnoremap <leader>s :call FZFOpen(':Snippets')<Return>
-nnoremap <leader>d :call FZFOpen(':Buffers')<Return>
+" nnoremap <leader>f :Files<Return>
+" nnoremap <leader>h :FZFMru<Return>
+" nnoremap <leader>c :BCommits<Return>
+" nnoremap <leader>s :Snippets<Return>
+" nnoremap <leader>d :Buffers<Return>
 nnoremap <leader>/ :call fzf#vim#search_history()<Return>
 nnoremap <leader>: :call fzf#vim#command_history()<Return>
+nnoremap <leader>f :call FZFOpen(':Files')<Return>
+nnoremap <leader>h :call FZFOpen(':FZFMru')<Return>
+nnoremap <leader>c :call FZFOpen(':BCommits')<Return>
+nnoremap <leader>s :call FZFOpen(':Snippets')<Return>
+nnoremap <leader>d :call FZFOpen(':Buffers')<Return>
 
 " VIM-MOVE
 " run `cat -v` in terminal and then the <Opt> combos to find out the char to use
@@ -453,7 +545,7 @@ let g:UltiSnipsJumpForwardTrigger="<c-j>"
 let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 
 " DEOPLETE
-let g:deoplete#enable_at_startup = 1
+let g:deoplete#enable_at_startup = 0
 inoremap <expr> <CR> (pumvisible() ? "\<c-y>\<cr>" : "\<CR>")
 inoremap <silent><expr> <C-k> pumvisible() ? "\<C-p>" : ""
 inoremap <silent><expr> <C-j> pumvisible() ? "\<C-n>" : ">"
@@ -491,7 +583,6 @@ let g:lexima_enable_basic_rules = 1
 let g:lexima_enable_space_rules = 1
 let g:lexima_enable_endwise_rules = 1
 let g:lexima_enable_newline_rules = 1
-call lexima#add_rule({'char': '-', 'at': '<!-', 'input_after': ' -->', 'filetype': 'fortifyrulepack'})
 
 " VIM-FORTIFY
 execute 'source' fnameescape(expand('~/.config/nvim/fortify.vim'))
@@ -514,6 +605,17 @@ nnoremap <leader>lh :call LanguageClient#textDocument_hover()<Return>
 nnoremap <leader>ls :call LanguageClient_textDocument_documentSymbol()<Return>
 nnoremap <leader>la :call LanguageClient_textDocument_codeAction()<Return>
 nnoremap <leader>lm :call LanguageClient_contextMenu()<Return>
+let g:LanguageClient_loggingFile = expand('~/LanguageClient.log')
+let g:LanguageClient_serverStderr = expand('~/LanguageServer.log')
+let g:LanguageClient_loggingLevel = 'INFO'
+let g:LanguageClient_changeThrottle = 1 
+let g:LanguageClient_autoStart = 0
+let g:LanguageClient_diagnosticsDisplay = { 
+            \ 1: {'name': 'Error', 'texthl': 'ALEError', 'signText': 'E', 'signTexthl': 'ALEErrorSign',"virtualTexthl": "ALEVirtualTextError",}, 
+            \ 2: {"name": "Warning", "texthl": "ALEWarning", "signText": "W", "signTexthl": "ALEWarningSign","virtualTexthl": "ALEVirtualTextWarning",}, 
+            \ 3: {"name": "Information", "texthl": "ALEInfo", "signText": "ℹ", "signTexthl": "ALEInfoSign","virtualTexthl": "ALEVirtualTextWarning",}, 
+            \ 4: {"name": "Hint", "texthl": "ALEInfo", "signText": "➤", "signTexthl": "ALEInfoSign","virtualTexthl": "ALEVirtualTextWarning",}, 
+    \ }
 
 " VIM-ROOTER
 let g:rooter_use_lcd = 1
@@ -522,9 +624,8 @@ let g:rooter_silent_chdir = 1
 let g:rooter_change_directory_for_non_project_files = 'current'
 
 " DEFX
-nnoremap <silent> <C-e> :Defx -split=vertical -winwidth=50 -toggle<Return>
-nnoremap <silent> <C-f> :call execute(printf('Defx -split=vertical -winwidth=50 -toggle %s -search=%s', expand('%:p:h'), expand('%:p')))<Return>
-command! -nargs=* -range DefxOpenCommand call DefxOpen(<q-args>)
+nnoremap <silent> <C-e> :Defx -split=vertical -winwidth=50 -toggle -listed -resume<Return>
+nnoremap <silent> <C-f> :call execute(printf('Defx -split=vertical -winwidth=50 -toggle -listed -resume %s -search=%s', expand('%:p:h'), expand('%:p')))<Return>
 
 " BCLOSE
 let g:bclose_no_plugin_maps = 1
