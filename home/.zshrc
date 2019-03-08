@@ -162,3 +162,7 @@ tmuxify
 # tabtab source for sls package
 # uninstall by removing these lines or running `tabtab uninstall sls`
 [[ -f /usr/local/lib/node_modules/serverless/node_modules/tabtab/.completions/sls.zsh ]] && . /usr/local/lib/node_modules/serverless/node_modules/tabtab/.completions/sls.zsh
+
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="/Users/alvaro/.sdkman"
+[[ -s "/Users/alvaro/.sdkman/bin/sdkman-init.sh" ]] && source "/Users/alvaro/.sdkman/bin/sdkman-init.sh"

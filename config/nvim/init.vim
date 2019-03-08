@@ -190,9 +190,9 @@ augroup windows
     " highlight active window
     autocmd BufEnter,FocusGained,VimEnter,WinEnter * set winhighlight=CursorLineNr:LineNr,EndOfBuffer:ColorColumn,IncSearch:ColorColumn,Normal:ColorColumn,NormalNC:ColorColumn,SignColumn:ColorColumn
     autocmd FocusLost,WinLeave * set winhighlight=
-    " prevent opening files on special windows 
-    autocmd BufEnter * call TrackSpecialWindows()
-    autocmd BufLeave * call UntrackSpecialWindows() 
+    " prevent opening files on windows with special buffers 
+    autocmd BufLeave * call TrackSpecialBuffersOnBufLeave() 
+    autocmd BufEnter * call TrackSpecialBuffersOnBufEnter()
 augroup END
 " }}}
 
@@ -275,11 +275,12 @@ nnoremap <Leader>< `[
 nnoremap <Leader>> `]
 " }}}
 
-" ================ FUNCTIONS ======================== {{{
-let g:special_buffers = ['help', 'fortifytestpane', 'fortifyauditpane', 'defx', 'qf', 'vim-plug']
-let g:special_buffer_unloaded = -1
-"let g:on_special_window = 0
+" ================ GLOBALS ======================== {{{
+let g:special_buffers = ['help', 'fortifytestpane', 'fortifyauditpane', 'defx', 'qf', 'vim-plug', 'fzf']
+let g:previous_buffer = 0
+let g:is_previous_buffer_special = 0
 
+" ================ FUNCTIONS ======================== {{{
 function! SetAliases() abort
     " do not close windows when closing buffers
     Alias bd Bclose
@@ -312,17 +313,43 @@ function! BufferSettings() abort
     endif
 endfunction
 
-function! TrackSpecialWindows() abort
+function! TrackSpecialBuffersOnBufLeave() abort
     let bufnum = bufnr('%')
+    let g:previous_buffer = bufnum
     if index(g:special_buffers, &filetype) > -1
-        " Getting to a special buffer
-        return
+        let g:is_previous_buffer_special = 1 
+        call s:Log('Leaving special buffer '.bufnum)
+    else
+        let g:is_previous_buffer_special = 0 
+        call s:Log('Leaving regular buffer '.bufnum)
     endif
-    "call s:Log('Entering buffer ' . bufnum)
-    if g:special_buffer_unloaded > -1 && bufexists(g:special_buffer_unloaded)
-        "call s:Log('Comming from special buffer ' . g:special_buffer_unloaded)
+endfunction
+
+function! TrackSpecialBuffersOnBufEnter()
+    let bufnum = bufnr('%')
+    let bufname = bufname('%')
+    let buftype = &filetype
+
+    if index(g:special_buffers, buftype) > -1
+        call s:Log('Entering special buffer '.bufnum.' from '.g:previous_buffer)
+    else
+        call s:Log('Entering regular buffer '.bufnum.' from '.g:previous_buffer)
+    endif
+
+    if (bufname == "" && buftype == "") || bufname =~ '^term:'
+        " Neither the bufname, mode or type for terminal buffer is set at
+        " BufEnter. It is actually set at TermOpen, but that does not work
+        " for us. We need to consider that an unnammed buffer is a terminal
+        " buffer
+        call s:Log('    Skipping unnammed, untyped buffer. FZF buffer?')
+        return
+    elseif index(g:special_buffers, buftype) > -1 
+        call s:Log('    Skipping special buffer')
+        return
+    elseif g:is_previous_buffer_special && bufexists(g:previous_buffer)
+        call s:Log('   Comming from special buffer ' . g:previous_buffer)
         " get special buffer back to this window
-        exe 'b ' . g:special_buffer_unloaded
+        exe 'b ' . g:previous_buffer
         " find non-special window
         let winnrs = range(1, tabpagewinnr(tabpagenr(), '$')) 
         if len(winnrs) > 1
@@ -339,10 +366,8 @@ function! TrackSpecialWindows() abort
         endif
         " open new buffer
         exe 'b ' . bufnum
-        " reset special buffer number
-        let g:special_buffer_unloaded=-1
-    elseif g:special_buffer_unloaded > -1 
-        "call s:Log('Comming from special buffer (defunct)' . g:special_buffer_unloaded)
+    elseif g:is_previous_buffer_special && !bufexists(g:previous_buffer)
+        call s:Log('    Comming from special buffer (defunct)' . g:previous_buffer)
         " close this window
         try
             silent close! 
@@ -364,20 +389,8 @@ function! TrackSpecialWindows() abort
         endif
         " open new buffer
         exe 'b ' . bufnum
-        " reset special buffer number
-        let g:special_buffer_unloaded=-1
     endif
 endfunction
-
-function! UntrackSpecialWindows() abort
-    if index(g:special_buffers, &filetype) > -1
-        let g:special_buffer_unloaded=bufnr('%')
-        "call s:Log('Leaving special buffer ' . g:special_buffer_unloaded)
-    else
-        let g:special_buffer_unloaded=-1
-    endif
-endfunction
-
 
 function! EnableRainbowParenthesis() abort
     if index(g:special_buffers, &filetype) == -1
@@ -407,36 +420,15 @@ function! DefxSettings() abort
 endfunction
 
 function! s:Log(text) abort
-  silent execute '!echo '.a:text.' >> /tmp/log'
+    if 0 
+        silent execute '!echo '.a:text.' >> /tmp/log'
+    endif
 endfunction
 
 function! EnableLC() abort
     if index(['java', 'javascript', 'python', 'fortifyrulepack'], &filetype) > -1
         call LanguageClient#startServer()
     endif
-endfunction
-
-function! FZFOpen(command_str)
-    let winnrs = range(1, tabpagewinnr(tabpagenr(), '$')) 
-    if len(winnrs) > 1
-        for winnr in winnrs
-            if index(g:special_buffers, getbufvar(winbufnr(winnr), '&filetype')) > -1 
-                " window with a special filetype buffer, we dont want to open the file here
-                let next_win = winnr + 1
-                if index(winnrs, next_win) > -1
-                    execute next_win.'wincmd w'
-                else
-                    " no more windows to test
-                    echo "Could not find a non-special window to move to"
-                    break
-                endif
-            else
-                " found a window with a non-special buffer to open the file to
-                break
-            endif
-        endfor
-    endif
-    execute 'normal! ' . a:command_str . "\<cr>"
 endfunction
 
 function! CloseWin()
@@ -502,18 +494,13 @@ let g:fzf_colors = {
     \ 'spinner': ['fg', 'Label'],
     \ 'header':  ['fg', 'Comment'] }
 
-" nnoremap <leader>f :Files<Return>
-" nnoremap <leader>h :FZFMru<Return>
-" nnoremap <leader>c :BCommits<Return>
-" nnoremap <leader>s :Snippets<Return>
-" nnoremap <leader>d :Buffers<Return>
+nnoremap <leader>f :Files<Return>
+nnoremap <leader>h :FZFMru<Return>
+nnoremap <leader>c :BCommits<Return>
+nnoremap <leader>s :Snippets<Return>
+nnoremap <leader>d :Buffers<Return>
 nnoremap <leader>/ :call fzf#vim#search_history()<Return>
 nnoremap <leader>: :call fzf#vim#command_history()<Return>
-nnoremap <leader>f :call FZFOpen(':Files')<Return>
-nnoremap <leader>h :call FZFOpen(':FZFMru')<Return>
-nnoremap <leader>c :call FZFOpen(':BCommits')<Return>
-nnoremap <leader>s :call FZFOpen(':Snippets')<Return>
-nnoremap <leader>d :call FZFOpen(':Buffers')<Return>
 
 " VIM-MOVE
 " run `cat -v` in terminal and then the <Opt> combos to find out the char to use
@@ -624,8 +611,8 @@ let g:rooter_silent_chdir = 1
 let g:rooter_change_directory_for_non_project_files = 'current'
 
 " DEFX
-nnoremap <silent> <C-e> :Defx -split=vertical -winwidth=50 -toggle -listed -resume<Return>
-nnoremap <silent> <C-f> :call execute(printf('Defx -split=vertical -winwidth=50 -toggle -listed -resume %s -search=%s', expand('%:p:h'), expand('%:p')))<Return>
+nnoremap <silent> <C-e> :Defx -split=vertical -winwidth=40 -toggle -listed -resume<Return>
+nnoremap <silent> <C-f> :call execute(printf('Defx -split=vertical -winwidth=40 -toggle -listed -resume %s -search=%s', expand('%:p:h'), expand('%:p')))<Return>
 
 " BCLOSE
 let g:bclose_no_plugin_maps = 1

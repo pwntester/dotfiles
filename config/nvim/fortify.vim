@@ -22,6 +22,7 @@ let g:fortify_AWBOpts = []
 
 
 let g:fortify_TranslationOpts = ['-verbose']
+" let g:fortify_TranslationOpts += ['-django-disable-autodiscover']
 " let g:fortify_TranslationOpts += ['-debug', '-debug-verbose', '-logfile','sca_build/translation.log']
 " let g:fortify_TranslationOpts += ['-python-legacy']
 " let g:fortify_TranslationOpts += ['-python-version 3']
