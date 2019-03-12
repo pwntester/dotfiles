@@ -55,7 +55,7 @@ call plug#begin('~/.nvim/plugged')
     Plug 'tfnico/vim-gradle'
     
     " Local plugins
-    Plug '~/Development/GitRepos/vim-fortify'
+    Plug '~/Fortify/SSR/vim-fortify'
 	Plug '/usr/local/opt/fzf'
 call plug#end()
 " }}}
