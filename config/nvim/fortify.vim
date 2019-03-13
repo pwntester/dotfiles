@@ -7,13 +7,13 @@ augroup END
 
 nnoremap <leader>i :NewRuleID<Return>
 let g:fortify_ruleweb_user = 'amunoz'
-let g:fortify_ruleweb_password = 'Alvar0_M'
+let g:fortify_ruleweb_password = '********'
 let g:fortify_SCAPath = '/Applications/HP_Fortify/sca'
 let g:fortify_PythonPath = '/Users/alvaro/.pyenv/versions/2.7/lib/python2.7/site-packages'
 let g:fortify_AndroidJarPath = '/Users/alvaro/Library/Android/sdk/platforms/android-26/android.jar'
 let g:fortify_DefaultJarPath = '/Applications/HP_Fortify/default_jars'
 let g:fortify_MemoryOpts = []
-let g:fortify_JDKVersion = '1.9'
+let g:fortify_JDKVersion = '1.8'
 let g:fortify_XCodeSDK = '/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk'
 let g:fortify_SRF = '/Users/alvaro/Fortify/SSR/SRF/srf.py'
 
