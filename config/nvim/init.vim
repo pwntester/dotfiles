@@ -619,6 +619,7 @@ let g:rooter_change_directory_for_non_project_files = 'current'
 " DEFX
 nnoremap <silent> <C-e> :Defx<Return>
 nnoremap <silent> <C-f> :call execute(printf('Defx %s -search=%s', expand('%:p:h'), expand('%:p')))<Return>
+call defx#custom#source('file', {'root': 'Root'})
 call defx#custom#option('_', {
     \ 'columns': 'git:icons:filename:type',
     \ 'root_marker': '[in:] ',
@@ -628,7 +629,6 @@ call defx#custom#option('_', {
     \ 'show_ignored_files': 1,
     \ 'toggle': 1,
     \ 'listed': 1,
-    \ 'resume': 1,
 \ })
 call defx#custom#column('filename', {
     \ 'directory_icon': ' ',
@@ -638,7 +638,6 @@ call defx#custom#column('filename', {
     \ 'min_width': 22,
     \ 'max_width': 22,
 \ })
-call defx#custom#source('file', {'root': 'Root'})
 
 " BCLOSE
 let g:bclose_no_plugin_maps = 1
