@@ -277,7 +277,7 @@ nnoremap <Leader>> `]
 " }}}
 
 " ================ GLOBALS ======================== {{{
-let g:special_buffers = ['help', 'fortifytestpane', 'fortifyauditpane', 'defx', 'qf', 'vim-plug', 'fzf']
+let g:special_buffers = ['help', 'fortifytestpane', 'fortifyauditpane', 'defx', 'qf', 'vim-plug', 'fzf', 'magit']
 let g:previous_buffer = 0
 let g:is_previous_buffer_special = 0
 
