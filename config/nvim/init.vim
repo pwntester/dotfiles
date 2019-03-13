@@ -1,5 +1,5 @@
 if &compatible 
-	set nocompatible 
+    set nocompatible 
 endif
 
 " ================ PLUGINS ==================== {{{
@@ -16,16 +16,18 @@ let g:loaded_tarPlugin = 1
 let g:loaded_netrwPlugin = 1
 
 call plug#begin('~/.nvim/plugged') 
-	Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh' } 
-	Plug 'Shougo/deoplete.nvim',           { 'do': ':UpdateRemotePlugins'} 
-	Plug 'Shougo/defx.nvim',               { 'do': ':UpdateRemotePlugins'} 
-	Plug 'junegunn/fzf.vim' 
+    Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh' } 
+    Plug 'Shougo/deoplete.nvim',           { 'do': ':UpdateRemotePlugins'} 
+    Plug 'Shougo/defx.nvim',               { 'do': ':UpdateRemotePlugins'} 
+    Plug 'kristijanhusak/defx-git'
+    Plug 'kristijanhusak/defx-icons'
+    Plug 'junegunn/fzf.vim' 
     Plug 'pbogut/fzf-mru.vim'
-	Plug 'tpope/vim-fugitive' 
+    Plug 'tpope/vim-fugitive' 
     Plug 'jreybert/vimagit'
-	Plug 'andymass/vim-matchup' 
+    Plug 'andymass/vim-matchup' 
     Plug 'Yilin-Yang/vim-markbar'
-	Plug 'machakann/vim-sandwich'
+    Plug 'machakann/vim-sandwich'
     Plug 'tpope/vim-repeat'
     Plug 'airblade/vim-gitgutter'
     Plug 'tomtom/tcomment_vim'
@@ -52,11 +54,10 @@ call plug#begin('~/.nvim/plugged')
     Plug 'kshenoy/vim-signature'
     Plug 'ap/vim-css-color'
     Plug 'sheerun/vim-polyglot'
-    Plug 'tfnico/vim-gradle'
     
     " Local plugins
     Plug '~/Fortify/SSR/vim-fortify'
-	Plug '/usr/local/opt/fzf'
+    Plug '/usr/local/opt/fzf'
 call plug#end()
 " }}}
 
@@ -205,7 +206,7 @@ nnoremap N Nzz
 noremap 0/ :execute substitute('/'.@0,'0$','','g')<Return>                                   
 
 " debug syntax
-map <F10> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
+map <c-g> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
         \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
         \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<Return>
 
@@ -400,18 +401,23 @@ function! EnableRainbowParenthesis() abort
     endif
 endfunction
 
+function! Root(path) abort
+    return fnamemodify(a:path, ':t') . '/'
+endfunction<Paste>
+
 function! DefxSettings() abort
-    nnoremap <silent><buffer><expr> <Return> defx#is_directory() ? defx#do_action('open') : defx#do_action('drop')
+    nnoremap <silent><buffer><expr> <Return> defx#do_action('open')
     nnoremap <silent><buffer><expr> y defx#do_action('copy')
-	nnoremap <silent><buffer><expr> m defx#do_action('move')
-	nnoremap <silent><buffer><expr> p defx#do_action('paste')
+    nnoremap <silent><buffer><expr> m defx#do_action('move')
+    nnoremap <silent><buffer><expr> p defx#do_action('paste')
     nnoremap <silent><buffer><expr> N defx#do_action('new_directory')
     nnoremap <silent><buffer><expr> n defx#do_action('new_file')
     nnoremap <silent><buffer><expr> d defx#do_action('remove')
+    nnoremap <silent><buffer><expr> o defx#do_action('open_or_close_tree')
     nnoremap <silent><buffer><expr> r defx#do_action('rename')
     nnoremap <silent><buffer><expr> ~ defx#do_action('cd')
     nnoremap <silent><buffer><expr> <Space> defx#do_action('toggle_select') . 'j'
-    nnoremap <silent><buffer><expr> h defx#do_action('cd', ['..'])
+    nnoremap <silent><buffer><expr> .. defx#do_action('cd', ['..'])
     nnoremap <silent><buffer><expr> j line('.') == line('$') ? 'gg' : 'j'
     nnoremap <silent><buffer><expr> k line('.') == 1 ? 'G' : 'k'
     nnoremap <silent><buffer> q :call execute("bn\<BAR>bw#")<Return>
@@ -611,8 +617,28 @@ let g:rooter_silent_chdir = 1
 let g:rooter_change_directory_for_non_project_files = 'current'
 
 " DEFX
-nnoremap <silent> <C-e> :Defx -split=vertical -winwidth=40 -toggle -listed -resume<Return>
-nnoremap <silent> <C-f> :call execute(printf('Defx -split=vertical -winwidth=40 -toggle -listed -resume %s -search=%s', expand('%:p:h'), expand('%:p')))<Return>
+nnoremap <silent> <C-e> :Defx<Return>
+nnoremap <silent> <C-f> :call execute(printf('Defx %s -search=%s', expand('%:p:h'), expand('%:p')))<Return>
+call defx#custom#option('_', {
+    \ 'columns': 'git:icons:filename:type',
+    \ 'root_marker': '[in:] ',
+    \ 'split': 'vertical',
+    \ 'direction': 'topleft',
+    \ 'winwidth': 41,
+    \ 'show_ignored_files': 1,
+    \ 'toggle': 1,
+    \ 'listed': 1,
+    \ 'resume': 1,
+\ })
+call defx#custom#column('filename', {
+    \ 'directory_icon': ' ',
+    \ 'opened_icon': ' ',
+    \ 'root_icon': ' ',
+    \ 'indent': '  ',
+    \ 'min_width': 22,
+    \ 'max_width': 22,
+\ })
+call defx#custom#source('file', {'root': 'Root'})
 
 " BCLOSE
 let g:bclose_no_plugin_maps = 1
@@ -631,16 +657,48 @@ let g:magit_auto_foldopen = 0
 nnoremap <Leader>r :Magit<Return> 
 autocmd User VimagitEnterCommit startinsert
 
-" NNN
-let g:nnn#set_default_mappings = 0
-nnoremap <silent> <leader>nn :NnnPicker<CR>
-" Start nnn in the current file's directory
-nnoremap <leader>n :NnnPicker '%:p:h'<CR>
+" DEFX-GIT
+let g:defx_git#indicators = {
+  \ 'Modified'  : '+',
+  \ 'Staged'    : '●',
+  \ 'Untracked' : '?',
+  \ 'Renamed'   : '➜',
+  \ 'Unmerged'  : '═',
+  \ 'Deleted'   : 'x',
+  \ 'Unknown'   : '?'
+  \ }
+
+" DEFX-ICONS
+let g:defx_icons_exact_matches = {
+    \ '.gitconfig': {'icon': '', 'color': '3AFFDB'},
+    \ '.gitignore': {'icon':'', 'color': '3AFFDB'},
+    \ 'zshrc': {'icon': '', 'color': '3AFFDB'},
+    \ '.zshrc': {'icon': '', 'color': '3AFFDB'},
+    \ 'zprofile': {'icon':'', 'color': '3AFFDB'},
+    \ '.zprofile': {'icon':'', 'color': '3AFFDB'},
+    \ }
+
+let g:defx_icon_exact_dir_matches = {
+    \ '.git'     : {'icon': '', 'color': '3AFFDB'},
+    \ 'Desktop'  : {'icon': '', 'color': '3AFFDB'},
+    \ 'Documents': {'icon': '', 'color': '3AFFDB'},
+    \ 'Downloads': {'icon': '', 'color': '3AFFDB'},
+    \ 'Dropbox'  : {'icon': '', 'color': '3AFFDB'},
+    \ 'Music'    : {'icon': '', 'color': '3AFFDB'},
+    \ 'Pictures' : {'icon': '', 'color': '3AFFDB'},
+    \ 'Public'   : {'icon': '', 'color': '3AFFDB'},
+    \ 'Templates': {'icon': '', 'color': '3AFFDB'},
+    \ 'Videos'   : {'icon': '', 'color': '3AFFDB'},
+    \ }
 
 " }}}
 
 " ================ COLOR SCHEME ======================== {{{
 set background=dark
 colorscheme cobalt2
+
+hi Defx_filename_root guifg=#668799 ctermfg=66
+" hi Defx_filename_directory guifg=#668799 ctermfg=66
+hi Directory guifg=#668799 ctermfg=66
 "}}}
 
