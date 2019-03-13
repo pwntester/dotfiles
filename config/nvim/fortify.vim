@@ -15,7 +15,7 @@ let g:fortify_DefaultJarPath = '/Applications/HP_Fortify/default_jars'
 let g:fortify_MemoryOpts = []
 let g:fortify_JDKVersion = '1.8'
 let g:fortify_XCodeSDK = '/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk'
-let g:fortify_SRF = '/Users/alvaro/Fortify/SSR/SRF/srf.py'
+let g:fortify_SRF = '/Users/alvaro/Fortify/SSR/repos/SRF/srf.py'
 
 
 let g:fortify_AWBOpts = []
