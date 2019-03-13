@@ -1,3 +1,4 @@
 #!/usr/bin/env sh
 
-/Users/alvaro/.pyenv/shims/python /Users/alvaro/Development/GitRepos/fortify-language-server/fortify-language-server.py -vv --log-file /tmp/fls.log
+/Users/alvaro/.pyenv/shims/python /Users/alvaro/Fortify/SSR/repos/fortify-language-server/fortify-language-server.py 
+#-vv --log-file /tmp/fls.log
