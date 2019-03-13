@@ -56,7 +56,7 @@ call plug#begin('~/.nvim/plugged')
     Plug 'sheerun/vim-polyglot'
     
     " Local plugins
-    Plug '~/Fortify/SSR/vim-fortify'
+    Plug '~/Fortify/SSR/repos/vim-fortify'
     Plug '/usr/local/opt/fzf'
 call plug#end()
 " }}}
