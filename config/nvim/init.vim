@@ -16,7 +16,7 @@ let g:loaded_tarPlugin = 1
 let g:loaded_netrwPlugin = 1
 
 call plug#begin('~/.nvim/plugged') 
-    Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh' } 
+    Plug 'pwntester/LanguageClient-neovim', { 'branch': 'alignment', 'do': 'bash install.sh' } 
     Plug 'Shougo/deoplete.nvim',           { 'do': ':UpdateRemotePlugins'} 
     Plug 'Shougo/defx.nvim',               { 'do': ':UpdateRemotePlugins'} 
     Plug 'kristijanhusak/defx-git'
