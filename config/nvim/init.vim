@@ -350,7 +350,7 @@ function! TrackSpecialBuffersOnBufEnter()
     elseif g:is_previous_buffer_special && bufexists(g:previous_buffer)
         call s:Log('   Comming from special buffer ' . g:previous_buffer)
         " get special buffer back to this window
-        exe 'b ' . g:previous_buffer
+        execute 'noautocmd keepalt buffer ' . g:previous_buffer
         " find non-special window
         let winnrs = range(1, tabpagewinnr(tabpagenr(), '$')) 
         if len(winnrs) > 1
@@ -366,7 +366,7 @@ function! TrackSpecialBuffersOnBufEnter()
             endfor
         endif
         " open new buffer
-        exe 'b ' . bufnum
+        execute 'noautocmd keepalt buffer ' . bufnum
     elseif g:is_previous_buffer_special && !bufexists(g:previous_buffer)
         call s:Log('    Comming from special buffer (defunct)' . g:previous_buffer)
         " close this window
@@ -389,7 +389,7 @@ function! TrackSpecialBuffersOnBufEnter()
             endfor
         endif
         " open new buffer
-        exe 'b ' . bufnum
+        execute 'noautocmd keepalt buffer ' . bufnum
     endif
 endfunction
 
