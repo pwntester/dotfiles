@@ -598,8 +598,8 @@ nnoremap <leader>lh :call LanguageClient#textDocument_hover()<Return>
 nnoremap <leader>ls :call LanguageClient_textDocument_documentSymbol()<Return>
 nnoremap <leader>la :call LanguageClient_textDocument_codeAction()<Return>
 nnoremap <leader>lm :call LanguageClient_contextMenu()<Return>
-" let g:LanguageClient_loggingFile = expand('~/LanguageClient.log')
-" let g:LanguageClient_serverStderr = expand('~/LanguageServer.log')
+" let g:LanguageClient_loggingFile = expand('/tmp/LanguageClient.log')
+" let g:LanguageClient_serverStderr = expand('/tmp/LanguageServer.log')
 " let g:LanguageClient_loggingLevel = 'INFO'
 let g:LanguageClient_changeThrottle = 1 
 let g:LanguageClient_autoStart = 0
