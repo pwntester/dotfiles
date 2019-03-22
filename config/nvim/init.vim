@@ -112,6 +112,9 @@ set smarttab                                                      " Reset autoin
 
 " ================ COMPLETION ==================== {{{
 set wildmode=longest,full                                         "stuff to ignore when tab completing
+set wildmenu
+set wildoptions=pum
+set pumblend=10
 set wildignorecase
 set wildignore+=*.swp,*.pyc,*.bak,*.class,*.orig
 set wildignore+=.git,.hg,.bzr,.svn
@@ -255,7 +258,12 @@ nnoremap <silent> < :exe "vertical resize -5"<Return>
 nnoremap <silent> + :exe "resize +5"<Return>
 nnoremap <silent> - :exe "resize -5"<Return>
 
-" }}}
+" move around command line wildmenu
+cnoremap <C-k> <LEFT>
+cnoremap <C-j> <RIGHT>
+cnoremap <C-h> <Space><BS><Left>
+cnoremap <C-l> <Space><BS><Right>
+"cnoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
 " ================ LEADER MAPPINGS ==================== {{{
 nnoremap <SPACE> <Nop>
