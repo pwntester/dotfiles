@@ -170,10 +170,10 @@ augroup vimrc
     " deoplete
     autocmd BufEnter * nested if getfsize(@%) < 1000000 | call deoplete#enable() | endif
     " languageclient-neovim
-    autocmd BufEnter * nested if getfsize(@%) < 1000000 | call EnableLC() | endif
+    autocmd BufEnter * nested if getfsize(@%) < 1000000 | call EnableLSP() | endif
     " defx
     autocmd FileType defx call DefxSettings()
-    " update lightline on LC diagnostic update
+    " update lightline on LSP diagnostic update
     autocmd User LanguageClientDiagnosticsChanged call lightline#update()
     " mark qf as not listed
     autocmd FileType qf setlocal nobuflisted 
@@ -431,7 +431,7 @@ function! s:Log(text) abort
     endif
 endfunction
 
-function! EnableLC() abort
+function! EnableLSP() abort
     if index(['java', 'javascript', 'python', 'fortifyrulepack'], &filetype) > -1
         call LanguageClient#startServer()
     endif
@@ -584,20 +584,9 @@ execute 'source' fnameescape(expand('~/.config/nvim/fortify.vim'))
 let g:LanguageClient_serverCommands = {}
 let g:LanguageClient_serverCommands.java = ['~/dotfiles/config/lts/jdtls']
 let g:LanguageClient_serverCommands.javascript = ['javascript-typescript-stdio']
-let g:LanguageClient_serverCommands.fortifyrulepack = ['~/dotfiles/config/lts/fls']
-let g:LanguageClient_serverCommands.python = ['pyls']
+let g:LanguageClient_serverCommands.fortifyrulepack = ['~/dotfiles/config/lts/fls', '-vv', '--log-file', '/tmp/fls.log']
+let g:LanguageClient_serverCommands.python = ['pyls', '-vv', '--log-file', '/tmp/pyls.log']
 call deoplete#custom#source('LanguageClient', 'input_pattern', '.+$')
-nnoremap <leader>ld :call LanguageClient#textDocument_definition()<Return>
-nnoremap <leader>lr :call LanguageClient#textDocument_rename()<Return>
-nnoremap <leader>lf :call LanguageClient#textDocument_formatting()<Return>
-nnoremap <leader>lt :call LanguageClient#textDocument_typeDefinition()<Return>
-nnoremap <leader>lx :call LanguageClient#textDocument_references()<Return>
-nnoremap <leader>le :call LanguageClient_workspace_applyEdit()<Return>
-nnoremap <leader>lc :call LanguageClient#textDocument_completion()<Return>
-nnoremap <leader>lh :call LanguageClient#textDocument_hover()<Return>
-nnoremap <leader>ls :call LanguageClient_textDocument_documentSymbol()<Return>
-nnoremap <leader>la :call LanguageClient_textDocument_codeAction()<Return>
-nnoremap <leader>lm :call LanguageClient_contextMenu()<Return>
 " let g:LanguageClient_loggingFile = expand('/tmp/LanguageClient.log')
 " let g:LanguageClient_serverStderr = expand('/tmp/LanguageServer.log')
 " let g:LanguageClient_loggingLevel = 'INFO'
