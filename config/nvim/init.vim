@@ -516,6 +516,28 @@ nnoremap <leader>d :Buffers<Return>
 nnoremap <leader>/ :call fzf#vim#search_history()<Return>
 nnoremap <leader>: :call fzf#vim#command_history()<Return>
 
+" let $FZF_DEFAULT_OPTS='--layout=reverse'
+" let g:fzf_layout = { 'window': 'call FloatingFZF()' }
+
+function! FloatingFZF()
+  let buf = nvim_create_buf(v:false, v:true)
+  call setbufvar(buf, '&signcolumn', 'no')
+
+  let height = &lines - 3
+  let width = float2nr(&columns - (&columns * 2 / 10))
+  let col = float2nr((&columns - width) / 2)
+
+  let opts = {
+        \ 'relative': 'editor',
+        \ 'row': 1,
+        \ 'col': col,
+        \ 'width': width,
+        \ 'height': height
+        \ }
+
+  call nvim_open_win(buf, v:true, opts)
+endfunction
+
 " VIM-MOVE
 " run `cat -v` in terminal and then the <Opt> combos to find out the char to use
 let g:move_map_keys = 0
@@ -587,6 +609,40 @@ let g:lexima_enable_newline_rules = 1
 
 " VIM-FORTIFY
 execute 'source' fnameescape(expand('~/.config/nvim/fortify.vim'))
+function! FZF_nst_files()
+    let buffer_path = resolve(expand('%:p'))
+    let pattern = buffer_path . '.nst'
+    if exists("g:fortify_NSTRoot") && g:fortify_NSTRoot != ""
+        let home = g:fortify_NSTRoot
+    else 
+        let home = glob('~')
+    endif
+    if exists("g:fortify_SCAVersion") && g:fortify_SCAVersion != ""
+        let sca_version = 'sca'. string(g:fortify_SCAVersion)
+    else
+        call GetSCAVersion()
+        let sca_version = 'sca'. string(g:fortify_SCAVersion)
+    endif
+    let root = home . '/.fortify/' . sca_version . '/build'
+    let command = 'rg --files -g "**' . pattern . '" ' . root
+    call fzf#run({
+        \ 'source': command,
+        \ 'sink':   'e',
+        \ 'down': '~20%',
+        \ 'options': '+s -e --ansi',
+        \ })
+endfunction
+function! FZF_rulepack_files()
+    let command = 'rg --files -g "**/{src,descriptions/en}/*.xml" /Users/alvaro/Fortify/SSR/repos/rules'
+    call fzf#run({
+        \ 'source': command,
+        \ 'sink':   'e',
+        \ 'down': '~20%',
+        \ 'options': '+s -e --ansi',
+        \ })
+endfunction
+nnoremap <leader>n :call FZF_nst_files()<Return>
+nnoremap <leader>r :call FZF_rulepack_files()<Return>
 
 " LANGUAGE-CLIENT
 let g:LanguageClient_serverCommands = {}
@@ -650,7 +706,7 @@ let g:markbar_marks_to_display = 'abcdefghijklmnopqrstuvwyzABCDEFGHIJKLMNOPQRSTU
 
 " VIMAGIT
 let g:magit_auto_foldopen = 0
-nnoremap <Leader>r :Magit<Return> 
+nnoremap <Leader>g :Magit<Return> 
 autocmd User VimagitEnterCommit startinsert
 
 " DEFX-GIT
