@@ -512,7 +512,7 @@ nnoremap <leader>f :Files<Return>
 nnoremap <leader>h :FZFMru<Return>
 nnoremap <leader>c :BCommits<Return>
 nnoremap <leader>s :Snippets<Return>
-nnoremap <leader>d :Buffers<Return>
+nnoremap <leader>b :Buffers<Return>
 nnoremap <leader>/ :call fzf#vim#search_history()<Return>
 nnoremap <leader>: :call fzf#vim#command_history()<Return>
 
@@ -633,7 +633,16 @@ function! FZF_nst_files()
         \ })
 endfunction
 function! FZF_rulepack_files()
-    let command = 'rg --files -g "**/{src,descriptions/en}/*.xml" /Users/alvaro/Fortify/SSR/repos/rules'
+    let command = 'rg --files -g "**/src/*.xml" /Users/alvaro/Fortify/SSR/repos/rules'
+    call fzf#run({
+        \ 'source': command,
+        \ 'sink':   'e',
+        \ 'down': '~20%',
+        \ 'options': '+s -e --ansi',
+        \ })
+endfunction
+function! FZF_rulepack_descriptions()
+    let command = 'rg --files -g "**/descriptions/en/*.xml" /Users/alvaro/Fortify/SSR/repos/rules'
     call fzf#run({
         \ 'source': command,
         \ 'sink':   'e',
@@ -643,6 +652,7 @@ function! FZF_rulepack_files()
 endfunction
 nnoremap <leader>n :call FZF_nst_files()<Return>
 nnoremap <leader>r :call FZF_rulepack_files()<Return>
+nnoremap <leader>d :call FZF_rulepack_descriptions()<Return>
 
 " LANGUAGE-CLIENT
 let g:LanguageClient_serverCommands = {}
