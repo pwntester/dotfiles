@@ -348,60 +348,47 @@ function! TrackSpecialBuffersOnBufEnter()
         call s:Log('Entering regular buffer '.bufnum.' from '.g:previous_buffer)
     endif
 
-    if (bufname == "" && buftype == "") || bufname =~ '^term:'
+    if (bufname == "" && buftype == "") || bufname =~ '^term:' || index(g:special_buffers, buftype) > -1 
         " Neither the bufname, mode or type for terminal buffer is set at
         " BufEnter. It is actually set at TermOpen, but that does not work
         " for us. We need to consider that an unnammed buffer is a terminal
         " buffer
-        call s:Log('    Skipping unnammed, untyped buffer. FZF buffer?')
-        return
-    elseif index(g:special_buffers, buftype) > -1 
-        call s:Log('    Skipping special buffer')
+        call s:Log('    Skipping special, unnammed, untyped buffer')
         return
     elseif g:is_previous_buffer_special && bufexists(g:previous_buffer)
         call s:Log('   Comming from special buffer ' . g:previous_buffer)
+
         " get special buffer back to this window
-        execute 'noautocmd keepalt buffer ' . g:previous_buffer
-        " find non-special window
-        let winnrs = range(1, tabpagewinnr(tabpagenr(), '$')) 
-        if len(winnrs) > 1
-            for winnr in winnrs
-                if index(g:special_buffers, getbufvar(winbufnr(winnr), '&filetype')) == -1
-                    " found a window with a non-special buffer
-                    " set current window as inactive
-                    execute "setlocal nocursorline"
-                    execute "set winhighlight="
-                    " move to non-special window
-                    execute winnr.'wincmd w'
-                endif
-            endfor
+        if bufexists(g:previous_buffer)
+            call nvim_win_set_buf(win_getid(), g:previous_buffer)
         endif
+
+        " found a window with a non-special buffer
+        for w in nvim_list_wins()
+            if index(g:special_buffers, nvim_buf_get_option(nvim_win_get_buf(w), 'filetype')) == -1
+                " set current window as inactive
+                call nvim_win_set_option(win_getid(), 'cursorline', v:false)
+                call nvim_win_set_option(win_getid(), 'winhighlight', '')
+                " move to non-special window
+                call nvim_set_current_win(w)
+                break
+            endif
+        endfor
+        
         " open new buffer
-        execute 'noautocmd keepalt buffer ' . bufnum
-    elseif g:is_previous_buffer_special && !bufexists(g:previous_buffer)
-        call s:Log('    Comming from special buffer (defunct)' . g:previous_buffer)
-        " close this window
-        try
-            silent close! 
-        catch
-        endtry
-        " find non-special window
-        let winnrs = range(1, tabpagewinnr(tabpagenr(), '$')) 
-        if len(winnrs) > 1
-            for winnr in winnrs
-                if index(g:special_buffers, getbufvar(winbufnr(winnr), '&filetype')) == -1
-                    " found a window with a non-special buffer
-                    " set current window as inactive
-                    execute "setlocal nocursorline"
-                    execute "set winhighlight="
-                    " move to non-special window
-                    execute winnr.'wincmd w'
-                endif
-            endfor
-        endif
-        " open new buffer
-        execute 'noautocmd keepalt buffer ' . bufnum
+        call nvim_win_set_buf(win_getid(), bufnum)
+        
     endif
+endfunction
+
+function! ReuseVimGoTerm(cmd) abort
+    for w in nvim_list_wins()
+        if "goterm" == nvim_buf_get_option(nvim_win_get_buf(w), 'filetype')
+            call nvim_win_close(w, v:true)
+            break
+        endif
+    endfor
+    execute a:cmd
 endfunction
 
 function! EnableRainbowParenthesis() abort
