@@ -17,8 +17,8 @@ let g:loaded_netrwPlugin = 1
 
 call plug#begin('~/.nvim/plugged') 
     Plug 'pwntester/LanguageClient-neovim', { 'branch': 'alignment', 'do': 'bash install.sh' } 
-    Plug 'Shougo/deoplete.nvim',           { 'do': ':UpdateRemotePlugins'} 
-    Plug 'Shougo/defx.nvim',               { 'do': ':UpdateRemotePlugins'} 
+    Plug 'Shougo/deoplete.nvim',            { 'do': ':UpdateRemotePlugins'} 
+    Plug 'Shougo/defx.nvim',                { 'do': ':UpdateRemotePlugins'} 
     Plug 'kristijanhusak/defx-git'
     Plug 'kristijanhusak/defx-icons'
     Plug 'junegunn/fzf.vim' 
@@ -54,6 +54,8 @@ call plug#begin('~/.nvim/plugged')
     Plug 'kshenoy/vim-signature'
     Plug 'ap/vim-css-color'
     Plug 'sheerun/vim-polyglot'
+    Plug 'fatih/vim-go',                    { 'do': ':GoInstallBinaries' }
+    "Plug 'liuchengxu/vista.vim'
     
     " Local plugins
     Plug '~/Fortify/SSR/repos/vim-fortify'
@@ -263,7 +265,6 @@ cnoremap <C-k> <LEFT>
 cnoremap <C-j> <RIGHT>
 cnoremap <C-h> <Space><BS><Left>
 cnoremap <C-l> <Space><BS><Right>
-"cnoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
 " ================ LEADER MAPPINGS ==================== {{{
 nnoremap <SPACE> <Nop>
