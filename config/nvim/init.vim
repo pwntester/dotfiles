@@ -675,6 +675,8 @@ let g:LanguageClient_diagnosticsDisplay = {
             \ 3: {"name": "Information", "texthl": "ALEInfo", "signText": "ℹ", "signTexthl": "ALEInfoSign","virtualTexthl": "ALEVirtualTextWarning",}, 
             \ 4: {"name": "Hint", "texthl": "ALEInfo", "signText": "➤", "signTexthl": "ALEInfoSign","virtualTexthl": "ALEVirtualTextWarning",}, 
     \ }
+nnoremap <leader>l :call LanguageClient_contextMenu()<Return>
+nnoremap <leader>a :call LanguageClient#textDocument_codeAction()<Return>
 
 " VIM-ROOTER
 let g:rooter_use_lcd = 1
