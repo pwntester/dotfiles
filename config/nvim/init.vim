@@ -662,11 +662,12 @@ let g:LanguageClient_serverCommands = {}
 let g:LanguageClient_serverCommands.java = ['~/dotfiles/config/lts/jdtls']
 let g:LanguageClient_serverCommands.javascript = ['javascript-typescript-stdio']
 let g:LanguageClient_serverCommands.fortifyrulepack = ['~/dotfiles/config/lts/fls', '-vv', '--log-file', '/tmp/fls.log']
+let g:LanguageClient_serverCommands.go = ['gopls']
 let g:LanguageClient_serverCommands.python = ['pyls', '-vv', '--log-file', '/tmp/pyls.log']
 call deoplete#custom#source('LanguageClient', 'input_pattern', '.+$')
-" let g:LanguageClient_loggingFile = expand('/tmp/LanguageClient.log')
-" let g:LanguageClient_serverStderr = expand('/tmp/LanguageServer.log')
-" let g:LanguageClient_loggingLevel = 'INFO'
+let g:LanguageClient_loggingFile = expand('/tmp/LanguageClient.log')
+let g:LanguageClient_serverStderr = expand('/tmp/LanguageServer.log')
+let g:LanguageClient_loggingLevel = 'INFO'
 let g:LanguageClient_changeThrottle = 1 
 let g:LanguageClient_autoStart = 0
 let g:LanguageClient_diagnosticsDisplay = { 
