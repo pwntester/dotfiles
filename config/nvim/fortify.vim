@@ -27,6 +27,10 @@ let g:fortify_TranslationOpts = ['-verbose']
 " let g:fortify_TranslationOpts += ['-python-legacy']
 " let g:fortify_TranslationOpts += ['-python-version 3']
 " let g:fortify_TranslationOpts += ['-project-root', 'sca_build']
+" -Dcom.fortify.sca.alias.mode.java=fi
+" -Dcom.fortify.sca.debug.rule=6D6E2A82-D5BF-4AFE-9E41-9E4933F2695D,Test.java,17 -debug -verbose
+" -Dcom.fortify.sca.Phase0HigherOrder.Languages=python,ruby,swift,javascript,typescript,java
+
 
 
 let g:fortify_ScanOpts = ['-verbose']       
