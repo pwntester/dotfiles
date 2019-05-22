@@ -176,6 +176,8 @@ augroup vimrc
     autocmd BufEnter * nested if getfsize(@%) < 1000000 | call deoplete#enable() | endif
     " languageclient-neovim
     autocmd BufEnter * nested if getfsize(@%) < 1000000 | call EnableLSP() | endif
+    " Run gofmt and goimports on save
+    autocmd BufWritePre *.go :call LanguageClient#textDocument_formatting_sync()
     " defx
     autocmd FileType defx call DefxSettings()
     " update lightline on LSP diagnostic update
@@ -286,7 +288,7 @@ nnoremap <Leader>> `]
 " }}}
 
 " ================ GLOBALS ======================== {{{
-let g:special_buffers = ['help', 'fortifytestpane', 'fortifyauditpane', 'defx', 'qf', 'vim-plug', 'fzf', 'magit']
+let g:special_buffers = ['help', 'fortifytestpane', 'fortifyauditpane', 'defx', 'qf', 'vim-plug', 'fzf', 'magit', 'goterm']
 let g:previous_buffer = 0
 let g:is_previous_buffer_special = 0
 
@@ -441,7 +443,7 @@ function! s:Log(text) abort
 endfunction
 
 function! EnableLSP() abort
-    if index(['java', 'javascript', 'python', 'fortifyrulepack'], &filetype) > -1
+    if index(['go', 'java', 'javascript', 'python', 'fortifyrulepack'], &filetype) > -1
         call LanguageClient#startServer()
     endif
 endfunction
@@ -753,6 +755,15 @@ let g:defx_icon_exact_dir_matches = {
     \ 'Templates': {'icon': '', 'color': '3AFFDB'},
     \ 'Videos'   : {'icon': '', 'color': '3AFFDB'},
     \ }
+
+" VISTA
+let g:vista_default_executive = 'lcn'
+nnoremap <Leader>e :Vista!!<Return> 
+nnoremap <Leader>f :Vista finder<Return> 
+
+" VIM-GO
+let g:go_term_mode = "silent keepalt rightbelow 15 split"
+autocmd FileType go nmap <leader>r :call ReuseVimGoTerm('GoRun')<Return>
 
 " }}}
 
