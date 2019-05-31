@@ -19,6 +19,7 @@ call plug#begin('~/.nvim/plugged')
     Plug 'pwntester/LanguageClient-neovim', { 'branch': 'alignment', 'do': 'bash install.sh' } 
     Plug 'Shougo/deoplete.nvim',            { 'do': ':UpdateRemotePlugins'} 
     Plug 'Shougo/defx.nvim',                { 'do': ':UpdateRemotePlugins'} 
+    Plug 'fatih/vim-go',                    { 'do': ':GoInstallBinaries' }
     Plug 'kristijanhusak/defx-git'
     Plug 'kristijanhusak/defx-icons'
     Plug 'junegunn/fzf.vim' 
@@ -54,8 +55,7 @@ call plug#begin('~/.nvim/plugged')
     Plug 'kshenoy/vim-signature'
     Plug 'ap/vim-css-color'
     Plug 'sheerun/vim-polyglot'
-    Plug 'fatih/vim-go',                    { 'do': ':GoInstallBinaries' }
-    "Plug 'liuchengxu/vista.vim'
+    Plug 'liuchengxu/vista.vim'
     
     " Local plugins
     Plug '~/Fortify/SSR/repos/vim-fortify'
@@ -401,7 +401,19 @@ endfunction
 
 function! Root(path) abort
     return fnamemodify(a:path, ':t') . '/'
-endfunction<Paste>
+endfunction
+
+function! DefxToggle() abort
+    " Close it if its open
+    for w in nvim_list_wins()
+        if nvim_buf_get_option(nvim_win_get_buf(w), 'filetype') == "defx"
+            call nvim_win_close(w, v:true)
+            return 
+        endif
+    endfor
+    " Open it
+    call execute(printf('Defx %s -search=%s', expand('%:p:h'), expand('%:p')))
+endfunction
 
 function! DefxSettings() abort
     nnoremap <silent><buffer><expr> <Return> defx#do_action('open')
@@ -668,13 +680,14 @@ nnoremap <leader>a :call LanguageClient#textDocument_codeAction()<Return>
 
 " VIM-ROOTER
 let g:rooter_use_lcd = 1
-let g:rooter_patterns = ['pom.xml', '.git/']
+let g:rooter_patterns = ['build.gradle', 'build.sbt', 'pom.xml', '.git/']
 let g:rooter_silent_chdir = 1
 let g:rooter_change_directory_for_non_project_files = 'current'
 
 " DEFX
 nnoremap <silent> <C-e> :Defx<Return>
-nnoremap <silent> <C-f> :call execute(printf('Defx %s -search=%s', expand('%:p:h'), expand('%:p')))<Return>
+nnoremap <silent> <C-f> :call DefxToggle()<Return>
+":call execute(printf('Defx %s -search=%s', expand('%:p:h'), expand('%:p')))<Return>
 call defx#custom#source('file', {'root': 'Root'})
 call defx#custom#option('_', {
     \ 'columns': 'git:icons:filename:type',
