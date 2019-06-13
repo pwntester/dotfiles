@@ -121,17 +121,8 @@ set wildignorecase
 set wildignore+=*.swp,*.pyc,*.bak,*.class,*.orig
 set wildignore+=.git,.hg,.bzr,.svn
 set wildignore+=build/*,tmp/*,vendor/cache/*,bin/*
-set wildignore+=.sass-cache/*
 set wildignore=*.o,*.obj,*~                                                     
-set wildignore+=*.git*
-set wildignore+=*.meteor*
-set wildignore+=*vim/backups*
-set wildignore+=*sass-cache*
-set wildignore+=*cache*
-set wildignore+=*logs*
-set wildignore+=*node_modules/**
 set wildignore+=*DS_Store*
-set wildignore+=*.gem
 set wildignore+=log/**
 set wildignore+=tmp/**
 set wildignore+=*.jpg,*.bmp,*.gif,*.png,*.jpeg,*.svg
@@ -452,22 +443,23 @@ function! CloseWin()
         " closing window with special buffer
         quit
     else
-        let winnrs = range(1, tabpagewinnr(tabpagenr(), '$')) 
-        if len(winnrs) == 1
+        let l:current_window = win_getid()
+        let l:winids = nvim_list_wins()
+        if len(l:winids) == 1
             " closing window with normal buffer
-            quit
-        elseif len(winnrs) > 1
-            let non_special_buffers_count = 0
-            for winnr in winnrs
-                if index(g:special_buffers, getbufvar(winbufnr(winnr), '&filetype')) == -1 
-                    let non_special_buffers_count = non_special_buffers_count + 1
+            call nvim_win_close(l:current_window, v:true)
+        elseif len(winids) > 1
+            let l:non_special_buffers_count = 0
+            for w in l:winids
+                if index(g:special_buffers, nvim_buf_get_option(nvim_win_get_buf(w), 'filetype')) == -1 
+                    let l:non_special_buffers_count = l:non_special_buffers_count + 1
                 endif
             endfor
-            if non_special_buffers_count == 1
+            if l:non_special_buffers_count == 1
                 echo "Last window, not closing"
             else 
                 " closing window since there are more non-special windows
-                quit
+                call nvim_win_close(l:current_window, v:true)
             endif
         endif
     endif
