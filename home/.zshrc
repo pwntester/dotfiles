@@ -12,7 +12,7 @@ fi
 zplug 'zplug/zplug',                            hook-build:'zplug --self-manage'
 zplug "modules/tmux",                           from:prezto
 zplug "modules/history",                        from:prezto
-zplug "modules/utility",                        from:prezto
+#zplug "modules/utility",                        from:prezto
 zplug "modules/ruby",                           from:prezto
 zplug "modules/terminal",                       from:prezto
 zplug "modules/directory",                      from:prezto
