@@ -24,7 +24,6 @@ zplug "zsh-users/zsh-completions"
 zplug "zdharma/fast-syntax-highlighting"
 zplug "tarruda/zsh-autosuggestions"           
 zplug "felixr/docker-zsh-completion"
-zplug "davidparsson/zsh-pyenv-lazy"
 zplug "BurntSushi/ripgrep",                     defer:3, from:"gh-r", as:"command", use:"*darwin*", rename-to:"rg"
 zplug "junegunn/fzf-bin",                       defer:3, from:"gh-r", as:"command", use:"*darwin*", rename-to:"fzf"
 
@@ -147,6 +146,13 @@ fkill() {
 fh() {
   print -z $( ([ -n "$ZSH_NAME" ] && fc -l 1 || history) | fzf +s --tac | sed 's/ *[0-9]* *//')
 }
+
+# PYENV
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+if command -v pyenv 1>/dev/null 2>&1; then
+    eval "$(pyenv init -)"
+fi
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="/Users/alvaro/.sdkman"
