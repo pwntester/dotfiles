@@ -29,14 +29,13 @@ let g:fortify_TranslationOpts = ['-verbose']
 " let g:fortify_TranslationOpts += ['-project-root', 'sca_build']
 " -Dcom.fortify.sca.alias.mode.java=fi
 " -Dcom.fortify.sca.debug.rule=6D6E2A82-D5BF-4AFE-9E41-9E4933F2695D,Test.java,17 -debug -verbose
-" -Dcom.fortify.sca.Phase0HigherOrder.Languages=python,ruby,swift,javascript,typescript,java
+" -Dcom.fortify.sca.Phase0HigherOrder.Languages=python,ruby,swift,javascript,typescript,java,scala
 
 
 
 let g:fortify_ScanOpts = ['-verbose']       
-let g:fortify_ScanOpts += ['-Dcom.fortify.sca.limiters.MaxChainDepth=10']
-let g:fortify_ScanOpts += ['-Dcom.fortify.sca.limiters.MaxPassthroughChainDepth=10']
-let g:fortify_ScanOpts += ['-Dcom.fortify.sca.limiters.MaxIndirectResolutionsForCall=512']
+let g:fortify_ScanOpts += ['-Dcom.fortify.sca.limiters.MaxChainDepth=32']
+let g:fortify_ScanOpts += ['-Dcom.fortify.sca.limiters.MaxPassthroughChainDepth=32']
 let g:fortify_ScanOpts += ['-Dcom.fortify.sca.ReportTrippedDepthLimiters=true']
 let g:fortify_ScanOpts += ['-Dcom.fortify.sca.ReportTrippedNodeLimiters=true']
 let g:fortify_ScanOpts += ['-Dcom.fortify.sca.ReportTightenedLimits=true']
@@ -44,6 +43,7 @@ let g:fortify_ScanOpts += ['-Dcom.fortify.sca.ReportUnresolvedCalls=true']
 let g:fortify_ScanOpts += ['-Dcom.fortify.sca.ReportTightenedLimits']
 let g:fortify_ScanOpts += ['-Dcom.fortify.sca.EnableDOMModeling=true']
 let g:fortify_ScanOpts += ['-Dcom.fortify.sca.DOMModeling.tags=div ']
+"let g:fortify_ScanOpts += ['-Dcom.fortify.sca.limiters.MaxIndirectResolutionsForCall=512']
 " let g:fortify_ScanOpts += ['-Dcom.fortify.sca.DebugNumericTaint=true']
 " let g:fortify_ScanOpts += ['-debug', '-debug-verbose', '-logfile', 'sca_build/scan.log']  " Generate scan logs
 " let g:fortify_ScanOpts += ['-Ddf3.debug=sca_build/taint.log']                             " Dump taint log

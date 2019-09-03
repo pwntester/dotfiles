@@ -55,7 +55,7 @@ call plug#begin('~/.nvim/plugged')
     Plug 'kshenoy/vim-signature'
     Plug 'ap/vim-css-color'
     Plug 'sheerun/vim-polyglot'
-    Plug 'liuchengxu/vista.vim'
+    "Plug 'liuchengxu/vista.vim'
     
     " Local plugins
     Plug '~/Fortify/SSR/repos/vim-fortify'
@@ -121,17 +121,8 @@ set wildignorecase
 set wildignore+=*.swp,*.pyc,*.bak,*.class,*.orig
 set wildignore+=.git,.hg,.bzr,.svn
 set wildignore+=build/*,tmp/*,vendor/cache/*,bin/*
-set wildignore+=.sass-cache/*
 set wildignore=*.o,*.obj,*~                                                     
-set wildignore+=*.git*
-set wildignore+=*.meteor*
-set wildignore+=*vim/backups*
-set wildignore+=*sass-cache*
-set wildignore+=*cache*
-set wildignore+=*logs*
-set wildignore+=*node_modules/**
 set wildignore+=*DS_Store*
-set wildignore+=*.gem
 set wildignore+=log/**
 set wildignore+=tmp/**
 set wildignore+=*.jpg,*.bmp,*.gif,*.png,*.jpeg,*.svg
@@ -403,7 +394,7 @@ function! Root(path) abort
     return fnamemodify(a:path, ':t') . '/'
 endfunction
 
-function! DefxToggle() abort
+function! OpenDefx(mode) abort
     " Close it if its open
     for w in nvim_list_wins()
         if nvim_buf_get_option(nvim_win_get_buf(w), 'filetype') == "defx"
@@ -412,7 +403,11 @@ function! DefxToggle() abort
         endif
     endfor
     " Open it
-    call execute(printf('Defx %s -search=%s', expand('%:p:h'), expand('%:p')))
+    if a:mode == "file"
+        call execute(printf('Defx %s -search=%s', expand('%:p:h'), expand('%:p')))
+    elseif a:mode == "project"
+        call execute(printf('Defx'))
+    endif
 endfunction
 
 function! DefxSettings() abort
@@ -452,22 +447,23 @@ function! CloseWin()
         " closing window with special buffer
         quit
     else
-        let winnrs = range(1, tabpagewinnr(tabpagenr(), '$')) 
-        if len(winnrs) == 1
+        let l:current_window = win_getid()
+        let l:winids = nvim_list_wins()
+        if len(l:winids) == 1
             " closing window with normal buffer
-            quit
-        elseif len(winnrs) > 1
-            let non_special_buffers_count = 0
-            for winnr in winnrs
-                if index(g:special_buffers, getbufvar(winbufnr(winnr), '&filetype')) == -1 
-                    let non_special_buffers_count = non_special_buffers_count + 1
+            call nvim_win_close(l:current_window, v:true)
+        elseif len(winids) > 1
+            let l:non_special_buffers_count = 0
+            for w in l:winids
+                if index(g:special_buffers, nvim_buf_get_option(nvim_win_get_buf(w), 'filetype')) == -1 
+                    let l:non_special_buffers_count = l:non_special_buffers_count + 1
                 endif
             endfor
-            if non_special_buffers_count == 1
+            if l:non_special_buffers_count == 1
                 echo "Last window, not closing"
             else 
                 " closing window since there are more non-special windows
-                quit
+                call nvim_win_close(l:current_window, v:true)
             endif
         endif
     endif
@@ -493,6 +489,7 @@ nmap <leader>z <Plug>ZoomWin
 " INDENTLINE
 let g:indentLine_color_gui = '#17252c'
 let g:indentLine_fileTypeExclude = g:special_buffers 
+autocmd FileType defx IndentLinesToggle " filetype of defx has not been set when BufWinEnter event is triggered
 
 " FZF
 let g:fzf_colors = { 
@@ -684,30 +681,6 @@ let g:rooter_patterns = ['build.gradle', 'build.sbt', 'pom.xml', '.git/']
 let g:rooter_silent_chdir = 1
 let g:rooter_change_directory_for_non_project_files = 'current'
 
-" DEFX
-nnoremap <silent> <C-e> :Defx<Return>
-nnoremap <silent> <C-f> :call DefxToggle()<Return>
-":call execute(printf('Defx %s -search=%s', expand('%:p:h'), expand('%:p')))<Return>
-call defx#custom#source('file', {'root': 'Root'})
-call defx#custom#option('_', {
-    \ 'columns': 'git:icons:filename:type',
-    \ 'root_marker': '[in:] ',
-    \ 'split': 'vertical',
-    \ 'direction': 'topleft',
-    \ 'winwidth': 41,
-    \ 'show_ignored_files': 1,
-    \ 'toggle': 1,
-    \ 'listed': 1,
-\ })
-call defx#custom#column('filename', {
-    \ 'directory_icon': ' ',
-    \ 'opened_icon': ' ',
-    \ 'root_icon': ' ',
-    \ 'indent': '  ',
-    \ 'min_width': 22,
-    \ 'max_width': 22,
-\ })
-
 " BCLOSE
 let g:bclose_no_plugin_maps = 1
 
@@ -725,6 +698,30 @@ let g:magit_auto_foldopen = 0
 nnoremap <Leader>g :Magit<Return> 
 autocmd User VimagitEnterCommit startinsert
 
+" DEFX
+noremap <silent> <C-e> :call OpenDefx("project")<Return>
+noremap <silent> <C-f> :call OpenDefx("file")<Return>
+call defx#custom#source('file', {'root': 'Root'})
+call defx#custom#option('_', {
+    \ 'columns': 'git:icons:filename:type',
+    \ 'split': 'vertical',
+    \ 'direction': 'topleft',
+    \ 'root_marker': '[in:] ',
+    \ 'winwidth': 41,
+    \ 'show_ignored_files': 1,
+    \ 'toggle': 1,
+    \ 'listed': 1,
+\ })
+
+call defx#custom#column('filename', {
+    \ 'directory_icon': ' ',
+    \ 'opened_icon': ' ',
+    \ 'root_icon': ' ',
+    \ 'indent': '  ',
+    \ 'min_width': 22,
+    \ 'max_width': 22,
+\ })
+
 " DEFX-GIT
 let g:defx_git#indicators = {
   \ 'Modified'  : '+',
@@ -734,7 +731,7 @@ let g:defx_git#indicators = {
   \ 'Unmerged'  : '═',
   \ 'Deleted'   : 'x',
   \ 'Unknown'   : '?'
-  \ }
+\ }
 
 " DEFX-ICONS
 let g:defx_icons_exact_matches = {
@@ -744,7 +741,7 @@ let g:defx_icons_exact_matches = {
     \ '.zshrc': {'icon': '', 'color': '3AFFDB'},
     \ 'zprofile': {'icon':'', 'color': '3AFFDB'},
     \ '.zprofile': {'icon':'', 'color': '3AFFDB'},
-    \ }
+\ }
 
 let g:defx_icon_exact_dir_matches = {
     \ '.git'     : {'icon': '', 'color': '3AFFDB'},
@@ -757,12 +754,12 @@ let g:defx_icon_exact_dir_matches = {
     \ 'Public'   : {'icon': '', 'color': '3AFFDB'},
     \ 'Templates': {'icon': '', 'color': '3AFFDB'},
     \ 'Videos'   : {'icon': '', 'color': '3AFFDB'},
-    \ }
+\ }
 
 " VISTA
-let g:vista_default_executive = 'lcn'
-nnoremap <Leader>e :Vista!!<Return> 
-nnoremap <Leader>f :Vista finder<Return> 
+" let g:vista_default_executive = 'lcn'
+" nnoremap <Leader>e :Vista!!<Return> 
+" nnoremap <Leader>f :Vista finder<Return> 
 
 " VIM-GO
 let g:go_term_mode = "silent keepalt rightbelow 15 split"
