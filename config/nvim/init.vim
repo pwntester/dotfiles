@@ -16,6 +16,7 @@ let g:loaded_tarPlugin = 1
 let g:loaded_netrwPlugin = 1
 
 call plug#begin('~/.nvim/plugged') 
+    " Github plugins
     Plug 'pwntester/LanguageClient-neovim', { 'branch': 'alignment', 'do': 'bash install.sh' } 
     Plug 'Shougo/deoplete.nvim',            { 'do': ':UpdateRemotePlugins'} 
     Plug 'Shougo/defx.nvim',                { 'do': ':UpdateRemotePlugins'} 
@@ -427,6 +428,7 @@ function! DefxSettings() abort
     nnoremap <silent><buffer><expr> k line('.') == 1 ? 'G' : 'k'
     nnoremap <silent><buffer> q :call execute("bn\<BAR>bw#")<Return>
     nnoremap <silent><buffer><expr> ~ defx#do_action('change_vim_cwd')
+    nnoremap <silent><buffer><expr> z defx#do_action('resize', winwidth(0))
     setlocal nobuflisted
 endfunction
 
@@ -719,7 +721,7 @@ call defx#custom#column('filename', {
     \ 'root_icon': ' ',
     \ 'indent': '  ',
     \ 'min_width': 22,
-    \ 'max_width': 22,
+    \ 'max_width': -90,
 \ })
 
 " DEFX-GIT
@@ -756,14 +758,15 @@ let g:defx_icon_exact_dir_matches = {
     \ 'Videos'   : {'icon': '', 'color': '3AFFDB'},
 \ }
 
+" VIM-GO
+let g:go_term_mode = "silent keepalt rightbelow 15 split"
+autocmd FileType go nmap <leader>r :call ReuseVimGoTerm('GoRun')<Return>
+
 " VISTA
 " let g:vista_default_executive = 'lcn'
 " nnoremap <Leader>e :Vista!!<Return> 
 " nnoremap <Leader>f :Vista finder<Return> 
 
-" VIM-GO
-let g:go_term_mode = "silent keepalt rightbelow 15 split"
-autocmd FileType go nmap <leader>r :call ReuseVimGoTerm('GoRun')<Return>
 
 " }}}
 
