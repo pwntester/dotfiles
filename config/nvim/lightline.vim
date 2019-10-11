@@ -2,7 +2,7 @@ let g:cobalt2_lightline = 1
 let g:lightline = {
     \ 'colorscheme': 'cobalt2',
     \ 'active': {
-    \   'left': [ [ 'mode', 'paste', ], [ 'anzu', 'fugitive', ], [ 'filename', ], ],
+    \   'left': [ [ 'mode', 'paste', ], [ 'fugitive', ], [ 'filename', ], ],
     \   'right': [ [ 'linter_errors', 'linter_warnings', 'column', 'percent' ], [ 'filetype' ], [ 'cwd', ] ]
     \ },
     \ 'inactive': {
@@ -30,17 +30,12 @@ let g:lightline = {
     \   'filetype': 'LightlineFiletype',
     \   'cwd': 'LightlineCwd',
     \   'filename': 'LightlineFilename',
-    \   'anzu': 'LightlineAnzu',
     \ },
     \ 'separator': { 'left': "\ue0b0", 'right': "\ue0b2" },
 	\ 'subseparator': { 'left': "\ue0b1", 'right': "\ue0b3" },
     \ 'tabline_separator': { 'left': ' ', 'right': ' ' },
     \ 'tabline_subseparator': { 'left': ' ', 'right': ' ' },
     \ }
-
-function! LightlineAnzu()
-  return anzu#search_status()
-endfunction
 
 function! LightlineBufferTitle()
     return "buffers"

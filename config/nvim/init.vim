@@ -33,9 +33,6 @@ call plug#begin('~/.nvim/plugged')
     Plug 'tpope/vim-repeat'
     Plug 'airblade/vim-gitgutter'
     Plug 'tomtom/tcomment_vim'
-    Plug 'osyo-manga/vim-anzu'
-    Plug 'haya14busa/vim-asterisk'
-    Plug 'haya14busa/is.vim'
     Plug 'regedarek/ZoomWin'
     Plug 'Yggdroot/indentLine'
     Plug 'matze/vim-move'
@@ -57,10 +54,12 @@ call plug#begin('~/.nvim/plugged')
     Plug 'ap/vim-css-color'
     Plug 'sheerun/vim-polyglot'
     "Plug 'liuchengxu/vista.vim'
+    "Plug 'liuchengxu/vim-clap'
     
     " Local plugins
     Plug '~/Fortify/SSR/repos/vim-fortify'
     Plug '/usr/local/opt/fzf'
+    Plug '/Users/alvaro/Development/GitRepos/vim-ql'
 call plug#end()
 " }}}
 
@@ -75,6 +74,7 @@ set inccommand=nosplit                                            " Live preview
 set fileencoding=utf-8
 set encoding=utf-8
 set nottimeout
+set shortmess=filnxFAIOTWacots
 " }}}
 
 " ================ UI ==================== {{{
@@ -130,8 +130,6 @@ set wildignore+=*.jpg,*.bmp,*.gif,*.png,*.jpeg,*.svg
 
 set complete=.,w,b,u,U,i,d,t
 set completeopt=noinsert,menuone,noselect                           " show the popup menu even if there's only one match), prevent automatic selection and prevent automatic text injection into the current line.
-
-set shortmess+=c                                                    " suppress the annoying 'match x of y', 'The only match' and 'Pattern not found' messages
 " }}}
 
 " ================ SWAP/UNDO FILES ==================== {{{
@@ -198,8 +196,8 @@ augroup END
 
 " ================ MAPPINGS ==================== {{{
 " center after search
-nnoremap n nzz
-nnoremap N Nzz
+" nnoremap n nzz
+" nnoremap N Nzz
 
 " search for contents of register 0 (where AuditPane copies the RuleIDs)
 noremap 0/ :execute substitute('/'.@0,'0$','','g')<Return>                                   
@@ -494,20 +492,20 @@ let g:indentLine_fileTypeExclude = g:special_buffers
 autocmd FileType defx IndentLinesToggle " filetype of defx has not been set when BufWinEnter event is triggered
 
 " FZF
-let g:fzf_colors = { 
-    \ 'fg':      ['fg', 'Normal'],
-    \ 'bg':      ['bg', 'ColorColumn'],
-    \ 'hl':      ['fg', 'Comment'],
-    \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
-    \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
-    \ 'hl+':     ['fg', 'Statement'],
-    \ 'info':    ['fg', 'PreProc'],
-    \ 'border':  ['fg', 'Ignore'],
-    \ 'prompt':  ['fg', 'Conditional'],
-    \ 'pointer': ['fg', 'Exception'],
-    \ 'marker':  ['fg', 'Keyword'],
-    \ 'spinner': ['fg', 'Label'],
-    \ 'header':  ['fg', 'Comment'] }
+let g:fzf_colors =
+    \ { 'fg':      ['fg', 'Normal'],
+      \ 'bg':      ['bg', 'Normal'],
+      \ 'hl':      ['fg', 'Comment'],
+      \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+      \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+      \ 'hl+':     ['fg', 'Statement'],
+      \ 'info':    ['fg', 'PreProc'],
+      \ 'border':  ['fg', 'Ignore'],
+      \ 'prompt':  ['fg', 'Conditional'],
+      \ 'pointer': ['fg', 'Exception'],
+      \ 'marker':  ['fg', 'Keyword'],
+      \ 'spinner': ['fg', 'Label'],
+      \ 'header':  ['fg', 'Comment'] }
 
 nnoremap <leader>f :Files<Return>
 nnoremap <leader>h :FZFMru<Return>
@@ -581,15 +579,6 @@ let g:vim_markdown_folding_disabled = 1
 let g:matchup_matchparen_status_offscreen = 0                                   " Do not show offscreen closing match in statusline
 let g:matchup_matchparen_nomode = "ivV\<c-v>"                                   " Enable matchup only in normal mode
 let g:matchup_matchparen_deferred = 1                                           " Defer matchup highlights to allow better cursor movement performance
-
-" ANZU / IS.VIM / ASTERISK
-let g:anzu_enable_CursorMoved_AnzuUpdateSearchStatus=1
-map n <Plug>(is-nohl)<Plug>(anzu-n-with-echo)
-map N <Plug>(is-nohl)<Plug>(anzu-N-with-echo)
-map * <Plug>(asterisk-z*)<Plug>(is-nohl-1)<Plug>(anzu-update-search-status)
-map # <Plug>(asterisk-z#)<Plug>(is-nohl-1)<Plug>(anzu-update-search-status)
-map g* <Plug>(asterisk-gz*)<Plug>(is-nohl-1)<Plug>(anzu-update-search-status)
-map g# <Plug>(asterisk-gz#)<Plug>(is-nohl-1)<Plug>(anzu-update-search-status)
 
 " ESEARCH
 let g:esearch = {}
@@ -759,7 +748,10 @@ let g:defx_icon_exact_dir_matches = {
 \ }
 
 " VIM-GO
+let g:go_term_enabled = 1
 let g:go_term_mode = "silent keepalt rightbelow 15 split"
+let g:go_def_reuse_buffer = 1
+
 autocmd FileType go nmap <leader>r :call ReuseVimGoTerm('GoRun')<Return>
 
 " VISTA
