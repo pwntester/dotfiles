@@ -9,6 +9,6 @@
     -Xmx1G \
     -XX:+UseG1GC \
     -XX:+UseStringDeduplication \
-    -jar /Users/alvaro/.vscode/extensions/redhat.java-0.40.0/server/plugins/org.eclipse.equinox.launcher_1.5.200.v20180922-1751.jar \
-    -configuration /Users/alvaro/.vscode/extensions/redhat.java-0.40.0/server/config_mac \
+    -jar /Users/alvaro/.vscode/extensions/redhat.java-0.52.0/server/plugins/org.eclipse.equinox.launcher_1.5.600.v20191014-2022.jar \
+    -configuration /Users/alvaro/.vscode/extensions/redhat.java-0.52.0/server/config_mac \
     -data /Users/alvaro/jdt_ws
