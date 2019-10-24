@@ -5,20 +5,22 @@ endif
 " ================ PLUGINS ==================== {{{
 
 " Disable built-in plugins
-let g:loaded_matchit = 1 
-let g:loaded_gzip = 1 
-let g:loaded_zipPlugin = 1 
-let g:loaded_logipat = 1 
-let g:loaded_2html_plugin = 1 
-let g:loaded_rrhelper = 1 
+let g:loaded_matchit         = 1 
+let g:loaded_gzip            = 1 
+let g:loaded_zipPlugin       = 1 
+let g:loaded_logipat         = 1 
+let g:loaded_2html_plugin    = 1 
+let g:loaded_rrhelper        = 1 
 let g:loaded_getscriptPlugin = 1 
-let g:loaded_tarPlugin = 1 
-let g:loaded_netrwPlugin = 1
+let g:loaded_tarPlugin       = 1 
+let g:loaded_netrwPlugin     = 1
 
 call plug#begin('~/.nvim/plugged') 
     " Github plugins
-    Plug 'pwntester/LanguageClient-neovim', { 'branch': 'alignment', 'do': 'bash install.sh' } 
-    Plug 'Shougo/deoplete.nvim',            { 'do': ':UpdateRemotePlugins'} 
+    Plug 'natebosch/vim-lsc'
+    Plug 'ajh17/VimCompletesMe'
+    "Plug 'pwntester/LanguageClient-neovim', { 'branch': 'alignment', 'do': 'bash install.sh' } 
+    "Plug 'Shougo/deoplete.nvim',            { 'do': ':UpdateRemotePlugins'} 
     Plug 'Shougo/defx.nvim',                { 'do': ':UpdateRemotePlugins'} 
     Plug 'fatih/vim-go',                    { 'do': ':GoInstallBinaries' }
     Plug 'kristijanhusak/defx-git'
@@ -33,6 +35,9 @@ call plug#begin('~/.nvim/plugged')
     Plug 'tpope/vim-repeat'
     Plug 'airblade/vim-gitgutter'
     Plug 'tomtom/tcomment_vim'
+    Plug 'osyo-manga/vim-anzu'
+    Plug 'haya14busa/vim-asterisk'
+    Plug 'haya14busa/is.vim'
     Plug 'regedarek/ZoomWin'
     Plug 'Yggdroot/indentLine'
     Plug 'matze/vim-move'
@@ -42,7 +47,8 @@ call plug#begin('~/.nvim/plugged')
     Plug 'junegunn/rainbow_parentheses.vim'
     Plug 'alvan/vim-closetag'
     Plug 'christoomey/vim-tmux-navigator'
-    Plug 'cohama/lexima.vim'
+    "Plug 'cohama/lexima.vim'
+    Plug 'tmsvg/pear-tree'
     Plug 'SirVer/ultisnips'
     Plug 'honza/vim-snippets'
     Plug 'eugen0329/vim-esearch'
@@ -53,6 +59,9 @@ call plug#begin('~/.nvim/plugged')
     Plug 'kshenoy/vim-signature'
     Plug 'ap/vim-css-color'
     Plug 'sheerun/vim-polyglot'
+    Plug 'tommcdo/vim-lion'
+    Plug 'wellle/targets.vim'
+    Plug 'michaeljsmith/vim-indent-object'
     "Plug 'liuchengxu/vista.vim'
     "Plug 'liuchengxu/vim-clap'
     
@@ -74,7 +83,6 @@ set inccommand=nosplit                                            " Live preview
 set fileencoding=utf-8
 set encoding=utf-8
 set nottimeout
-set shortmess=filnxFAIOTWacots
 " }}}
 
 " ================ UI ==================== {{{
@@ -129,7 +137,11 @@ set wildignore+=tmp/**
 set wildignore+=*.jpg,*.bmp,*.gif,*.png,*.jpeg,*.svg
 
 set complete=.,w,b,u,U,i,d,t
-set completeopt=noinsert,menuone,noselect                           " show the popup menu even if there's only one match), prevent automatic selection and prevent automatic text injection into the current line.
+"set completeopt=noinsert,menuone,noselect                           " show the popup menu even if there's only one match), prevent automatic selection and prevent automatic text injection into the current line.
+set completeopt=menu,menuone,noinsert,noselect
+
+set shortmess+=c                                                    " suppress the annoying 'match x of y', 'The only match' and 'Pattern not found' messages
+set shortmess-=F
 " }}}
 
 " ================ SWAP/UNDO FILES ==================== {{{
@@ -163,11 +175,11 @@ augroup vimrc
     " set aliases
     autocmd VimEnter * call SetAliases()
     " deoplete
-    autocmd BufEnter * nested if getfsize(@%) < 1000000 | call deoplete#enable() | endif
+    "autocmd BufEnter * nested if getfsize(@%) < 1000000 | call deoplete#enable() | endif
     " languageclient-neovim
-    autocmd BufEnter * nested if getfsize(@%) < 1000000 | call EnableLSP() | endif
+    "autocmd BufEnter * nested if getfsize(@%) < 1000000 | call EnableLSP() | endif
     " Run gofmt and goimports on save
-    autocmd BufWritePre *.go :call LanguageClient#textDocument_formatting_sync()
+    "autocmd BufWritePre *.go :call LanguageClient#textDocument_formatting_sync()
     " defx
     autocmd FileType defx call DefxSettings()
     " update lightline on LSP diagnostic update
@@ -196,8 +208,8 @@ augroup END
 
 " ================ MAPPINGS ==================== {{{
 " center after search
-" nnoremap n nzz
-" nnoremap N Nzz
+nnoremap n nzz
+nnoremap N Nzz
 
 " search for contents of register 0 (where AuditPane copies the RuleIDs)
 noremap 0/ :execute substitute('/'.@0,'0$','','g')<Return>                                   
@@ -489,6 +501,8 @@ nmap <leader>z <Plug>ZoomWin
 " INDENTLINE
 let g:indentLine_color_gui = '#17252c'
 let g:indentLine_fileTypeExclude = g:special_buffers 
+let g:indentLine_faster     = 1
+let g:indentLine_setConceal = 0
 autocmd FileType defx IndentLinesToggle " filetype of defx has not been set when BufWinEnter event is triggered
 
 " FZF
@@ -567,7 +581,12 @@ let g:UltiSnipsJumpForwardTrigger="<c-j>"
 let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 
 " DEOPLETE
-let g:deoplete#enable_at_startup = 0
+" let g:deoplete#enable_at_startup = 0
+" inoremap <expr> <CR> (pumvisible() ? "\<c-y>\<cr>" : "\<CR>")
+" inoremap <silent><expr> <C-k> pumvisible() ? "\<C-p>" : ""
+" inoremap <silent><expr> <C-j> pumvisible() ? "\<C-n>" : ">"
+
+" VimCompletesMe
 inoremap <expr> <CR> (pumvisible() ? "\<c-y>\<cr>" : "\<CR>")
 inoremap <silent><expr> <C-k> pumvisible() ? "\<C-p>" : ""
 inoremap <silent><expr> <C-j> pumvisible() ? "\<C-n>" : ">"
@@ -579,6 +598,15 @@ let g:vim_markdown_folding_disabled = 1
 let g:matchup_matchparen_status_offscreen = 0                                   " Do not show offscreen closing match in statusline
 let g:matchup_matchparen_nomode = "ivV\<c-v>"                                   " Enable matchup only in normal mode
 let g:matchup_matchparen_deferred = 1                                           " Defer matchup highlights to allow better cursor movement performance
+
+" ANZU / IS.VIM / ASTERISK
+let g:anzu_enable_CursorMoved_AnzuUpdateSearchStatus=1
+map n <Plug>(is-nohl)<Plug>(anzu-n-with-echo)
+map N <Plug>(is-nohl)<Plug>(anzu-N-with-echo)
+map * <Plug>(asterisk-z*)<Plug>(is-nohl-1)<Plug>(anzu-update-search-status)
+map # <Plug>(asterisk-z#)<Plug>(is-nohl-1)<Plug>(anzu-update-search-status)
+map g* <Plug>(asterisk-gz*)<Plug>(is-nohl-1)<Plug>(anzu-update-search-status)
+map g# <Plug>(asterisk-gz#)<Plug>(is-nohl-1)<Plug>(anzu-update-search-status)
 
 " ESEARCH
 let g:esearch = {}
@@ -592,10 +620,16 @@ call esearch#map('r/', 'esearch')
 call esearch#map('r*', 'esearch-word-under-cursor')
 
 " LEXIMA
-let g:lexima_enable_basic_rules = 1
-let g:lexima_enable_space_rules = 1
-let g:lexima_enable_endwise_rules = 1
-let g:lexima_enable_newline_rules = 1
+" let g:lexima_enable_basic_rules = 1
+" let g:lexima_enable_space_rules = 1
+" let g:lexima_enable_endwise_rules = 1
+" let g:lexima_enable_newline_rules = 1
+
+" PEAR-TREE
+let g:pear_tree_repeatable_expand = 0
+let g:pear_tree_smart_backspace   = 1
+let g:pear_tree_smart_closers     = 1
+let g:pear_tree_smart_openers     = 1
 
 " VIM-FORTIFY
 execute 'source' fnameescape(expand('~/.config/nvim/fortify.vim'))
@@ -651,20 +685,62 @@ let g:LanguageClient_serverCommands.javascript = ['javascript-typescript-stdio']
 let g:LanguageClient_serverCommands.fortifyrulepack = ['~/dotfiles/config/lts/fls', '-vv', '--log-file', '/tmp/fls.log']
 let g:LanguageClient_serverCommands.go = ['gopls']
 let g:LanguageClient_serverCommands.python = ['pyls', '-vv', '--log-file', '/tmp/pyls.log']
-call deoplete#custom#source('LanguageClient', 'input_pattern', '.+$')
-let g:LanguageClient_loggingFile = expand('/tmp/LanguageClient.log')
-let g:LanguageClient_serverStderr = expand('/tmp/LanguageServer.log')
-let g:LanguageClient_loggingLevel = 'INFO'
-let g:LanguageClient_changeThrottle = 1 
-let g:LanguageClient_autoStart = 0
-let g:LanguageClient_diagnosticsDisplay = { 
-            \ 1: {'name': 'Error', 'texthl': 'ALEError', 'signText': 'E', 'signTexthl': 'ALEErrorSign',"virtualTexthl": "ALEVirtualTextError",}, 
-            \ 2: {"name": "Warning", "texthl": "ALEWarning", "signText": "W", "signTexthl": "ALEWarningSign","virtualTexthl": "ALEVirtualTextWarning",}, 
-            \ 3: {"name": "Information", "texthl": "ALEInfo", "signText": "ℹ", "signTexthl": "ALEInfoSign","virtualTexthl": "ALEVirtualTextWarning",}, 
-            \ 4: {"name": "Hint", "texthl": "ALEInfo", "signText": "➤", "signTexthl": "ALEInfoSign","virtualTexthl": "ALEVirtualTextWarning",}, 
-    \ }
+"call deoplete#custom#source('LanguageClient', 'input_pattern', '.+$')
+" let g:LanguageClient_loggingFile = expand('/tmp/LanguageClient.log')
+" let g:LanguageClient_serverStderr = expand('/tmp/LanguageServer.log')
+" let g:LanguageClient_loggingLevel = 'INFO'
+" let g:LanguageClient_changeThrottle = 1 
+" let g:LanguageClient_autoStart = 0
+" let g:LanguageClient_diagnosticsDisplay = { 
+"             \ 1: {'name': 'Error', 'texthl': 'ALEError', 'signText': 'E', 'signTexthl': 'ALEErrorSign',"virtualTexthl": "ALEVirtualTextError",}, 
+"             \ 2: {"name": "Warning", "texthl": "ALEWarning", "signText": "W", "signTexthl": "ALEWarningSign","virtualTexthl": "ALEVirtualTextWarning",}, 
+"             \ 3: {"name": "Information", "texthl": "ALEInfo", "signText": "ℹ", "signTexthl": "ALEInfoSign","virtualTexthl": "ALEVirtualTextWarning",}, 
+"             \ 4: {"name": "Hint", "texthl": "ALEInfo", "signText": "➤", "signTexthl": "ALEInfoSign","virtualTexthl": "ALEVirtualTextWarning",}, 
+"     \ }
 nnoremap <leader>l :call LanguageClient_contextMenu()<Return>
 nnoremap <leader>a :call LanguageClient#textDocument_codeAction()<Return>
+
+" VIM-LSC
+let g:lsc_server_commands = {
+ \  'fortifyrulepack': {
+ \    'command': '~/dotfiles/config/lts/fls', 
+ \    'log_level': -1,
+ \    'suppress_stderr': v:true,
+ \  },
+ \  'javascript': {
+ \    'command': 'typescript-language-server --stdio',
+ \    'log_level': -1,
+ \    'suppress_stderr': v:true,
+ \  },
+ \  'go': {
+ \    'command': 'gopls -logfile /tmp/gopls.log serve',
+ \    'log_level': -1,
+ \    'suppress_stderr': v:true,
+ \  },
+ \  'java': {
+ \    'command': '/Users/alvaro/dotfiles/config/lts/jdtls',
+ \    'log_level': -1,
+ \    'suppress_stderr': v:true,
+ \  },
+ \  'python': {
+ \    'command': 'pyls',
+ \    'log_level': -1,
+ \    'suppress_stderr': v:true,
+ \  }
+ \}
+" -vv --log-file /tmp/fls.log',
+let g:lsc_auto_map = {
+ \  'GoToDefinition': 'gd',
+ \  'FindReferences': 'gr',
+ \  'FindCodeActions': 'ga',
+ \  'Rename': 'gR',
+ \  'ShowHover': 'gh',
+ \  'Completion': 'omnifunc',
+ \}
+let g:lsc_enable_autocomplete  = v:true
+let g:lsc_enable_diagnostics   = v:true
+let g:lsc_reference_highlights = v:true
+let g:lsc_trace_level          = 'off'
 
 " VIM-ROOTER
 let g:rooter_use_lcd = 1
@@ -754,11 +830,17 @@ let g:go_def_reuse_buffer = 1
 
 autocmd FileType go nmap <leader>r :call ReuseVimGoTerm('GoRun')<Return>
 
+" VIM-POLYGLOT
+let g:polyglot_disabled = ["jsx"]
+
+" VIM-LION
+" align around a given char: gl<character>
+let g:lion_squeeze_spaces = 1
+
 " VISTA
 " let g:vista_default_executive = 'lcn'
 " nnoremap <Leader>e :Vista!!<Return> 
 " nnoremap <Leader>f :Vista finder<Return> 
-
 
 " }}}
 
@@ -767,7 +849,9 @@ set background=dark
 colorscheme cobalt2
 
 hi Defx_filename_root guifg=#668799 ctermfg=66
-" hi Defx_filename_directory guifg=#668799 ctermfg=66
 hi Directory guifg=#668799 ctermfg=66
+hi lscDiagnosticError guifg=#FF0000
+hi lscDiagnosticWarning guifg=#0000FF
+hi lscDiagnosticInfo guifg=#FFFF00
 "}}}
 
