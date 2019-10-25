@@ -17,7 +17,7 @@ let g:loaded_netrwPlugin     = 1
 
 call plug#begin('~/.nvim/plugged') 
     " Github plugins
-    Plug 'natebosch/vim-lsc'
+    Plug 'natebosch/vim-lsc',               { 'branch': 'response-hooks' }
     Plug 'ajh17/VimCompletesMe'
     "Plug 'pwntester/LanguageClient-neovim', { 'branch': 'alignment', 'do': 'bash install.sh' } 
     "Plug 'Shougo/deoplete.nvim',            { 'do': ':UpdateRemotePlugins'} 
@@ -48,6 +48,7 @@ call plug#begin('~/.nvim/plugged')
     Plug 'alvan/vim-closetag'
     Plug 'christoomey/vim-tmux-navigator'
     "Plug 'cohama/lexima.vim'
+    Plug 'tommcdo/vim-lion'
     Plug 'tmsvg/pear-tree'
     Plug 'SirVer/ultisnips'
     Plug 'honza/vim-snippets'
@@ -59,16 +60,14 @@ call plug#begin('~/.nvim/plugged')
     Plug 'kshenoy/vim-signature'
     Plug 'ap/vim-css-color'
     Plug 'sheerun/vim-polyglot'
-    Plug 'tommcdo/vim-lion'
     Plug 'wellle/targets.vim'
     Plug 'michaeljsmith/vim-indent-object'
     "Plug 'liuchengxu/vista.vim'
     "Plug 'liuchengxu/vim-clap'
     
     " Local plugins
-    Plug '~/Fortify/SSR/repos/vim-fortify'
+    Plug '/Users/alvaro/Fortify/SSR/repos/vim-fortify'
     Plug '/usr/local/opt/fzf'
-    Plug '/Users/alvaro/Development/GitRepos/vim-ql'
 call plug#end()
 " }}}
 
@@ -700,48 +699,6 @@ let g:LanguageClient_serverCommands.python = ['pyls', '-vv', '--log-file', '/tmp
 nnoremap <leader>l :call LanguageClient_contextMenu()<Return>
 nnoremap <leader>a :call LanguageClient#textDocument_codeAction()<Return>
 
-" VIM-LSC
-let g:lsc_server_commands = {
- \  'fortifyrulepack': {
- \    'command': '~/dotfiles/config/lts/fls', 
- \    'log_level': -1,
- \    'suppress_stderr': v:true,
- \  },
- \  'javascript': {
- \    'command': 'typescript-language-server --stdio',
- \    'log_level': -1,
- \    'suppress_stderr': v:true,
- \  },
- \  'go': {
- \    'command': 'gopls -logfile /tmp/gopls.log serve',
- \    'log_level': -1,
- \    'suppress_stderr': v:true,
- \  },
- \  'java': {
- \    'command': '/Users/alvaro/dotfiles/config/lts/jdtls',
- \    'log_level': -1,
- \    'suppress_stderr': v:true,
- \  },
- \  'python': {
- \    'command': 'pyls',
- \    'log_level': -1,
- \    'suppress_stderr': v:true,
- \  }
- \}
-" -vv --log-file /tmp/fls.log',
-let g:lsc_auto_map = {
- \  'GoToDefinition': 'gd',
- \  'FindReferences': 'gr',
- \  'FindCodeActions': 'ga',
- \  'Rename': 'gR',
- \  'ShowHover': 'gh',
- \  'Completion': 'omnifunc',
- \}
-let g:lsc_enable_autocomplete  = v:true
-let g:lsc_enable_diagnostics   = v:true
-let g:lsc_reference_highlights = v:true
-let g:lsc_trace_level          = 'off'
-
 " VIM-ROOTER
 let g:rooter_use_lcd = 1
 let g:rooter_patterns = ['build.gradle', 'build.sbt', 'pom.xml', '.git/']
@@ -843,6 +800,60 @@ let g:lion_squeeze_spaces = 1
 " nnoremap <Leader>f :Vista finder<Return> 
 
 " }}}
+
+" VIM-LSC
+let g:lsc_auto_map = {
+ \  'GoToDefinition': 'gd',
+ \  'FindReferences': 'gr',
+ \  'FindCodeActions': 'ga',
+ \  'Rename': 'gR',
+ \  'ShowHover': 'gh',
+ \  'Completion': 'omnifunc',
+ \}
+let g:lsc_enable_autocomplete  = v:true
+let g:lsc_enable_diagnostics   = v:true
+let g:lsc_reference_highlights = v:true
+let g:lsc_trace_level          = 'off'
+function! s:fixEdits(actions) abort
+    return map(a:actions, function('<SID>fixEdit'))
+endfunction
+function! s:fixEdit(idx, maybeEdit) abort
+    if !has_key(a:maybeEdit, 'command') || a:maybeEdit.command.command !=# 'java.apply.workspaceEdit'
+        return a:maybeEdit
+    endif
+    return {'edit': a:maybeEdit.command.arguments[0], 'title': a:maybeEdit.command.title}
+endfunction
+let g:lsc_server_commands = {
+ \  'fortifyrulepack': {
+ \    'command': '~/dotfiles/config/lts/fls', 
+ \    'log_level': -1,
+ \    'suppress_stderr': v:true,
+ \  },
+ \  'javascript': {
+ \    'command': 'typescript-language-server --stdio',
+ \    'log_level': -1,
+ \    'suppress_stderr': v:true,
+ \  },
+ \  'go': {
+ \    'command': 'gopls -logfile /tmp/gopls.log serve',
+ \    'log_level': -1,
+ \    'suppress_stderr': v:true,
+ \  },
+ \  'java': {
+ \    'command': '/Users/alvaro/dotfiles/config/lts/jdtls',
+ \    'log_level': -1,
+ \    'suppress_stderr': v:true,
+ \    'response_hooks': {
+ \      'textDocument/codeAction': function('<SID>fixEdits'),
+ \    }
+ \  },
+ \  'python': {
+ \    'command': 'pyls',
+ \    'log_level': -1,
+ \    'suppress_stderr': v:true,
+ \  }
+ \}
+" -vv --log-file /tmp/fls.log',
 
 " ================ COLOR SCHEME ======================== {{{
 set background=dark
