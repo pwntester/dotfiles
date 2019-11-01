@@ -16,8 +16,8 @@ let g:lightline = {
     \ 'component_expand': {
     \   'tabs': 'LightlineBufferTabs',
     \   'tabs_usage': 'LightlineBufferTitle',
-    \   'linter_warnings': 'LightlineLanguageClientWarnings',
-    \   'linter_errors': 'LightlineLanguageClientErrors',
+    \   'linter_warnings': 'LightlineLocationListWarnings',
+    \   'linter_errors': 'LightlineLocationListErrors',
     \ },
     \ 'component_type': {
     \   'linter_checking': 'left',
@@ -108,20 +108,36 @@ function! LightlineCwd()
     return winwidth(0) < 120 ? '' : getcwd()
 endfunction
 
-function! LightlineLanguageClientWarnings()
+function! LightlineQuickFixWarnings()
   let current_buf_number = bufnr('%')
-  let qflist = getqflist()
-  let current_buf_diagnostics = filter(qflist, {index, dict -> dict['bufnr'] == current_buf_number && dict['type'] == 'W'})
+  let list = getqflist()
+  let current_buf_diagnostics = filter(list, {index, dict -> dict['bufnr'] == current_buf_number && dict['type'] == 'W'})
   let count = len(current_buf_diagnostics)
-  return count > 0 && g:LanguageClient_loaded ? 'W: ' . count : ''
+  return count > 0 ? 'W: ' . count : ''
 endfunction
 
-function! LightlineLanguageClientErrors()
+function! LightlineQuickFixErrors()
   let current_buf_number = bufnr('%')
-  let qflist = getqflist()
-  let current_buf_diagnostics = filter(qflist, {index, dict -> dict['bufnr'] == current_buf_number && dict['type'] == 'E'})
+  let list = getqflist()
+  let current_buf_diagnostics = filter(list, {index, dict -> dict['bufnr'] == current_buf_number && dict['type'] == 'E'})
   let count = len(current_buf_diagnostics)
-  return count > 0 && g:LanguageClient_loaded ? 'E: ' . count : ''
+  return count > 0 ? 'E: ' . count : ''
+endfunction
+
+function! LightlineLocationListWarnings()
+  let current_buf_number = bufnr('%')
+  let list = getloclist(0)
+  let current_buf_diagnostics = filter(list, {index, dict -> dict['bufnr'] == current_buf_number && dict['type'] == 'W'})
+  let count = len(current_buf_diagnostics)
+  return count > 0 ? 'W: ' . count : ''
+endfunction
+
+function! LightlineLocationListErrors()
+  let current_buf_number = bufnr('%')
+  let list = getloclist(0)
+  let current_buf_diagnostics = filter(list, {index, dict -> dict['bufnr'] == current_buf_number && dict['type'] == 'E'})
+  let count = len(current_buf_diagnostics)
+  return count > 0 ? 'E: ' . count : ''
 endfunction
 
 function! LightlineFugitive() abort
