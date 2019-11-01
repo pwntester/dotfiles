@@ -7,7 +7,7 @@ augroup END
 
 nnoremap <leader>i :NewRuleID<Return>
 let g:fortify_ruleweb_user = 'amunoz'
-let g:fortify_ruleweb_password = '********'
+let g:fortify_ruleweb_password = 'Alvar0_M'
 let g:fortify_SCAPath = '/Applications/HP_Fortify/sca'
 let g:fortify_PythonPath = '/Users/alvaro/.pyenv/versions/2.7/lib/python2.7/site-packages'
 let g:fortify_AndroidJarPath = '/Users/alvaro/Library/Android/sdk/platforms/android-26/android.jar'
@@ -23,7 +23,7 @@ let g:fortify_AWBOpts = []
 
 let g:fortify_TranslationOpts = ['-verbose']
 " let g:fortify_TranslationOpts += ['-django-disable-autodiscover']
-" let g:fortify_TranslationOpts += ['-debug', '-debug-verbose', '-logfile','sca_build/translation.log']
+let g:fortify_TranslationOpts += ['-debug', '-debug-verbose', '-logfile', 'translation.log']
 " let g:fortify_TranslationOpts += ['-python-legacy']
 " let g:fortify_TranslationOpts += ['-python-version 3']
 " let g:fortify_TranslationOpts += ['-project-root', 'sca_build']
@@ -45,7 +45,7 @@ let g:fortify_ScanOpts += ['-Dcom.fortify.sca.EnableDOMModeling=true']
 let g:fortify_ScanOpts += ['-Dcom.fortify.sca.DOMModeling.tags=div ']
 "let g:fortify_ScanOpts += ['-Dcom.fortify.sca.limiters.MaxIndirectResolutionsForCall=512']
 " let g:fortify_ScanOpts += ['-Dcom.fortify.sca.DebugNumericTaint=true']
-" let g:fortify_ScanOpts += ['-debug', '-debug-verbose', '-logfile', 'sca_build/scan.log']  " Generate scan logs
+let g:fortify_ScanOpts += ['-debug', '-debug-verbose', '-logfile', 'scan.log']  " Generate scan logs
 " let g:fortify_ScanOpts += ['-Ddf3.debug=sca_build/taint.log']                             " Dump taint log
 " let g:fortify_ScanOpts += ['-Dcom.fortify.sca.followImports=false']                       " Do not translate and analyze all libraries that you require in your code
 " let g:fortify_ScanOpts += ['-Ddebug.dump-nst']                                            " For debugging purposes dumps NST files between Phase 1 and Phase 2 of analysis.
