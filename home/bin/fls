@@ -1,0 +1,8 @@
+#!/bin/bash
+
+if [ -d "/Users/alvaro/Fortify/SSR/repos/fortify-language-server" ] 
+then
+    /Users/alvaro/Fortify/SSR/repos/fortify-language-server/fortify-language-server.py "$@"
+else
+    /Users/pwntester/Dev/fortify-language-server/fortify-language-server.py "$@"
+fi

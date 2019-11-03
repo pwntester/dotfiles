@@ -4,16 +4,17 @@ call plug#begin('~/.nvim/plugged')
     Plug 'Shougo/deoplete.nvim',            { 'do': ':UpdateRemotePlugins'} 
     Plug 'Shougo/defx.nvim',                { 'do': ':UpdateRemotePlugins'} 
     Plug 'fatih/vim-go',                    { 'do': ':GoInstallBinaries' }
-    Plug 'natebosch/vim-lsc'
+    "Plug 'natebosch/vim-lsc'
+    Plug 'pwntester/vim-lsc'
     Plug 'hrsh7th/deoplete-vim-lsc'
     Plug 'kristijanhusak/defx-git'
     Plug 'kristijanhusak/defx-icons'
+    Plug 'rhysd/git-messenger.vim'
     Plug 'junegunn/fzf.vim' 
     Plug 'pbogut/fzf-mru.vim'
     Plug 'tpope/vim-fugitive' 
     Plug 'jreybert/vimagit'
     Plug 'andymass/vim-matchup' 
-    Plug 'Yilin-Yang/vim-markbar'
     Plug 'machakann/vim-sandwich'
     Plug 'tpope/vim-repeat'
     Plug 'airblade/vim-gitgutter'
@@ -21,10 +22,8 @@ call plug#begin('~/.nvim/plugged')
     Plug 'osyo-manga/vim-anzu'
     Plug 'haya14busa/vim-asterisk'
     Plug 'haya14busa/is.vim'
-    Plug 'regedarek/ZoomWin'
     Plug 'Yggdroot/indentLine'
     Plug 'matze/vim-move'
-    Plug 'arcticicestudio/nord-vim'
     Plug 'pwntester/cobalt2.vim'
     Plug 'itchyny/lightline.vim'
     Plug 'chaoren/vim-wordmotion'
@@ -36,7 +35,6 @@ call plug#begin('~/.nvim/plugged')
     Plug 'tmsvg/pear-tree'
     Plug 'SirVer/ultisnips'
     Plug 'honza/vim-snippets'
-    Plug 'eugen0329/vim-esearch'
     Plug 'AndrewRadev/linediff.vim'
     Plug 'rbgrouleff/bclose.vim'
     Plug 'airblade/vim-rooter'
@@ -47,10 +45,15 @@ call plug#begin('~/.nvim/plugged')
     Plug 'wellle/targets.vim'
     Plug 'michaeljsmith/vim-indent-object'
     Plug 'CoatiSoftware/vim-sourcetrail'
+    Plug 'liuchengxu/vista.vim'
     
     " Local plugins
-    Plug fnameescape(expand('~/Fortify/SSR/repos/vim-fortify'))
     Plug '/usr/local/opt/fzf'
+    if isdirectory(fnameescape(expand('~/Fortify/SSR/repos/vim-fortify')))
+        Plug fnameescape(expand('~/Fortify/SSR/repos/vim-fortify'))
+    elseif isdirectory(fnameescape(expand('~/Dev/vim-fortify')))
+        Plug fnameescape(expand('~/Dev/vim-fortify'))
+    endif
 call plug#end()
 
 " VIM-FORTIFY
@@ -67,9 +70,6 @@ execute 'source' fnameescape(expand('~/.config/nvim/defx.vim'))
 
 " VIM-LSC
 execute 'source' fnameescape(expand('~/.config/nvim/lsc.vim'))
-
-" ZOOMWIN
-nmap <leader>z <Plug>ZoomWin
 
 " INDENTLINE
 let g:indentLine_color_gui = '#17252c'
@@ -120,17 +120,6 @@ map # <Plug>(asterisk-z#)<Plug>(is-nohl-1)<Plug>(anzu-update-search-status)
 map g* <Plug>(asterisk-gz*)<Plug>(is-nohl-1)<Plug>(anzu-update-search-status)
 map g# <Plug>(asterisk-gz#)<Plug>(is-nohl-1)<Plug>(anzu-update-search-status)
 
-" ESEARCH
-let g:esearch = {}
-let g:esearch.adapter = 'rg'
-let g:esearch.backend = 'nvim'
-let g:esearch.out = 'qflist'
-let g:esearch.batch_size = 1000
-let g:esearch.use = []
-let g:esearch.default_mappings = 0
-call esearch#map('r/', 'esearch')
-call esearch#map('r*', 'esearch-word-under-cursor')
-
 " PEAR-TREE
 let g:pear_tree_repeatable_expand = 0
 let g:pear_tree_smart_backspace   = 1
@@ -148,12 +137,6 @@ let g:bclose_no_plugin_maps = 1
 
 " GITGUTTER 
 let g:gitgutter_map_keys = 0
-
-" MARKBAR
-nmap <Leader>t <Plug>ToggleMarkbar
-let g:markbar_width = 40
-let g:markbar_enable_peekaboo = v:false
-let g:markbar_marks_to_display = 'abcdefghijklmnopqrstuvwyzABCDEFGHIJKLMNOPQRSTUVWYZ'
 
 " VIMAGIT
 let g:magit_auto_foldopen = 0
@@ -198,7 +181,6 @@ function! s:enableRainbowParentheses() abort
 endfunction
 
 " VIM-ALIAS
-autocmd VimEnter * call s:setAliases()
 function! CloseWin()
     if index(g:special_buffers, &filetype) > -1 
         " closing window with special buffer
@@ -208,7 +190,7 @@ function! CloseWin()
         let l:winids = nvim_list_wins()
         if len(l:winids) == 1
             " closing window with normal buffer
-            call nvim_win_close(l:current_window, v:true)
+            quit
         elseif len(winids) > 1
             let l:non_special_buffers_count = 0
             for w in l:winids
@@ -217,7 +199,8 @@ function! CloseWin()
                 endif
             endfor
             if l:non_special_buffers_count == 1
-                echo "Last window, not closing"
+                " only one normal window, but some special ones opened
+                quitall
             else 
                 " closing window since there are more non-special windows
                 call nvim_win_close(l:current_window, v:true)
@@ -225,9 +208,10 @@ function! CloseWin()
         endif
     endif
 endfunction
-function! s:setAliases() abort
+function! SetAliases() abort
     " do not close windows when closing buffers
     Alias bd Bclose
+    Alias bo BufOnly
 
     " close window 
     Alias q call\ CloseWin()<Return>
@@ -240,17 +224,24 @@ function! s:setAliases() abort
 
     " super save
     Alias W write\ !sudo\ tee\ >\ /dev/null\ %
-
-    " quit all windows
-    Alias Q qa!
 endfunction
+autocmd VimEnter * call SetAliases()
 
 " DEOPLETE
 autocmd BufEnter * nested if getfsize(@%) < 1000000 | call deoplete#enable() | endif
 let g:deoplete#enable_at_startup = 0
-inoremap <expr> <CR> (pumvisible() ? "\<c-y>\<cr>" : "\<CR>")
+inoremap <expr> <Return> (pumvisible() ? "\<c-y>\<cr>" : "\<Return>")
 inoremap <silent><expr> <C-k> pumvisible() ? "\<C-p>" : ""
 inoremap <silent><expr> <C-j> pumvisible() ? "\<C-n>" : ">"
+
+" GIT-MESSANGER
+nmap <Leader>gm <Plug>(git-messenger)
+
+" VISTA
+let g:vista_default_executive = 'vim_lsc'
+let g:vista_fzf_preview = ['right:50%']
+nmap <leader>v :Vista<Return>
+nmap <leader>vf :Vista finder<Return>
 
 " }}}
 

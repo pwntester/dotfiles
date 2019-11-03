@@ -1,3 +1,32 @@
+" use FZF for code actions
+let s:actions = []
+
+function! s:FZFCodeActionSource() abort
+    return map(deepcopy(s:actions), 'v:val.title')
+endfunction
+
+function! s:FZFCodeActionSink(line) abort
+    for action in s:actions
+        if a:line == action.title
+            call lsc#edit#applyCodeAction(action)
+        endif
+    endfor
+endfunction
+
+function! s:FZFSelectAction(actions) abort
+    let s:actions = a:actions
+    let s:fetching = v:true
+    call fzf#run(fzf#wrap({
+        \ 'source': s:FZFCodeActionSource(),
+        \ 'sink': function('<SID>FZFCodeActionSink'),
+        \ 'down': '~40%',
+        \ 'options': '+m',
+        \ }))
+    return v:true
+endfunction
+
+nnoremap ga :call lsc#edit#findCodeActions(function('<SID>FZFSelectAction'))<Return>
+
 " define signs
 call sign_define("vim-lsc-error", {"text" : "x", "texthl" : "lscSignDiagnosticError"})
 call sign_define("vim-lsc-warning", {"text" : "x", "texthl" : "lscSignDiagnosticWarning"})
@@ -5,6 +34,11 @@ call sign_define("vim-lsc-warning", {"text" : "x", "texthl" : "lscSignDiagnostic
 " virtual text namespace
 let s:namespace_id = nvim_create_namespace("vim-lsc")
 
+autocmd User LSCDiagnosticsChange call lightline#update()
+autocmd User LSCDiagnosticsChange call s:updateDiagnosticVisuals()
+autocmd BufEnter call s:updateDiagnosticVisuals()
+ 
+" improve LSC diagnostic visualizations
 function! s:updateDiagnosticVisuals() abort
     let diagnostics = []
     for buf_id in nvim_list_bufs()
@@ -23,17 +57,15 @@ function! s:updateDiagnosticVisuals() abort
             endif
         endif
     endfor
-    if len(diagnostics) > 0
-        call s:setVirtualText(diagnostics)
-        call s:setSigns(diagnostics)
-    endif
+
+    call s:setVirtualText(diagnostics)
+    call s:setSigns(diagnostics)
 endfunction
 
 function! s:setVirtualText(diagnostics) abort
     if !exists('*nvim_buf_set_virtual_text')
         return
     endif
-
 
     " clear previous virtual texts
     let buf_id = nvim_get_current_buf()
@@ -82,12 +114,15 @@ function! s:setSigns(diagnostics) abort
     endfor
 endfunction
 
+" disable LSC for large files
 function! s:disableLSC() abort
     if index(['go', 'java', 'javascript', 'python', 'fortifyrulepack'], &filetype) > -1
         call lsc#server#disable()
     endif
 endfunction
+autocmd BufEnter * nested if getfsize(@%) > 1000000 | call s:disableLSC() | endif
 
+" eclipse.jdt.ls response hooks to make it LSP compliant
 function! s:fixEdits(actions) abort
     return map(a:actions, function('<SID>fixEdit'))
 endfunction
@@ -99,11 +134,7 @@ function! s:fixEdit(idx, maybeEdit) abort
     return {'edit': a:maybeEdit.command.arguments[0], 'title': a:maybeEdit.command.title}
 endfunction
 
-autocmd User LSCDiagnosticsChange call lightline#update()
-autocmd User LSCDiagnosticsChange call s:updateDiagnosticVisuals()
-autocmd BufEnter call s:updateDiagnosticVisuals()
-autocmd BufEnter * nested if getfsize(@%) > 1000000 | call s:disableLSC() | endif
-
+" LSC config
 let g:lsc_enable_autocomplete  = v:false
 let g:lsc_enable_diagnostics   = v:true
 let g:lsc_reference_highlights = v:true
@@ -113,13 +144,13 @@ let g:lsc_auto_map = {
     \ 'FindReferences': 'gr',
     \ 'NextReference': 'gn',
     \ 'PreviousReference': 'gp',
-    \ 'FindImplementations': 'gI',
-    \ 'FindCodeActions': 'ga',
+    \ 'FindImplementations': 'gi',
+    \ 'FindCodeActions': 'gA',
     \ 'Rename': 'gR',
     \ 'ShowHover': 'gh',
-    \ 'DocumentSymbol': 'gS',
-    \ 'WorkspaceSymbol': 'gs',
-    \ 'SignatureHelp': 'gm',
+    \ 'DocumentSymbol': 'DS',
+    \ 'WorkspaceSymbol': 'WS',
+    \ 'SignatureHelp': 'gs',
     \ 'Completion': '',
     \}
 let g:lsc_server_commands = {
@@ -142,4 +173,3 @@ let g:lsc_server_commands = {
     \   'command': 'pyls',
     \ }
     \}
-

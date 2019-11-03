@@ -1,3 +1,0 @@
-#!/usr/bin/env sh
-
-/Users/alvaro/.pyenv/shims/python /Users/alvaro/Fortify/SSR/repos/fortify-language-server/fortify-language-server.py "$@"

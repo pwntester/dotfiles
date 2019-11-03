@@ -10,7 +10,7 @@ augroup windows
 augroup END
 
 " ================ GLOBALS ======================== {{{
-let g:special_buffers = ['help', 'fortifytestpane', 'fortifyauditpane', 'defx', 'qf', 'vim-plug', 'fzf', 'magit', 'goterm']
+let g:special_buffers = ['help', 'fortifytestpane', 'fortifyauditpane', 'defx', 'qf', 'vim-plug', 'fzf', 'magit', 'goterm', 'vista_kind']
 let g:previous_buffer = 0
 let g:is_previous_buffer_special = 0
 
