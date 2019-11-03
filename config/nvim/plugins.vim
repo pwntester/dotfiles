@@ -218,6 +218,7 @@ function! SetAliases() abort
     Alias q! quit!
     Alias wq write|call\ CloseWin()<Return>
     Alias wq! write|qa!
+    Alias Q quitall!
 
     " save me from 1 files :)
     Alias w1 w!
