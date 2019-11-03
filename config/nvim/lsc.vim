@@ -1,24 +1,21 @@
 " use FZF for code actions
-let s:actions = []
-
-function! s:FZFCodeActionSource() abort
-    return map(deepcopy(s:actions), 'v:val.title')
+function! s:FZFCodeActionSource(actions) abort
+    return map(deepcopy(a:actions), 'v:val.title')
 endfunction
 
-function! s:FZFCodeActionSink(line) abort
-    for action in s:actions
-        if a:line == action.title
+function! s:FZFCodeActionSink(actions, selected) abort
+    for action in a:actions
+        if a:selected == action.title
             call lsc#edit#applyCodeAction(action)
+            break
         endif
     endfor
 endfunction
 
 function! s:FZFSelectAction(actions) abort
-    let s:actions = a:actions
-    let s:fetching = v:true
     call fzf#run(fzf#wrap({
-        \ 'source': s:FZFCodeActionSource(),
-        \ 'sink': function('<SID>FZFCodeActionSink'),
+        \ 'source': s:FZFCodeActionSource(a:actions),
+        \ 'sink': function('<SID>FZFCodeActionSink', [a:actions]),
         \ 'down': '~40%',
         \ 'options': '+m',
         \ }))
