@@ -7,7 +7,7 @@ function! s:openDefx(mode) abort
     for w in nvim_list_wins()
         if nvim_buf_get_option(nvim_win_get_buf(w), 'filetype') == "defx"
             call nvim_win_close(w, v:true)
-            return 
+            break
         endif
     endfor
     " Open it
@@ -19,7 +19,7 @@ function! s:openDefx(mode) abort
 endfunction
 
 function! s:defxSettings() abort
-    nnoremap <silent><buffer><expr> <Return> defx#do_action('open')
+    nnoremap <silent><buffer><expr> <Return> defx#do_action('drop')
     nnoremap <silent><buffer><expr> y defx#do_action('copy')
     nnoremap <silent><buffer><expr> m defx#do_action('move')
     nnoremap <silent><buffer><expr> p defx#do_action('paste')

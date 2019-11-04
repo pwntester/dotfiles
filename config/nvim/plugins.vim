@@ -5,7 +5,7 @@ call plug#begin('~/.nvim/plugged')
     Plug 'Shougo/defx.nvim',                { 'do': ':UpdateRemotePlugins'} 
     Plug 'fatih/vim-go',                    { 'do': ':GoInstallBinaries' }
     "Plug 'natebosch/vim-lsc'
-    Plug 'pwntester/vim-lsc'
+    Plug 'pwntester/vim-lsc',               { 'branch': 'notifications'}
     Plug 'hrsh7th/deoplete-vim-lsc'
     Plug 'kristijanhusak/defx-git'
     Plug 'kristijanhusak/defx-icons'
@@ -35,7 +35,7 @@ call plug#begin('~/.nvim/plugged')
     Plug 'SirVer/ultisnips'
     Plug 'honza/vim-snippets'
     Plug 'AndrewRadev/linediff.vim'
-    "Plug 'rbgrouleff/bclose.vim'
+    Plug 'rbgrouleff/bclose.vim'
     Plug 'airblade/vim-rooter'
     Plug 'Konfekt/vim-alias'
     Plug 'kshenoy/vim-signature'
@@ -111,9 +111,9 @@ let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 let g:vim_markdown_folding_disabled = 1
 
 " MATCHUP
-let g:matchup_matchparen_status_offscreen = 0                                   " Do not show offscreen closing match in statusline
-let g:matchup_matchparen_nomode = "ivV\<c-v>"                                   " Enable matchup only in normal mode
-let g:matchup_matchparen_deferred = 1                                           " Defer matchup highlights to allow better cursor movement performance
+let g:matchup_matchparen_status_offscreen = 0                            " Do not show offscreen closing match in statusline
+let g:matchup_matchparen_nomode = "ivV\<c-v>"                            " Enable matchup only in normal mode
+let g:matchup_matchparen_deferred = 1                                    " Defer matchup highlights to allow better cursor movement performance
 
 " ANZU / IS.VIM / ASTERISK
 let g:anzu_enable_CursorMoved_AnzuUpdateSearchStatus=1
@@ -157,19 +157,16 @@ function! ReuseVimGoTerm(cmd) abort
     endfor
     execute a:cmd
 endfunction
-
 let g:go_term_enabled = 1
 let g:go_term_mode = "silent keepalt rightbelow 15 split"
 let g:go_def_reuse_buffer = 1
-
 autocmd FileType go nmap <leader>r :call ReuseVimGoTerm('GoRun')<Return>
 
 " VIM-POLYGLOT
 let g:polyglot_disabled = ["jsx"]
 
 " VIM-LION
-" align around a given char: gl<character>
-let g:lion_squeeze_spaces = 1
+let g:lion_squeeze_spaces = 1                                       " align around a given char: gl<character>
 
 " RAINBOW-PARENTHESES
 autocmd WinEnter,BufEnter * nested call s:enableRainbowParentheses()
@@ -215,8 +212,8 @@ endfunction
 function! SetAliases() abort
     " do not close windows when closing buffers
     "Alias bd bp|bd\ #
-    Alias bd b#|bd\ #
-    "Alias bd Bclose
+    "Alias bd b#|bd\ #
+    Alias bd Bclose
     Alias bo BufOnly
 
     " close window 
@@ -228,9 +225,6 @@ function! SetAliases() abort
 
     " save me from 1 files :)
     Alias w1 w!
-
-    " super save
-    Alias W write\ !sudo\ tee\ >\ /dev/null\ %
 endfunction
 autocmd VimEnter * call SetAliases()
 

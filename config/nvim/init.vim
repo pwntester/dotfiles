@@ -194,6 +194,10 @@ cnoremap <C-j> <RIGHT>
 cnoremap <C-h> <Space><BS><Left>
 cnoremap <C-l> <Space><BS><Right>
 
+" buffer switching
+nnoremap <S-l> :bnext<Return>
+nnoremap <S-h> :bprevious<Return>
+
 " leader mappings
 nnoremap <SPACE> <Nop>
 let mapleader = "\<Space>"
@@ -277,8 +281,23 @@ endfunction
 nnoremap <Leader>t :call FloatTerm()<CR>
 " }}}
 
-" ================ WINDOW MANAGEMENT ======================== {{{
-execute 'source' fnameescape(expand('~/.config/nvim/winmgmt.vim'))
+" ================ PIN SPECIAL BUFFERS ======================== {{{
+let g:special_buffers = ['help', 'fortifytestpane', 'fortifyauditpane', 'defx', 'qf', 'vim-plug', 'fzf', 'magit', 'goterm', 'vista_kind']
+function! s:pinBuffer() abort
+    " prevent changing buffer
+    nnoremap <silent><buffer><S-l> <Nop>
+    nnoremap <silent><buffer><S-h> <Nop>
+    nnoremap <silent><buffer><leader>h <Nop>
+    cmap <silent><buffer>e NOP
+    cmap <silent><buffer>bd NOP
+    cmap <silent><buffer>bp NOP
+    cmap <silent><buffer>bn NOP
+endfunction
+augroup windows
+    autocmd!
+    autocmd WinEnter,BufEnter *  nested if index(g:special_buffers, &filetype) > -1 | call s:pinBuffer() | endif
+    autocmd WinEnter,BufEnter {} nested if index(g:special_buffers, &filetype) > -1 | call s:pinBuffer() | endif
+augroup END
 " }}}
 
 " ================ PLUGIN SETUP ======================== {{{
