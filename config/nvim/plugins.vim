@@ -24,7 +24,6 @@ call plug#begin('~/.nvim/plugged')
     Plug 'haya14busa/is.vim'
     Plug 'Yggdroot/indentLine'
     Plug 'matze/vim-move'
-    Plug 'pwntester/cobalt2.vim'
     Plug 'itchyny/lightline.vim'
     Plug 'chaoren/vim-wordmotion'
     Plug 'junegunn/rainbow_parentheses.vim'
@@ -36,7 +35,7 @@ call plug#begin('~/.nvim/plugged')
     Plug 'SirVer/ultisnips'
     Plug 'honza/vim-snippets'
     Plug 'AndrewRadev/linediff.vim'
-    Plug 'rbgrouleff/bclose.vim'
+    "Plug 'rbgrouleff/bclose.vim'
     Plug 'airblade/vim-rooter'
     Plug 'Konfekt/vim-alias'
     Plug 'kshenoy/vim-signature'
@@ -53,6 +52,11 @@ call plug#begin('~/.nvim/plugged')
         Plug fnameescape(expand('~/Fortify/SSR/repos/vim-fortify'))
     elseif isdirectory(fnameescape(expand('~/Dev/vim-fortify')))
         Plug fnameescape(expand('~/Dev/vim-fortify'))
+    endif
+    if isdirectory(fnameescape(expand('~/Development')))
+        Plug fnameescape(expand('~/Development/GitRepos/cobalt2.vim'))
+    elseif isdirectory(fnameescape(expand('~/Dev')))
+        Plug fnameescape(expand('~/Dev/cobalt2.vim'))
     endif
 call plug#end()
 
@@ -210,7 +214,9 @@ function! CloseWin()
 endfunction
 function! SetAliases() abort
     " do not close windows when closing buffers
-    Alias bd Bclose
+    "Alias bd bp|bd\ #
+    Alias bd b#|bd\ #
+    "Alias bd Bclose
     Alias bo BufOnly
 
     " close window 

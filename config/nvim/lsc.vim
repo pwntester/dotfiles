@@ -1,23 +1,16 @@
 " use FZF for code actions
-function! s:FZFCodeActionSource(actions) abort
-    return map(deepcopy(a:actions), 'v:val.title')
-endfunction
-
 function! s:FZFCodeActionSink(actions, selected) abort
-    for action in a:actions
-        if a:selected == action.title
-            call lsc#edit#applyCodeAction(action)
-            break
-        endif
-    endfor
+    let idx = split(a:selected, '::')[0]
+    call lsc#edit#applyCodeAction(a:actions[idx])
 endfunction
 
 function! s:FZFSelectAction(actions) abort
+    let l:items = map(deepcopy(a:actions), {idx, item -> string(idx).'::'.item.title})
     call fzf#run(fzf#wrap({
-        \ 'source': s:FZFCodeActionSource(a:actions),
+        \ 'source': l:items,
         \ 'sink': function('<SID>FZFCodeActionSink', [a:actions]),
         \ 'down': '~40%',
-        \ 'options': '+m',
+        \ 'options': '+m --with-nth 2.. -d "::"',
         \ }))
     return v:true
 endfunction
@@ -33,7 +26,7 @@ let s:namespace_id = nvim_create_namespace("vim-lsc")
 
 autocmd User LSCDiagnosticsChange call lightline#update()
 autocmd User LSCDiagnosticsChange call s:updateDiagnosticVisuals()
-autocmd BufEnter call s:updateDiagnosticVisuals()
+autocmd BufEnter * if lsc#server#status(&filetype) == "running" | call s:updateDiagnosticVisuals() | endif
  
 " improve LSC diagnostic visualizations
 function! s:updateDiagnosticVisuals() abort

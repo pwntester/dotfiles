@@ -39,7 +39,7 @@ function! s:trackSpecialBuffersOnBufLeave() abort
     endif
 endfunction
 
-function! s:trackSpecialBuffersOnBufEnter()
+function! s:trackSpecialBuffersOnBufEnter() abort
     let bufnum = bufnr('%')
     let bufname = bufname('%')
     let buftype = &filetype
@@ -62,10 +62,11 @@ function! s:trackSpecialBuffersOnBufEnter()
 
         " get special buffer back to this window
         if bufexists(g:previous_buffer)
+            "silent !
             call nvim_win_set_buf(win_getid(), g:previous_buffer)
         endif
 
-        " found a window with a non-special buffer
+        " find a window with a non-special buffer
         for w in nvim_list_wins()
             if index(g:special_buffers, nvim_buf_get_option(nvim_win_get_buf(w), 'filetype')) == -1
                 " set current window as inactive

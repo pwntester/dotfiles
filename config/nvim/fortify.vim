@@ -17,9 +17,7 @@ let g:fortify_JDKVersion = '1.8'
 let g:fortify_XCodeSDK = '/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk'
 let g:fortify_SRF = '/Users/alvaro/Fortify/SSR/repos/SRF/srf.py'
 
-
 let g:fortify_AWBOpts = []
-
 
 let g:fortify_TranslationOpts = ['-verbose']
 " let g:fortify_TranslationOpts += ['-django-disable-autodiscover']
@@ -30,8 +28,6 @@ let g:fortify_TranslationOpts += ['-debug', '-debug-verbose', '-logfile', 'trans
 " -Dcom.fortify.sca.alias.mode.java=fi
 " -Dcom.fortify.sca.debug.rule=6D6E2A82-D5BF-4AFE-9E41-9E4933F2695D,Test.java,17 -debug -verbose
 " -Dcom.fortify.sca.Phase0HigherOrder.Languages=python,ruby,swift,javascript,typescript,java,scala
-
-
 
 let g:fortify_ScanOpts = ['-verbose']       
 let g:fortify_ScanOpts += ['-Dcom.fortify.sca.limiters.MaxChainDepth=32']
