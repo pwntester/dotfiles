@@ -4,6 +4,7 @@ call plug#begin('~/.nvim/plugged')
     Plug 'Shougo/deoplete.nvim',            { 'do': ':UpdateRemotePlugins'} 
     Plug 'Shougo/defx.nvim',                { 'do': ':UpdateRemotePlugins'} 
     Plug 'fatih/vim-go',                    { 'do': ':GoInstallBinaries' }
+    Plug 'Shougo/neco-vim',
     "Plug 'natebosch/vim-lsc'
     Plug 'pwntester/vim-lsc',               { 'branch': 'notifications'}
     Plug 'hrsh7th/deoplete-vim-lsc'
@@ -29,15 +30,12 @@ call plug#begin('~/.nvim/plugged')
     Plug 'junegunn/rainbow_parentheses.vim'
     Plug 'alvan/vim-closetag'
     Plug 'christoomey/vim-tmux-navigator'
-    Plug 'schickling/vim-bufonly'
     Plug 'tommcdo/vim-lion'
     Plug 'tmsvg/pear-tree'
     Plug 'SirVer/ultisnips'
     Plug 'honza/vim-snippets'
     Plug 'AndrewRadev/linediff.vim'
-    Plug 'rbgrouleff/bclose.vim'
     Plug 'airblade/vim-rooter'
-    Plug 'Konfekt/vim-alias'
     Plug 'kshenoy/vim-signature'
     Plug 'ap/vim-css-color'
     Plug 'sheerun/vim-polyglot'
@@ -180,53 +178,6 @@ function! s:enableRainbowParentheses() abort
         silent execute "RainbowParentheses!"
     endif
 endfunction
-
-" VIM-ALIAS
-function! CloseWin()
-    if index(g:special_buffers, &filetype) > -1 
-        " closing window with special buffer
-        quit
-    else
-        let l:current_window = win_getid()
-        let l:winids = nvim_list_wins()
-        if len(l:winids) == 1
-            " closing window with normal buffer
-            quit
-        elseif len(winids) > 1
-            let l:non_special_buffers_count = 0
-            for w in l:winids
-                if index(g:special_buffers, nvim_buf_get_option(nvim_win_get_buf(w), 'filetype')) == -1 
-                    let l:non_special_buffers_count = l:non_special_buffers_count + 1
-                endif
-            endfor
-            if l:non_special_buffers_count == 1
-                " only one normal window, but some special ones opened
-                quitall
-            else 
-                " closing window since there are more non-special windows
-                call nvim_win_close(l:current_window, v:true)
-            endif
-        endif
-    endif
-endfunction
-function! SetAliases() abort
-    " do not close windows when closing buffers
-    "Alias bd bp|bd\ #
-    "Alias bd b#|bd\ #
-    Alias bd Bclose
-    Alias bo BufOnly
-
-    " close window 
-    Alias q call\ CloseWin()<Return>
-    Alias q! quit!
-    Alias wq write|call\ CloseWin()<Return>
-    Alias wq! write|qa!
-    Alias Q quitall!
-
-    " save me from 1 files :)
-    Alias w1 w!
-endfunction
-autocmd VimEnter * call SetAliases()
 
 " DEOPLETE
 autocmd BufEnter * nested if getfsize(@%) < 1000000 | call deoplete#enable() | endif

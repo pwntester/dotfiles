@@ -300,6 +300,72 @@ augroup windows
 augroup END
 " }}}
 
+" ================ ALIASES ======================== {{{
+function! SetupCommandAlias(from, to)
+  exec 'cnoreabbrev <expr> '.a:from
+        \ .' ((getcmdtype() is# ":" && getcmdline() is# "'.a:from.'")'
+        \ .'? ("'.a:to.'") : ("'.a:from.'"))'
+endfunction
+function! CloseWin()
+    " When closing a window, close quit vim if it was the only window or if
+    " the other windows have special buffers.
+    if index(g:special_buffers, &filetype) > -1 
+        " closing window with special buffer
+        quit
+    else
+        " closing window with regular buffer
+        let l:current_window = win_getid()
+        let l:winids = nvim_list_wins()
+        if len(l:winids) == 1
+            " only window, closing
+            quit
+        elseif len(winids) > 1
+            " other windows
+            let l:non_special_buffers_count = 0
+            for w in l:winids
+                if index(g:special_buffers, nvim_buf_get_option(nvim_win_get_buf(w), 'filetype')) == -1 
+                    let l:non_special_buffers_count = l:non_special_buffers_count + 1
+                endif
+            endfor
+            if l:non_special_buffers_count == 1
+                " only this window with regular buffer, rest are special ones.
+                " close then all
+                quitall
+            else 
+                " there are other windows with regular buffers, close only
+                " this split
+                call nvim_win_close(l:current_window, v:true)
+            endif
+        endif
+    endif
+endfunction
+function! SetAliases() abort
+    " close buffers without closing the window 
+    call SetupCommandAlias("bd","bp<bar>sp<bar>bn<bar>bd")
+
+    " close all buffers but the current one
+    call SetupCommandAlias("bo","%bd<bar>e#<bar>bd#")
+
+    " save me from 1 files :)
+    call SetupCommandAlias("w1","w!")
+
+    " close window 
+    call SetupCommandAlias("q","call CloseWin()")
+
+    "Alias q! quit!
+    call SetupCommandAlias("wq","write<bar>call CloseWin()")
+
+    "Alias wq! write|qa!
+    call SetupCommandAlias("wq!","write<bar>qa!")
+
+    command! -nargs=0 -bang Q quitall!<bang>
+    command! -nargs=0 -bang W w!<bang>
+    command! -nargs=0 -bang Wq wq!<bang>
+    command! -nargs=0 B b#
+endfunction
+autocmd VimEnter * call SetAliases()
+" }}}
+
 " ================ PLUGIN SETUP ======================== {{{
 execute 'source' fnameescape(expand('~/.config/nvim/plugins.vim'))
 " }}}

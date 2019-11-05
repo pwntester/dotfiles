@@ -7,7 +7,7 @@ function! s:openDefx(mode) abort
     for w in nvim_list_wins()
         if nvim_buf_get_option(nvim_win_get_buf(w), 'filetype') == "defx"
             call nvim_win_close(w, v:true)
-            break
+            return 
         endif
     endfor
     " Open it
