@@ -373,32 +373,5 @@ execute 'source' fnameescape(expand('~/.config/nvim/plugins.vim'))
 " ================ THEME ======================== {{{
 set background=dark
 colorscheme cobalt2
-
-" DEFX
-hi Defx_filename_root guifg=#668799 ctermfg=66
-hi Directory guifg=#668799 ctermfg=66
-
-" VIM-LSC
-hi lscDiagnosticError guifg=None
-hi lscVTDiagnosticError guifg=#FF0000
-hi lscSignDiagnosticError guifg=#FF0000
-hi lscDiagnosticWarning guifg=None
-hi lscVTDiagnosticWarning guifg=#D5A908
-hi lscSignDiagnosticWarning guifg=#D5A908
-hi lscDiagnosticInfo guifg=None
-hi lscVTDiagnosticInfo guifg=#0000FF
-hi lscSignDiagnosticInfo guifg=#0000FF
-
-" FZF
-hi link FZF_fg PMenu
-hi link FZF_bg ColorColumn
-hi link FZF_fg_current Identifier
-hi link FZF_bg_current Normal
-hi link FZF_fg_matched Comment
-
-" VIM-SEARCHANT
-hi SearchCurrent guibg=#0000FF guifg=#FFFFFF
-"hi Search guibg=#CCCCCC guifg=#000000
-
 "}}}
 
