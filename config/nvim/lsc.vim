@@ -1,21 +1,19 @@
 " use FZF for code actions
-function! s:FZFCodeActionSink(actions, selected) abort
-    let idx = split(a:selected, '::')[0]
-    call lsc#edit#applyCodeAction(a:actions[idx])
+function! s:FZFExecuteAction(actions, OnSelection, chosen) abort
+    let idx = split(a:chosen, '::')[0]
+    call a:OnSelection(a:actions[idx])
 endfunction
 
-function! s:FZFSelectAction(actions) abort
-    let l:items = map(deepcopy(a:actions), {idx, item -> string(idx).'::'.item.title})
+function! s:FZFActionMenu(actions, OnSelection) abort
+    let l:options = map(deepcopy(a:actions), {idx, item -> string(idx).'::'.item.title})
     call fzf#run(fzf#wrap({
-        \ 'source': l:items,
-        \ 'sink': function('<SID>FZFCodeActionSink', [a:actions]),
+        \ 'source': l:options,
+        \ 'sink': function('<SID>FZFExecuteAction', [a:actions, a:OnSelection]),
         \ 'down': '~40%',
         \ 'options': '+m --with-nth 2.. -d "::"',
         \ }))
-    return v:true
 endfunction
-
-nnoremap ga :call lsc#edit#findCodeActions(function('<SID>FZFSelectAction'))<Return>
+let g:LSC_action_menu = function('<SID>FZFActionMenu')
 
 " define signs
 call sign_define("vim-lsc-error", {"text" : "x", "texthl" : "lscSignDiagnosticError"})
@@ -137,7 +135,7 @@ let g:lsc_auto_map = {
     \ 'NextReference': 'gn',
     \ 'PreviousReference': 'gp',
     \ 'FindImplementations': 'gi',
-    \ 'FindCodeActions': 'gA',
+    \ 'FindCodeActions': 'ga',
     \ 'Rename': 'gR',
     \ 'ShowHover': 'gh',
     \ 'DocumentSymbol': 'DS',
