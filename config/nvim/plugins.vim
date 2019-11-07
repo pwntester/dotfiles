@@ -4,10 +4,9 @@ call plug#begin('~/.nvim/plugged')
     Plug 'Shougo/deoplete.nvim',            { 'do': ':UpdateRemotePlugins'} 
     Plug 'Shougo/defx.nvim',                { 'do': ':UpdateRemotePlugins'} 
     Plug 'fatih/vim-go',                    { 'do': ':GoInstallBinaries' }
-    Plug 'Shougo/neco-vim',
-    "Plug 'natebosch/vim-lsc'
-    Plug 'pwntester/vim-lsc',               { 'branch': 'notifications'}
+    Plug 'natebosch/vim-lsc',               { 'branch': 'plug-in-action-menu'}
     Plug 'hrsh7th/deoplete-vim-lsc'
+    Plug 'Shougo/neco-vim',
     Plug 'kristijanhusak/defx-git'
     Plug 'kristijanhusak/defx-icons'
     Plug 'rhysd/git-messenger.vim'
@@ -162,9 +161,10 @@ autocmd FileType go nmap <leader>r :call ReuseVimGoTerm('GoRun')<Return>
 
 " VIM-POLYGLOT
 let g:polyglot_disabled = ["jsx"]
+let g:no_csv_maps = 1
 
 " VIM-LION
-let g:lion_squeeze_spaces = 1                                       " align around a given char: gl<character>
+let g:lion_squeeze_spaces = 1 " align around a given char: gl<character>
 
 " RAINBOW-PARENTHESES
 autocmd WinEnter,BufEnter * nested call s:enableRainbowParentheses()
