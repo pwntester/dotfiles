@@ -43,7 +43,6 @@ set nottimeout
 " }}}
 
 " ================ UI ==================== {{{
-syntax enable
 set foldmethod=manual                                             " Fold manually (zf)
 set foldcolumn=0                                                  " Do not show fold levels in side bar
 set cursorline                                                    " Print cursorline
@@ -283,20 +282,22 @@ nnoremap <Leader>t :call FloatTerm()<CR>
 
 " ================ PIN SPECIAL BUFFERS ======================== {{{
 let g:special_buffers = ['help', 'fortifytestpane', 'fortifyauditpane', 'defx', 'qf', 'vim-plug', 'fzf', 'magit', 'goterm', 'vista_kind']
-function! s:pinBuffer() abort
+function! s:pinBuffer()
     " prevent changing buffer
     nnoremap <silent><buffer><S-l> <Nop>
     nnoremap <silent><buffer><S-h> <Nop>
     nnoremap <silent><buffer><leader>h <Nop>
-    cmap <silent><buffer>e NOP
-    cmap <silent><buffer>bd NOP
-    cmap <silent><buffer>bp NOP
-    cmap <silent><buffer>bn NOP
+    cmap <silent><buffer><expr>e<Space> (getcmdtype()==':' && getcmdpos()==1? "<Space>": "e<Space>")
+    cmap <silent><buffer><expr>bd<Return> (getcmdtype()==':' && getcmdpos()==1? "<Space>": "bd<Return>")
+    cmap <silent><buffer><expr>bp<Return> (getcmdtype()==':' && getcmdpos()==1? "<Space>": "bp<Return>")
+    cmap <silent><buffer><expr>bn<Return> (getcmdtype()==':' && getcmdpos()==1? "<Space>": "bn<Return>")
 endfunction
 augroup windows
     autocmd!
     autocmd WinEnter,BufEnter *  nested if index(g:special_buffers, &filetype) > -1 | call s:pinBuffer() | endif
     autocmd WinEnter,BufEnter {} nested if index(g:special_buffers, &filetype) > -1 | call s:pinBuffer() | endif
+    " BufEnter is not triggered for defx buffer
+    autocmd FileType defx call s:pinBuffer()
 augroup END
 " }}}
 
@@ -371,6 +372,7 @@ execute 'source' fnameescape(expand('~/.config/nvim/plugins.vim'))
 " }}}
 
 " ================ THEME ======================== {{{
+syntax enable
 set background=dark
 colorscheme cobalt2
 "}}}
