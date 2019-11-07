@@ -48,7 +48,7 @@ function! LightlineBufferTitle()
 endfunction
 
 function! LightlineLSC()
-    return LSCServerStatus()
+    return "LSC ".LSCServerStatus()
 endfunction
 
 function! LightlineBufferTabs()

@@ -24,8 +24,7 @@ let s:namespace_id = nvim_create_namespace("vim-lsc")
 
 autocmd User LSCDiagnosticsChange call lightline#update()
 autocmd User LSCDiagnosticsChange call s:updateDiagnosticVisuals()
-autocmd WinEnter,BufEnter * nested if lsc#server#status(&filetype) == "running" | call s:updateDiagnosticVisuals() | endif
-autocmd WinEnter,BufEnter {} nested if lsc#server#status(&filetype) == "running" | call s:updateDiagnosticVisuals() | endif
+autocmd BufEnter * if has_key(g:lsc_server_commands, &filetype) | call s:updateDiagnosticVisuals() | endif
  
 " improve LSC diagnostic visualizations
 function! s:updateDiagnosticVisuals() abort
