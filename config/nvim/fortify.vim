@@ -41,7 +41,7 @@ let g:fortify_ScanOpts += ['-Dcom.fortify.sca.EnableDOMModeling=true']
 let g:fortify_ScanOpts += ['-Dcom.fortify.sca.DOMModeling.tags=div ']
 "let g:fortify_ScanOpts += ['-Dcom.fortify.sca.limiters.MaxIndirectResolutionsForCall=512']
 " let g:fortify_ScanOpts += ['-Dcom.fortify.sca.DebugNumericTaint=true']
-let g:fortify_ScanOpts += ['-debug', '-debug-verbose', '-logfile', 'scan.log']  " Generate scan logs
+" let g:fortify_ScanOpts += ['-debug', '-debug-verbose', '-logfile', 'scan.log']            " Generate scan logs
 " let g:fortify_ScanOpts += ['-Ddf3.debug=sca_build/taint.log']                             " Dump taint log
 " let g:fortify_ScanOpts += ['-Dcom.fortify.sca.followImports=false']                       " Do not translate and analyze all libraries that you require in your code
 " let g:fortify_ScanOpts += ['-Ddebug.dump-nst']                                            " For debugging purposes dumps NST files between Phase 1 and Phase 2 of analysis.
