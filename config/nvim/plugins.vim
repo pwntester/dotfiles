@@ -4,12 +4,12 @@ call plug#begin('~/.nvim/plugged')
     Plug 'Shougo/deoplete.nvim',            { 'do': ':UpdateRemotePlugins'} 
     Plug 'Shougo/defx.nvim',                { 'do': ':UpdateRemotePlugins'} 
     Plug 'fatih/vim-go',                    { 'do': ':GoInstallBinaries' }
-    Plug 'natebosch/vim-lsc',               { 'branch': 'plug-in-action-menu'}
+    Plug 'natebosch/vim-lsc',
+    Plug 'liuchengxu/vim-which-key',
     Plug 'hrsh7th/deoplete-vim-lsc'
     Plug 'Shougo/neco-vim',
     Plug 'kristijanhusak/defx-git'
     Plug 'kristijanhusak/defx-icons'
-    Plug 'rhysd/git-messenger.vim'
     Plug 'junegunn/fzf.vim' 
     Plug 'pbogut/fzf-mru.vim'
     Plug 'tpope/vim-fugitive' 
@@ -35,12 +35,9 @@ call plug#begin('~/.nvim/plugged')
     Plug 'honza/vim-snippets'
     Plug 'AndrewRadev/linediff.vim'
     Plug 'airblade/vim-rooter'
-    Plug 'kshenoy/vim-signature'
-    Plug 'ap/vim-css-color'
+    Plug 'rhysd/accelerated-jk'
+    Plug 'norcalli/nvim-colorizer.lua'
     Plug 'sheerun/vim-polyglot'
-    Plug 'wellle/targets.vim'
-    Plug 'michaeljsmith/vim-indent-object'
-    Plug 'CoatiSoftware/vim-sourcetrail'
     Plug 'liuchengxu/vista.vim'
     
     " Local plugins
@@ -186,14 +183,47 @@ inoremap <expr> <Return> (pumvisible() ? "\<c-y>\<cr>" : "\<Return>")
 inoremap <silent><expr> <C-k> pumvisible() ? "\<C-p>" : ""
 inoremap <silent><expr> <C-j> pumvisible() ? "\<C-n>" : ">"
 
-" GIT-MESSANGER
-nmap <Leader>gm <Plug>(git-messenger)
-
 " VISTA
 let g:vista_default_executive = 'vim_lsc'
 let g:vista_fzf_preview = ['right:50%']
 nmap <leader>v :Vista<Return>
 nmap <leader>vf :Vista finder<Return>
+
+" COLORIZER
+lua require'colorizer'.setup()
+
+" ACCELERATED JK
+nmap j <Plug>(accelerated_jk_gj)
+nmap k <Plug>(accelerated_jk_gk)
+
+" WHICH-KEY
+let g:which_key_map = {
+    \ '/' : ['call fzf#vim#search_history()<Return>' , 'fzf-search-history'],
+    \ ':' : ['call fzf#vim#command_history()<Return>' , 'fzf-command-history'],
+    \ 'd' : ['call <SID>fzf_rulepack_descriptions()<Return>' , 'fzf-fortify-descriptions'],
+    \ 'r' : ['call <SID>fzf_rulepack_files()<Return>' , 'fzf-fortify-rulepacks'],
+    \ 'n' : ['call <SID>fzf_nst_files()<Return>' , 'fzf-fortify-nsts'],
+    \ 'l' : ['call <SID>fzf_location_list()<Return>', 'fzf-location-list'],
+    \ 'q' : ['call <SID>fzf_quickfix_list()<Return>', 'fzf-quickfix-list'],
+    \ 'c' : ['BCommits<Return>', 'fzf-git-commits'],
+    \ 's' : ['Snippets<Return>', 'fzf-snippets'],
+    \ 'v' : ['Vista<Return>', 'vista'],
+    \ 'vf' : ['Vista finder<Return>', 'fzf-vista'],
+    \ 'g' : ['Magit<Return>', 'magit'],
+    \ 't' : ['call FloatTerm()', 'terminal'],
+    \ 'i' : ['NewRuleID<Return>', 'fortify-new-ruleid'],
+    \ 'h' : ['FZFFreshMru<Return>' , 'fzf-mru'],
+    \ 'f' : ["call fzf#vim#files('.', {'options': '--prompt \"\"'})<Return>" , 'fzf-files'],
+    \ 'M' : 'which_key_ignore',
+    \ 'j' : 'which_key_ignore',
+    \ 'k' : 'which_key_ignore',
+    \ 'b' : 'which_key_ignore',
+    \ 'e' : 'which_key_ignore',
+    \ 'ge' : 'which_key_ignore',
+    \ 'w' : 'which_key_ignore',
+    \ }
+call which_key#register('<Space>', "g:which_key_map")
+nnoremap <silent> <leader> :<c-u>WhichKey '<Space>'<Return>
 
 " }}}
 
