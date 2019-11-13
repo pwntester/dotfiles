@@ -19,7 +19,10 @@ let g:LSC_action_menu = function('<SID>FZFActionMenu')
 call sign_define("vim-lsc-error", {"text" : "x", "texthl" : "lscSignDiagnosticError"})
 call sign_define("vim-lsc-warning", {"text" : "x", "texthl" : "lscSignDiagnosticWarning"})
 
-" improve LSC diagnostic visualizations
+" virtual text namespace
+let s:namespace_id = nvim_create_namespace("vim-lsc")
+
+" update diagnostic visualizations
 function! s:updateDiagnosticVisuals() abort
     let buf_id = nvim_get_current_buf()
     let file_path = nvim_buf_get_name(buf_id)
@@ -30,26 +33,15 @@ endfunction
 
 function! s:setVirtualText(buf_id, diagnostics) abort
 
-    let namespace_id = nvim_create_namespace("vim-lsc")
-
     " clear previous virtual texts
-    let line_count = nvim_buf_line_count(a:buf_id) 
-    call nvim_buf_clear_namespace(a:buf_id, l:namespace_id, 0, l:line_count)
+    call nvim_buf_clear_namespace(a:buf_id, s:namespace_id, 0, -1)
 
     " add virtual texts
     for diagnostic in a:diagnostics
-        let available_space = winwidth('%') - strwidth(getline(l:diagnostic['lnum']+1)) - 8
-        let text = l:diagnostic['text']
-        if strwidth(l:text) < l:available_space
-            let text = repeat(" ", l:available_space - strwidth(l:text)).l:text
-        endif
-        let hl_group = 'Normal'
-        if l:diagnostic['type'] == 'E'
-            let hl_group = 'lscVTDiagnosticError'
-        elseif l:diagnostic['type'] == 'W'
-            let hl_group = 'lscVTDiagnosticWarning'
-        endif
-        call nvim_buf_set_virtual_text(l:diagnostic['bufnr'], l:namespace_id, l:diagnostic['lnum'], [[l:text, l:hl_group]], {})
+        let available_space = winwidth('%') - strwidth(getline(l:diagnostic['lnum'])) - 8
+        let text = strwidth(l:diagnostic['text']) < l:available_space ?  repeat(" ", l:available_space - strwidth(l:diagnostic['text'])).l:diagnostic['text'] : l:diagnostic['text']
+        let hl_group = l:diagnostic['type'] == 'E' ? 'lscVTDiagnosticError' : 'lscVTDiagnosticWarning'
+        call nvim_buf_set_virtual_text(l:diagnostic['bufnr'], s:namespace_id, l:diagnostic['lnum']-1, [[l:text, l:hl_group]], {})
     endfor
 endfunction
 
@@ -67,7 +59,7 @@ function! s:setSigns(buf_id, diagnostics) abort
         else 
             return
         endif
-        call sign_place(1, 'vim-lsc', l:sign, l:diagnostic['bufnr'], {'lnum' : l:diagnostic['lnum'] + 1})
+        call sign_place(1, 'vim-lsc', l:sign, l:diagnostic['bufnr'], {'lnum' : l:diagnostic['lnum']})
     endfor
 endfunction
 
@@ -84,8 +76,8 @@ function! s:fixEdit(idx, maybeEdit) abort
 endfunction
 
 " autocommands
-autocmd BufEnter * nested if has_key(g:lsc_server_commands, &filetype) && getfsize(@%) > 1000000 | call lsc#server#disable() | endif
-autocmd BufEnter * nested if has_key(g:lsc_server_commands, &filetype) && getfsize(@%) < 1000000 | call s:updateDiagnosticVisuals() | endif
+autocmd BufEnter * if has_key(g:lsc_server_commands, &filetype) && getfsize(@%) > 1000000 | call lsc#server#disable() | endif
+autocmd BufEnter * if has_key(g:lsc_server_commands, &filetype) && getfsize(@%) < 1000000 | call s:updateDiagnosticVisuals() | endif
 autocmd User LSCDiagnosticsChange call s:updateDiagnosticVisuals()
 autocmd User LSCDiagnosticsChange call lightline#update()
  
