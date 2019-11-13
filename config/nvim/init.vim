@@ -211,9 +211,6 @@ vnoremap <Leader>p "_dP
 " copy & paste to system clipboard
 vmap <Leader>y "*y
 
-" jump to the beggining/end  of changed text
-nnoremap <Leader>< `[
-nnoremap <Leader>> `]
 " }}}
 
 " ================ DEBUG ======================== {{{
