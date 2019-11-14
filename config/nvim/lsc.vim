@@ -87,18 +87,17 @@ let g:lsc_enable_autocomplete  = v:false
 let g:lsc_enable_diagnostics   = v:true
 let g:lsc_reference_highlights = v:true
 let g:lsc_auto_map = {
-    \   'GoToDefinition': 'gd',
-    \   'GoToDefinitionSplit': ['<C-W>]', '<C-W><C-]>'],
-    \   'FindReferences': 'gr',
-    \   'NextReference': 'gn',
-    \   'PreviousReference': 'gp',
-    \   'FindImplementations': 'gi',
-    \   'FindCodeActions': 'ga',
-    \   'Rename': 'gR',
-    \   'ShowHover': 'gh',
-    \   'DocumentSymbol': 'DS',
-    \   'WorkspaceSymbol': 'WS',
-    \   'SignatureHelp': 'gs',
+    \   'GoToDefinition': '<leader>ld',
+    \   'FindReferences': '<leader>lr',
+    \   'NextReference': '<leader>ln',
+    \   'PreviousReference': '<leader>lp',
+    \   'FindImplementations': '<leader>li',
+    \   'FindCodeActions': '<leader>la',
+    \   'Rename': '<leader>lR',
+    \   'ShowHover': '<leader>lh',
+    \   'DocumentSymbol': '<leader>lds',
+    \   'WorkspaceSymbol': '<leader>lws',
+    \   'SignatureHelp': '<leader>ls',
     \   'Completion': ''
     \}
 let g:lsc_server_commands = {

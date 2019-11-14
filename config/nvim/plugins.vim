@@ -203,7 +203,6 @@ let g:which_key_map = {
     \ 'd' : ['call <SID>fzf_rulepack_descriptions()<Return>' , 'fzf-fortify-descriptions'],
     \ 'r' : ['call <SID>fzf_rulepack_files()<Return>' , 'fzf-fortify-rulepacks'],
     \ 'n' : ['call <SID>fzf_nst_files()<Return>' , 'fzf-fortify-nsts'],
-    \ 'l' : ['call <SID>fzf_location_list()<Return>', 'fzf-location-list'],
     \ 'q' : ['call <SID>fzf_quickfix_list()<Return>', 'fzf-quickfix-list'],
     \ 'c' : ['BCommits<Return>', 'fzf-git-commits'],
     \ 's' : ['Snippets<Return>', 'fzf-snippets'],
@@ -221,6 +220,9 @@ let g:which_key_map = {
     \ 'e' : 'which_key_ignore',
     \ 'ge' : 'which_key_ignore',
     \ 'w' : 'which_key_ignore',
+    \ }
+let g:which_key_map['l'] = {
+    \ 'name' : '+lsc' ,
     \ }
 call which_key#register('<Space>', "g:which_key_map")
 nnoremap <silent> <leader> :<c-u>WhichKey '<Space>'<Return>

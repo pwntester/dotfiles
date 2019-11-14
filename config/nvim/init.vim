@@ -150,7 +150,7 @@ inoremap jk <ESC>
 
 " shifting visual block should keep it selected
 vnoremap < <gv
-vnoremap > >gv
+vnoremap > >gv|
 
 " automatically jump to end of text you pasted
 vnoremap <silent> y y`]
@@ -221,9 +221,10 @@ function! Log(text) abort
 endfunction
 
 " debug syntax
-map <c-g> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
-        \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
-        \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<Return>
+nmap <silent> gh :echo 'hi<'.synIDattr(synID(line('.'), col('.'), 1), 'name')
+	\.'> trans<'.synIDattr(synID(line('.'), col('.'), 0), 'name').'> lo<'
+	\.synIDattr(synIDtrans(synID(line('.'), col('.'), 1)), 'name').'>'<Return>
+
 " }}}
 
 " ================ FLOATING TERM ======================== {{{
@@ -379,5 +380,8 @@ highlight default link WhichKeySeperator Comment
 highlight default link WhichKeyGroup     Keyword
 highlight default link WhichKeyDesc      Identifier
 highlight default link WhichKeyFloating  ColorColumn
+
+" VIM-FORTIFY
+highlight default FortifyTestPaneBug guifg=yellow ctermfg=yellow
 "}}}
 
