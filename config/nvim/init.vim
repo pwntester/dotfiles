@@ -383,5 +383,6 @@ highlight default link WhichKeyFloating  ColorColumn
 
 " VIM-FORTIFY
 highlight default FortifyTestPaneBug guifg=yellow ctermfg=yellow
+
 "}}}
 
