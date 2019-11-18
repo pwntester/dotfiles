@@ -374,15 +374,5 @@ syntax enable
 set background=dark
 colorscheme cobalt2
 
-" WHICHKEY
-highlight default link WhichKey          Function
-highlight default link WhichKeySeperator Comment
-highlight default link WhichKeyGroup     Keyword
-highlight default link WhichKeyDesc      Identifier
-highlight default link WhichKeyFloating  ColorColumn
-
-" VIM-FORTIFY
-highlight default FortifyTestPaneBug guifg=yellow ctermfg=yellow
-
 "}}}
 

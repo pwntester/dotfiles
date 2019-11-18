@@ -5,7 +5,6 @@ call plug#begin('~/.nvim/plugged')
     Plug 'Shougo/defx.nvim',                { 'do': ':UpdateRemotePlugins'} 
     Plug 'fatih/vim-go',                    { 'do': ':GoInstallBinaries' }
     Plug 'natebosch/vim-lsc',
-    Plug 'liuchengxu/vim-which-key',
     Plug 'hrsh7th/deoplete-vim-lsc'
     Plug 'Shougo/neco-vim',
     Plug 'kristijanhusak/defx-git'
@@ -196,36 +195,30 @@ lua require'colorizer'.setup()
 nmap j <Plug>(accelerated_jk_gj)
 nmap k <Plug>(accelerated_jk_gk)
 
-" WHICH-KEY
-let g:which_key_map = {
-    \ '/' : ['call fzf#vim#search_history()<Return>' , 'fzf-search-history'],
-    \ ':' : ['call fzf#vim#command_history()<Return>' , 'fzf-command-history'],
-    \ 'd' : ['call <SID>fzf_rulepack_descriptions()<Return>' , 'fzf-fortify-descriptions'],
-    \ 'r' : ['call <SID>fzf_rulepack_files()<Return>' , 'fzf-fortify-rulepacks'],
-    \ 'n' : ['call <SID>fzf_nst_files()<Return>' , 'fzf-fortify-nsts'],
-    \ 'q' : ['call <SID>fzf_quickfix_list()<Return>', 'fzf-quickfix-list'],
-    \ 'c' : ['BCommits<Return>', 'fzf-git-commits'],
-    \ 's' : ['Snippets<Return>', 'fzf-snippets'],
-    \ 'v' : ['Vista<Return>', 'vista'],
-    \ 'vf' : ['Vista finder<Return>', 'fzf-vista'],
-    \ 'g' : ['Magit<Return>', 'magit'],
-    \ 't' : ['call FloatTerm()', 'terminal'],
-    \ 'i' : ['NewRuleID<Return>', 'fortify-new-ruleid'],
-    \ 'h' : ['FZFFreshMru<Return>' , 'fzf-mru'],
-    \ 'f' : ["call fzf#vim#files('.', {'options': '--prompt \"\"'})<Return>" , 'fzf-files'],
-    \ 'M' : 'which_key_ignore',
-    \ 'j' : 'which_key_ignore',
-    \ 'k' : 'which_key_ignore',
-    \ 'b' : 'which_key_ignore',
-    \ 'e' : 'which_key_ignore',
-    \ 'ge' : 'which_key_ignore',
-    \ 'w' : 'which_key_ignore',
-    \ }
-let g:which_key_map['l'] = {
-    \ 'name' : '+lsc' ,
-    \ }
-call which_key#register('<Space>', "g:which_key_map")
-nnoremap <silent> <leader> :<c-u>WhichKey '<Space>'<Return>
+" VIM-PLUG
+let g:plug_window = 'cal FloatingPlug()'
+
+function! FloatingPlug()
+  let buf = nvim_create_buf(v:false, v:true)
+  call setbufvar(buf, '&signcolumn', 'no')
+
+  let height = float2nr(40)
+  let width = float2nr(150)
+  let horizontal = float2nr((&columns - width) / 2)
+  let vertical = 10
+
+  let opts = {
+        \ 'relative': 'editor',
+        \ 'row': vertical,
+        \ 'col': horizontal,
+        \ 'width': width,
+        \ 'height': height,
+        \ 'style': 'minimal'
+        \ }
+  let win = nvim_open_win(buf, v:true, opts)
+  call nvim_buf_set_keymap(buf, 'n', 'q', ':call nvim_win_close()', {'nowait': v:true})
+
+endfunction
 
 " }}}
 
