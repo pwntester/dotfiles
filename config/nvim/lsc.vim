@@ -102,10 +102,10 @@ let g:lsc_auto_map = {
     \}
 let g:lsc_server_commands = {
     \   'fortifyrulepack': {
-    \       'command': '~/bin/fls'
+    \       'command': 'fls'
     \   },
     \   'java': {
-    \       'command': '~/bin/jdtls',
+    \       'command': 'jdtls',
     \       'response_hooks': {
     \           'textDocument/codeAction': function('<SID>fixEdits')
     \       },
