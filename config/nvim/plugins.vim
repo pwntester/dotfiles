@@ -153,7 +153,7 @@ endfunction
 let g:go_term_enabled = 1
 let g:go_term_mode = "silent keepalt rightbelow 15 split"
 let g:go_def_reuse_buffer = 1
-autocmd FileType go nmap <leader>r :call ReuseVimGoTerm('GoRun')<Return>
+autocmd FileType go nmap <buffer> <leader>r :call ReuseVimGoTerm('GoRun')<Return>
 
 " VIM-POLYGLOT
 let g:polyglot_disabled = ["jsx", "hive"]

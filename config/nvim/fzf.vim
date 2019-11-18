@@ -7,8 +7,8 @@ let $FZF_DEFAULT_OPTS='--no-inline-info --layout=reverse --margin=1,2 --color=da
     \ '--color=fg+:#ffc600,bg+:#020511,hl+:#ffc600 '.
     \ '--color=marker:#3ad900,spinner:#967efb,header:#0088ff '.
     \ '--color=info:#020511,prompt:#0088ff,pointer:#0088ff'
+
 let g:fzf_layout = { 'window': 'call FloatingFZF()' }
-let g:plug_window = 'call FloatingFZF()'
 
 function! FloatingFZF()
   let buf = nvim_create_buf(v:false, v:true)
@@ -39,12 +39,11 @@ endfunction
 
 function! s:fuzzyPick(items, jump) abort
   let items = map(a:items, {idx, item -> string(idx).' '.bufname(item.bufnr).' '.item.text})
-  call fzf#run({
+  call fzf#run(fzf#wrap({
     \ 'source': items,
     \ 'sink': function('<SID>pick', [a:jump]),
-    \ 'down': '~20%',
-    \ 'options': '--with-nth 2.. +s -e --ansi', 
-    \ })
+    \ 'options': '--with-nth 2.. +s -e --ansi --prompt ""', 
+    \ }))
 endfunction
 
 function! s:fzf_quickfix_list() abort
@@ -66,37 +65,34 @@ function! s:fzf_nst_files()
     if exists("g:fortify_SCAVersion") && g:fortify_SCAVersion != ""
         let sca_version = 'sca'. string(g:fortify_SCAVersion)
     else
-        call fortify#GetSCAVersion()
+        call GetSCAVersion()
         let sca_version = 'sca'. string(g:fortify_SCAVersion)
     endif
     let root = home . '/.fortify/' . sca_version . '/build'
     let command = 'rg --files -g "**' . pattern . '" ' . root
-    call fzf#run({
+    call fzf#run(fzf#wrap({
         \ 'source': command,
         \ 'sink':   'e',
-        \ 'down': '~20%',
-        \ 'options': '+s -e --ansi',
-        \ })
+        \ 'options': '+s -e --ansi --prompt ""',
+        \ }))
 endfunction
 
 function! s:fzf_rulepack_files()
     let command = 'rg --files -g "**/src/*.xml" /Users/alvaro/Fortify/SSR/repos/rules'
-    call fzf#run({
+    call fzf#run(fzf#wrap({
         \ 'source': command,
         \ 'sink':   'e',
-        \ 'down': '~20%',
-        \ 'options': '+s -e --ansi',
-        \ })
+        \ 'options': '+s -e --ansi --prompt ""',
+        \ }))
 endfunction
 
 function! s:fzf_rulepack_descriptions()
     let command = 'rg --files -g "**/descriptions/en/*.xml" /Users/alvaro/Fortify/SSR/repos/rules'
-    call fzf#run({
+    call fzf#run(fzf#wrap({
         \ 'source': command,
         \ 'sink':   'e',
-        \ 'down': '~20%',
-        \ 'options': '+s -e --ansi',
-        \ })
+        \ 'options': '+s -e --ansi --prompt ""',
+        \ }))
 endfunction
 
 nnoremap <leader>n :call <SID>fzf_nst_files()<Return>
@@ -108,7 +104,7 @@ nnoremap <leader>f :call fzf#vim#files('.', {'options': '--prompt ""'})<Return>
 nnoremap <leader>h :FZFFreshMru --prompt ""<Return>
 nnoremap <leader>c :BCommits<Return>
 nnoremap <leader>s :Snippets<Return>
-nnoremap <leader>b :Buffers<Return>
+nnoremap <leader>o :Buffers<Return>
 nnoremap <leader>/ :call fzf#vim#search_history()<Return>
 nnoremap <leader>: :call fzf#vim#command_history()<Return>
 
