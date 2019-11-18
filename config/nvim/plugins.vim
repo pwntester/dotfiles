@@ -156,7 +156,7 @@ let g:go_def_reuse_buffer = 1
 autocmd FileType go nmap <leader>r :call ReuseVimGoTerm('GoRun')<Return>
 
 " VIM-POLYGLOT
-let g:polyglot_disabled = ["jsx"]
+let g:polyglot_disabled = ["jsx", "hive"]
 let g:no_csv_maps = 1
 
 " VIM-LION
