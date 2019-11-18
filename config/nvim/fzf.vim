@@ -8,6 +8,7 @@ let $FZF_DEFAULT_OPTS='--no-inline-info --layout=reverse --margin=1,2 --color=da
     \ '--color=marker:#3ad900,spinner:#967efb,header:#0088ff '.
     \ '--color=info:#020511,prompt:#0088ff,pointer:#0088ff'
 let g:fzf_layout = { 'window': 'call FloatingFZF()' }
+let g:plug_window = 'call FloatingFZF()'
 
 function! FloatingFZF()
   let buf = nvim_create_buf(v:false, v:true)
