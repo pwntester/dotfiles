@@ -50,7 +50,7 @@ set guioptions=-Mfl                                               " nomenu, nofo
 set laststatus=2                                                  " status line always on
 set showtabline=2                                                 " always shows tabline
 set lazyredraw                                                    " Don't update the display while executing macros
-set number                                                        " Print the line number
+set number relativenumber                                         " Print the line number
 set t_Co=256                                                      " 256 colors
 set ttyfast                                                       " Faster redraw
 set showcmd                                                       " Show partial commands in status line
@@ -134,8 +134,14 @@ augroup active_win
     autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline
     autocmd WinLeave * setlocal nocursorline
     " highlight active window
-    autocmd BufEnter,FocusGained,VimEnter,WinEnter * set winhighlight=CursorLineNr:LineNr,EndOfBuffer:ColorColumn,IncSearch:ColorColumn,Normal:ColorColumn,NormalNC:ColorColumn,SignColumn:ColorColumn
+    autocmd BufEnter,FocusGained,VimEnter,WinEnter * set winhighlight=CursorLineNr:CursorLineNr,EndOfBuffer:ColorColumn,IncSearch:ColorColumn,Normal:ColorColumn,NormalNC:ColorColumn,SignColumn:ColorColumn
     autocmd FocusLost,WinLeave * set winhighlight=
+augroup END
+
+augroup numbertoggle
+    autocmd!
+    autocmd BufEnter,FocusGained,InsertLeave * set relativenumber
+    autocmd BufLeave,FocusLost,InsertEnter   * set norelativenumber
 augroup END
 " }}}
 
@@ -200,10 +206,6 @@ nnoremap <S-h> :bprevious<Return>
 " leader mappings
 nnoremap <SPACE> <Nop>
 let mapleader = "\<Space>"
-
-" navigate faster
-nnoremap <Leader>j 15j
-nnoremap <Leader>k 15k
 
 " paste keeping the default register
 vnoremap <Leader>p "_dP
@@ -367,6 +369,7 @@ autocmd VimEnter * call SetAliases()
 
 " ================ PLUGIN SETUP ======================== {{{
 execute 'source' fnameescape(expand('~/.config/nvim/plugins.vim'))
+
 " }}}
 
 " ================ THEME ======================== {{{

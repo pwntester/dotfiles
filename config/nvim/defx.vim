@@ -63,7 +63,6 @@ call defx#custom#column('filename', {
     \ 'max_width': -90,
 \ })
 
-" DEFX-GIT
 let g:defx_git#indicators = {
   \ 'Modified'  : '+',
   \ 'Staged'    : '●',
@@ -74,7 +73,6 @@ let g:defx_git#indicators = {
   \ 'Unknown'   : '?'
 \ }
 
-" DEFX-ICONS
 let g:defx_icons_exact_matches = {
     \ '.gitconfig': {'icon': '', 'color': '3AFFDB'},
     \ '.gitignore': {'icon':'', 'color': '3AFFDB'},
@@ -97,5 +95,6 @@ let g:defx_icon_exact_dir_matches = {
     \ 'Videos'   : {'icon': '', 'color': '3AFFDB'},
 \ }
 
-noremap <silent> <C-e> :call <SID>openDefx("project")<Return>
-noremap <silent> <C-f> :call <SID>openDefx("file")<Return>
+" mappings
+nnoremap <silent> <C-r> :call <SID>openDefx("project")<Return>
+nnoremap <silent> <C-e> :call <SID>openDefx("file")<Return>

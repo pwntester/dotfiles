@@ -4,6 +4,7 @@ call plug#begin('~/.nvim/plugged')
     Plug 'Shougo/deoplete.nvim',            { 'do': ':UpdateRemotePlugins'} 
     Plug 'Shougo/defx.nvim',                { 'do': ':UpdateRemotePlugins'} 
     Plug 'fatih/vim-go',                    { 'do': ':GoInstallBinaries' }
+    Plug 'psliwka/vim-smoothie'
     Plug 'natebosch/vim-lsc',
     Plug 'hrsh7th/deoplete-vim-lsc'
     Plug 'Shougo/neco-vim',
@@ -208,17 +209,21 @@ function! FloatingPlug()
   let vertical = 10
 
   let opts = {
-        \ 'relative': 'editor',
-        \ 'row': vertical,
-        \ 'col': horizontal,
-        \ 'width': width,
-        \ 'height': height,
-        \ 'style': 'minimal'
-        \ }
+    \ 'relative': 'editor',
+    \ 'row': vertical,
+    \ 'col': horizontal,
+    \ 'width': width,
+    \ 'height': height,
+    \ 'style': 'minimal'
+    \ }
+
   let win = nvim_open_win(buf, v:true, opts)
   call nvim_buf_set_keymap(buf, 'n', 'q', ':call nvim_win_close()', {'nowait': v:true})
 
 endfunction
 
-" }}}
+" SMOOTHIE
+nnoremap <silent> <leader>j :<C-U>call smoothie#downwards()<Return>
+nnoremap <silent> <leader>k :<C-U>call smoothie#upwards()<Return>
 
+" }}}
