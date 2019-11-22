@@ -96,5 +96,5 @@ let g:defx_icon_exact_dir_matches = {
 \ }
 
 " mappings
-nnoremap <silent> <C-r> :call <SID>openDefx("project")<Return>
+nnoremap <silent> <C-f> :call <SID>openDefx("project")<Return>
 nnoremap <silent> <C-e> :call <SID>openDefx("file")<Return>
