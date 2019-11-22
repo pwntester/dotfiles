@@ -174,7 +174,7 @@ map k gk
 nnoremap B ^
 nnoremap E $
 
-" disable arrow keys
+" disable keys
 nnoremap <up> <nop>
 nnoremap <down> <nop>
 nnoremap <left> <nop>
@@ -183,6 +183,8 @@ inoremap <up> <nop>
 inoremap <down> <nop>
 inoremap <left> <nop>
 inoremap <right> <nop>
+nnoremap <space> <nop>
+nnoremap <esc> <nop>
 
 " save one keystroke
 nnoremap ; :
@@ -204,8 +206,11 @@ nnoremap <S-l> :bnext<Return>
 nnoremap <S-h> :bprevious<Return>
 
 " leader mappings
-nnoremap <SPACE> <Nop>
 let mapleader = "\<Space>"
+
+" navigate faster
+nnoremap <Leader>j 12j
+nnoremap <Leader>k 12k
 
 " paste keeping the default register
 vnoremap <Leader>p "_dP
@@ -291,6 +296,8 @@ function! s:pinBuffer()
     cmap <silent><buffer><expr>bd<Return> (getcmdtype()==':' && getcmdpos()==1? "<Space>": "bd<Return>")
     cmap <silent><buffer><expr>bp<Return> (getcmdtype()==':' && getcmdpos()==1? "<Space>": "bp<Return>")
     cmap <silent><buffer><expr>bn<Return> (getcmdtype()==':' && getcmdpos()==1? "<Space>": "bn<Return>")
+    set nonumber
+    set norelativenumber
 endfunction
 augroup windows
     autocmd!
