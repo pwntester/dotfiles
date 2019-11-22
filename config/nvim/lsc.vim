@@ -101,22 +101,13 @@ let g:lsc_auto_map = {
     \   'Completion': ''
     \}
 let g:lsc_server_commands = {
-    \   'fortifyrulepack': {
-    \       'command': 'fls'
-    \   },
-    \   'java': {
-    \       'command': 'jdtls',
-    \       'response_hooks': {
-    \           'textDocument/codeAction': function('<SID>fixEdits')
-    \       },
-    \   },
-    \   'javascript': {
-    \       'command': 'typescript-language-server --stdio'
-    \   },
-    \   'go': {
-    \       'command': 'gopls -logfile /tmp/gopls.log serve'
-    \   },
-    \   'python': {
-    \       'command': 'pyls'
-    \   }
     \}
+    " \   'java': {
+    " \       'command': 'jdtls',
+    " \       'response_hooks': {
+    " \           'textDocument/codeAction': function('<SID>fixEdits')
+    " \       },
+    " \   },
+    " \   'fortifyrulepack': {
+    " \       'command': 'fls'
+    " \   },

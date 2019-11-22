@@ -377,5 +377,9 @@ syntax enable
 set background=dark
 colorscheme cobalt2
 
+"NVIM-LSP
+hi LspDiagnosticsError guifg=#FF0000
+hi LspDiagnosticsWarning guifg=#00AAFF
+
 "}}}
 
