@@ -4,7 +4,6 @@ call plug#begin('~/.nvim/plugged')
     Plug 'Shougo/deoplete.nvim',            { 'do': ':UpdateRemotePlugins'} 
     Plug 'Shougo/defx.nvim',                { 'do': ':UpdateRemotePlugins'} 
     Plug 'fatih/vim-go',                    { 'do': ':GoInstallBinaries' }
-    Plug 'psliwka/vim-smoothie'
     Plug 'natebosch/vim-lsc',
     Plug 'hrsh7th/deoplete-vim-lsc'
     Plug 'Shougo/neco-vim',
@@ -219,11 +218,66 @@ function! FloatingPlug()
 
   let win = nvim_open_win(buf, v:true, opts)
   call nvim_buf_set_keymap(buf, 'n', 'q', ':call nvim_win_close()', {'nowait': v:true})
-
 endfunction
 
-" SMOOTHIE
-nnoremap <silent> <leader>j :<C-U>call smoothie#downwards()<Return>
-nnoremap <silent> <leader>k :<C-U>call smoothie#upwards()<Return>
+" NVIM-LSP
+" let pyls_settings = {
+"     \   "pyls" : {
+"     \     "enable" : v:true,
+"     \     "trace" : { "server" : "verbose", },
+"     \     "commandPath" : "",
+"     \     "configurationSources" : [ "pycodestyle" ],
+"     \     "plugins" : {
+"     \       "jedi_completion" : { "enabled" : v:true, },
+"     \       "jedi_hover" : { "enabled" : v:true, },
+"     \       "jedi_references" : { "enabled" : v:true, },
+"     \       "jedi_signature_help" : { "enabled" : v:true, },
+"     \       "jedi_symbols" : {
+"     \         "enabled" : v:true,
+"     \         "all_scopes" : v:true,
+"     \       },
+"     \       "mccabe" : {
+"     \         "enabled" : v:true,
+"     \         "threshold" : 15,
+"     \       },
+"     \       "preload" : { "enabled" : v:true, },
+"     \       "pycodestyle" : { "enabled" : v:true, },
+"     \       "pydocstyle" : {
+"     \         "enabled" : v:false,
+"     \         "match" : "(?!test_).*\\.py",
+"     \         "matchDir" : "[^\\.].*",
+"     \       },
+"     \       "pyflakes" : { "enabled" : v:true, },
+"     \       "rope_completion" : { "enabled" : v:true, },
+"     \       "yapf" : { "enabled" : v:true, },
+"     \     }
+"     \   }
+"     \ }
+" call nvim_lsp#setup("pyls", pyls_settings)
+" call nvim_lsp#setup("gopls", {})
+" call lsp#add_filetype_config({
+"     \ 'filetype': 'fortifyrulepack',
+"     \ 'name': 'fortify-language-server',
+"     \ 'cmd': 'fls',
+"     \ })
+" autocmd Filetype python,go,fortifyrulepack setl omnifunc=lsp#omnifunc
+" nnoremap <silent> ;dc :call lsp#text_document_declaration()<CR>
+" nnoremap <silent> ;df :call lsp#text_document_definition()<CR>
+" nnoremap <silent> ;h  :call lsp#text_document_hover()<CR>
+" nnoremap <silent> ;i  :call lsp#text_document_implementation()<CR>
+" nnoremap <silent> ;s  :call lsp#text_document_signature_help()<CR>
+" nnoremap <silent> ;td :call lsp#text_document_type_definition()<CR>"
+
+" highligths from https://github.com/neovim/neovim/blob/00dc12c5d8454a2d3c6806710f63bbb446076e96/runtime/lua/vim/lsp/util.lua#L380
+" LspDiagnostics.Error
+
+
+"   `callbacks`
+    " A {table} of whose keys are language server method names and the values
+    " are `function(err, method, params, client_id)` See |lsp-callbacks| for
+    " more. This will be combined with |lsp-builtin-callbacks| to provide
+    " defaults.
+lua require("lsp")
+
 
 " }}}
