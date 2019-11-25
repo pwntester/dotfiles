@@ -31,7 +31,7 @@ let g:lightline = {
     \   'cwd': 'LightlineCwd',
     \   'filename': 'LightlineFilename',
     \   'anzu': 'LightlineAnzu',
-    \   'lsc': 'LightlineLSC',
+    \   'lsc': 'LightlineLSP',
     \ },
     \ 'separator': { 'left': "\ue0b0", 'right': "\ue0b2" },
 	\ 'subseparator': { 'left': "\ue0b1", 'right': "\ue0b3" },
@@ -47,8 +47,8 @@ function! LightlineBufferTitle()
     return "buffers"
 endfunction
 
-function! LightlineLSC()
-    return "LSC ".LSCServerStatus()
+function! LightlineLSP()
+    return "LSP "
 endfunction
 
 function! LightlineBufferTabs()
