@@ -4,6 +4,7 @@ call plug#begin('~/.nvim/plugged')
     Plug 'Shougo/deoplete.nvim',            { 'do': ':UpdateRemotePlugins'} 
     Plug 'Shougo/defx.nvim',                { 'do': ':UpdateRemotePlugins'} 
     Plug 'fatih/vim-go',                    { 'do': ':GoInstallBinaries' }
+    Plug 'Shougo/deoplete-lsp'
     Plug 'natebosch/vim-lsc',
     Plug 'hrsh7th/deoplete-vim-lsc'
     Plug 'Shougo/neco-vim',
