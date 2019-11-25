@@ -50,7 +50,7 @@ set guioptions=-Mfl                                               " nomenu, nofo
 set laststatus=2                                                  " status line always on
 set showtabline=2                                                 " always shows tabline
 set lazyredraw                                                    " Don't update the display while executing macros
-set number relativenumber                                         " Print the line number
+set number                                                        " Print the line number
 set t_Co=256                                                      " 256 colors
 set ttyfast                                                       " Faster redraw
 set showcmd                                                       " Show partial commands in status line
@@ -140,8 +140,8 @@ augroup END
 
 augroup numbertoggle
     autocmd!
-    autocmd BufEnter,FocusGained,InsertLeave * set relativenumber
-    autocmd BufLeave,FocusLost,InsertEnter   * set norelativenumber
+    autocmd BufEnter * set relativenumber
+    autocmd BufLeave * set norelativenumber
 augroup END
 " }}}
 
@@ -286,7 +286,20 @@ nnoremap <Leader>t :call FloatTerm()<CR>
 " }}}
 
 " ================ PIN SPECIAL BUFFERS ======================== {{{
-let g:special_buffers = ['help', 'fortifytestpane', 'fortifyauditpane', 'defx', 'qf', 'vim-plug', 'fzf', 'magit', 'goterm', 'vista_kind']
+let g:special_buffers = [
+    \ 'help',
+    \ 'fortifytestpane',
+    \ 'fortifyauditpane',
+    \ 'defx',
+    \ 'qf',
+    \ 'vim-plug',
+    \ 'fzf',
+    \ 'magit',
+    \ 'goterm',
+    \ 'vista_kind',
+    \ 'codeqltestpanel',
+    \ 'codeqlauditpanel'
+    \ ]
 function! s:pinBuffer()
     " prevent changing buffer
     nnoremap <silent><buffer><S-l> <Nop>
