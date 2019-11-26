@@ -49,6 +49,7 @@ call plug#begin('~/.nvim/plugged')
     endif
     if isdirectory(fnameescape(expand('~/Development')))
         Plug fnameescape(expand('~/Development/GitRepos/cobalt2.vim'))
+        Plug fnameescape(expand('~/Development/GitRepos/vim-codeql'))
     elseif isdirectory(fnameescape(expand('~/Dev')))
         Plug fnameescape(expand('~/Dev/cobalt2.vim'))
     endif
