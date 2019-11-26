@@ -1,5 +1,25 @@
 require 'util'
 
+local lsps_dirs = {}
+local lsps_buffers = {}
+
+-- global so can be called from mappint
+function get_lsp_client_status()
+    local bufnr = vim.api.nvim_get_current_buf()
+    local client_id = lsps_buffers[bufnr]
+    local client = vim.lsp.get_client_by_id(client_id)
+    if client ~= nil then
+        local status = client.notify("$/cancel", { id = request_id })
+        if status then
+            return 'LSP: ON'
+        else
+            return 'LSP: OFF'
+        end
+    else
+        return ''
+    end
+end
+
 local function focusable_popup()
     local popup_win
     return function(winnr)
@@ -33,13 +53,20 @@ if vim.lsp then
     -- in case I'm reloading.
     vim.lsp.stop_all_clients()
 
-    -- mappings and settings
+    local function set_workspace_folder(initialize_params, config)
+        initialize_params['workspaceFolders'] = {{
+            name = 'workspace',
+            uri = initialize_params['rootUri']
+        }}
+    end
+
     local function on_attach(client, bufnr)
         -- ["ngp"]   = { function()
         --   local params = vim.lsp.protocol.make_text_document_position_params()
         --   local callback = vim.lsp.builtin_callbacks["textDocument/peekDefinition"]
         --   vim.lsp.buf_request(0, 'textDocument/definition', params, callback)
         -- end };
+        -- mappings and settings
         vim.api.nvim_buf_set_keymap(bufnr, "n", ";di", "<Cmd>lua show_diagnostics_details()<CR>", { silent = true; })
         vim.api.nvim_buf_set_keymap(bufnr, "n", ";de", "<Cmd>vim.lsp.buf.definition()<CR>", { silent = true; })
         vim.api.nvim_buf_set_keymap(bufnr, "n", ";dc", "<Cmd>vim.lsp.buf.declaration()<CR>", { silent = true; })
@@ -68,8 +95,6 @@ if vim.lsp then
         --vim.lsp.util.set_loclist(result.diagnostics)
     end)
 
-    local lsps = {}
-
     function start_fls()
         local root_dir = vim.loop.cwd()
         local config = {
@@ -79,13 +104,35 @@ if vim.lsp then
             callbacks = { ["textDocument/publishDiagnostics"] = diagnostics_callback };
             on_attach = on_attach;
         }
-        local client_id = lsps[root_dir]
+        local client_id = lsps_dirs[root_dir]
         if not client_id then
             client_id = vim.lsp.start_client(config)
-            lsps[root_dir] = client_id
+            lsps_dirs[root_dir] = client_id
         end
         local bufnr = vim.api.nvim_get_current_buf()
         vim.lsp.buf_attach_client(bufnr, client_id)
+        lsps_buffers[bufnr] = client_id
+    end
+
+    function start_qlls()
+        local root_dir = vim.loop.cwd()
+        local search_path = '/Users/pwntester/codeql-home/codeql-repo'
+        local config = {
+            name = "fortify-language-server";
+            cmd = "codeql execute language-server --check-errors ON_CHANGE -q --search-path="..search_path;
+            root_dir = root_dir;
+            callbacks = { ["textDocument/publishDiagnostics"] = diagnostics_callback };
+            on_attach = on_attach;
+            before_init = set_workspace_folder;
+        }
+        local client_id = lsps_dirs[root_dir]
+        if not client_id then
+            client_id = vim.lsp.start_client(config)
+            lsps_dirs[root_dir] = client_id
+        end
+        local bufnr = vim.api.nvim_get_current_buf()
+        vim.lsp.buf_attach_client(bufnr, client_id)
+        lsps_buffers[bufnr] = client_id
     end
 
     function start_jdt()
@@ -104,17 +151,19 @@ if vim.lsp then
             callbacks = { ["textDocument/publishDiagnostics"] = diagnostics_callback };
             on_attach = on_attach;
         }
-        local client_id = lsps[root_dir]
+        local client_id = lsps_dirs[root_dir]
         if not client_id then
             client_id = vim.lsp.start_client(config)
-            lsps[root_dir] = client_id
+            lsps_dirs[root_dir] = client_id
         end
         local bufnr = vim.api.nvim_get_current_buf()
         vim.lsp.buf_attach_client(bufnr, client_id)
+        lsps_buffers[bufnr] = client_id
     end
 
     -- autocommands
     vim.api.nvim_command [[autocmd Filetype fortifyrulepack lua start_fls()]]
     vim.api.nvim_command [[autocmd Filetype java lua start_jdt()]]
+    vim.api.nvim_command [[autocmd Filetype codeql lua start_qlls()]]
 
 end

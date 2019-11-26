@@ -48,7 +48,7 @@ function! LightlineBufferTitle()
 endfunction
 
 function! LightlineLSP()
-    return "LSP "
+    return luaeval('get_lsp_client_status()')
 endfunction
 
 function! LightlineBufferTabs()
