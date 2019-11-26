@@ -2,8 +2,8 @@ let g:cobalt2_lightline = 1
 let g:lightline = {
     \ 'colorscheme': 'cobalt2',
     \ 'active': {
-    \   'left': [ [ 'mode', 'paste', ], [ 'lsc', 'anzu', 'fugitive', ], [ 'filename', ], ],
-    \   'right': [ [ 'linter_errors', 'linter_warnings', 'column', 'percent' ], [ 'filetype' ], [ 'cwd', ] ]
+    \   'left': [ [ 'mode', 'paste', ], [ 'indicator', 'anzu', 'fugitive', ], [ 'filename', ], ],
+    \   'right': [ [ 'lsp_status_off', 'lsp_status_on', 'linter_warnings', 'linter_errors' ], [ 'filetype' ], [ 'cwd', 'column' ] ]
     \ },
     \ 'inactive': {
     \   'left': [ [ ] ],
@@ -13,25 +13,29 @@ let g:lightline = {
     \   'left': [ [ 'tabs', ], ],
     \   'right': [ [ 'tabs_usage', ] ],
     \ },
+    \ 'component': {
+    \   'indicator': '%{LineNoIndicator()}'
+    \ },
     \ 'component_expand': {
-    \   'tabs': 'LightlineBufferTabs',
-    \   'tabs_usage': 'LightlineBufferTitle',
-    \   'linter_warnings': 'LightlineLocationListWarnings',
-    \   'linter_errors': 'LightlineLocationListErrors',
+    \   'tabs': 'BufferTabs',
+    \   'tabs_usage': 'BufferTitle',
+    \   'linter_warnings': 'LSPWarnings',
+    \   'linter_errors': 'LSPErrors',
+    \   'lsp_status_on': 'LSPStatusOn',
+    \   'lsp_status_off': 'LSPStatusOff',
     \ },
     \ 'component_type': {
-    \   'linter_checking': 'left',
     \   'linter_warnings': 'warning',
     \   'linter_errors': 'error',
-    \   'linter_ok': 'left',
+    \   'lsp_status_off': 'disabled',
+    \   'lsp_status_on': 'enabled',
     \ },
     \ 'component_function': {
-    \   'fugitive': 'LightlineFugitive',
-    \   'filetype': 'LightlineFiletype',
-    \   'cwd': 'LightlineCwd',
-    \   'filename': 'LightlineFilename',
-    \   'anzu': 'LightlineAnzu',
-    \   'lsc': 'LightlineLSP',
+    \   'fugitive': 'Fugitive',
+    \   'filetype': 'Filetype',
+    \   'cwd': 'Cwd',
+    \   'filename': 'Filename',
+    \   'anzu': 'Anzu',
     \ },
     \ 'separator': { 'left': "\ue0b0", 'right': "\ue0b2" },
 	\ 'subseparator': { 'left': "\ue0b1", 'right': "\ue0b3" },
@@ -39,19 +43,35 @@ let g:lightline = {
     \ 'tabline_subseparator': { 'left': ' ', 'right': ' ' },
     \ }
 
-function! LightlineAnzu()
+function! Anzu()
   return anzu#search_status()
 endfunction
 
-function! LightlineBufferTitle()
+function! LSPErrors()
+  return 2
+endfunction
+
+function! LSPWarnings()
+  return 2
+endfunction
+
+function! LSPStatusOn()
+  return "LSP"
+endfunction
+
+function! LSPStatusOff()
+  return ""
+endfunction
+
+function! BufferTitle()
     return "buffers"
 endfunction
 
-function! LightlineLSP()
+function! LSP()
     return luaeval('get_lsp_client_status()')
 endfunction
 
-function! LightlineBufferTabs()
+function! BufferTabs()
     let buflist = filter(range(1,bufnr('$')),'buflisted(v:val) && "quickfix" !=? getbufvar(v:val, "&buftype")')
     let tabline_before = []
     let tabline_current = []
@@ -79,11 +99,11 @@ function! NameBuffer(bufid)
     return (getbufvar(a:bufid, '&readonly')? '⭤ ':'') . (fnamemodify(bufname(a:bufid), ':t')==''? '[no name]' : fnamemodify(bufname(a:bufid), ':t')) . (getbufvar(a:bufid, '&mod')?' *':'')
 endfunction
 
-function! LightlineFiletype()
+function! Filetype()
     return winwidth(0) > 70 ? (&filetype !=# '' ? &filetype : '') : ''
 endfunction
 
-function! LightlineFilename()
+function! Filename()
     if index(g:special_buffers, &filetype) > -1
         return ''
     else
@@ -104,11 +124,11 @@ function! LightlineFilename()
     endif
 endfunction
 
-function! LightlineCwd()
+function! Cwd()
     return winwidth(0) < 120 ? '' : getcwd()
 endfunction
 
-function! LightlineQuickFixWarnings()
+function! QuickFixWarnings()
   let current_buf_number = bufnr('%')
   let list = getqflist()
   let current_buf_diagnostics = filter(list, {index, dict -> dict['bufnr'] == current_buf_number && dict['type'] == 'W'})
@@ -116,7 +136,7 @@ function! LightlineQuickFixWarnings()
   return count > 0 ? 'W: ' . count : ''
 endfunction
 
-function! LightlineQuickFixErrors()
+function! QuickFixErrors()
   let current_buf_number = bufnr('%')
   let list = getqflist()
   let current_buf_diagnostics = filter(list, {index, dict -> dict['bufnr'] == current_buf_number && dict['type'] == 'E'})
@@ -124,7 +144,7 @@ function! LightlineQuickFixErrors()
   return count > 0 ? 'E: ' . count : ''
 endfunction
 
-function! LightlineLocationListWarnings()
+function! LocationListWarnings()
   let current_buf_number = bufnr('%')
   let list = getloclist(0)
   let current_buf_diagnostics = filter(list, {index, dict -> dict['bufnr'] == current_buf_number && dict['type'] == 'W'})
@@ -132,7 +152,7 @@ function! LightlineLocationListWarnings()
   return count > 0 ? 'W: ' . count : ''
 endfunction
 
-function! LightlineLocationListErrors()
+function! LocationListErrors()
   let current_buf_number = bufnr('%')
   let list = getloclist(0)
   let current_buf_diagnostics = filter(list, {index, dict -> dict['bufnr'] == current_buf_number && dict['type'] == 'E'})
@@ -140,7 +160,7 @@ function! LightlineLocationListErrors()
   return count > 0 ? 'E: ' . count : ''
 endfunction
 
-function! LightlineFugitive() abort
+function! Fugitive() abort
   if index(g:special_buffers, &filetype) > -1 || fugitive#head() == "" 
      return ''
   else
