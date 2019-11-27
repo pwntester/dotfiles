@@ -16,6 +16,282 @@ print(dump(lsps_dirs))
 print(dump(lsps_buffers))
 end
 
+-- copied from https://github.com/neovim/neovim/blob/6e8c5779cf960893850501e4871dc9be671db298/runtime/lua/vim/lsp/util.lua#L560
+local validate = vim.validate
+local all_buffer_diagnostics = {}
+local diagnostic_ns = vim.api.nvim_create_namespace("vim_lsp_diagnostics")
+local function buf_diagnostics_save_positions(bufnr, diagnostics)
+    validate {
+        bufnr = {bufnr, 'n', true};
+        diagnostics = {diagnostics, 't', true};
+    }
+    if not diagnostics then return end
+    bufnr = bufnr == 0 and vim.api.nvim_get_current_buf() or bufnr
+
+    if not all_buffer_diagnostics[bufnr] then
+        -- Clean up our data when the buffer unloads.
+        vim.api.nvim_buf_attach(bufnr, false, {
+        on_detach = function(b)
+            all_buffer_diagnostics[b] = nil
+        end
+        })
+    end
+    all_buffer_diagnostics[bufnr] = {}
+    local buffer_diagnostics = all_buffer_diagnostics[bufnr]
+
+    for _, diagnostic in ipairs(diagnostics) do
+        local start = diagnostic.range.start
+        -- local mark_id = api.nvim_buf_set_extmark(bufnr, diagnostic_ns, 0, start.line, 0, {})
+        -- buffer_diagnostics[mark_id] = diagnostic
+        local line_diagnostics = buffer_diagnostics[start.line]
+        if not line_diagnostics then
+        line_diagnostics = {}
+        buffer_diagnostics[start.line] = line_diagnostics
+        end
+        table.insert(line_diagnostics, diagnostic)
+    end
+end
+ 
+-- copied from https://github.com/neovim/neovim/blob/6e8c5779cf960893850501e4871dc9be671db298/runtime/lua/vim/lsp/util.lua#L506
+local function buf_clear_diagnostics(bufnr)
+    validate { bufnr = {bufnr, 'n', true} }
+    bufnr = bufnr == 0 and vim.api.nvim_get_current_buf() or bufnr
+    vim.api.nvim_buf_clear_namespace(bufnr, diagnostic_ns, 0, -1)
+end
+
+-- copied from https://github.com/neovim/neovim/blob/6e8c5779cf960893850501e4871dc9be671db298/runtime/lua/vim/lsp/util.lua#L425
+local function highlight_range(bufnr, ns, hiname, start, finish)
+  if start[1] == finish[1] then
+    vim.api.nvim_buf_add_highlight(bufnr, ns, hiname, start[1], start[2], finish[2])
+  else
+    vim.api.nvim_buf_add_highlight(bufnr, ns, hiname, start[1], start[2], -1)
+    for line = start[1] + 1, finish[1] - 1 do
+      vim.api.nvim_buf_add_highlight(bufnr, ns, hiname, line, 0, -1)
+    end
+    vim.api.nvim_buf_add_highlight(bufnr, ns, hiname, finish[1], 0, finish[2])
+  end
+end
+
+-- modified from https://github.com/neovim/neovim/blob/6e8c5779cf960893850501e4871dc9be671db298/runtime/lua/vim/lsp/util.lua#L593
+local underline_highlight_name = "LspDiagnosticsUnderline"
+local function buf_diagnostics_underline(bufnr, diagnostics)
+    for _, diagnostic in ipairs(diagnostics) do
+      local start = diagnostic.range.start
+      local finish = diagnostic.range["end"]
+
+      -- workaround for fls
+      if start.character == 1 and finish.character == 100 then return end
+
+      highlight_range(bufnr, diagnostic_ns, underline_highlight_name,
+          {start.line, start.character},
+          {finish.line, finish.character}
+      )
+    end
+end
+
+-- modified from https://github.com/neovim/neovim/blob/6e8c5779cf960893850501e4871dc9be671db298/runtime/lua/vim/lsp/util.lua#L606
+local severity_highlights = {}
+severity_highlights[1] = 'LspDiagnosticsError'
+severity_highlights[2] = 'LspDiagnosticsWarning'
+local function buf_diagnostics_virtual_text(bufnr, diagnostics)
+    local buffer_line_diagnostics = all_buffer_diagnostics[bufnr]
+    if not buffer_line_diagnostics then
+      buf_diagnostics_save_positions(bufnr, diagnostics)
+    end
+    buffer_line_diagnostics = all_buffer_diagnostics[bufnr]
+    if not buffer_line_diagnostics then
+      return
+    end
+    for line, line_diags in pairs(buffer_line_diagnostics) do
+      local virt_texts = {}
+      local last = line_diags[#line_diags]
+      local winwidth = vim.api.nvim_win_get_width(0)
+      local line_content = vim.api.nvim_buf_get_lines(bufnr, line, line+1, 1)[1]
+      local linewidth = string.len(line_content)
+      local message = "■ "..last.message:gsub("\r", ""):gsub("\n", "  ") 
+      local available_space = winwidth - linewidth - 6 
+      if #line_diags > 1 then
+        local leading_space = available_space - string.len(message) - #line_diags + 1
+        local prefix = string.rep(" ", leading_space)
+        table.insert(virt_texts, {prefix..'■', severity_highlights[line_diags[1].severity]})
+        for i = 2, #line_diags - 1 do
+            table.insert(virt_texts, {'■', severity_highlights[line_diags[i].severity]})
+        end
+        table.insert(virt_texts, {message, severity_highlights[last.severity]})
+      else 
+        local leading_space = available_space - string.len(message) - #line_diags
+        local prefix = string.rep(" ", leading_space)
+        table.insert(virt_texts, {prefix..message, severity_highlights[last.severity]})
+      end
+      vim.api.nvim_buf_set_virtual_text(bufnr, diagnostic_ns, line, virt_texts, {})
+    end
+end
+
+-- copied from https://github.com/neovim/neovim/blob/6e8c5779cf960893850501e4871dc9be671db298/runtime/lua/vim/lsp/util.lua#L697
+function trim_empty_lines(lines)
+  local start = 1
+  for i = 1, #lines do
+    if #lines[i] > 0 then
+      start = i
+      break
+    end
+  end
+  local finish = 1
+  for i = #lines, 1, -1 do
+    if #lines[i] > 0 then
+      finish = i
+      break
+    end
+  end
+  return vim.list_extend({}, lines, start, finish)
+end
+
+-- copied from https://github.com/neovim/neovim/blob/6e8c5779cf960893850501e4871dc9be671db298/runtime/lua/vim/lsp/util.lua#L273
+function make_floating_popup_options(width, height, opts)
+  validate {
+    opts = { opts, 't', true };
+  }
+  opts = opts or {}
+  validate {
+    ["opts.offset_x"] = { opts.offset_x, 'n', true };
+    ["opts.offset_y"] = { opts.offset_y, 'n', true };
+  }
+
+  local anchor = ''
+  local row, col
+
+  if vim.fn.winline() <= height then
+    anchor = anchor..'N'
+    row = 1
+  else
+    anchor = anchor..'S'
+    row = 0
+  end
+
+  if vim.fn.wincol() + width <= vim.api.nvim_get_option('columns') then
+    anchor = anchor..'W'
+    col = 0
+  else
+    anchor = anchor..'E'
+    col = 1
+  end
+
+  return {
+    anchor = anchor,
+    col = col + (opts.offset_x or 0),
+    height = height,
+    relative = 'cursor',
+    row = row + (opts.offset_y or 0),
+    style = 'minimal',
+    width = width,
+  }
+end
+
+-- copied from https://github.com/neovim/neovim/blob/6e8c5779cf960893850501e4871dc9be671db298/runtime/lua/vim/lsp/util.lua#L357
+local function open_floating_preview(contents, filetype, opts)
+  validate {
+    contents = { contents, 't' };
+    filetype = { filetype, 's', true };
+    opts = { opts, 't', true };
+  }
+  opts = opts or {}
+
+  -- Trim empty lines from the end.
+  contents = trim_empty_lines(contents)
+
+  local width = opts.width
+  local height = opts.height or #contents
+  if not width then
+    width = 0
+    for i, line in ipairs(contents) do
+      -- Clean up the input and add left pad.
+      line = " "..line:gsub("\r", "")
+      -- TODO(ashkan) use nvim_strdisplaywidth if/when that is introduced.
+      local line_width = vim.fn.strdisplaywidth(line)
+      width = math.max(line_width, width)
+      contents[i] = line
+    end
+    -- Add right padding of 1 each.
+    width = width + 1
+        
+    local floating_bufnr = vim.api.nvim_create_buf(false, true)
+    if filetype then
+        vim.api.nvim_buf_set_option(floating_bufnr, 'filetype', filetype)
+    end
+    local float_option = make_floating_popup_options(width, height, opts)
+    local floating_winnr = vim.api.nvim_open_win(floating_bufnr, false, float_option)
+    if filetype == 'markdown' then
+        vim.api.nvim_win_set_option(floating_winnr, 'conceallevel', 2)
+    end
+    vim.api.nvim_buf_set_lines(floating_bufnr, 0, -1, true, contents)
+    vim.api.nvim_buf_set_option(floating_bufnr, 'modifiable', false)
+    -- TODO make InsertCharPre disappearing optional?
+    vim.api.nvim_command("autocmd CursorMoved,BufHidden,InsertCharPre <buffer> ++once lua pcall(vim.api.nvim_win_close, "..floating_winnr..", true)")
+    return floating_bufnr, floating_winnr
+  end
+end
+
+-- copied from https://github.com/neovim/neovim/blob/6e8c5779cf960893850501e4871dc9be671db298/runtime/lua/vim/lsp/util.lua#L519
+local function show_line_diagnostics()
+    local bufnr = vim.api.nvim_get_current_buf()
+    local line = vim.api.nvim_win_get_cursor(0)[1] - 1
+    local lines = {"Diagnostics:"}
+    local highlights = {{0, "Bold"}}
+
+    local buffer_diagnostics = all_buffer_diagnostics[bufnr]
+    if not buffer_diagnostics then return end
+    local line_diagnostics = buffer_diagnostics[line]
+    if not line_diagnostics then return end
+
+    for i, diagnostic in ipairs(line_diagnostics) do
+      local prefix = string.format("%d. ", i)
+      local hiname = severity_highlights[diagnostic.severity]
+      local message_lines = vim.split(diagnostic.message, '\n', true)
+      table.insert(lines, prefix..message_lines[1])
+      table.insert(highlights, {#prefix + 1, hiname})
+      for j = 2, #message_lines do
+        table.insert(lines, message_lines[j])
+        table.insert(highlights, {0, hiname})
+      end
+    end
+    local popup_bufnr, winnr = open_floating_preview(lines, 'plaintext')
+    for i, hi in ipairs(highlights) do
+      local prefixlen, hiname = unpack(hi)
+      -- start highlight after the prefix
+      vim.api.nvim_buf_add_highlight(popup_bufnr, -1, hiname, i-1, prefixlen, -1)
+    end
+    return popup_bufnr, winnr
+end
+
+-- show diagnostics in sign column
+local function buf_diagnostics_signs(bufnr, diagnostics)
+
+    -- clear previous signs
+    vim.api.nvim_command(string.format("sign unplace * buffer=%d", bufnr))
+
+    -- add signs
+    for _, diagnostic in ipairs(diagnostics) do
+        if diagnostic.severity == 2 then
+            vim.api.nvim_command(string.format('sign place %d line=%d name=LspWarningSign buffer=%d', sign_count, diagnostic.range.start.line+1, bufnr))
+        elseif diagnostic.severity == 1 then
+            vim.api.nvim_command(string.format('sign place %d line=%d name=LspErrorSign buffer=%d', sign_count, diagnostic.range.start.line+1, bufnr))
+        end
+        sign_count = sign_count + 1
+    end
+end
+
+-- global so can be called from mapping
+function show_diagnostics_details()
+    -- local diagnostic_popup = focusable_popup()
+    --local _, winnr = vim.lsp.util.show_line_diagnostics()
+    local _, winnr = show_line_diagnostics()
+    if winnr ~= nil then
+        local bufnr = vim.api.nvim_win_get_buf(winnr)
+        vim.api.nvim_buf_clear_namespace(bufnr, -1, 0, -1)
+        vim.api.nvim_win_set_option(winnr, "winhl", "Normal:PMenu")
+    end
+end
+
 -- global so can be called from lightline
 function get_lsp_diagnostic_metrics()
 local bufnr = vim.api.nvim_get_current_buf()
@@ -35,52 +311,6 @@ if client ~= nil then
     return false
 end
 
-local function focusable_popup()
-    local popup_win
-    return function(winnr)
-        if popup_win and nvim.win_is_valid(popup_win) then
-            if nvim.get_current_win() == popup_win then
-                nvim.ex.wincmd "p"
-            else
-                nvim.set_current_win(popup_win)
-            end
-            return
-        end
-        popup_win = winnr
-    end
-end
-
--- global so can be called from mapping
-function show_diagnostics_details()
-    local diagnostic_popup = focusable_popup()
-    local _, winnr = vim.lsp.util.show_line_diagnostics()
-    if winnr ~= nil then
-        local bufnr = vim.api.nvim_win_get_buf(winnr)
-        vim.api.nvim_buf_clear_namespace(bufnr, -1, 0, -1)
-        vim.api.nvim_win_set_option(winnr, "winhl", "Normal:PMenu")
-        diagnostic_popup(winnr)
-    end
-end
-
-local function buf_diagnostics_signs(bufnr, diagnostics)
-
-    -- clear previous virtual texts
-    -- vim.api.sign_unplace('vim-lsp', {buffer = bufnr})
-    vim.api.nvim_command('sign unplace * buffer='..bufnr)
-
-    -- add signs
-    for _, diagnostic in ipairs(diagnostics) do
-        if diagnostic.severity == 2 then
-            -- vim.api.sign_place(1, 'vim-lsp', 'vim-lsp-error', bufnr, {lnum = 3})
-            vim.api.nvim_command('sign place '..sign_count..' line='..(diagnostic.range.start.line+1)..' name=LspWarningSign buffer='..bufnr)
-        elseif diagnostic.severity == 1 then
-            -- vim.api.sign_place(1, 'vim-lsp', 'vim-lsp-warning', bufnr, {lnum = 2})
-            vim.api.nvim_command('sign place '..sign_count..' line='..(diagnostic.range.start.line+1)..' name=LspErrorSign buffer='..bufnr)
-        end
-        sign_count = sign_count + 1
-    end
-end
-
 if vim.lsp then
 
     -- in case I'm reloading.
@@ -95,11 +325,7 @@ if vim.lsp then
 
     local function on_attach(client, bufnr)
         lsps_buffers[bufnr] = client.id
-        -- ["ngp"]   = { function()
-        --   local params = vim.lsp.protocol.make_text_document_position_params()
-        --   local callback = vim.lsp.builtin_callbacks["textDocument/peekDefinition"]
-        --   vim.lsp.buf_request(0, 'textDocument/definition', params, callback)
-        -- end };
+
         -- mappings and settings
         vim.api.nvim_buf_set_keymap(bufnr, "n", ";dd", "<Cmd>lua show_diagnostics_details()<CR>", { silent = true; })
         vim.api.nvim_buf_set_keymap(bufnr, "n", ";gd", "<Cmd>vim.lsp.buf.definition()<CR>", { silent = true; })
@@ -121,10 +347,10 @@ if vim.lsp then
             api.nvim_err_writeln(string.format("LSP.publishDiagnostics: Couldn't find buffer for %s", uri))
             return
         end
-        vim.lsp.util.buf_clear_diagnostics(bufnr)
-        vim.lsp.util.buf_diagnostics_save_positions(bufnr, result.diagnostics)
-        vim.lsp.util.buf_diagnostics_underline(bufnr, result.diagnostics)
-        vim.lsp.util.buf_diagnostics_virtual_text(bufnr, result.diagnostics)
+        --vim.lsp.util.buf_clear_diagnostics(bufnr)
+        --vim.lsp.util.buf_diagnostics_save_positions(bufnr, result.diagnostics)
+        --vim.lsp.util.buf_diagnostics_underline(bufnr, result.diagnostics)
+        --vim.lsp.util.buf_diagnostics_virtual_text(bufnr, result.diagnostics)
         --vim.lsp.util.set_loclist(result.diagnostics)
 
         -- collect metrics for status line
@@ -142,6 +368,12 @@ if vim.lsp then
 
         -- signs
         buf_diagnostics_signs(bufnr, result.diagnostics)
+
+        -- custom virtual text display
+        buf_clear_diagnostics(bufnr)
+        buf_diagnostics_save_positions(bufnr, result.diagnostics)
+        buf_diagnostics_underline(bufnr, result.diagnostics)
+        buf_diagnostics_virtual_text(bufnr, result.diagnostics)
     end)
 
     local lsp4j_status_callback = vim.schedule_wrap(function(_, _, result)

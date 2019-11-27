@@ -43,14 +43,17 @@ let g:lightline = {
     \ }
 
 function! LSPErrors() abort
+    if index(g:special_buffers, &filetype) > -1 | return '' | endif
     return luaeval("get_lsp_diagnostic_metrics()['errors']")
 endfunction
 
 function! LSPWarnings() abort
+    if index(g:special_buffers, &filetype) > -1 | return '' | endif
     return luaeval("get_lsp_diagnostic_metrics()['warnings']")
 endfunction
 
 function! LSPStatusOn() abort
+    if index(g:special_buffers, &filetype) > -1 | return '' | endif
     if luaeval('get_lsp_client_status()')
         return "LSP"
     endif
@@ -58,6 +61,7 @@ function! LSPStatusOn() abort
 endfunction
 
 function! LSPStatusOff() abort
+    if index(g:special_buffers, &filetype) > -1 | return '' | endif
     if !luaeval('get_lsp_client_status()')
         return 'LSP'
     endif
@@ -101,24 +105,22 @@ function! Filetype() abort
 endfunction
 
 function! Filename() abort
-    if index(g:special_buffers, &filetype) > -1
-        return ''
-    else
-        let fname = @%
-        let width = winwidth(0) / 3 
-        if strlen(fname) > width 
-            let segments = reverse(split(fname, "/"))
-            let truncated = ""
-            for segment in segments
-                let truncated  = "/" . segment . truncated 
-                if strlen(truncated) > width
-                    break
-                endif
-            endfor
-            let fname = "..." . truncated
-        endif
-        return fname
+    if index(g:special_buffers, &filetype) > -1 | return '' | endif
+
+    let fname = @%
+    let width = winwidth(0) / 3 
+    if strlen(fname) > width 
+        let segments = reverse(split(fname, "/"))
+        let truncated = ""
+        for segment in segments
+            let truncated  = "/" . segment . truncated 
+            if strlen(truncated) > width
+                break
+            endif
+        endfor
+        let fname = "..." . truncated
     endif
+    return fname
 endfunction
 
 function! Cwd() abort
