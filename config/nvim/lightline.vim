@@ -2,7 +2,7 @@ let g:cobalt2_lightline = 1
 let g:lightline = {
     \ 'colorscheme': 'cobalt2',
     \ 'active': {
-    \   'left': [ [ 'mode', 'paste', ], [ 'indicator', 'anzu', 'fugitive', ], [ 'filename', ], ],
+    \   'left': [ [ 'mode', 'paste', ], [ 'indicator', 'git', ], [ 'filename', ], ],
     \   'right': [ [ 'lsp_status_off', 'lsp_status_on', 'linter_warnings', 'linter_errors' ], [ 'filetype' ], [ 'cwd', 'column' ] ]
     \ },
     \ 'inactive': {
@@ -31,11 +31,10 @@ let g:lightline = {
     \   'lsp_status_on': 'enabled',
     \ },
     \ 'component_function': {
-    \   'fugitive': 'Fugitive',
+    \   'git': 'Git',
     \   'filetype': 'Filetype',
     \   'cwd': 'Cwd',
     \   'filename': 'Filename',
-    \   'anzu': 'Anzu',
     \ },
     \ 'separator': { 'left': "\ue0b0", 'right': "\ue0b2" },
 	\ 'subseparator': { 'left': "\ue0b1", 'right': "\ue0b3" },
@@ -43,35 +42,33 @@ let g:lightline = {
     \ 'tabline_subseparator': { 'left': ' ', 'right': ' ' },
     \ }
 
-function! Anzu()
-  return anzu#search_status()
+function! LSPErrors() abort
+    return luaeval("get_lsp_diagnostic_metrics()['errors']")
 endfunction
 
-function! LSPErrors()
-  return 2
+function! LSPWarnings() abort
+    return luaeval("get_lsp_diagnostic_metrics()['warnings']")
 endfunction
 
-function! LSPWarnings()
-  return 2
+function! LSPStatusOn() abort
+    if luaeval('get_lsp_client_status()')
+        return "LSP"
+    endif
+    return ''
 endfunction
 
-function! LSPStatusOn()
-  return "LSP"
+function! LSPStatusOff() abort
+    if !luaeval('get_lsp_client_status()')
+        return 'LSP'
+    endif
+    return ''
 endfunction
 
-function! LSPStatusOff()
-  return ""
-endfunction
-
-function! BufferTitle()
+function! BufferTitle() abort
     return "buffers"
 endfunction
 
-function! LSP()
-    return luaeval('get_lsp_client_status()')
-endfunction
-
-function! BufferTabs()
+function! BufferTabs() abort
     let buflist = filter(range(1,bufnr('$')),'buflisted(v:val) && "quickfix" !=? getbufvar(v:val, "&buftype")')
     let tabline_before = []
     let tabline_current = []
@@ -95,15 +92,15 @@ function! BufferTabs()
     return [tabline_before, tabline_current, tabline_after]
 endfunction
 
-function! NameBuffer(bufid)
+function! NameBuffer(bufid) abort
     return (getbufvar(a:bufid, '&readonly')? '⭤ ':'') . (fnamemodify(bufname(a:bufid), ':t')==''? '[no name]' : fnamemodify(bufname(a:bufid), ':t')) . (getbufvar(a:bufid, '&mod')?' *':'')
 endfunction
 
-function! Filetype()
+function! Filetype() abort
     return winwidth(0) > 70 ? (&filetype !=# '' ? &filetype : '') : ''
 endfunction
 
-function! Filename()
+function! Filename() abort
     if index(g:special_buffers, &filetype) > -1
         return ''
     else
@@ -124,10 +121,19 @@ function! Filename()
     endif
 endfunction
 
-function! Cwd()
+function! Cwd() abort
     return winwidth(0) < 120 ? '' : getcwd()
 endfunction
 
+function! Git() abort
+  if index(g:special_buffers, &filetype) > -1 || fugitive#head() == "" 
+     return ''
+  else
+     return " ".fugitive#head()
+  endif
+endfunction
+
+" Unused
 function! QuickFixWarnings()
   let current_buf_number = bufnr('%')
   let list = getqflist()
@@ -158,12 +164,4 @@ function! LocationListErrors()
   let current_buf_diagnostics = filter(list, {index, dict -> dict['bufnr'] == current_buf_number && dict['type'] == 'E'})
   let count = len(current_buf_diagnostics)
   return count > 0 ? 'E: ' . count : ''
-endfunction
-
-function! Fugitive() abort
-  if index(g:special_buffers, &filetype) > -1 || fugitive#head() == "" 
-     return ''
-  else
-     return " ".fugitive#head()
-  endif
 endfunction

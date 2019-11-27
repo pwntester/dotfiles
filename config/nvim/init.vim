@@ -399,7 +399,9 @@ colorscheme cobalt2
 
 "NVIM-LSP
 hi LspDiagnosticsError guifg=#FF0000
-hi LspDiagnosticsWarning guifg=#00AAFF
-
+"hi LspDiagnosticsWarning guifg=#00AAFF
+hi LspDiagnosticsWarning guifg=#FFC600
+hi LspDiagnosticInformation guifg=grey
+hi LspDiagnosticHint guifg=grey
 "}}}
 
