@@ -6,6 +6,7 @@ call plug#begin('~/.nvim/plugged')
     Plug 'fatih/vim-go',                    { 'do': ':GoInstallBinaries' }
     Plug 'Shougo/deoplete-lsp'
     Plug 'natebosch/vim-lsc',
+    Plug 'drzel/vim-line-no-indicator'
     Plug 'hrsh7th/deoplete-vim-lsc'
     Plug 'Shougo/neco-vim',
     Plug 'kristijanhusak/defx-git'
