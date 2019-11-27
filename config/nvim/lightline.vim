@@ -2,8 +2,8 @@ let g:cobalt2_lightline = 1
 let g:lightline = {
     \ 'colorscheme': 'cobalt2',
     \ 'active': {
-    \   'left': [ [ 'mode', 'paste', ], [ 'indicator', 'git', ], [ 'filename', ], ],
-    \   'right': [ [ 'lsp_status_off', 'lsp_status_on', 'linter_warnings', 'linter_errors' ], [ 'filetype' ], [ 'cwd', 'column' ] ]
+    \   'left': [ [ 'mode', 'paste', ], [ 'indicator', 'column', 'git', ], [ 'cwd', ], ],
+    \   'right': [ [ 'lsp_status_off', 'lsp_status_on', 'linter_warnings', 'linter_errors' ], [ 'filetype' ], [ 'filename' ] ]
     \ },
     \ 'inactive': {
     \   'left': [ [ ] ],
@@ -104,7 +104,7 @@ function! Filename() abort
     if index(g:special_buffers, &filetype) > -1
         return ''
     else
-        let fname = expand('%:p')
+        let fname = @%
         let width = winwidth(0) / 3 
         if strlen(fname) > width 
             let segments = reverse(split(fname, "/"))
