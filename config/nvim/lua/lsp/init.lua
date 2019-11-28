@@ -107,6 +107,8 @@ local function buf_diagnostics_virtual_text(bufnr, diagnostics)
       local last = line_diags[#line_diags]
       local winwidth = vim.api.nvim_win_get_width(0)
       local line_content = vim.api.nvim_buf_get_lines(bufnr, line, line+1, 1)[1]
+      -- TODO: find out why line_content is nil sometimes, for now, just ignore
+      if line_content == nil then goto continue end
       local linewidth = string.len(line_content)
       local message = "■ "..last.message:gsub("\r", ""):gsub("\n", "  ") 
       local available_space = winwidth - linewidth - 6 
@@ -124,6 +126,7 @@ local function buf_diagnostics_virtual_text(bufnr, diagnostics)
         table.insert(virt_texts, {prefix..message, severity_highlights[last.severity]})
       end
       vim.api.nvim_buf_set_virtual_text(bufnr, diagnostic_ns, line, virt_texts, {})
+      ::continue::
     end
 end
 
@@ -352,6 +355,12 @@ if vim.lsp then
         --vim.lsp.util.buf_diagnostics_underline(bufnr, result.diagnostics)
         --vim.lsp.util.buf_diagnostics_virtual_text(bufnr, result.diagnostics)
         --vim.lsp.util.set_loclist(result.diagnostics)
+        --
+        -- custom virtual text display
+        buf_clear_diagnostics(bufnr)
+        buf_diagnostics_save_positions(bufnr, result.diagnostics)
+        buf_diagnostics_underline(bufnr, result.diagnostics)
+        buf_diagnostics_virtual_text(bufnr, result.diagnostics)
 
         -- collect metrics for status line
         lsps_diagnostics[bufnr] = { errors=0, warnings=0 }
@@ -369,11 +378,6 @@ if vim.lsp then
         -- signs
         buf_diagnostics_signs(bufnr, result.diagnostics)
 
-        -- custom virtual text display
-        buf_clear_diagnostics(bufnr)
-        buf_diagnostics_save_positions(bufnr, result.diagnostics)
-        buf_diagnostics_underline(bufnr, result.diagnostics)
-        buf_diagnostics_virtual_text(bufnr, result.diagnostics)
     end)
 
     local lsp4j_status_callback = vim.schedule_wrap(function(_, _, result)
@@ -404,7 +408,7 @@ if vim.lsp then
         --local root_dir = vim.loop.cwd()
         local search_path = '/Users/pwntester/codeql-home/codeql-repo'
         local config = {
-            name = "fortify-language-server";
+            name = "codeql-language-server";
             cmd = "codeql execute language-server --check-errors ON_CHANGE -q --search-path="..search_path;
             root_dir = root_dir;
             callbacks = { ["textDocument/publishDiagnostics"] = diagnostics_callback };
