@@ -105,6 +105,10 @@ local function buf_diagnostics_virtual_text(bufnr, diagnostics)
     for line, line_diags in pairs(buffer_line_diagnostics) do
         local virt_texts = {}
         local last = line_diags[#line_diags]
+        -- TODO: we may up using a differnt window but it doesnt 
+        -- seem to be a straigth forward way to detect in which window
+        -- the buffer is being rendered
+        -- we can do nvim_win_get_buf(0) == bufnr
         local win_width = vim.api.nvim_win_get_width(0)
         local line_content = vim.api.nvim_buf_get_lines(bufnr, line, line+1, 1)[1]
         -- java LS sends diagnostics with lines out of the buffer, ignore them
