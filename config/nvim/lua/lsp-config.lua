@@ -1,10 +1,13 @@
 require 'util'
 require 'nvim-lsp'
 
-vim.api.nvim_command('sign define LspErrorSign text=x texthl=LspDiagnosticsError linehl= numhl=')
-vim.api.nvim_command('sign define LspWarningSign text=x texthl=LspDiagnosticsWarning linehl= numhl=')
+-- define signs
+if not sign_defined then
+    vim.fn.sign_define('LspErrorSign', {text='x', texthl='LspDiagnosticsError', linehl='', numhl=''})
+    vim.fn.sign_define('LspWarningSign', {text='x', texthl='LspDiagnosticsWarning', linehl='', numhl=''})
+    sign_defined = true
+end
 
-local sign_count = 1
 local lsps_dirs = {}
 local lsps_buffers = {}
 local lsps_diagnostics = { }
@@ -84,23 +87,22 @@ end
 local function buf_diagnostics_signs(bufnr, diagnostics)
 
     -- clear previous signs
-    vim.api.nvim_command(string.format("sign unplace * buffer=%d", bufnr))
+    vim.fn.sign_unplace('nvim-lsp', {buffer=bufnr})
 
     -- add signs
     for _, diagnostic in ipairs(diagnostics) do
         if diagnostic.severity == 2 then
-            vim.api.nvim_command(string.format('sign place %d line=%d name=LspWarningSign buffer=%d', sign_count, diagnostic.range.start.line+1, bufnr))
+            print(1)
+            vim.fn.sign_place(0, 'nvim-lsp', 'LspWarningSign', bufnr, {lnum=(diagnostic.range.start.line+1)})
         elseif diagnostic.severity == 1 then
-            vim.api.nvim_command(string.format('sign place %d line=%d name=LspErrorSign buffer=%d', sign_count, diagnostic.range.start.line+1, bufnr))
+            print(2)
+            vim.fn.sign_place(0, 'nvim-lsp', 'LspErrorSign', bufnr, {lnum=(diagnostic.range.start.line+1)})
         end
-        sign_count = sign_count + 1
     end
 end
 
 -- global so can be called from mapping
 function show_diagnostics_details()
-    -- local diagnostic_popup = focusable_popup()
-    --local _, winnr = vim.lsp.util.show_line_diagnostics()
     local _, winnr = show_line_diagnostics()
     if winnr ~= nil then
         local bufnr = vim.api.nvim_win_get_buf(winnr)

@@ -62,28 +62,38 @@ end
 
 --  get decoration column with (signs + folding + number)
 function window_decoration_columns()
-    local right_padding = 1
     local decoration_width = 0 
 
     -- number width
     -- Note: 'numberwidth' is only the minimal width, can be more if...
-    local number_enabled = vim.api.nvim_win_get_option(0,"number") or nvim_win_get_option(0,"relativenumber")
-    local number_width = vim.api.nvim_win_get_option(0,"numberwidth")
-    local actual_number_width = string.len(vim.api.nvim_buf_line_count(bufnr)) + 1 
-    if number_enabled then 
+    local max_number = 0
+    if vim.api.nvim_win_get_option(0,"number") then
+        -- ...the buffer has many lines.
+        max_number = vim.api.nvim_buf_line_count(bufnr) 
+    elseif vim.api.nvim_win_get_option(0,"relativenumber") then
+        -- ...the window width has more digits.
+        max_number = winheight(0)
+    end
+    if max_number > 0 then
+        local actual_number_width = string.len(max_number) + 1
+        local number_width = vim.api.nvim_win_get_option(0,"numberwidth")
         decoration_width = decoration_width + math.max(number_width, actual_number_width)
     end
 
     -- signs
-    local signcolumn = vim.api.nvim_win_get_option(0,"signcolumn")
-    local signcolumn_width = 2 
-    if starts_with(signcolumn, 'yes') or starts_with(signcolumn, 'auto') then
-        decoration_width = decoration_width + signcolumn_width
+    if vim.fn.has('signs') then
+        local signcolumn = vim.api.nvim_win_get_option(0,"signcolumn")
+        local signcolumn_width = 2 
+        if starts_with(signcolumn, 'yes') or starts_with(signcolumn, 'auto') then
+            decoration_width = decoration_width + signcolumn_width
+        end
     end
 
     -- folding
-    local folding_width = vim.api.nvim_win_get_option(0,"foldcolumn")
-    decoration_width = decoration_width + folding_width
+    if vim.fn.has('folding') then
+        local folding_width = vim.api.nvim_win_get_option(0,"foldcolumn")
+        decoration_width = decoration_width + folding_width
+    end
 
     return decoration_width
 end
