@@ -272,16 +272,8 @@ endfunction
 " nnoremap <silent> ;s  :call lsp#text_document_signature_help()<CR>
 " nnoremap <silent> ;td :call lsp#text_document_type_definition()<CR>"
 
-" highligths from https://github.com/neovim/neovim/blob/00dc12c5d8454a2d3c6806710f63bbb446076e96/runtime/lua/vim/lsp/util.lua#L380
-" LspDiagnostics.Error
 
-
-"   `callbacks`
-    " A {table} of whose keys are language server method names and the values
-    " are `function(err, method, params, client_id)` See |lsp-callbacks| for
-    " more. This will be combined with |lsp-builtin-callbacks| to provide
-    " defaults.
-lua require("lsp")
+lua require("lsp-config")
 
 
 " }}}

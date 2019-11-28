@@ -1,4 +1,4 @@
--- Some path manipulation utilities
+-- some path manipulation utilities
 function is_dir(filename)
     local stat = vim.loop.fs_stat(filename)
     return stat and stat.type == 'directory' or false
@@ -19,7 +19,7 @@ function path_join(...)
     return table.concat(vim.tbl_flatten {...}, path_sep)
 end
 
--- Ascend the buffer's path until we find the rootdir.
+-- ascend the buffer's path until we find the rootdir.
 -- is_root_path is a function which returns bool
 function buffer_find_root_dir(bufnr, is_root_path)
     local bufname = vim.api.nvim_buf_get_name(bufnr)

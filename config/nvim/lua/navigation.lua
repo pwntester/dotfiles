@@ -48,3 +48,4 @@ function Terminal(nr, ...)
   --vim.api.nvim_set_buf()
   --vim.api.nvim_buf_set_lines(buf, 0, 2, false, { "a", "2" })
 end
+
