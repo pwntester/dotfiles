@@ -96,37 +96,37 @@ severity_highlights[2] = 'LspDiagnosticsWarning'
 local function buf_diagnostics_virtual_text(bufnr, diagnostics)
     local buffer_line_diagnostics = all_buffer_diagnostics[bufnr]
     if not buffer_line_diagnostics then
-      buf_diagnostics_save_positions(bufnr, diagnostics)
+        buf_diagnostics_save_positions(bufnr, diagnostics)
     end
     buffer_line_diagnostics = all_buffer_diagnostics[bufnr]
     if not buffer_line_diagnostics then
-      return
+        return
     end
     for line, line_diags in pairs(buffer_line_diagnostics) do
-      local virt_texts = {}
-      local last = line_diags[#line_diags]
-      local winwidth = vim.api.nvim_win_get_width(0)
-      local line_content = vim.api.nvim_buf_get_lines(bufnr, line, line+1, 1)[1]
-      -- TODO: find out why line_content is nil sometimes, for now, just ignore
-      if line_content == nil then goto continue end
-      local linewidth = string.len(line_content)
-      local message = "■ "..last.message:gsub("\r", ""):gsub("\n", "  ") 
-      local available_space = winwidth - linewidth - 6 
-      if #line_diags > 1 then
-        local leading_space = available_space - string.len(message) - #line_diags + 1
-        local prefix = string.rep(" ", leading_space)
-        table.insert(virt_texts, {prefix..'■', severity_highlights[line_diags[1].severity]})
-        for i = 2, #line_diags - 1 do
-            table.insert(virt_texts, {'■', severity_highlights[line_diags[i].severity]})
+        local virt_texts = {}
+        local last = line_diags[#line_diags]
+        local win_width = vim.api.nvim_win_get_width(0)
+        local line_content = vim.api.nvim_buf_get_lines(bufnr, line, line+1, 1)[1]
+        -- java LS sends diagnostics with lines out of the buffer, ignore them
+        if line_content == nil then goto continue end
+        local line_width = vim.fn.strdisplaywidth(line_content)
+        local message = "■ "..last.message:gsub("\r", ""):gsub("\n", "  ") 
+        local available_space = win_width - line_width - 7
+        if #line_diags > 1 then
+            local leading_space = available_space - vim.fn.strdisplaywidth(message) - #line_diags + 1
+            local prefix = string.rep(" ", leading_space)
+            table.insert(virt_texts, {prefix..'■', severity_highlights[line_diags[1].severity]})
+            for i = 2, #line_diags - 1 do
+                table.insert(virt_texts, {'■', severity_highlights[line_diags[i].severity]})
+            end
+            table.insert(virt_texts, {message, severity_highlights[last.severity]})
+        else 
+            local leading_space = available_space - vim.fn.strdisplaywidth(message) - #line_diags
+            local prefix = string.rep(" ", leading_space)
+            table.insert(virt_texts, {prefix..message, severity_highlights[last.severity]})
         end
-        table.insert(virt_texts, {message, severity_highlights[last.severity]})
-      else 
-        local leading_space = available_space - string.len(message) - #line_diags
-        local prefix = string.rep(" ", leading_space)
-        table.insert(virt_texts, {prefix..message, severity_highlights[last.severity]})
-      end
-      vim.api.nvim_buf_set_virtual_text(bufnr, diagnostic_ns, line, virt_texts, {})
-      ::continue::
+        vim.api.nvim_buf_set_virtual_text(bufnr, diagnostic_ns, line, virt_texts, {})
+        ::continue::
     end
 end
 
@@ -344,18 +344,15 @@ if vim.lsp then
     local diagnostics_callback = vim.schedule_wrap(function(_, _, result)
         if not result then return end
         local uri = result.uri
-        -- local bufnr = uri_to_bufnr(uri)
+
         local bufnr = vim.fn.bufadd((vim.uri_to_fname(uri)))
         if not bufnr then
             api.nvim_err_writeln(string.format("LSP.publishDiagnostics: Couldn't find buffer for %s", uri))
             return
         end
-        --vim.lsp.util.buf_clear_diagnostics(bufnr)
-        --vim.lsp.util.buf_diagnostics_save_positions(bufnr, result.diagnostics)
-        --vim.lsp.util.buf_diagnostics_underline(bufnr, result.diagnostics)
-        --vim.lsp.util.buf_diagnostics_virtual_text(bufnr, result.diagnostics)
-        --vim.lsp.util.set_loclist(result.diagnostics)
-        --
+
+        print(dump(result.diagnostics))
+
         -- custom virtual text display
         buf_clear_diagnostics(bufnr)
         buf_diagnostics_save_positions(bufnr, result.diagnostics)
