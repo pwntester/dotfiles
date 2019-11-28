@@ -52,11 +52,11 @@ local function buf_diagnostics_virtual_text(bufnr, diagnostics)
         local number_enabled = vim.api.nvim_win_get_option(0,"number") or nvim_win_get_option(0,"relativenumber")
         -- TODO: this always return 4, no matter the number column 
         --local number_width = vim.api.nvim_win_get_option(0,"numberwidth")
-        local number_width = string.len(vim.api.nvim_buf_line_count(bufnr)) + 2 
+        local number_width = string.len(vim.api.nvim_buf_line_count(bufnr)) + 1 
         if number_enabled then gutter_width = gutter_width + number_width end
         local signcolumn = vim.api.nvim_win_get_option(0,"signcolumn")
         -- TODO: can I get this from anywhere?
-        local signcolumn_width = 1 
+        local signcolumn_width = 2 
         if starts_with(signcolumn, 'yes') or starts_with(signcolumn, 'auto') then gutter_width = gutter_width + signcolumn_width end
         local available_space = win_width - line_width - gutter_width
         if #line_diags > 1 then
