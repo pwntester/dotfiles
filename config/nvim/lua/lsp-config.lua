@@ -41,32 +41,35 @@ local function buf_diagnostics_virtual_text(bufnr, diagnostics)
     end
     for line, line_diags in pairs(buffer_line_diagnostics) do
         local virt_texts = {}
-        local last = line_diags[#line_diags]
+
+        -- window total width
         local win_width = vim.api.nvim_win_get_width(0)
+
+        -- line length
         local line_content = vim.api.nvim_buf_get_lines(bufnr, line, line+1, 1)[1]
-        -- java LS sends diagnostics with lines out of the buffer, ignore them
         if line_content == nil then goto continue end
         local line_width = vim.fn.strdisplaywidth(line_content)
+
+        -- window decoration with (sign + fold + number)
+        local decoration_width = window_decoration_columns()
+
+        -- available space for virtual text
+        local available_space = win_width - decoration_width - line_width
+
+        -- virtual text 
+        local last = line_diags[#line_diags]
         local message = "■ "..last.message:gsub("\r", ""):gsub("\n", "  ") 
-        local gutter_width = 2 -- right padding
-        local number_enabled = vim.api.nvim_win_get_option(0,"number") or nvim_win_get_option(0,"relativenumber")
-        -- TODO: this always return 4, no matter the number column 
-        --local number_width = vim.api.nvim_win_get_option(0,"numberwidth")
-        local number_width = string.len(vim.api.nvim_buf_line_count(bufnr)) + 1 
-        if number_enabled then gutter_width = gutter_width + number_width end
-        local signcolumn = vim.api.nvim_win_get_option(0,"signcolumn")
-        -- TODO: can I get this from anywhere?
-        local signcolumn_width = 2 
-        if starts_with(signcolumn, 'yes') or starts_with(signcolumn, 'auto') then gutter_width = gutter_width + signcolumn_width end
-        local available_space = win_width - line_width - gutter_width
+
+        -- more than one diagnostic in line
         if #line_diags > 1 then
-            local leading_space = available_space - vim.fn.strdisplaywidth(message) - #line_diags + 1
+            local leading_space = available_space - vim.fn.strdisplaywidth(message) - #line_diags
             local prefix = string.rep(" ", leading_space)
             table.insert(virt_texts, {prefix..'■', severity_highlights[line_diags[1].severity]})
             for i = 2, #line_diags - 1 do
                 table.insert(virt_texts, {'■', severity_highlights[line_diags[i].severity]})
             end
             table.insert(virt_texts, {message, severity_highlights[last.severity]})
+        -- 1 diagnostic in line
         else 
             local leading_space = available_space - vim.fn.strdisplaywidth(message) - #line_diags
             local prefix = string.rep(" ", leading_space)
