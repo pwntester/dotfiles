@@ -53,3 +53,7 @@ function dump(o)
       return tostring(o)
    end
 end
+
+function starts_with(str, start)
+   return str:sub(1, #start) == start
+end

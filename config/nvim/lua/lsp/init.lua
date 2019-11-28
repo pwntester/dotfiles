@@ -111,7 +111,17 @@ local function buf_diagnostics_virtual_text(bufnr, diagnostics)
         if line_content == nil then goto continue end
         local line_width = vim.fn.strdisplaywidth(line_content)
         local message = "■ "..last.message:gsub("\r", ""):gsub("\n", "  ") 
-        local available_space = win_width - line_width - 7
+        local gutter_width = 1 -- right padding
+        local number_enabled = vim.api.nvim_win_get_option(0,"number") or nvim_win_get_option(0,"relativenumber")
+        -- TODO: this always return 4, no matter the number column 
+        --local number_width = vim.api.nvim_win_get_option(0,"numberwidth")
+        local number_width = string.len(vim.api.nvim_buf_line_count(bufnr)) + 2 
+        if number_enabled then gutter_width = gutter_width + number_width end
+        local signcolumn = vim.api.nvim_win_get_option(0,"signcolumn")
+        -- TODO: can I get this from anywhere?
+        local signcolumn_width = 2 
+        if starts_with(signcolumn, 'yes') or starts_with(signcolumn, 'auto') then gutter_width = gutter_width + signcolumn_width end
+        local available_space = win_width - line_width - gutter_width
         if #line_diags > 1 then
             local leading_space = available_space - vim.fn.strdisplaywidth(message) - #line_diags + 1
             local prefix = string.rep(" ", leading_space)
@@ -350,8 +360,6 @@ if vim.lsp then
             api.nvim_err_writeln(string.format("LSP.publishDiagnostics: Couldn't find buffer for %s", uri))
             return
         end
-
-        print(dump(result.diagnostics))
 
         -- custom virtual text display
         buf_clear_diagnostics(bufnr)
