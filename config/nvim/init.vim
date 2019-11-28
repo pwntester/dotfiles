@@ -403,6 +403,7 @@ hi LspDiagnosticsError guifg=#FF0000
 hi LspDiagnosticsWarning guifg=#FFC600
 hi LspDiagnosticInformation guifg=grey
 hi LspDiagnosticHint guifg=grey
-hi LspDiagnosticsUnderline guifg=#FF0000 gui=underline
+hi LspDiagnosticsUnderline gui=underline
+
 "}}}
 
