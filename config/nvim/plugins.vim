@@ -1,9 +1,11 @@
 " ================ PLUGIN SETUP ======================== {{{
 call plug#begin('~/.nvim/plugged') 
+
     " Github plugins
     Plug 'Shougo/deoplete.nvim',            { 'do': ':UpdateRemotePlugins'} 
     Plug 'Shougo/defx.nvim',                { 'do': ':UpdateRemotePlugins'} 
     Plug 'fatih/vim-go',                    { 'do': ':GoInstallBinaries' }
+    Plug 'segeljakt/vim-smoothie',          { 'branch': 'allow-custom-mappings'}
     Plug 'Shougo/deoplete-lsp'
     Plug 'natebosch/vim-lsc',
     Plug 'drzel/vim-line-no-indicator'
