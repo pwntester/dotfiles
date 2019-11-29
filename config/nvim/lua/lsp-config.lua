@@ -12,7 +12,7 @@ local lsps_dirs = {}
 local lsps_buffers = {}
 local lsps_diagnostics = { }
 
--- modified from https://github.com/neovim/neovim/blob/6e8c5779cf960893850501e4871dc9be671db298/runtime/lua/vim/lsp/util.lua#L593
+-- modified from https://github.com/neovim/neovim/blob/master/runtime/lua/vim/lsp/util.lua#L593
 local function buf_diagnostics_underline(bufnr, diagnostics)
     for _, diagnostic in ipairs(diagnostics) do
       local start = diagnostic.range.start
@@ -28,7 +28,7 @@ local function buf_diagnostics_underline(bufnr, diagnostics)
     end
 end
 
--- modified from https://github.com/neovim/neovim/blob/6e8c5779cf960893850501e4871dc9be671db298/runtime/lua/vim/lsp/util.lua#L606
+-- modified from https://github.com/neovim/neovim/blob/master/runtime/lua/vim/lsp/util.lua#L606
 local function buf_diagnostics_virtual_text(bufnr, diagnostics)
     -- return if we are called from a window that is not 
     -- showing bufnr
@@ -57,7 +57,8 @@ local function buf_diagnostics_virtual_text(bufnr, diagnostics)
         local decoration_width = window_decoration_columns()
 
         -- available space for virtual text
-        local available_space = win_width - decoration_width - line_width
+        local right_padding = 1
+        local available_space = win_width - decoration_width - line_width - right_padding
 
         -- virtual text 
         local last = line_diags[#line_diags]
@@ -92,10 +93,8 @@ local function buf_diagnostics_signs(bufnr, diagnostics)
     -- add signs
     for _, diagnostic in ipairs(diagnostics) do
         if diagnostic.severity == 2 then
-            print(1)
             vim.fn.sign_place(0, 'nvim-lsp', 'LspWarningSign', bufnr, {lnum=(diagnostic.range.start.line+1)})
         elseif diagnostic.severity == 1 then
-            print(2)
             vim.fn.sign_place(0, 'nvim-lsp', 'LspErrorSign', bufnr, {lnum=(diagnostic.range.start.line+1)})
         end
     end
@@ -113,8 +112,8 @@ end
 
 -- global so can be called from lightline
 function get_lsp_diagnostic_metrics()
-local bufnr = vim.api.nvim_get_current_buf()
-return lsps_diagnostics[bufnr]
+    local bufnr = vim.api.nvim_get_current_buf()
+    return lsps_diagnostics[bufnr]
 end
 
 -- global so can be called from lightline
@@ -192,12 +191,11 @@ if vim.lsp then
     end)
 
     local lsp4j_status_callback = vim.schedule_wrap(function(_, _, result)
-        print(result.message)
+        vim.api.nvim_command(string.format(':echohl Function | echo "%s" | echohl None', result.message))
     end)
 
     function start_fls()
-        local root_dir = vim.api.nvim_command_output("echo expand('%:p:h')")
-        --local root_dir = vim.loop.cwd()
+        local root_dir = vim.fn.expand('%:p:h')
         local config = {
             name = "fortify-language-server";
             cmd = "fls";
@@ -215,8 +213,7 @@ if vim.lsp then
     end
 
     function start_qlls()
-        local root_dir = vim.api.nvim_command_output("echo expand('%:p:h')")
-        --local root_dir = vim.loop.cwd()
+        local root_dir = vim.fn.expand('%:p:h')
         local search_path = '/Users/pwntester/codeql-home/codeql-repo'
         local config = {
             name = "codeql-language-server";
