@@ -84,6 +84,69 @@ local function buf_diagnostics_virtual_text(bufnr, diagnostics)
     end
 end
 
+-- symbols
+function request_symbols()
+    local params = vim.lsp.util.make_position_params()
+    local callback = vim.schedule_wrap(function(_, _, result)
+        if not result then return end
+        print(dump(result))
+    end)
+    vim.lsp.buf_request(0, 'textDocument/documentSymbol', params, callback)
+end
+
+-- code action support
+function make_range_params()
+  local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+  row = row - 1
+  local line = vim.api.nvim_buf_get_lines(0, row, row+1, true)[1]
+  col = vim.str_utfindex(line, col)
+  return {
+    textDocument = { uri = vim.uri_from_bufnr(0) };
+    range = { ["start"] = { line = row, character = col }, ["end"] = { line = row, character = (col + 1) } }
+  }
+end
+
+local fzf_code_action_callback = vim.schedule_wrap(function(selection)
+    print(selection)
+end)
+
+function FZF_menu(raw_options)
+    local fzf_options = {}
+    for idx, option in ipairs(raw_options) do
+        table.insert(fzf_options, string.format('%d::%s', idx, option.title))
+    end
+    local fzf_config = {
+        source = fzf_options,
+        sink = fzf_code_action_callback,
+        options = "+m --with-nth 2.. -d ::"
+    }
+    vim.fn['fzf#run'](vim.fn['fzf#wrap'](fzf_config))
+end
+
+function request_code_actions()
+
+    local bufnr = vim.api.nvim_get_current_buf()
+    local buffer_line_diagnostics = all_buffer_diagnostics[bufnr]
+    if not buffer_line_diagnostics then
+        buf_diagnostics_save_positions(bufnr, diagnostics)
+    end
+    buffer_line_diagnostics = all_buffer_diagnostics[bufnr]
+    if not buffer_line_diagnostics then
+        return
+    end
+    local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+    row = row - 1
+    local line_diagnostics = buffer_line_diagnostics[row]
+ 
+    local params = make_range_params()
+    params.context = { diagnostics = line_diagnostics }
+    local callback = vim.schedule_wrap(function(_, _, results)
+        if not results then return end
+        FZF_menu(results)
+    end)
+    vim.lsp.buf_request(0, 'textDocument/codeAction', params, callback)
+end
+
 -- show diagnostics in sign column
 local function buf_diagnostics_signs(bufnr, diagnostics)
 
@@ -152,6 +215,7 @@ if vim.lsp then
         vim.api.nvim_buf_set_keymap(bufnr, "n", ";k", "<Cmd>lua vim.lsp.buf.hover()<CR>", { silent = true; })
         vim.api.nvim_buf_set_keymap(bufnr, "n", ";s", "<Cmd>lua vim.lsp.buf.signature_help()<CR>", { silent = true; })
         vim.api.nvim_buf_set_keymap(bufnr, "n", ";t", "<Cmd>lua vim.lsp.buf.type_definition()<CR>", { silent = true; })
+        vim.api.nvim_buf_set_keymap(bufnr, "n", ";ca", "<Cmd>lua request_code_actions()<CR>", { silent = true; })
     end
 
     -- custom replacement for publishDiagnostics callback
