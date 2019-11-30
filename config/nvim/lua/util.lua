@@ -72,7 +72,7 @@ function window_decoration_columns()
         max_number = vim.api.nvim_buf_line_count(bufnr) 
     elseif vim.api.nvim_win_get_option(0,"relativenumber") then
         -- ...the window width has more digits.
-        max_number = winheight(0)
+        max_number = vim.fn.winheight(0)
     end
     if max_number > 0 then
         local actual_number_width = string.len(max_number) + 1

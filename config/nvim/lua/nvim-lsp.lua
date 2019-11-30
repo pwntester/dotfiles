@@ -196,3 +196,87 @@ function show_line_diagnostics()
     end
     return popup_bufnr, winnr
 end
+
+-- copied from https://github.com/neovim/neovim/blob/master/runtime/lua/vim/lsp/util.lua
+function set_lines(lines, A, B, new_lines)
+  -- 0-indexing to 1-indexing
+  local i_0 = A[1] + 1
+  local i_n = B[1] + 1
+  if not (i_0 >= 1 and i_0 <= #lines and i_n >= 1 and i_n <= #lines) then
+    error("Invalid range: "..vim.inspect{A = A; B = B; #lines, new_lines})
+  end
+  local prefix = ""
+  local suffix = lines[i_n]:sub(B[2]+1)
+  if A[2] > 0 then
+    prefix = lines[i_0]:sub(1, A[2])
+  end
+  local n = i_n - i_0 + 1
+  if n ~= #new_lines then
+    for _ = 1, n - #new_lines do table.remove(lines, i_0) end
+    for _ = 1, #new_lines - n do table.insert(lines, i_0, '') end
+  end
+  for i = 1, #new_lines do
+    lines[i - 1 + i_0] = new_lines[i]
+  end
+  if #suffix > 0 then
+    local i = i_0 + #new_lines - 1
+    lines[i] = lines[i]..suffix
+  end
+  if #prefix > 0 then
+    lines[i_0] = prefix..lines[i_0]
+  end
+  return lines
+end
+local function sort_by_key(fn)
+  return function(a,b)
+    local ka, kb = fn(a), fn(b)
+    assert(#ka == #kb)
+    for i = 1, #ka do
+      if ka[i] ~= kb[i] then
+        return ka[i] < kb[i]
+      end
+    end
+    -- every value must have been equal here, which means it's not less than.
+    return false
+  end
+end
+local edit_sort_key = sort_by_key(function(e)
+  return {e.A[1], e.A[2], e.i}
+end)
+function apply_text_edits(text_edits, bufnr)
+  if not next(text_edits) then return end
+  local start_line, finish_line = math.huge, -1
+  local cleaned = {}
+  for i, e in ipairs(text_edits) do
+    start_line = math.min(e.range.start.line, start_line)
+    finish_line = math.max(e.range["end"].line, finish_line)
+    -- TODO(ashkan) sanity check ranges for overlap.
+    table.insert(cleaned, {
+      i = i;
+      A = {e.range.start.line; e.range.start.character};
+      B = {e.range["end"].line; e.range["end"].character};
+      lines = vim.split(e.newText, '\n', true);
+    })
+  end
+  -- Reverse sort the orders so we can apply them without interfering with
+  -- eachother. Also add i as a sort key to mimic a stable sort.
+  table.sort(cleaned, edit_sort_key)
+  local lines = vim.api.nvim_buf_get_lines(bufnr, start_line, finish_line + 1, false)
+  local fix_eol = vim.api.nvim_buf_get_option(bufnr, 'fixeol')
+  local set_eol = fix_eol and vim.api.nvim_buf_line_count(bufnr) == finish_line + 1
+  if set_eol and #lines[#lines] ~= 0 then
+    table.insert(lines, '')
+  end
+
+  for i = #cleaned, 1, -1 do
+    local e = cleaned[i]
+    local A = {e.A[1] - start_line, e.A[2]}
+    local B = {e.B[1] - start_line, e.B[2]}
+    lines = set_lines(lines, A, B, e.lines)
+  end
+  if set_eol and #lines[#lines] == 0 then
+    table.remove(lines)
+  end
+  vim.api.nvim_buf_set_lines(bufnr, start_line, finish_line + 1, false, lines)
+end
+

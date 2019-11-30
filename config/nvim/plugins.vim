@@ -7,9 +7,7 @@ call plug#begin('~/.nvim/plugged')
     Plug 'fatih/vim-go',                    { 'do': ':GoInstallBinaries' }
     Plug 'segeljakt/vim-smoothie',          { 'branch': 'allow-custom-mappings'}
     Plug 'Shougo/deoplete-lsp'
-    Plug 'natebosch/vim-lsc',
     Plug 'drzel/vim-line-no-indicator'
-    Plug 'hrsh7th/deoplete-vim-lsc'
     Plug 'Shougo/neco-vim',
     Plug 'kristijanhusak/defx-git'
     Plug 'kristijanhusak/defx-icons'
@@ -41,7 +39,7 @@ call plug#begin('~/.nvim/plugged')
     Plug 'rhysd/accelerated-jk'
     Plug 'norcalli/nvim-colorizer.lua'
     Plug 'sheerun/vim-polyglot'
-    Plug 'liuchengxu/vista.vim'
+    "Plug 'liuchengxu/vista.vim'
     
     " Local plugins
     Plug '/usr/local/opt/fzf'
@@ -56,6 +54,7 @@ call plug#begin('~/.nvim/plugged')
     elseif isdirectory(fnameescape(expand('~/Dev')))
         Plug fnameescape(expand('~/Dev/cobalt2.vim'))
         Plug fnameescape(expand('~/Dev/vim-codeql'))
+        Plug fnameescape(expand('~/Dev/vista.vim'))
     endif
 call plug#end()
 
@@ -70,9 +69,6 @@ execute 'source' fnameescape(expand('~/.config/nvim/lightline.vim'))
 
 " DEFX
 execute 'source' fnameescape(expand('~/.config/nvim/defx.vim'))
-
-" VIM-LSC
-execute 'source' fnameescape(expand('~/.config/nvim/lsc.vim'))
 
 " INDENTLINE
 let g:indentLine_color_gui = '#17252c'
@@ -135,9 +131,6 @@ let g:rooter_patterns = ['build.gradle', 'build.sbt', 'pom.xml', '.git/']
 let g:rooter_silent_chdir = 1
 let g:rooter_change_directory_for_non_project_files = 'current'
 
-" BCLOSE
-let g:bclose_no_plugin_maps = 1
-
 " GITGUTTER 
 let g:gitgutter_map_keys = 0
 
@@ -189,17 +182,13 @@ inoremap <silent><expr> <C-k> pumvisible() ? "\<C-p>" : ""
 inoremap <silent><expr> <C-j> pumvisible() ? "\<C-n>" : ">"
 
 " VISTA
-let g:vista_default_executive = 'vim_lsc'
+let g:vista_default_executive = 'nvim_lsp'
 let g:vista_fzf_preview = ['right:50%']
 nmap <leader>v :Vista<Return>
 nmap <leader>vf :Vista finder<Return>
 
 " COLORIZER
 lua require'colorizer'.setup()
-
-" ACCELERATED JK
-nmap j <Plug>(accelerated_jk_gj)
-nmap k <Plug>(accelerated_jk_gk)
 
 " VIM-PLUG
 let g:plug_window = 'cal FloatingPlug()'
@@ -226,13 +215,13 @@ function! FloatingPlug()
   call nvim_buf_set_keymap(buf, 'n', 'q', ':call nvim_win_close()', {'nowait': v:true})
 endfunction
 
-" NVIM-LSP
-lua require("lsp-config")
-
 " VIM-SMOOTHIE
 let g:smoothie_use_default_mappings = v:false
 nmap <C-d> <Plug>(SmoothieDownwards)
 nmap <C-e> <Plug>(SmoothieUpwards)
+
+" NVIM-LSP
+lua require("lsp-config")
 
 
 " }}}

@@ -64,6 +64,7 @@ set linebreak                                                     " Wrap lines a
 set listchars=tab:>-,trail:.,extends:>,precedes:<,nbsp:%          " Showing trailing whitespace
 set diffopt+=vertical                                             " Show vimdiff in vertical splits
 set diffopt+=algorithm:patience                                   " Use git diffing algorithm
+
 " }}}
 
 " ================ IDENT/STYLE ==================== {{{

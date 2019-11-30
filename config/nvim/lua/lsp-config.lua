@@ -11,6 +11,7 @@ end
 local lsps_dirs = {}
 local lsps_buffers = {}
 local lsps_diagnostics = { }
+local lsps_diagnostics_count = { }
 
 -- modified from https://github.com/neovim/neovim/blob/master/runtime/lua/vim/lsp/util.lua#L593
 local function buf_diagnostics_underline(bufnr, diagnostics)
@@ -28,8 +29,30 @@ local function buf_diagnostics_underline(bufnr, diagnostics)
     end
 end
 
+-- modified from https://github.com/neovim/neovim/blob/6e8c5779cf960893850501e4871dc9be671db298/runtime/lua/vim/lsp/util.lua#L506
+local function buf_clear_diagnostics(bufnr)
+    validate { bufnr = {bufnr, 'n', true} }
+    bufnr = bufnr == 0 and vim.api.nvim_get_current_buf() or bufnr
+
+    -- clear signs
+    vim.fn.sign_unplace('nvim-lsp', {buffer=bufnr})
+
+    -- clear virtual text namespace
+    vim.api.nvim_buf_clear_namespace(bufnr, diagnostic_ns, 0, -1)
+end
+
+function buf_diagnostics_show(bufnr)
+    if not lsps_diagnostics[bufnr] then return end
+    buf_clear_diagnostics(bufnr)
+    buf_diagnostics_save_positions(bufnr, lsps_diagnostics[bufnr])
+    buf_diagnostics_underline(bufnr, lsps_diagnostics[bufnr])
+    buf_diagnostics_virtual_text(bufnr, lsps_diagnostics[bufnr])
+    buf_diagnostics_statusline(bufnr, lsps_diagnostics[bufnr])
+    buf_diagnostics_signs(bufnr, lsps_diagnostics[bufnr])
+end
+
 -- modified from https://github.com/neovim/neovim/blob/master/runtime/lua/vim/lsp/util.lua#L606
-local function buf_diagnostics_virtual_text(bufnr, diagnostics)
+function buf_diagnostics_virtual_text(bufnr, diagnostics)
     -- return if we are called from a window that is not 
     -- showing bufnr
     if vim.api.nvim_win_get_buf(0) ~= bufnr then return end
@@ -95,6 +118,8 @@ function request_symbols()
 end
 
 -- code action support
+local lsps_actions = {}
+
 function make_range_params()
   local row, col = unpack(vim.api.nvim_win_get_cursor(0))
   row = row - 1
@@ -106,25 +131,28 @@ function make_range_params()
   }
 end
 
-local fzf_code_action_callback = vim.schedule_wrap(function(selection)
-    print(selection)
-end)
-
-function FZF_menu(raw_options)
-    local fzf_options = {}
-    for idx, option in ipairs(raw_options) do
-        table.insert(fzf_options, string.format('%d::%s', idx, option.title))
+function fzf_code_action_callback(selection)
+    for _, text_edit in ipairs(lsps_actions[selection]['arguments']) do
+        for file, change in pairs(text_edit['changes']) do
+            apply_text_edits(change, 1)
+        end
     end
-    local fzf_config = {
-        source = fzf_options,
-        sink = fzf_code_action_callback,
-        options = "+m --with-nth 2.. -d ::"
-    }
-    vim.fn['fzf#run'](vim.fn['fzf#wrap'](fzf_config))
 end
 
-function request_code_actions()
+-- function FZF_menu(raw_options)
+--     local fzf_options = {}
+--     for idx, option in ipairs(raw_options) do
+--         table.insert(fzf_options, string.format('%d::%s', idx, option.title))
+--     end
+--     local fzf_config = {
+--         source = fzf_options,
+--         sink = "ApplyAction",
+--         options = "+m --with-nth 2.. -d ::"
+--     }
+--     vim.fn['fzf#run'](vim.fn['fzf#wrap'](fzf_config))
+-- end
 
+function request_code_actions()
     local bufnr = vim.api.nvim_get_current_buf()
     local buffer_line_diagnostics = all_buffer_diagnostics[bufnr]
     if not buffer_line_diagnostics then
@@ -140,20 +168,17 @@ function request_code_actions()
  
     local params = make_range_params()
     params.context = { diagnostics = line_diagnostics }
-    local callback = vim.schedule_wrap(function(_, _, results)
-        if not results then return end
-        FZF_menu(results)
+    local callback = vim.schedule_wrap(function(_, _, actions)
+        if not actions then return end
+        lsps_actions = actions
+        -- FZF_menu(lsps_actions)
+        vim.fn.CodeActionMenu(lsps_actions)
     end)
     vim.lsp.buf_request(0, 'textDocument/codeAction', params, callback)
 end
 
 -- show diagnostics in sign column
-local function buf_diagnostics_signs(bufnr, diagnostics)
-
-    -- clear previous signs
-    vim.fn.sign_unplace('nvim-lsp', {buffer=bufnr})
-
-    -- add signs
+function buf_diagnostics_signs(bufnr, diagnostics)
     for _, diagnostic in ipairs(diagnostics) do
         if diagnostic.severity == 2 then
             vim.fn.sign_place(0, 'nvim-lsp', 'LspWarningSign', bufnr, {lnum=(diagnostic.range.start.line+1)})
@@ -161,6 +186,21 @@ local function buf_diagnostics_signs(bufnr, diagnostics)
             vim.fn.sign_place(0, 'nvim-lsp', 'LspErrorSign', bufnr, {lnum=(diagnostic.range.start.line+1)})
         end
     end
+end
+
+-- collect metrics for status line
+function buf_diagnostics_statusline(bufnr, diagnostics)
+    lsps_diagnostics_count[bufnr] = { errors=0, warnings=0 }
+    for _, diagnostic in ipairs(diagnostics) do
+        if diagnostic.severity == 2 then
+            lsps_diagnostics_count[bufnr]['warnings'] = lsps_diagnostics_count[bufnr]['warnings'] + 1
+        elseif diagnostic.severity == 1 then
+            lsps_diagnostics_count[bufnr]['errors'] = lsps_diagnostics_count[bufnr]['errors'] + 1
+        end
+    end
+
+    -- update statusline
+    vim.api.nvim_command("call lightline#update()")
 end
 
 -- global so can be called from mapping
@@ -176,7 +216,7 @@ end
 -- global so can be called from lightline
 function get_lsp_diagnostic_metrics()
     local bufnr = vim.api.nvim_get_current_buf()
-    return lsps_diagnostics[bufnr]
+    return lsps_diagnostics_count[bufnr]
 end
 
 -- global so can be called from lightline
@@ -216,6 +256,7 @@ if vim.lsp then
         vim.api.nvim_buf_set_keymap(bufnr, "n", ";s", "<Cmd>lua vim.lsp.buf.signature_help()<CR>", { silent = true; })
         vim.api.nvim_buf_set_keymap(bufnr, "n", ";t", "<Cmd>lua vim.lsp.buf.type_definition()<CR>", { silent = true; })
         vim.api.nvim_buf_set_keymap(bufnr, "n", ";ca", "<Cmd>lua request_code_actions()<CR>", { silent = true; })
+        vim.api.nvim_buf_set_keymap(bufnr, "n", ";ds", "<Cmd>lua request_symbols()<CR>", { silent = true; })
     end
 
     -- custom replacement for publishDiagnostics callback
@@ -223,35 +264,13 @@ if vim.lsp then
     local diagnostics_callback = vim.schedule_wrap(function(_, _, result)
         if not result then return end
         local uri = result.uri
-
         local bufnr = vim.fn.bufadd((vim.uri_to_fname(uri)))
         if not bufnr then
             api.nvim_err_writeln(string.format("LSP.publishDiagnostics: Couldn't find buffer for %s", uri))
             return
         end
-
-        -- custom virtual text display
-        buf_clear_diagnostics(bufnr)
-        buf_diagnostics_save_positions(bufnr, result.diagnostics)
-        buf_diagnostics_underline(bufnr, result.diagnostics)
-        buf_diagnostics_virtual_text(bufnr, result.diagnostics)
-
-        -- collect metrics for status line
-        lsps_diagnostics[bufnr] = { errors=0, warnings=0 }
-        for _, diagnostic in ipairs(result.diagnostics) do
-            if diagnostic.severity == 2 then
-                lsps_diagnostics[bufnr]['warnings'] = lsps_diagnostics[bufnr]['warnings'] + 1
-            elseif diagnostic.severity == 1 then
-                lsps_diagnostics[bufnr]['errors'] = lsps_diagnostics[bufnr]['errors'] + 1
-            end
-        end
-
-        -- update status bar
-        vim.api.nvim_command("call lightline#update()")
-
-        -- signs
-        buf_diagnostics_signs(bufnr, result.diagnostics)
-
+        lsps_diagnostics[bufnr] = result.diagnostics
+        buf_diagnostics_show(bufnr)
     end)
 
     local lsp4j_status_callback = vim.schedule_wrap(function(_, _, result)
