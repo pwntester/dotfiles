@@ -128,13 +128,12 @@ function fzf_code_action_callback(selection)
                 apply_text_edits(text_edit, bufnr)
             end
         end
-    if command then
+    elseif command then
         -- TODO: test with a LS that follows spect
         local callback = vim.schedule_wrap(function(_, _, result)
-            print(dump(result))
+            --print(dump(result))
             if not result then return end
             print('not implemented')
-            print(dump(result))
         end)
         vim.lsp.buf_request(0, 'workspace/executeCommand', arguments, callback)
     elseif edit then

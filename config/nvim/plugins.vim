@@ -153,7 +153,17 @@ endfunction
 let g:go_term_enabled = 1
 let g:go_term_mode = "silent keepalt rightbelow 15 split"
 let g:go_def_reuse_buffer = 1
+let g:go_def_mapping_enabled = 0
+let g:go_fold_enable = []
+let g:go_code_completion_enabled = 0
+let g:go_textobj_enabled = 0
+let g:go_echo_command_info = 0
+let g:go_highlight_diagnostic_errors = 0
+let g:go_highlight_diagnostic_warnings = 0
 autocmd FileType go nmap <buffer> <leader>r :call ReuseVimGoTerm('GoRun')<Return>
+hi def link goDiagnosticError SpellBad
+hi def link goDiagnosticWarning SpellRare
+
 
 " VIM-POLYGLOT
 let g:polyglot_disabled = ["jsx", "hive"]
