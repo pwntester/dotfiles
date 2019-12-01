@@ -110,7 +110,6 @@ nnoremap <leader>: :call fzf#vim#command_history()<Return>
 " LSP vimL callback
 function! ApplyAction(chosen) abort
     let l:idx = split(a:chosen, '::')[0]
-    echom a:chosen
     call v:lua.fzf_code_action_callback(l:idx + 1)
 endfunction
 function! CodeActionMenu(actions) abort

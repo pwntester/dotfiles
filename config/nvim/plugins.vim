@@ -5,7 +5,6 @@ call plug#begin('~/.nvim/plugged')
     Plug 'Shougo/deoplete.nvim',            { 'do': ':UpdateRemotePlugins'} 
     Plug 'Shougo/defx.nvim',                { 'do': ':UpdateRemotePlugins'} 
     Plug 'fatih/vim-go',                    { 'do': ':GoInstallBinaries' }
-    Plug 'segeljakt/vim-smoothie',          { 'branch': 'allow-custom-mappings'}
     Plug 'Shougo/deoplete-lsp'
     Plug 'drzel/vim-line-no-indicator'
     Plug 'Shougo/neco-vim',
@@ -39,6 +38,8 @@ call plug#begin('~/.nvim/plugged')
     Plug 'rhysd/accelerated-jk'
     Plug 'norcalli/nvim-colorizer.lua'
     Plug 'sheerun/vim-polyglot'
+    "Plug 'vim-jp/vim-java'
+    Plug 'psliwka/vim-smoothie'
     "Plug 'liuchengxu/vista.vim'
     
     " Local plugins
@@ -188,7 +189,7 @@ nmap <leader>v :Vista<Return>
 nmap <leader>vf :Vista finder<Return>
 
 " COLORIZER
-lua require'colorizer'.setup()
+lua require('colorizer').setup()
 
 " VIM-PLUG
 let g:plug_window = 'cal FloatingPlug()'
@@ -216,12 +217,12 @@ function! FloatingPlug()
 endfunction
 
 " VIM-SMOOTHIE
-let g:smoothie_use_default_mappings = v:false
+let g:smoothie_no_default_mappings = v:true
 nmap <C-d> <Plug>(SmoothieDownwards)
 nmap <C-e> <Plug>(SmoothieUpwards)
 
 " NVIM-LSP
-lua require("lsp-config")
+lua require("lsp-config").setup()
 
 
 " }}}

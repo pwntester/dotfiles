@@ -1,13 +1,6 @@
 require 'util'
 require 'nvim-lsp'
 
--- define signs
-if not sign_defined then
-    vim.fn.sign_define('LspErrorSign', {text='x', texthl='LspDiagnosticsError', linehl='', numhl=''})
-    vim.fn.sign_define('LspWarningSign', {text='x', texthl='LspDiagnosticsWarning', linehl='', numhl=''})
-    sign_defined = true
-end
-
 local lsps_dirs = {}
 local lsps_buffers = {}
 local lsps_diagnostics = { }
@@ -107,16 +100,6 @@ function buf_diagnostics_virtual_text(bufnr, diagnostics)
     end
 end
 
--- symbols
-function request_symbols()
-    local params = vim.lsp.util.make_position_params()
-    local callback = vim.schedule_wrap(function(_, _, result)
-        if not result then return end
-        print(dump(result))
-    end)
-    vim.lsp.buf_request(0, 'textDocument/documentSymbol', params, callback)
-end
-
 -- code action support
 local lsps_actions = {}
 
@@ -132,10 +115,31 @@ function make_range_params()
 end
 
 function fzf_code_action_callback(selection)
-    for _, text_edit in ipairs(lsps_actions[selection]['arguments']) do
-        for file, change in pairs(text_edit['changes']) do
-            apply_text_edits(change, 1)
+    local command = lsps_actions[selection]['command']
+    local arguments = lsps_actions[selection]['arguments']
+    local edit = lsps_actions[selection]['edit']
+    local title = lsps_actions[selection]['title']
+
+    if command == 'java.apply.workspaceEdit' then
+        -- eclipse.jdt.ls does not follow spec here
+        for _, argument in ipairs(arguments) do
+            for uri, text_edit in pairs(argument['changes']) do
+                local bufnr = vim.fn.bufadd((vim.uri_to_fname(uri)))
+                apply_text_edits(text_edit, bufnr)
+            end
         end
+    if command then
+        -- TODO: test with a LS that follows spect
+        local callback = vim.schedule_wrap(function(_, _, result)
+            print(dump(result))
+            if not result then return end
+            print('not implemented')
+            print(dump(result))
+        end)
+        vim.lsp.buf_request(0, 'workspace/executeCommand', arguments, callback)
+    elseif edit then
+        -- TODO: implement
+        print('not implemented')
     end
 end
 
@@ -180,10 +184,18 @@ end
 -- show diagnostics in sign column
 function buf_diagnostics_signs(bufnr, diagnostics)
     for _, diagnostic in ipairs(diagnostics) do
-        if diagnostic.severity == 2 then
-            vim.fn.sign_place(0, 'nvim-lsp', 'LspWarningSign', bufnr, {lnum=(diagnostic.range.start.line+1)})
-        elseif diagnostic.severity == 1 then
+        -- errors
+        if diagnostic.severity == 1 then
             vim.fn.sign_place(0, 'nvim-lsp', 'LspErrorSign', bufnr, {lnum=(diagnostic.range.start.line+1)})
+        -- warnings
+        elseif diagnostic.severity == 2 then
+            vim.fn.sign_place(0, 'nvim-lsp', 'LspWarningSign', bufnr, {lnum=(diagnostic.range.start.line+1)})
+        -- info
+        elseif diagnostic.severity == 3 then
+            vim.fn.sign_place(0, 'nvim-lsp', 'LspInfoSign', bufnr, {lnum=(diagnostic.range.start.line+1)})
+        -- hint
+        elseif diagnostic.severity == 4 then
+            vim.fn.sign_place(0, 'nvim-lsp', 'LspHintSign', bufnr, {lnum=(diagnostic.range.start.line+1)})
         end
     end
 end
@@ -221,18 +233,27 @@ end
 
 -- global so can be called from lightline
 function get_lsp_client_status()
-local bufnr = vim.api.nvim_get_current_buf()
-local client_id = lsps_buffers[bufnr]
-local client = vim.lsp.get_client_by_id(client_id)
-if client ~= nil then
-    if client.notify("window/progress", {}) then
-            return true
+    local bufnr = vim.api.nvim_get_current_buf()
+    local client_id = lsps_buffers[bufnr]
+    local client = vim.lsp.get_client_by_id(client_id)
+    if client ~= nil then
+        if client.notify("window/progress", {}) then
+                return true
         end
     end
     return false
 end
 
-if vim.lsp then
+local function setup()
+
+    -- define signs
+    if not sign_defined then
+        vim.fn.sign_define('LspErrorSign', {text='x', texthl='LspDiagnosticsError', linehl='', numhl=''})
+        vim.fn.sign_define('LspWarningSign', {text='x', texthl='LspDiagnosticsWarning', linehl='', numhl=''})
+        vim.fn.sign_define('LspInfoSign', {text='x', texthl='LspDiagnosticsInfo', linehl='', numhl=''})
+        vim.fn.sign_define('LspHintSign', {text='x', texthl='LspDiagnosticsHint', linehl='', numhl=''})
+        sign_defined = true
+    end
 
     -- in case I'm reloading.
     vim.lsp.stop_all_clients()
@@ -249,14 +270,13 @@ if vim.lsp then
 
         -- mappings and settings
         vim.api.nvim_buf_set_keymap(bufnr, "n", ";dd", "<Cmd>lua show_diagnostics_details()<CR>", { silent = true; })
-        vim.api.nvim_buf_set_keymap(bufnr, "n", ";gd", "<Cmd>vim.lsp.buf.definition()<CR>", { silent = true; })
-        vim.api.nvim_buf_set_keymap(bufnr, "n", ";gD", "<Cmd>vim.lsp.buf.declaration()<CR>", { silent = true; })
-        vim.api.nvim_buf_set_keymap(bufnr, "n", ";gi", "<Cmd>vim.lsp.buf.implementation()<CR>", { silent = true; })
+        vim.api.nvim_buf_set_keymap(bufnr, "n", ";gd", "<Cmd>lua vim.lsp.buf.definition()<CR>", { silent = true; })
+        vim.api.nvim_buf_set_keymap(bufnr, "n", ";gD", "<Cmd>lua vim.lsp.buf.declaration()<CR>", { silent = true; })
+        vim.api.nvim_buf_set_keymap(bufnr, "n", ";gi", "<Cmd>lua vim.lsp.buf.implementation()<CR>", { silent = true; })
         vim.api.nvim_buf_set_keymap(bufnr, "n", ";k", "<Cmd>lua vim.lsp.buf.hover()<CR>", { silent = true; })
         vim.api.nvim_buf_set_keymap(bufnr, "n", ";s", "<Cmd>lua vim.lsp.buf.signature_help()<CR>", { silent = true; })
         vim.api.nvim_buf_set_keymap(bufnr, "n", ";t", "<Cmd>lua vim.lsp.buf.type_definition()<CR>", { silent = true; })
         vim.api.nvim_buf_set_keymap(bufnr, "n", ";ca", "<Cmd>lua request_code_actions()<CR>", { silent = true; })
-        vim.api.nvim_buf_set_keymap(bufnr, "n", ";ds", "<Cmd>lua request_symbols()<CR>", { silent = true; })
     end
 
     -- custom replacement for publishDiagnostics callback
@@ -315,12 +335,29 @@ if vim.lsp then
         vim.lsp.buf_attach_client(bufnr, client_id)
     end
 
+    function start_gopls()
+        local bufnr = vim.api.nvim_get_current_buf()
+        local root_dir = root_pattern(bufnr, "go.mod", ".git");
+        if not root_dir then return end
+        local config = {
+            name = "gopls";
+            cmd = "gopls";
+            root_dir = root_dir;
+            callbacks = { ["textDocument/publishDiagnostics"] = diagnostics_callback };
+            on_attach = on_attach;
+            before_init = set_workspace_folder;
+        }
+        local client_id = lsps_dirs[root_dir]
+        if not client_id then
+            client_id = vim.lsp.start_client(config)
+            lsps_dirs[root_dir] = client_id
+        end
+        vim.lsp.buf_attach_client(bufnr, client_id)
+    end
+
     function start_jdt()
-        local root_dir = buffer_find_root_dir(bufnr, function(dir)
-            -- return is_dir(path_join(dir, '.git'))
-            local result = vim.fn.filereadable(path_join(dir, 'pom.xml')) == 1 or vim.fn.filereadable(path_join(dir, 'build.gradle')) == 1
-            return result
-        end)
+        local bufnr = vim.api.nvim_get_current_buf()
+        local root_dir = root_pattern(bufnr, "pom.xml", "build.gradle");
         if not root_dir then return end
         local config = {
             name = "eclipse.jdt.ls";
@@ -337,7 +374,6 @@ if vim.lsp then
             client_id = vim.lsp.start_client(config)
             lsps_dirs[root_dir] = client_id
         end
-        local bufnr = vim.api.nvim_get_current_buf()
         vim.lsp.buf_attach_client(bufnr, client_id)
     end
 
@@ -345,5 +381,12 @@ if vim.lsp then
     vim.api.nvim_command [[autocmd Filetype fortifyrulepack lua start_fls()]]
     vim.api.nvim_command [[autocmd Filetype java lua start_jdt()]]
     vim.api.nvim_command [[autocmd Filetype codeql lua start_qlls()]]
+    vim.api.nvim_command [[autocmd Filetype go lua start_gopls()]]
 
 end
+
+--- @export
+return {
+	setup = setup;
+}
+
