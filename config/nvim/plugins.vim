@@ -39,6 +39,7 @@ call plug#begin('~/.nvim/plugged')
     Plug 'norcalli/nvim-colorizer.lua'
     Plug 'sheerun/vim-polyglot'
     Plug 'psliwka/vim-smoothie'
+    Plug 'liuchengxu/vim-clap'
     "Plug 'vim-jp/vim-java'
     "Plug 'liuchengxu/vista.vim'
     

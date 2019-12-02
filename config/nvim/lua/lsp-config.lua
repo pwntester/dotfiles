@@ -129,31 +129,34 @@ function fzf_code_action_callback(selection)
             end
         end
     elseif command then
-        -- TODO: test with a LS that follows spect
         local callback = vim.schedule_wrap(function(_, _, result)
             if not result then return end
-            print('not implemented')
+            vim.api.nvim_command(string.format(':echohl Function | echo "%s" | echohl None', result))
         end)
-        vim.lsp.buf_request(0, 'workspace/executeCommand', arguments, callback)
+        vim.lsp.buf_request(0, 'workspace/executeCommand', { command = command, arguments = arguments }, callback)
     elseif edit then
-        -- TODO: implement
-        print('not implemented')
+        -- TODO: not tested 
+        local bufnr = vim.fn.bufadd((vim.uri_to_fname(uri)))
+        apply_text_edits(edit, bufnr)
     end
 end
 
--- unfortunately no way to make FZF to call back lua code
--- function FZF_menu(raw_options)
---     local fzf_options = {}
---     for idx, option in ipairs(raw_options) do
---         table.insert(fzf_options, string.format('%d::%s', idx, option.title))
---     end
---     local fzf_config = {
---         source = fzf_options,
---         sink = "ApplyAction",
---         options = "+m --with-nth 2.. -d ::"
---     }
---     vim.fn['fzf#run'](vim.fn['fzf#wrap'](fzf_config))
--- end
+-- unfortunately no way to make FZF to call back into lua code
+function ApplyAction(arg)
+    print(dump(arg))
+end
+function FZF_menu(raw_options)
+    local fzf_options = {}
+    for idx, option in ipairs(raw_options) do
+        table.insert(fzf_options, string.format('%d::%s', idx, option.title))
+    end
+    local fzf_config = {
+        source = fzf_options,
+        sink = 'v:lua.ApplyAction',
+        options = "+m --with-nth 2.. -d ::"
+    }
+    vim.fn['fzf#run'](vim.fn['fzf#wrap'](fzf_config))
+end
 
 -- global to be called from mapping
 function request_code_actions()
@@ -175,8 +178,8 @@ function request_code_actions()
     local callback = vim.schedule_wrap(function(_, _, actions)
         if not actions then return end
         lsps_actions = actions
-        -- FZF_menu(lsps_actions)
-        vim.fn.CodeActionMenu(lsps_actions)
+        FZF_menu(lsps_actions)
+        -- vim.fn.CodeActionMenu(lsps_actions)
     end)
     vim.lsp.buf_request(0, 'textDocument/codeAction', params, callback)
 end
@@ -271,7 +274,6 @@ local function setup()
         -- mappings and settings
         vim.api.nvim_buf_set_keymap(bufnr, "n", "gD", "<Cmd>lua show_diagnostics_details()<CR>", { silent = true; })
         vim.api.nvim_buf_set_keymap(bufnr, "n", "gd", "<Cmd>lua vim.lsp.buf.definition()<CR>", { silent = true; })
-        --vim.api.nvim_buf_set_keymap(bufnr, "n", "gD", "<Cmd>lua vim.lsp.buf.declaration()<CR>", { silent = true; })
         vim.api.nvim_buf_set_keymap(bufnr, "n", "gi", "<Cmd>lua vim.lsp.buf.implementation()<CR>", { silent = true; })
         vim.api.nvim_buf_set_keymap(bufnr, "n", "K", "<Cmd>lua vim.lsp.buf.hover()<CR>", { silent = true; })
         vim.api.nvim_buf_set_keymap(bufnr, "n", "gh", "<Cmd>lua vim.lsp.buf.signature_help()<CR>", { silent = true; })
@@ -376,11 +378,33 @@ local function setup()
         vim.lsp.buf_attach_client(bufnr, client_id)
     end
 
+    function start_clangd()
+        local bufnr = vim.api.nvim_get_current_buf()
+        local root_dir = root_pattern(bufnr, "compile_commands.json", "compile_flags.txt", ".git");
+        if not root_dir then return end
+        local config = {
+            name = "clangd";
+            cmd = "/usr/local/opt/llvm/bin/clangd --background-index";
+            root_dir = root_dir;
+            callbacks = { 
+                ["textDocument/publishDiagnostics"] = diagnostics_callback,
+            };
+            on_attach = on_attach;
+        }
+        local client_id = lsps_dirs[root_dir]
+        if not client_id then
+            client_id = vim.lsp.start_client(config)
+            lsps_dirs[root_dir] = client_id
+        end
+        vim.lsp.buf_attach_client(bufnr, client_id)
+    end
+
     -- autocommands
     vim.api.nvim_command [[autocmd Filetype fortifyrulepack lua start_fls()]]
     vim.api.nvim_command [[autocmd Filetype java lua start_jdt()]]
     vim.api.nvim_command [[autocmd Filetype codeql lua start_qlls()]]
     vim.api.nvim_command [[autocmd Filetype go lua start_gopls()]]
+    vim.api.nvim_command [[autocmd Filetype c,cpp,objc lua start_clangd()]]
 
 end
 
