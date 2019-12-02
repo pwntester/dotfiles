@@ -1,8 +1,9 @@
 require 'util'
 require 'nvim-lsp'
 
-local lsps_dirs = {}
+local lsps_actions = {}
 local lsps_buffers = {}
+local lsps_dirs = {}
 local lsps_diagnostics = { }
 local lsps_diagnostics_count = { }
 
@@ -34,7 +35,8 @@ local function buf_clear_diagnostics(bufnr)
     vim.api.nvim_buf_clear_namespace(bufnr, diagnostic_ns, 0, -1)
 end
 
-function buf_diagnostics_show(bufnr)
+-- render diagnostics
+local function buf_diagnostics_show(bufnr)
     if not lsps_diagnostics[bufnr] then return end
     buf_clear_diagnostics(bufnr)
     buf_diagnostics_save_positions(bufnr, lsps_diagnostics[bufnr])
@@ -46,8 +48,7 @@ end
 
 -- modified from https://github.com/neovim/neovim/blob/master/runtime/lua/vim/lsp/util.lua#L606
 function buf_diagnostics_virtual_text(bufnr, diagnostics)
-    -- return if we are called from a window that is not 
-    -- showing bufnr
+    -- return if we are called from a window that is not showing bufnr
     if vim.api.nvim_win_get_buf(0) ~= bufnr then return end
 
     local buffer_line_diagnostics = all_buffer_diagnostics[bufnr]
@@ -100,10 +101,8 @@ function buf_diagnostics_virtual_text(bufnr, diagnostics)
     end
 end
 
--- code action support
-local lsps_actions = {}
-
-function make_range_params()
+-- prepare range params
+local function make_range_params()
   local row, col = unpack(vim.api.nvim_win_get_cursor(0))
   row = row - 1
   local line = vim.api.nvim_buf_get_lines(0, row, row+1, true)[1]
@@ -114,6 +113,7 @@ function make_range_params()
   }
 end
 
+-- global to be called from vimL
 function fzf_code_action_callback(selection)
     local command = lsps_actions[selection]['command']
     local arguments = lsps_actions[selection]['arguments']
@@ -131,7 +131,6 @@ function fzf_code_action_callback(selection)
     elseif command then
         -- TODO: test with a LS that follows spect
         local callback = vim.schedule_wrap(function(_, _, result)
-            --print(dump(result))
             if not result then return end
             print('not implemented')
         end)
@@ -142,6 +141,7 @@ function fzf_code_action_callback(selection)
     end
 end
 
+-- unfortunately no way to make FZF to call back lua code
 -- function FZF_menu(raw_options)
 --     local fzf_options = {}
 --     for idx, option in ipairs(raw_options) do
@@ -155,6 +155,7 @@ end
 --     vim.fn['fzf#run'](vim.fn['fzf#wrap'](fzf_config))
 -- end
 
+-- global to be called from mapping
 function request_code_actions()
     local bufnr = vim.api.nvim_get_current_buf()
     local buffer_line_diagnostics = all_buffer_diagnostics[bufnr]
@@ -268,14 +269,13 @@ local function setup()
         lsps_buffers[bufnr] = client.id
 
         -- mappings and settings
-        vim.api.nvim_buf_set_keymap(bufnr, "n", ";dd", "<Cmd>lua show_diagnostics_details()<CR>", { silent = true; })
-        vim.api.nvim_buf_set_keymap(bufnr, "n", ";gd", "<Cmd>lua vim.lsp.buf.definition()<CR>", { silent = true; })
-        vim.api.nvim_buf_set_keymap(bufnr, "n", ";gD", "<Cmd>lua vim.lsp.buf.declaration()<CR>", { silent = true; })
-        vim.api.nvim_buf_set_keymap(bufnr, "n", ";gi", "<Cmd>lua vim.lsp.buf.implementation()<CR>", { silent = true; })
-        vim.api.nvim_buf_set_keymap(bufnr, "n", ";k", "<Cmd>lua vim.lsp.buf.hover()<CR>", { silent = true; })
-        vim.api.nvim_buf_set_keymap(bufnr, "n", ";s", "<Cmd>lua vim.lsp.buf.signature_help()<CR>", { silent = true; })
-        vim.api.nvim_buf_set_keymap(bufnr, "n", ";t", "<Cmd>lua vim.lsp.buf.type_definition()<CR>", { silent = true; })
-        vim.api.nvim_buf_set_keymap(bufnr, "n", ";ca", "<Cmd>lua request_code_actions()<CR>", { silent = true; })
+        vim.api.nvim_buf_set_keymap(bufnr, "n", "gD", "<Cmd>lua show_diagnostics_details()<CR>", { silent = true; })
+        vim.api.nvim_buf_set_keymap(bufnr, "n", "gd", "<Cmd>lua vim.lsp.buf.definition()<CR>", { silent = true; })
+        --vim.api.nvim_buf_set_keymap(bufnr, "n", "gD", "<Cmd>lua vim.lsp.buf.declaration()<CR>", { silent = true; })
+        vim.api.nvim_buf_set_keymap(bufnr, "n", "gi", "<Cmd>lua vim.lsp.buf.implementation()<CR>", { silent = true; })
+        vim.api.nvim_buf_set_keymap(bufnr, "n", "K", "<Cmd>lua vim.lsp.buf.hover()<CR>", { silent = true; })
+        vim.api.nvim_buf_set_keymap(bufnr, "n", "gh", "<Cmd>lua vim.lsp.buf.signature_help()<CR>", { silent = true; })
+        vim.api.nvim_buf_set_keymap(bufnr, "n", "ga", "<Cmd>lua request_code_actions()<CR>", { silent = true; })
     end
 
     -- custom replacement for publishDiagnostics callback

@@ -96,8 +96,6 @@ endfunction
 
 nnoremap <leader>n :call <SID>fzf_nst_files()<Return>
 nnoremap <leader>r :call <SID>fzf_rulepack_files()<Return>
-nnoremap <leader>d :call <SID>fzf_rulepack_descriptions()<Return>
-"nnoremap <leader>l :call <SID>fzf_location_list()<Return>
 nnoremap <leader>q :call <SID>fzf_quickfix_list()<Return>
 nnoremap <leader>f :call fzf#vim#files('.', {'options': '--prompt ""'})<Return>
 nnoremap <leader>h :FZFFreshMru --prompt ""<Return>
@@ -106,18 +104,6 @@ nnoremap <leader>s :Snippets<Return>
 nnoremap <leader>o :Buffers<Return>
 nnoremap <leader>/ :call fzf#vim#search_history()<Return>
 nnoremap <leader>: :call fzf#vim#command_history()<Return>
-
-" LSP vimL callback
-function! ApplyAction(chosen) abort
-    let l:idx = split(a:chosen, '::')[0]
-    call v:lua.fzf_code_action_callback(l:idx + 1)
-endfunction
-function! CodeActionMenu(actions) abort
-    let l:options = map(deepcopy(a:actions), {idx, item -> string(idx).'::'.item.title})
-    call fzf#run(fzf#wrap({
-        \ 'source': l:options,
-        \ 'sink': function('ApplyAction'),
-        \ 'options': '+m --with-nth 2.. -d "::"',
-        \ }))
-endfunction
+nnoremap <leader>d :call <SID>fzf_rulepack_descriptions()<Return>
+"nnoremap <leader>l :call <SID>fzf_location_list()<Return>
 

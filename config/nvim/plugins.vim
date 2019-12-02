@@ -38,21 +38,19 @@ call plug#begin('~/.nvim/plugged')
     Plug 'rhysd/accelerated-jk'
     Plug 'norcalli/nvim-colorizer.lua'
     Plug 'sheerun/vim-polyglot'
-    "Plug 'vim-jp/vim-java'
     Plug 'psliwka/vim-smoothie'
+    "Plug 'vim-jp/vim-java'
     "Plug 'liuchengxu/vista.vim'
     
     " Local plugins
     Plug '/usr/local/opt/fzf'
-    if isdirectory(fnameescape(expand('~/Fortify/SSR/repos/vim-fortify')))
-        Plug fnameescape(expand('~/Fortify/SSR/repos/vim-fortify'))
-    elseif isdirectory(fnameescape(expand('~/Dev/vim-fortify')))
-        Plug fnameescape(expand('~/Dev/vim-fortify'))
-    endif
     if isdirectory(fnameescape(expand('~/Development')))
+        Plug fnameescape(expand('~/Fortify/SSR/repos/vim-fortify'))
         Plug fnameescape(expand('~/Development/GitRepos/cobalt2.vim'))
         Plug fnameescape(expand('~/Development/GitRepos/vim-codeql'))
+        Plug fnameescape(expand('~/Development/GitRepos/vista.vim'))
     elseif isdirectory(fnameescape(expand('~/Dev')))
+        Plug fnameescape(expand('~/Dev/vim-fortify'))
         Plug fnameescape(expand('~/Dev/cobalt2.vim'))
         Plug fnameescape(expand('~/Dev/vim-codeql'))
         Plug fnameescape(expand('~/Dev/vista.vim'))
@@ -150,6 +148,7 @@ function! ReuseVimGoTerm(cmd) abort
     endfor
     execute a:cmd
 endfunction
+let g:go_gopls_enabled = 0
 let g:go_term_enabled = 1
 let g:go_term_mode = "silent keepalt rightbelow 15 split"
 let g:go_def_reuse_buffer = 1
@@ -194,7 +193,9 @@ inoremap <silent><expr> <C-j> pumvisible() ? "\<C-n>" : ">"
 
 " VISTA
 let g:vista_default_executive = 'nvim_lsp'
+let g:vista_sidebar_position = 'vertical topleft'
 let g:vista_fzf_preview = ['right:50%']
+let g:vista_keep_fzf_colors = 1
 nmap <leader>v :Vista<Return>
 nmap <leader>vf :Vista finder<Return>
 
@@ -233,6 +234,17 @@ nmap <C-e> <Plug>(SmoothieUpwards)
 
 " NVIM-LSP
 lua require("lsp-config").setup()
-
+function! ApplyAction(chosen) abort
+    let l:idx = split(a:chosen, '::')[0]
+    call v:lua.fzf_code_action_callback(l:idx + 1)
+endfunction
+function! CodeActionMenu(actions) abort
+    let l:options = map(deepcopy(a:actions), {idx, item -> string(idx).'::'.item.title})
+    call fzf#run(fzf#wrap({
+        \ 'source': l:options,
+        \ 'sink': function('ApplyAction'),
+        \ 'options': '+m --with-nth 2.. -d "::"',
+        \ }))
+endfunction
 
 " }}}

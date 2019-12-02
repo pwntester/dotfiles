@@ -41,13 +41,6 @@ function buf_diagnostics_save_positions(bufnr, diagnostics)
     end
 end
  
--- copied from https://github.com/neovim/neovim/blob/6e8c5779cf960893850501e4871dc9be671db298/runtime/lua/vim/lsp/util.lua#L506
-function buf_clear_diagnostics(bufnr)
-    validate { bufnr = {bufnr, 'n', true} }
-    bufnr = bufnr == 0 and vim.api.nvim_get_current_buf() or bufnr
-    vim.api.nvim_buf_clear_namespace(bufnr, diagnostic_ns, 0, -1)
-end
-
 -- copied from https://github.com/neovim/neovim/blob/6e8c5779cf960893850501e4871dc9be671db298/runtime/lua/vim/lsp/util.lua#L425
 function highlight_range(bufnr, ns, hiname, start, finish)
   if start[1] == finish[1] then
