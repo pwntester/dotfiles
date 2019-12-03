@@ -160,9 +160,6 @@ let g:go_echo_command_info = 0
 let g:go_highlight_diagnostic_errors = 0
 let g:go_highlight_diagnostic_warnings = 0
 autocmd FileType go nmap <buffer> <leader>r :call ReuseVimGoTerm('GoRun')<Return>
-hi def link goDiagnosticError SpellBad
-hi def link goDiagnosticWarning SpellRare
-
 
 " VIM-POLYGLOT
 let g:polyglot_disabled = ["jsx", "hive"]
