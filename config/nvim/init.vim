@@ -65,6 +65,13 @@ set listchars=tab:>-,trail:.,extends:>,precedes:<,nbsp:%          " Showing trai
 set diffopt+=vertical                                             " Show vimdiff in vertical splits
 set diffopt+=algorithm:patience                                   " Use git diffing algorithm
 
+" syntax improvements
+let g:java_highlight_all = 1
+let g:java_space_errors = 1
+let g:java_comment_strings = 1
+let g:java_highlight_functions = 1
+let g:java_highlight_debug = 1
+let g:java_mark_braces_in_parens_as_errors = 1
 " }}}
 
 " ================ IDENT/STYLE ==================== {{{
