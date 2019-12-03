@@ -354,12 +354,16 @@ syntax enable
 set background=dark
 colorscheme cobalt2
 
-"NVIM-LSP
+" NVIM-LSP
 hi LspDiagnosticsError guifg=#FF0000
 hi LspDiagnosticsWarning guifg=#FFC600
 hi LspDiagnosticInformation guifg=#00AAFF
 hi LspDiagnosticHint guifg=#00AAFF
 hi LspDiagnosticsUnderline guifg=None gui=underline
+
+" VIM-GO
+hi def link goDiagnosticError SpellBad
+hi def link goDiagnosticWarning SpellRare
 
 "}}}
 
