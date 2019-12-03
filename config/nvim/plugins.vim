@@ -190,7 +190,7 @@ inoremap <silent><expr> <C-j> pumvisible() ? "\<C-n>" : ">"
 
 " VISTA
 let g:vista_default_executive = 'nvim_lsp'
-let g:vista_sidebar_position = 'vertical topleft'
+let g:vista_sidebar_position = 'vertical topleft 15'
 let g:vista_fzf_preview = ['right:50%']
 let g:vista_keep_fzf_colors = 1
 nmap <leader>v :Vista<Return>
