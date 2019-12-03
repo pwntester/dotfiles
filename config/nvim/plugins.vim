@@ -231,17 +231,18 @@ nmap <C-e> <Plug>(SmoothieUpwards)
 
 " NVIM-LSP
 lua require("lsp-config").setup()
-function! ApplyAction(chosen) abort
-    let l:idx = split(a:chosen, '::')[0]
-    call v:lua.fzf_code_action_callback(l:idx + 1)
-endfunction
-function! CodeActionMenu(actions) abort
-    let l:options = map(deepcopy(a:actions), {idx, item -> string(idx).'::'.item.title})
+let g:nvim_lsp_code_action_menu = 'FZFCodeActionMenu'
+function! FZFCodeActionMenu(actions, callback) abort
     call fzf#run(fzf#wrap({
-        \ 'source': l:options,
-        \ 'sink': function('ApplyAction'),
+        \ 'source': map(deepcopy(a:actions), {idx, item -> string(idx).'::'.item.title}),
+        \ 'sink': function('ApplyAction', [a:callback]),
         \ 'options': '+m --with-nth 2.. -d "::"',
         \ }))
 endfunction
+function! ApplyAction(callback, chosen) abort
+    let l:idx = split(a:chosen, '::')[0] + 1
+    execute 'call '.a:callback.'('.l:idx.')'
+endfunction
+let g:LSP_qlls_search_path = '/Users/pwntester/codeql-home/codeql-repo'
 
 " }}}

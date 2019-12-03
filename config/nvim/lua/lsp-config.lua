@@ -113,8 +113,25 @@ local function make_range_params()
   }
 end
 
+-- unfortunately no way to make FZF to call back into lua code
+function ApplyAction(arg)
+    print(dump(arg))
+end
+function FZF_menu(raw_options)
+    local fzf_options = {}
+    for idx, option in ipairs(raw_options) do
+        table.insert(fzf_options, string.format('%d::%s', idx, option.title))
+    end
+    local fzf_config = {
+        source = fzf_options,
+        sink = 'v:lua.ApplyAction',
+        options = "+m --with-nth 2.. -d ::"
+    }
+    vim.fn['fzf#run'](vim.fn['fzf#wrap'](fzf_config))
+end
+
 -- global to be called from vimL
-function fzf_code_action_callback(selection)
+function select_code_action(selection)
     local command = lsps_actions[selection]['command']
     local arguments = lsps_actions[selection]['arguments']
     local edit = lsps_actions[selection]['edit']
@@ -141,23 +158,6 @@ function fzf_code_action_callback(selection)
     end
 end
 
--- unfortunately no way to make FZF to call back into lua code
-function ApplyAction(arg)
-    print(dump(arg))
-end
-function FZF_menu(raw_options)
-    local fzf_options = {}
-    for idx, option in ipairs(raw_options) do
-        table.insert(fzf_options, string.format('%d::%s', idx, option.title))
-    end
-    local fzf_config = {
-        source = fzf_options,
-        sink = 'v:lua.ApplyAction',
-        options = "+m --with-nth 2.. -d ::"
-    }
-    vim.fn['fzf#run'](vim.fn['fzf#wrap'](fzf_config))
-end
-
 -- global to be called from mapping
 function request_code_actions()
     local bufnr = vim.api.nvim_get_current_buf()
@@ -178,8 +178,9 @@ function request_code_actions()
     local callback = vim.schedule_wrap(function(_, _, actions)
         if not actions then return end
         lsps_actions = actions
-        FZF_menu(lsps_actions)
-        -- vim.fn.CodeActionMenu(lsps_actions)
+        -- FZF_menu(lsps_actions)
+        print(vim.g.nvim_lsp_code_action_menu)
+        vim.fn[vim.g.nvim_lsp_code_action_menu](lsps_actions, 'v:lua.select_code_action')
     end)
     vim.lsp.buf_request(0, 'textDocument/codeAction', params, callback)
 end
@@ -317,8 +318,12 @@ local function setup()
     end
 
     function start_qlls()
-        local root_dir = vim.fn.expand('%:p:h')
-        local search_path = '/Users/pwntester/codeql-home/codeql-repo'
+        local root_dir = root_pattern(bufnr, "qlpack.yml");
+        if not root_dir then 
+            local root_dir = vim.fn.expand('%:p:h')
+        end
+        local search_path = vim.g.LSP_qlls_search_path
+        if not search_path then return end
         local config = {
             name = "codeql-language-server";
             cmd = "codeql execute language-server --check-errors ON_CHANGE -q --search-path="..search_path;
