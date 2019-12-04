@@ -40,6 +40,7 @@ call plug#begin('~/.nvim/plugged')
     Plug 'sheerun/vim-polyglot'
     Plug 'psliwka/vim-smoothie'
     Plug 'liuchengxu/vista.vim'
+    Plug 'hrsh7th/vim-vsnip'
     
     " Local plugins
     Plug '/usr/local/opt/fzf'
@@ -241,5 +242,11 @@ function! ApplyAction(callback, chosen) abort
     let l:idx = split(a:chosen, '::')[0] + 1
     execute 'call '.a:callback.'('.l:idx.')'
 endfunction
+
+" VIM-VSNIP
+imap <expr> <Tab> vsnip#available() ? '<Plug>(vsnip-expand-or-jump)' : '<Tab>'
+smap <expr> <Tab> vsnip#available() ? '<Plug>(vsnip-expand-or-jump)' : '<Tab>'
+let g:vsnip_snippet_dir = "/tmp"
+
 
 " }}}
