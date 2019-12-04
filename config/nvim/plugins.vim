@@ -39,8 +39,7 @@ call plug#begin('~/.nvim/plugged')
     Plug 'norcalli/nvim-colorizer.lua'
     Plug 'sheerun/vim-polyglot'
     Plug 'psliwka/vim-smoothie'
-    Plug 'liuchengxu/vim-clap'
-    "Plug 'liuchengxu/vista.vim'
+    Plug 'liuchengxu/vista.vim'
     
     " Local plugins
     Plug '/usr/local/opt/fzf'
@@ -48,12 +47,10 @@ call plug#begin('~/.nvim/plugged')
         Plug fnameescape(expand('~/Fortify/SSR/repos/vim-fortify'))
         Plug fnameescape(expand('~/Development/GitRepos/cobalt2.vim'))
         Plug fnameescape(expand('~/Development/GitRepos/vim-codeql'))
-        Plug fnameescape(expand('~/Development/GitRepos/vista.vim'))
     elseif isdirectory(fnameescape(expand('~/Dev')))
         Plug fnameescape(expand('~/Dev/vim-fortify'))
         Plug fnameescape(expand('~/Dev/cobalt2.vim'))
         Plug fnameescape(expand('~/Dev/vim-codeql'))
-        Plug fnameescape(expand('~/Dev/vista.vim'))
     endif
 call plug#end()
 
@@ -231,6 +228,7 @@ nmap <C-e> <Plug>(SmoothieUpwards)
 
 " NVIM-LSP
 lua require("lsp-config").setup()
+let g:LSP_qlls_search_path = '/Users/pwntester/codeql-home/codeql-repo'
 let g:nvim_lsp_code_action_menu = 'FZFCodeActionMenu'
 function! FZFCodeActionMenu(actions, callback) abort
     call fzf#run(fzf#wrap({
@@ -243,6 +241,5 @@ function! ApplyAction(callback, chosen) abort
     let l:idx = split(a:chosen, '::')[0] + 1
     execute 'call '.a:callback.'('.l:idx.')'
 endfunction
-let g:LSP_qlls_search_path = '/Users/pwntester/codeql-home/codeql-repo'
 
 " }}}
