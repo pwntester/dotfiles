@@ -16,7 +16,6 @@ call plug#begin('~/.nvim/plugged')
     Plug 'jreybert/vimagit'
     Plug 'andymass/vim-matchup' 
     Plug 'machakann/vim-sandwich'
-    Plug 'tpope/vim-repeat'
     Plug 'airblade/vim-gitgutter'
     Plug 'tomtom/tcomment_vim'
     Plug 'osyo-manga/vim-anzu'
@@ -34,7 +33,6 @@ call plug#begin('~/.nvim/plugged')
     Plug 'honza/vim-snippets'
     Plug 'AndrewRadev/linediff.vim'
     Plug 'airblade/vim-rooter'
-    Plug 'rhysd/accelerated-jk'
     Plug 'norcalli/nvim-colorizer.lua'
     Plug 'sheerun/vim-polyglot'
     Plug 'psliwka/vim-smoothie'
@@ -132,8 +130,11 @@ let g:gitgutter_map_keys = 0
 
 " VIMAGIT
 let g:magit_auto_foldopen = 0
-nnoremap <Leader>g :Magit<Return> 
+let g:magit_refresh_gitgutter = 1
+let g:magit_auto_close = 1
 autocmd User VimagitEnterCommit startinsert
+nnoremap <Leader>g :Magit<Return> 
+nnoremap gP :!git push<Return> 
 
 " VIM-GO
 function! ReuseVimGoTerm(cmd) abort
