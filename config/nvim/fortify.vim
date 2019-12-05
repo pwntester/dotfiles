@@ -28,6 +28,7 @@ let g:fortify_TranslationOpts = ['-verbose']
 " -Dcom.fortify.sca.alias.mode.java=fi
 " -Dcom.fortify.sca.debug.rule=AED3FC16-5CA4-4630-B921-EB0D0B03179A,empty.go,13 -debug -verbose
 " -Dcom.fortify.sca.Phase0HigherOrder.Languages=python,ruby,swift,javascript,typescript,java,scala
+"
 
 let g:fortify_ScanOpts = ['-verbose']       
 let g:fortify_ScanOpts += ['-Dcom.fortify.sca.limiters.MaxChainDepth=32']
