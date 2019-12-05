@@ -13,8 +13,6 @@ call plug#begin('~/.nvim/plugged')
     Plug 'junegunn/fzf.vim' 
     Plug 'pbogut/fzf-mru.vim'
     Plug 'tpope/vim-fugitive' 
-    Plug 'tpope/vim-dispatch'
-    Plug 'radenling/vim-dispatch-neovim'
     Plug 'jreybert/vimagit'
     Plug 'andymass/vim-matchup' 
     Plug 'machakann/vim-sandwich'
@@ -40,8 +38,6 @@ call plug#begin('~/.nvim/plugged')
     Plug 'sheerun/vim-polyglot'
     Plug 'psliwka/vim-smoothie'
     Plug 'liuchengxu/vista.vim'
-
-    " Testing
     Plug 'hrsh7th/vim-vsnip'
     
     " Local plugins
