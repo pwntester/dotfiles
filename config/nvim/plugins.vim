@@ -13,6 +13,7 @@ call plug#begin('~/.nvim/plugged')
     Plug 'junegunn/fzf.vim' 
     Plug 'pbogut/fzf-mru.vim'
     Plug 'tpope/vim-fugitive' 
+    Plug 'tpope/vim-dispatch'
     Plug 'jreybert/vimagit'
     Plug 'andymass/vim-matchup' 
     Plug 'machakann/vim-sandwich'
