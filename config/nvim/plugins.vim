@@ -28,7 +28,6 @@ call plug#begin('~/.nvim/plugged')
     Plug 'chaoren/vim-wordmotion'
     Plug 'junegunn/rainbow_parentheses.vim'
     Plug 'alvan/vim-closetag'
-    Plug 'christoomey/vim-tmux-navigator'
     Plug 'tommcdo/vim-lion'
     Plug 'tmsvg/pear-tree'
     Plug 'SirVer/ultisnips'
