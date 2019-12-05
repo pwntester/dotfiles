@@ -300,6 +300,9 @@ local function setup()
     end)
 
     function start_fls()
+        -- prevent LSP on large files
+        if vim.api.nvim_buf_line_count(0) > 10000 then return end
+
         local root_dir = vim.fn.expand('%:p:h')
         local config = {
             name = "fortify-language-server";
