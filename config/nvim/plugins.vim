@@ -133,8 +133,9 @@ let g:gitgutter_map_keys = 0
 let g:magit_auto_foldopen = 0
 let g:magit_refresh_gitgutter = 1
 let g:magit_auto_close = 1
-nnoremap <Leader>g :Magit<Return> 
 autocmd User VimagitEnterCommit startinsert
+nnoremap <Leader>g :Magit<Return> 
+nnoremap gP :!git push<Return> 
 
 " VIM-GO
 function! ReuseVimGoTerm(cmd) abort
