@@ -41,7 +41,7 @@ call plug#begin('~/.nvim/plugged')
     Plug 'psliwka/vim-smoothie'
     Plug 'liuchengxu/vista.vim'
 
-    " Testint
+    " Testing
     Plug 'hrsh7th/vim-vsnip'
     
     " Local plugins
