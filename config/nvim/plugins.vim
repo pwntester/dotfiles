@@ -16,7 +16,6 @@ call plug#begin('~/.nvim/plugged')
     Plug 'jreybert/vimagit'
     Plug 'andymass/vim-matchup' 
     Plug 'machakann/vim-sandwich'
-    Plug 'tpope/vim-repeat'
     Plug 'airblade/vim-gitgutter'
     Plug 'tomtom/tcomment_vim'
     Plug 'osyo-manga/vim-anzu'
@@ -35,11 +34,12 @@ call plug#begin('~/.nvim/plugged')
     Plug 'honza/vim-snippets'
     Plug 'AndrewRadev/linediff.vim'
     Plug 'airblade/vim-rooter'
-    Plug 'rhysd/accelerated-jk'
     Plug 'norcalli/nvim-colorizer.lua'
     Plug 'sheerun/vim-polyglot'
     Plug 'psliwka/vim-smoothie'
     Plug 'liuchengxu/vista.vim'
+
+    " Testint
     Plug 'hrsh7th/vim-vsnip'
     
     " Local plugins
