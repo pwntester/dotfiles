@@ -213,6 +213,12 @@ cnoremap <C-l> <Space><BS><Right>
 nnoremap <S-l> :bnext<Return>
 nnoremap <S-h> :bprevious<Return>
 
+" window navigation
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
+
 " leader mappings
 let mapleader = "\<Space>"
 
@@ -366,4 +372,5 @@ hi def link goDiagnosticError SpellBad
 hi def link goDiagnosticWarning SpellRare
 
 "}}}
+
 
