@@ -321,13 +321,13 @@ local function setup()
     end
 
     function start_qlls()
+        local search_path = vim.g.LSP_qlls_search_path
+        if not search_path then return end
         local root_dir = root_pattern(bufnr, "qlpack.yml");
         if not root_dir then 
             local root_dir = vim.fn.expand('%:p:h')
         end
         if not root_dir then return end
-        local search_path = vim.g.LSP_qlls_search_path
-        if not search_path then return end
         local config = {
             name = "codeql-language-server";
             cmd = "codeql execute language-server --check-errors ON_CHANGE -q --search-path="..search_path;

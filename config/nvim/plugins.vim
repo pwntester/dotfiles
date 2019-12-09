@@ -2,14 +2,14 @@
 call plug#begin('~/.nvim/plugged') 
 
     " Github plugins
-    Plug 'Shougo/deoplete.nvim',            { 'do': ':UpdateRemotePlugins'} 
-    Plug 'Shougo/defx.nvim',                { 'do': ':UpdateRemotePlugins'} 
     Plug 'fatih/vim-go',                    { 'do': ':GoInstallBinaries' }
+    Plug 'Shougo/deoplete.nvim',            { 'do': ':UpdateRemotePlugins'} 
     Plug 'Shougo/deoplete-lsp'
-    Plug 'drzel/vim-line-no-indicator'
-    Plug 'Shougo/neco-vim',
+    Plug 'Shougo/defx.nvim',                { 'do': ':UpdateRemotePlugins'} 
     Plug 'kristijanhusak/defx-git'
     Plug 'kristijanhusak/defx-icons'
+    Plug 'drzel/vim-line-no-indicator'
+    Plug 'Shougo/neco-vim',
     Plug 'junegunn/fzf.vim' 
     Plug 'pbogut/fzf-mru.vim'
     Plug 'tpope/vim-fugitive' 
@@ -181,8 +181,8 @@ function! s:enableRainbowParentheses() abort
 endfunction
 
 " DEOPLETE
-"autocmd BufEnter * nested if getfsize(@%) < 1000000 | call deoplete#enable() | endif
-let g:deoplete#enable_at_startup = 1
+autocmd BufEnter * nested if nvim_buf_line_count(0) < 10000 | call deoplete#enable() | endif
+let g:deoplete#enable_at_startup = 0
 inoremap <expr> <Return> (pumvisible() ? "\<c-y>\<cr>" : "\<Return>")
 inoremap <silent><expr> <C-k> pumvisible() ? "\<C-p>" : ""
 inoremap <silent><expr> <C-j> pumvisible() ? "\<C-n>" : ">"
