@@ -29,8 +29,8 @@ call plug#begin('~/.nvim/plugged')
     Plug 'alvan/vim-closetag'
     Plug 'tommcdo/vim-lion'
     Plug 'tmsvg/pear-tree'
-    Plug 'SirVer/ultisnips'
-    Plug 'honza/vim-snippets'
+    "Plug 'SirVer/ultisnips'
+    "Plug 'honza/vim-snippets'
     Plug 'hrsh7th/vim-vsnip'
     Plug 'hrsh7th/vim-vsnip-integ'
     Plug 'AndrewRadev/linediff.vim'
@@ -93,9 +93,9 @@ let g:closetag_xhtml_filenames = '*.xml,*.xhtml,*.jsp,*.html'
 let g:closetag_xhtml_filetypes = 'xhtml,jsx,fortifyrulepack'
 
 " ULTISNIPS
-let g:UltiSnipsExpandTrigger="<tab>"
-let g:UltiSnipsJumpForwardTrigger="<c-j>"
-let g:UltiSnipsJumpBackwardTrigger="<c-k>"
+" let g:UltiSnipsExpandTrigger="<tab>"
+" let g:UltiSnipsJumpForwardTrigger="<c-j>"
+" let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 
 " VIM-MARKDOWN
 let g:vim_markdown_folding_disabled = 1
@@ -248,6 +248,5 @@ endfunction
 let g:vsnip_snippet_dir = "~/dotfiles/snippets"
 imap <expr> <Tab> vsnip#available() ? '<Plug>(vsnip-expand-or-jump)' : '<Tab>'
 smap <expr> <Tab> vsnip#available() ? '<Plug>(vsnip-expand-or-jump)' : '<Tab>'
-
 
 " }}}

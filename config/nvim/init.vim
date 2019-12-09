@@ -372,5 +372,3 @@ hi def link goDiagnosticError SpellBad
 hi def link goDiagnosticWarning SpellRare
 
 "}}}
-
-
