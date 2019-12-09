@@ -31,13 +31,14 @@ call plug#begin('~/.nvim/plugged')
     Plug 'tmsvg/pear-tree'
     Plug 'SirVer/ultisnips'
     Plug 'honza/vim-snippets'
+    Plug 'hrsh7th/vim-vsnip'
+    Plug 'hrsh7th/vim-vsnip-integ'
     Plug 'AndrewRadev/linediff.vim'
     Plug 'airblade/vim-rooter'
     Plug 'norcalli/nvim-colorizer.lua'
     Plug 'sheerun/vim-polyglot'
     Plug 'psliwka/vim-smoothie'
     Plug 'liuchengxu/vista.vim'
-    Plug 'hrsh7th/vim-vsnip'
     
     " Local plugins
     Plug '/usr/local/opt/fzf'
@@ -180,8 +181,8 @@ function! s:enableRainbowParentheses() abort
 endfunction
 
 " DEOPLETE
-autocmd BufEnter * nested if getfsize(@%) < 1000000 | call deoplete#enable() | endif
-let g:deoplete#enable_at_startup = 0
+"autocmd BufEnter * nested if getfsize(@%) < 1000000 | call deoplete#enable() | endif
+let g:deoplete#enable_at_startup = 1
 inoremap <expr> <Return> (pumvisible() ? "\<c-y>\<cr>" : "\<Return>")
 inoremap <silent><expr> <C-k> pumvisible() ? "\<C-p>" : ""
 inoremap <silent><expr> <C-j> pumvisible() ? "\<C-n>" : ">"
@@ -244,9 +245,9 @@ function! ApplyAction(callback, chosen) abort
 endfunction
 
 " VIM-VSNIP
+let g:vsnip_snippet_dir = "~/dotfiles/snippets"
 imap <expr> <Tab> vsnip#available() ? '<Plug>(vsnip-expand-or-jump)' : '<Tab>'
 smap <expr> <Tab> vsnip#available() ? '<Plug>(vsnip-expand-or-jump)' : '<Tab>'
-let g:vsnip_snippet_dir = "/tmp"
 
 
 " }}}
