@@ -238,10 +238,12 @@ end
 function get_lsp_client_status()
     local bufnr = vim.api.nvim_get_current_buf()
     local client_id, err = pcall(get_buf_var, bufnr, "lsp_client_id")
-    local client = vim.lsp.get_client_by_id(client_id)
-    if client ~= nil then
-        if client.notify("window/progress", {}) then
+    if client_id then
+        local client = vim.lsp.get_client_by_id(client_id)
+        if client ~= nil then
+            if client.notify("window/progress", {}) then
                 return true
+            end
         end
     end
     return false
