@@ -1,0 +1,10 @@
+{
+  "foo": {
+    "prefix": "foo",
+    "body": [
+        "FOO ${1:foo}"
+    ],
+    "description": "FOO TEST."
+  }
+}
+
