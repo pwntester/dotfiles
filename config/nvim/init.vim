@@ -40,6 +40,7 @@ set inccommand=nosplit                                            " Live preview
 set fileencoding=utf-8
 set encoding=utf-8
 set nottimeout
+set updatetime=800                                               " CursorHold waiting time
 " }}}
 
 " ================ UI ==================== {{{
@@ -366,6 +367,9 @@ hi LspDiagnosticsWarning guifg=#FFC600
 hi LspDiagnosticInformation guifg=#00AAFF
 hi LspDiagnosticHint guifg=#00AAFF
 hi LspDiagnosticsUnderline guifg=None gui=underline
+hi LspReferenceText guibg=#00AAFF
+hi LspReferenceRead guibg=#FFC600
+hi LspReferenceWrite guibg=#EE1160
 
 " VIM-GO
 hi def link goDiagnosticError SpellBad

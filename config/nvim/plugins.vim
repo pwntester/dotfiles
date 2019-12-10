@@ -184,7 +184,7 @@ endfunction
 autocmd BufEnter * nested if nvim_buf_line_count(0) < 10000 | call deoplete#enable() | endif
 let g:deoplete#enable_at_startup = 0
 call deoplete#custom#option({
-    \ 'auto_complete_delay': 200,
+    \ 'auto_complete_delay': 300,
     \ 'smart_case': v:true,
     \ })
 inoremap <expr> <Return> (pumvisible() ? "\<c-y>\<cr>" : "\<Return>")
