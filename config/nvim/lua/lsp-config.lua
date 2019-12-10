@@ -325,7 +325,7 @@ local function setup()
         if not root_dir then 
             local root_dir = vim.fn.expand('%:p:h')
         end
-        local search_path = vim.g.LSP_qlls_search_path
+        local search_path = vim.fn.expand(vim.g.LSP_qlls_search_path)
         if not search_path then return end
         local config = {
             name = "codeql-language-server";
