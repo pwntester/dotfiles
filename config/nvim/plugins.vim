@@ -181,8 +181,12 @@ function! s:enableRainbowParentheses() abort
 endfunction
 
 " DEOPLETE
-"autocmd BufEnter * nested if getfsize(@%) < 1000000 | call deoplete#enable() | endif
-let g:deoplete#enable_at_startup = 1
+let g:deoplete#enable_at_startup = 0
+autocmd BufEnter * nested if nvim_buf_line_count(0) < 10000 | call deoplete#enable() | endif
+call deoplete#custom#option({
+    \ 'auto_complete_delay': 200,
+    \ 'smart_case': v:true,
+    \ })
 inoremap <expr> <Return> (pumvisible() ? "\<c-y>\<cr>" : "\<Return>")
 inoremap <silent><expr> <C-k> pumvisible() ? "\<C-p>" : ""
 inoremap <silent><expr> <C-j> pumvisible() ? "\<C-n>" : ">"
