@@ -26,9 +26,6 @@ function root_pattern(bufnr, ...)
   end
 
   local filepath = vim.api.nvim_buf_get_name(bufnr)
-  if vim.fn.filereadable(filepath) == 0 then
-    return nil
-  end
   local path = dirname(filepath)
   return search_ancestors(path, matcher)
 end

@@ -324,6 +324,7 @@ local function setup()
         local root_dir = root_pattern(bufnr, "qlpack.yml");
         if not root_dir then 
             local root_dir = vim.fn.expand('%:p:h')
+            if not root_dir then return end
         end
         local search_path = vim.fn.expand(vim.g.LSP_qlls_search_path)
         if not search_path then return end
