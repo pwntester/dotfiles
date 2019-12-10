@@ -367,9 +367,9 @@ hi LspDiagnosticsWarning guifg=#FFC600
 hi LspDiagnosticInformation guifg=#00AAFF
 hi LspDiagnosticHint guifg=#00AAFF
 hi LspDiagnosticsUnderline guifg=None gui=underline
-hi LspReferenceText guibg=#00AAFF
-hi LspReferenceRead guibg=#FFC600
-hi LspReferenceWrite guibg=#EE1160
+hi LspReferenceText guibg=#00AAFF guifg=#000000
+hi LspReferenceRead guibg=#FFC600 guifg=#000000
+hi LspReferenceWrite guibg=#EE1160 guifg=#ffffff
 
 " VIM-GO
 hi def link goDiagnosticError SpellBad
