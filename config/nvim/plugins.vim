@@ -181,8 +181,17 @@ function! s:enableRainbowParentheses() abort
 endfunction
 
 " DEOPLETE
+<<<<<<< HEAD
 autocmd BufEnter * nested if nvim_buf_line_count(0) < 10000 | call deoplete#enable() | endif
 let g:deoplete#enable_at_startup = 0
+=======
+let g:deoplete#enable_at_startup = 0
+autocmd BufEnter * nested if nvim_buf_line_count(0) < 10000 | call deoplete#enable() | endif
+call deoplete#custom#option({
+    \ 'auto_complete_delay': 200,
+    \ 'smart_case': v:true,
+    \ })
+>>>>>>> a707b39211e98b2bc4960d55453f31457f9e24ca
 inoremap <expr> <Return> (pumvisible() ? "\<c-y>\<cr>" : "\<Return>")
 inoremap <silent><expr> <C-k> pumvisible() ? "\<C-p>" : ""
 inoremap <silent><expr> <C-j> pumvisible() ? "\<C-n>" : ">"
@@ -230,7 +239,7 @@ nmap <C-e> <Plug>(SmoothieUpwards)
 
 " NVIM-LSP
 lua require("lsp-config").setup()
-let g:LSP_qlls_search_path = '/Users/pwntester/codeql-home/codeql-repo'
+let g:LSP_qlls_search_path = '~/codeql-home/codeql-repo'
 let g:nvim_lsp_code_action_menu = 'FZFCodeActionMenu'
 function! FZFCodeActionMenu(actions, callback) abort
     call fzf#run(fzf#wrap({

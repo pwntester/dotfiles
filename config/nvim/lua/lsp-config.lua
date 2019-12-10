@@ -2,7 +2,6 @@ require 'util'
 require 'nvim-lsp'
 
 local lsps_actions = {}
-local lsps_buffers = {}
 local lsps_dirs = {}
 local lsps_diagnostics = { }
 local lsps_diagnostics_count = { }
@@ -238,7 +237,7 @@ end
 -- global so can be called from lightline
 function get_lsp_client_status()
     local bufnr = vim.api.nvim_get_current_buf()
-    local client_id = lsps_buffers[bufnr]
+    local client_id, err = pcall(get_buf_var, bufnr, "lsp_client_id")
     local client = vim.lsp.get_client_by_id(client_id)
     if client ~= nil then
         if client.notify("window/progress", {}) then
@@ -270,7 +269,7 @@ local function setup()
     end
 
     local function on_attach(client, bufnr)
-        lsps_buffers[bufnr] = client.id
+        vim.api.nvim_buf_set_var(bufnr, "lsp_client_id", client.id)
 
         -- mappings and settings
         vim.api.nvim_buf_set_keymap(bufnr, "n", "gD", "<Cmd>lua show_diagnostics_details()<CR>", { silent = true; })
@@ -311,23 +310,21 @@ local function setup()
             callbacks = { ["textDocument/publishDiagnostics"] = diagnostics_callback };
             on_attach = on_attach;
         }
-        local client_id = lsps_dirs[root_dir]
+        local bufnr = vim.api.nvim_get_current_buf()
+        local client_id, err = pcall(get_buf_var, bufnr, "lsp_client_id")
         if not client_id then
             client_id = vim.lsp.start_client(config)
-            lsps_dirs[root_dir] = client_id
         end
-        local bufnr = vim.api.nvim_get_current_buf()
         vim.lsp.buf_attach_client(bufnr, client_id)
     end
 
     function start_qlls()
-        local search_path = vim.g.LSP_qlls_search_path
+        local search_path = vim.fn.expand(vim.g.LSP_qlls_search_path)
         if not search_path then return end
         local root_dir = root_pattern(bufnr, "qlpack.yml");
         if not root_dir then 
             local root_dir = vim.fn.expand('%:p:h')
         end
-        if not root_dir then return end
         local config = {
             name = "codeql-language-server";
             cmd = "codeql execute language-server --check-errors ON_CHANGE -q --search-path="..search_path;
@@ -336,12 +333,11 @@ local function setup()
             on_attach = on_attach;
             before_init = set_workspace_folder;
         }
-        local client_id = lsps_dirs[root_dir]
+        local bufnr = vim.api.nvim_get_current_buf()
+        local client_id, err = pcall(get_buf_var, bufnr, "lsp_client_id")
         if not client_id then
             client_id = vim.lsp.start_client(config)
-            lsps_dirs[root_dir] = client_id
         end
-        local bufnr = vim.api.nvim_get_current_buf()
         vim.lsp.buf_attach_client(bufnr, client_id)
     end
 
