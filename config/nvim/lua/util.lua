@@ -124,3 +124,8 @@ function window_decoration_columns()
 
     return decoration_width
 end
+
+function get_buf_var(bufnr, var)
+    return vim.api.nvim_buf_get_var(bufnr, var) 
+end
+

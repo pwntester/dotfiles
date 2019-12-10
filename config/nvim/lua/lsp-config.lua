@@ -237,7 +237,7 @@ end
 -- global so can be called from lightline
 function get_lsp_client_status()
     local bufnr = vim.api.nvim_get_current_buf()
-    local client_id = vim.api.nvim_buf_get_var(bufnr, "lsp_client_id")
+    local client_id, err = pcall(get_buf_var, bufnr, "lsp_client_id")
     local client = vim.lsp.get_client_by_id(client_id)
     if client ~= nil then
         if client.notify("window/progress", {}) then
@@ -311,7 +311,7 @@ local function setup()
             on_attach = on_attach;
         }
         local bufnr = vim.api.nvim_get_current_buf()
-        local client_id = vim.api.nvim_buf_get_var(bufnr, "lsp_client_id")
+        local client_id, err = pcall(get_buf_var, bufnr, "lsp_client_id")
         if not client_id then
             client_id = vim.lsp.start_client(config)
         end
@@ -334,7 +334,7 @@ local function setup()
             before_init = set_workspace_folder;
         }
         local bufnr = vim.api.nvim_get_current_buf()
-        local client_id = vim.api.nvim_buf_get_var(bufnr, "lsp_client_id")
+        local client_id, err = pcall(get_buf_var, bufnr, "lsp_client_id")
         if not client_id then
             client_id = vim.lsp.start_client(config)
         end
