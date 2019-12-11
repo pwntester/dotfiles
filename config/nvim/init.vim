@@ -255,6 +255,7 @@ let g:special_buffers = [
     \ 'fortifytestpane',
     \ 'fortifyauditpane',
     \ 'defx',
+    \ 'dirvish',
     \ 'qf',
     \ 'vim-plug',
     \ 'fzf',
@@ -276,12 +277,14 @@ function! s:pinBuffer()
     set nonumber
     set norelativenumber
 endfunction
+
 augroup windows
     autocmd!
     autocmd WinEnter,BufEnter *  nested if index(g:special_buffers, &filetype) > -1 | call s:pinBuffer() | endif
     autocmd WinEnter,BufEnter {} nested if index(g:special_buffers, &filetype) > -1 | call s:pinBuffer() | endif
-    " BufEnter is not triggered for defx buffer
+    " BufEnter is not triggered for defx and dirvish buffer
     autocmd FileType defx call s:pinBuffer()
+    autocmd FileType dirvish call s:pinBuffer()
 augroup END
 " }}}
 
@@ -374,5 +377,8 @@ hi LspReferenceWrite guibg=#EE1160 guifg=#ffffff
 " VIM-GO
 hi def link goDiagnosticError SpellBad
 hi def link goDiagnosticWarning SpellRare
+
+" DIRVISH
+hi def link DirvishPathTail Comment
 
 "}}}

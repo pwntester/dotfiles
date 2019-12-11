@@ -39,6 +39,7 @@ call plug#begin('~/.nvim/plugged')
     Plug 'sheerun/vim-polyglot'
     Plug 'psliwka/vim-smoothie'
     Plug 'liuchengxu/vista.vim'
+    Plug 'justinmk/vim-dirvish'
     
     " Local plugins
     Plug '/usr/local/opt/fzf'
@@ -252,5 +253,29 @@ endfunction
 let g:vsnip_snippet_dir = "~/dotfiles/snippets"
 imap <expr> <Tab> vsnip#available() ? '<Plug>(vsnip-expand-or-jump)' : '<Tab>'
 smap <expr> <Tab> vsnip#available() ? '<Plug>(vsnip-expand-or-jump)' : '<Tab>'
+
+" VIM-DIRVISH
+call sign_define("indent", {"text": " "})
+let g:dirvish_mode = ':sort ,^.*[\/], | silent keeppatterns g@\v/\.[^\/]+/?$@d _'
+nnoremap gf :leftabove 30 vsplit <BAR> silent Dirvish<Return>
+nnoremap gc :leftabove 30 vsplit <BAR> silent Dirvish %<Return>
+augroup dirvish_config
+    autocmd!
+
+    " indent text by adding a transparent sign
+    autocmd FileType dirvish sign place 1 line=1 name=indent
+
+    " Map `<CR>` to open in previous window.
+    autocmd FileType dirvish nnoremap <silent><buffer><expr> <CR> getline(".") =~ "^.*\/$" ? 
+        \ ":<C-U>.call dirvish#open(getline('.'))<Return>" : ":<C-U>.call dirvish#open('wincmd p<BAR>edit', 0)<Return>"
+    autocmd FileType dirvish xnoremap <silent><buffer><expr> <CR> getline(".") =~ "^.*\/$" ? 
+        \ ":<C-U>.call dirvish#open(getline('.'))<Return>" : ":<C-U>.call dirvish#open('wincmd p<BAR>edit', 0)<Return>"
+
+    " Map `gr` to reload.
+    autocmd FileType dirvish nnoremap <silent><buffer> gr :<C-U>Dirvish %<CR>
+
+    " Map `gh` to hide dot-prefixed files.  Press `R` to "toggle" (reload).
+    autocmd FileType dirvish nnoremap <silent><buffer> gh :silent keeppatterns g@\v/\.[^\/]+/?$@d _<cr>:setl cole=3<cr>
+augroup END
 
 " }}}
