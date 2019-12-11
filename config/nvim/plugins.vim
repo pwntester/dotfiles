@@ -4,10 +4,7 @@ call plug#begin('~/.nvim/plugged')
     " Github plugins
     Plug 'fatih/vim-go',                    { 'do': ':GoInstallBinaries' }
     Plug 'Shougo/deoplete.nvim',            { 'do': ':UpdateRemotePlugins'} 
-    Plug 'Shougo/deoplete-lsp'
-    Plug 'Shougo/defx.nvim',                { 'do': ':UpdateRemotePlugins'} 
-    Plug 'kristijanhusak/defx-git'
-    Plug 'kristijanhusak/defx-icons'
+    "Plug 'Shougo/deoplete-lsp'
     Plug 'drzel/vim-line-no-indicator'
     Plug 'Shougo/neco-vim',
     Plug 'junegunn/fzf.vim' 
@@ -29,8 +26,6 @@ call plug#begin('~/.nvim/plugged')
     Plug 'alvan/vim-closetag'
     Plug 'tommcdo/vim-lion'
     Plug 'tmsvg/pear-tree'
-    "Plug 'SirVer/ultisnips'
-    "Plug 'honza/vim-snippets'
     Plug 'hrsh7th/vim-vsnip'
     Plug 'hrsh7th/vim-vsnip-integ'
     Plug 'AndrewRadev/linediff.vim'
@@ -40,6 +35,11 @@ call plug#begin('~/.nvim/plugged')
     Plug 'psliwka/vim-smoothie'
     Plug 'liuchengxu/vista.vim'
     Plug 'justinmk/vim-dirvish'
+    " Plug 'SirVer/ultisnips'
+    " Plug 'honza/vim-snippets'
+    " Plug 'Shougo/defx.nvim',                { 'do': ':UpdateRemotePlugins'} 
+    " Plug 'kristijanhusak/defx-git'
+    " Plug 'kristijanhusak/defx-icons'
     
     " Local plugins
     Plug '/usr/local/opt/fzf'
@@ -47,6 +47,7 @@ call plug#begin('~/.nvim/plugged')
         Plug fnameescape(expand('~/Fortify/SSR/repos/vim-fortify'))
         Plug fnameescape(expand('~/Development/GitRepos/cobalt2.vim'))
         Plug fnameescape(expand('~/Development/GitRepos/vim-codeql'))
+        Plug fnameescape(expand('~/Development/GitRepos/deoplete-lsp'))
     elseif isdirectory(fnameescape(expand('~/Dev')))
         Plug fnameescape(expand('~/Dev/vim-fortify'))
         Plug fnameescape(expand('~/Dev/cobalt2.vim'))
@@ -64,7 +65,7 @@ execute 'source' fnameescape(expand('~/.config/nvim/fzf.vim'))
 execute 'source' fnameescape(expand('~/.config/nvim/lightline.vim'))
 
 " DEFX
-execute 'source' fnameescape(expand('~/.config/nvim/defx.vim'))
+"execute 'source' fnameescape(expand('~/.config/nvim/defx.vim'))
 
 " INDENTLINE
 let g:indentLine_color_gui = '#17252c'
@@ -253,14 +254,18 @@ endfunction
 let g:vsnip_snippet_dir = "~/dotfiles/snippets"
 imap <expr> <Tab> vsnip#available() ? '<Plug>(vsnip-expand-or-jump)' : '<Tab>'
 smap <expr> <Tab> vsnip#available() ? '<Plug>(vsnip-expand-or-jump)' : '<Tab>'
+let g:loaded_lsc = 1
 
 " VIM-DIRVISH
 call sign_define("indent", {"text": " "})
 let g:dirvish_mode = ':sort ,^.*[\/], | silent keeppatterns g@\v/\.[^\/]+/?$@d _'
-nnoremap gf :leftabove 30 vsplit <BAR> silent Dirvish<Return>
-nnoremap gc :leftabove 30 vsplit <BAR> silent Dirvish %<Return>
+nnoremap gf :call ToggleDirvish()<Return>
+nnoremap ge :call ToggleDirvish('%')<Return>
 augroup dirvish_config
     autocmd!
+
+    " indent text by adding a transparent sign
+    autocmd FileType dirvish call nvim_buf_set_lines(0, 0, 0, 0, ["../"])
 
     " indent text by adding a transparent sign
     autocmd FileType dirvish sign place 1 line=1 name=indent
@@ -276,6 +281,25 @@ augroup dirvish_config
 
     " Map `gh` to hide dot-prefixed files.  Press `R` to "toggle" (reload).
     autocmd FileType dirvish nnoremap <silent><buffer> gh :silent keeppatterns g@\v/\.[^\/]+/?$@d _<cr>:setl cole=3<cr>
+
+    " Map `gq` to close window
+    autocmd FileType dirvish nnoremap <silent><buffer> gq :quit<CR>
 augroup END
+
+function ToggleDirvish(...)
+    for w in nvim_list_wins()
+        let bufnr = nvim_win_get_buf(w)
+        let ft = nvim_buf_get_option(bufnr, "filetype")
+        if ft == "dirvish"
+            call nvim_win_close(w, 1)
+            return
+        endif
+    endfor
+    if a:0 > 0 
+        execute "leftabove 30 vsplit | silent Dirvish ".a:1
+    else
+        execute "leftabove 30 vsplit | silent Dirvish"
+    endif
+endfunction
 
 " }}}
