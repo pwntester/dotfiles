@@ -41,11 +41,11 @@ call plug#begin('~/.nvim/plugged')
     if isdirectory(fnameescape(expand('~/Development')))
         Plug fnameescape(expand('~/Fortify/SSR/repos/vim-fortify'))
         Plug fnameescape(expand('~/Development/GitRepos/cobalt2.vim'))
-        Plug fnameescape(expand('~/Development/GitRepos/vim-codeql'))
+        Plug fnameescape(expand('~/Development/GitRepos/codeql.nvim'))
     elseif isdirectory(fnameescape(expand('~/Dev')))
         Plug fnameescape(expand('~/Dev/vim-fortify'))
         Plug fnameescape(expand('~/Dev/cobalt2.vim'))
-        Plug fnameescape(expand('~/Dev/vim-codeql'))
+        Plug fnameescape(expand('~/Dev/codeql.nvim'))
     endif
 call plug#end()
 
