@@ -51,14 +51,19 @@ function buf_diagnostics_virtual_text(bufnr, diagnostics)
     if not buffer_line_diagnostics then
         return
     end
-    for line, line_diags in pairs(buffer_line_diagnostics) do
+    local line_no = vim.api.nvim_buf_line_count(bufnr)
+    for _, line_diags in pairs(buffer_line_diagnostics) do
+
+        line = line_diags[1].range.start.line
+        if line+1 > line_no then goto continue end
+
         local virt_texts = {}
 
         -- window total width
         local win_width = vim.api.nvim_win_get_width(0)
 
         -- line length
-        local lines = vim.api.nvim_buf_get_lines(bufnr, line, line+1, 1)
+        local lines = vim.api.nvim_buf_get_lines(bufnr, line, line+1, 0)
         local line_width = 0
         if table.getn(lines) > 0 then
             local line_content = lines[1]
