@@ -359,6 +359,13 @@ execute 'source' fnameescape(expand('~/.config/nvim/plugins.vim'))
 
 " }}}
 
+" ================ POP-UP MENU (PUM) ======================== {{{
+inoremap <silent><expr> <Return> pumvisible() ? "\<c-y>\<cr>" : "\<Return>"
+inoremap <silent><expr> <C-j> pumvisible() ? "\<C-n>" : ''
+inoremap <silent><expr> <C-k> pumvisible() ? "\<C-p>" : ''
+
+" }}}
+
 " ================ THEME ======================== {{{
 syntax enable
 set background=dark
@@ -380,5 +387,7 @@ hi def link goDiagnosticWarning SpellRare
 
 " DIRVISH
 hi def link DirvishPathTail Comment
+hi def link DirvishPathHead Function
+hi def link DirvishSuffix Identifier
 
 "}}}

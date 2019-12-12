@@ -4,7 +4,7 @@ call plug#begin('~/.nvim/plugged')
     " Github plugins
     Plug 'fatih/vim-go',                    { 'do': ':GoInstallBinaries' }
     Plug 'Shougo/deoplete.nvim',            { 'do': ':UpdateRemotePlugins'} 
-    "Plug 'Shougo/deoplete-lsp'
+    Plug 'Shougo/deoplete-lsp'
     Plug 'drzel/vim-line-no-indicator'
     Plug 'Shougo/neco-vim',
     Plug 'junegunn/fzf.vim' 
@@ -26,7 +26,7 @@ call plug#begin('~/.nvim/plugged')
     Plug 'alvan/vim-closetag'
     Plug 'tommcdo/vim-lion'
     Plug 'tmsvg/pear-tree'
-    Plug 'hrsh7th/vim-vsnip'
+    Plug 'hrsh7th/vim-vsnip', {'branch': 'prev'}
     Plug 'hrsh7th/vim-vsnip-integ'
     Plug 'AndrewRadev/linediff.vim'
     Plug 'airblade/vim-rooter'
@@ -35,11 +35,6 @@ call plug#begin('~/.nvim/plugged')
     Plug 'psliwka/vim-smoothie'
     Plug 'liuchengxu/vista.vim'
     Plug 'justinmk/vim-dirvish'
-    " Plug 'SirVer/ultisnips'
-    " Plug 'honza/vim-snippets'
-    " Plug 'Shougo/defx.nvim',                { 'do': ':UpdateRemotePlugins'} 
-    " Plug 'kristijanhusak/defx-git'
-    " Plug 'kristijanhusak/defx-icons'
     
     " Local plugins
     Plug '/usr/local/opt/fzf'
@@ -47,7 +42,6 @@ call plug#begin('~/.nvim/plugged')
         Plug fnameescape(expand('~/Fortify/SSR/repos/vim-fortify'))
         Plug fnameescape(expand('~/Development/GitRepos/cobalt2.vim'))
         Plug fnameescape(expand('~/Development/GitRepos/vim-codeql'))
-        Plug fnameescape(expand('~/Development/GitRepos/deoplete-lsp'))
     elseif isdirectory(fnameescape(expand('~/Dev')))
         Plug fnameescape(expand('~/Dev/vim-fortify'))
         Plug fnameescape(expand('~/Dev/cobalt2.vim'))
@@ -63,9 +57,6 @@ execute 'source' fnameescape(expand('~/.config/nvim/fzf.vim'))
 
 " LIGHTLINE 
 execute 'source' fnameescape(expand('~/.config/nvim/lightline.vim'))
-
-" DEFX
-"execute 'source' fnameescape(expand('~/.config/nvim/defx.vim'))
 
 " INDENTLINE
 let g:indentLine_color_gui = '#17252c'
@@ -93,11 +84,6 @@ let g:closetag_filenames = '*.html,*.xhtml,*.phtml,*.xml,*.jsp'
 let g:closetag_filetypes = 'html,xhtml,phtml,fortifyrulepack,xml,jsp'
 let g:closetag_xhtml_filenames = '*.xml,*.xhtml,*.jsp,*.html'
 let g:closetag_xhtml_filetypes = 'xhtml,jsx,fortifyrulepack'
-
-" ULTISNIPS
-" let g:UltiSnipsExpandTrigger="<tab>"
-" let g:UltiSnipsJumpForwardTrigger="<c-j>"
-" let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 
 " VIM-MARKDOWN
 let g:vim_markdown_folding_disabled = 1
@@ -189,9 +175,6 @@ call deoplete#custom#option({
     \ 'auto_complete_delay': 300,
     \ 'smart_case': v:true,
     \ })
-inoremap <expr> <Return> (pumvisible() ? "\<c-y>\<cr>" : "\<Return>")
-inoremap <silent><expr> <C-k> pumvisible() ? "\<C-p>" : ""
-inoremap <silent><expr> <C-j> pumvisible() ? "\<C-n>" : ">"
 
 " VISTA
 let g:vista_default_executive = 'nvim_lsp'
@@ -251,10 +234,12 @@ function! ApplyAction(callback, chosen) abort
 endfunction
 
 " VIM-VSNIP
+let g:loaded_lsc = 1
 let g:vsnip_snippet_dir = "~/dotfiles/snippets"
 imap <expr> <Tab> vsnip#available() ? '<Plug>(vsnip-expand-or-jump)' : '<Tab>'
 smap <expr> <Tab> vsnip#available() ? '<Plug>(vsnip-expand-or-jump)' : '<Tab>'
-let g:loaded_lsc = 1
+imap <expr> <S-Tab> vsnip#available() ? '<Plug>(vsnip-jump-prev)' : '<S-Tab>'
+smap <expr> <S-Tab> vsnip#available() ? '<Plug>(vsnip-jump-prev)' : '<S-Tab>'
 
 " VIM-DIRVISH
 call sign_define("indent", {"text": " "})
@@ -265,7 +250,7 @@ augroup dirvish_config
     autocmd!
 
     " indent text by adding a transparent sign
-    autocmd FileType dirvish call nvim_buf_set_lines(0, 0, 0, 0, ["../"])
+    autocmd FileType dirvish call nvim_buf_set_lines(0, 0, 0, 0, [expand('%')."../"])
 
     " indent text by adding a transparent sign
     autocmd FileType dirvish sign place 1 line=1 name=indent
@@ -284,13 +269,15 @@ augroup dirvish_config
 
     " Map `gq` to close window
     autocmd FileType dirvish nnoremap <silent><buffer> gq :quit<CR>
+
+    " reload dirvish after shell commands
+    autocmd ShellCmdPost * if nvim_buf_get_option(0, 'filetype') == 'dirvish' | Dirvish % | endif
 augroup END
 
 function ToggleDirvish(...)
     for w in nvim_list_wins()
         let bufnr = nvim_win_get_buf(w)
-        let ft = nvim_buf_get_option(bufnr, "filetype")
-        if ft == "dirvish"
+        if nvim_buf_get_option(bufnr, "filetype") == "dirvish"
             call nvim_win_close(w, 1)
             return
         endif
@@ -301,5 +288,9 @@ function ToggleDirvish(...)
         execute "leftabove 30 vsplit | silent Dirvish"
     endif
 endfunction
+
+cnoreabbrev <expr> rm    ((nvim_buf_get_option(0, 'filetype') == 'dirvish' && getcmdtype() is# ":" && getcmdline() is# "rm")? ("silent !rm") : ("rm"))
+cnoreabbrev <expr> touch ((nvim_buf_get_option(0, 'filetype') == 'dirvish' && getcmdtype() is# ":" && getcmdline() is# "touch")? ("silent !touch") : ("touch"))
+cnoreabbrev <expr> mv    ((nvim_buf_get_option(0, 'filetype') == 'dirvish' && getcmdtype() is# ":" && getcmdline() is# "mv")? ("silent !mv") : ("mv"))
 
 " }}}

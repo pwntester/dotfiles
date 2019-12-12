@@ -2,7 +2,10 @@
   "foo": {
     "prefix": "foo",
     "body": [
-        "FOO ${1:foo}"
+        "FOO ${1:test}",
+        "BAZ ${3|baz,lol,luz|}",
+        "BAR ${2:bar}",
+        "LM ${TM_CURRENT_LINE}"
     ],
     "description": "FOO TEST."
   }
