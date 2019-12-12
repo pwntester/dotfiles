@@ -58,9 +58,13 @@ function buf_diagnostics_virtual_text(bufnr, diagnostics)
         local win_width = vim.api.nvim_win_get_width(0)
 
         -- line length
-        local line_content = vim.api.nvim_buf_get_lines(bufnr, line, line+1, 1)[1]
-        if line_content == nil then goto continue end
-        local line_width = vim.fn.strdisplaywidth(line_content)
+        local lines = vim.api.nvim_buf_get_lines(bufnr, line, line+1, 1)
+        local line_width = 0
+        if table.getn(lines) > 0 then
+            local line_content = lines[1]
+            if line_content == nil then goto continue end
+            line_width = vim.fn.strdisplaywidth(line_content)
+        end
 
         -- window decoration with (sign + fold + number)
         local decoration_width = window_decoration_columns()
