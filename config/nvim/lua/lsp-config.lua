@@ -3,10 +3,24 @@ require 'nvim-lsp'
 
 local lsps_actions = {}
 local lsps_dirs = {}
-local lsps_diagnostics = { }
-local lsps_diagnostics_count = { }
+local lsps_diagnostics = {}
+local lsps_diagnostics_count = {}
 local references_ns = vim.api.nvim_create_namespace("vim_lsp_references")
 
+-- clear diagnostics namespace
+-- modified from https://github.com/neovim/neovim/blob/6e8c5779cf960893850501e4871dc9be671db298/runtime/lua/vim/lsp/util.lua#L506
+local function buf_clear_diagnostics(bufnr)
+    validate { bufnr = {bufnr, 'n', true} }
+    bufnr = bufnr == 0 and vim.api.nvim_get_current_buf() or bufnr
+
+    -- clear signs
+    vim.fn.sign_unplace('nvim-lsp', {buffer=bufnr})
+
+    -- clear virtual text namespace
+    vim.api.nvim_buf_clear_namespace(bufnr, diagnostic_ns, 0, -1)
+end
+
+-- underline code with diagnostics
 -- modified from https://github.com/neovim/neovim/blob/master/runtime/lua/vim/lsp/util.lua#L593
 local function buf_diagnostics_underline(bufnr, diagnostics)
     for _, diagnostic in ipairs(diagnostics) do
@@ -23,29 +37,7 @@ local function buf_diagnostics_underline(bufnr, diagnostics)
     end
 end
 
--- modified from https://github.com/neovim/neovim/blob/6e8c5779cf960893850501e4871dc9be671db298/runtime/lua/vim/lsp/util.lua#L506
-local function buf_clear_diagnostics(bufnr)
-    validate { bufnr = {bufnr, 'n', true} }
-    bufnr = bufnr == 0 and vim.api.nvim_get_current_buf() or bufnr
-
-    -- clear signs
-    vim.fn.sign_unplace('nvim-lsp', {buffer=bufnr})
-
-    -- clear virtual text namespace
-    vim.api.nvim_buf_clear_namespace(bufnr, diagnostic_ns, 0, -1)
-end
-
--- render diagnostics
-local function buf_diagnostics_show(bufnr)
-    if not lsps_diagnostics[bufnr] then return end
-    buf_clear_diagnostics(bufnr)
-    buf_diagnostics_save_positions(bufnr, lsps_diagnostics[bufnr])
-    buf_diagnostics_underline(bufnr, lsps_diagnostics[bufnr])
-    buf_diagnostics_virtual_text(bufnr, lsps_diagnostics[bufnr])
-    buf_diagnostics_statusline(bufnr, lsps_diagnostics[bufnr])
-    buf_diagnostics_signs(bufnr, lsps_diagnostics[bufnr])
-end
-
+-- show diagnostics as virtual text
 -- modified from https://github.com/neovim/neovim/blob/master/runtime/lua/vim/lsp/util.lua#L606
 function buf_diagnostics_virtual_text(bufnr, diagnostics)
     -- return if we are called from a window that is not showing bufnr
@@ -101,6 +93,17 @@ function buf_diagnostics_virtual_text(bufnr, diagnostics)
     end
 end
 
+-- show diagnostics in a number of ways
+local function buf_show_diagnostics(bufnr)
+    if not lsps_diagnostics[bufnr] then return end
+    buf_clear_diagnostics(bufnr)
+    buf_diagnostics_save_positions(bufnr, lsps_diagnostics[bufnr])
+    buf_diagnostics_underline(bufnr, lsps_diagnostics[bufnr])
+    buf_diagnostics_virtual_text(bufnr, lsps_diagnostics[bufnr])
+    buf_diagnostics_statusline(bufnr, lsps_diagnostics[bufnr])
+    buf_diagnostics_signs(bufnr, lsps_diagnostics[bufnr])
+end
+
 -- prepare range params
 local function make_range_params()
   local row, col = unpack(vim.api.nvim_win_get_cursor(0))
@@ -114,26 +117,28 @@ local function make_range_params()
 end
 
 -- unfortunately no way to make FZF to call back into lua code
-function ApplyAction(arg)
-    print(dump(arg))
-end
-function FZF_menu(raw_options)
-    local fzf_options = {}
-    for idx, option in ipairs(raw_options) do
-        table.insert(fzf_options, string.format('%d::%s', idx, option.title))
-    end
-    local fzf_config = {
-        source = fzf_options,
-        sink = 'v:lua.ApplyAction',
-        options = "+m --with-nth 2.. -d ::"
-    }
-    vim.fn['fzf#run'](vim.fn['fzf#wrap'](fzf_config))
-end
+-- function ApplyAction(arg)
+--     print(dump(arg))
+-- end
+-- function FZF_menu(raw_options)
+--     local fzf_options = {}
+--     for idx, option in ipairs(raw_options) do
+--         table.insert(fzf_options, string.format('%d::%s', idx, option.title))
+--     end
+--     local fzf_config = {
+--         source = fzf_options,
+--         sink = 'v:lua.ApplyAction',
+--         options = "+m --with-nth 2.. -d ::"
+--     }
+--     vim.fn['fzf#run'](vim.fn['fzf#wrap'](fzf_config))
+-- end
 
+-- clear reference highlighting
 function clear_references() 
     vim.api.nvim_buf_clear_namespace(0, references_ns, 0, -1)
 end
 
+-- highlight references for symbol under cursor
 function highlight_references() 
     if not get_lsp_client_capability("documentHighlightProvider") then return end
     local bufnr = vim.api.nvim_get_current_buf()
@@ -153,26 +158,13 @@ function highlight_references()
                 -- WRITE
                 highlight_range(bufnr, references_ns, "LspReferenceWrite", start_pos, end_pos)
             end
-            -- TODO: Comment is just for testing
         end
     end)
     vim.lsp.buf_request(0, 'textDocument/documentHighlight', params, callback)
 end
 
-function find_references() 
-    print(1)
-    local params = vim.lsp.util.make_position_params()
-    local callback = vim.schedule_wrap(function(_, _, result)
-        -- TODO
-        print(2)
-        if not result then return end
-        print(dump(result))
-    end)
-    vim.lsp.buf_request(0, 'textDocument/references', params, callback)
-end
-
--- global to be called from vimL
-function select_code_action(selection)
+-- apply selected codeAction. global to be called from vimL
+function apply_code_action(selection)
     local command = lsps_actions[selection]['command']
     local arguments = lsps_actions[selection]['arguments']
     local edit = lsps_actions[selection]['edit']
@@ -199,7 +191,7 @@ function select_code_action(selection)
     end
 end
 
--- global to be called from mapping
+-- send codeAction request. global to be called from mapping
 function request_code_actions()
     local bufnr = vim.api.nvim_get_current_buf()
     local buffer_line_diagnostics = all_buffer_diagnostics[bufnr]
@@ -220,7 +212,7 @@ function request_code_actions()
         if not actions then return end
         lsps_actions = actions
         -- FZF_menu(lsps_actions)
-        vim.fn[vim.g.nvim_lsp_code_action_menu](lsps_actions, 'v:lua.select_code_action')
+        vim.fn[vim.g.nvim_lsp_code_action_menu](lsps_actions, 'v:lua.apply_code_action')
     end)
     vim.lsp.buf_request(0, 'textDocument/codeAction', params, callback)
 end
@@ -259,7 +251,7 @@ function buf_diagnostics_statusline(bufnr, diagnostics)
     vim.api.nvim_command("call lightline#update()")
 end
 
--- global so can be called from mapping
+-- show popup with line diagnostics. global so can be called from mapping
 function show_diagnostics_details()
     local _, winnr = show_line_diagnostics()
     if winnr ~= nil then
@@ -269,13 +261,13 @@ function show_diagnostics_details()
     end
 end
 
--- global so can be called from lightline
+-- returns number if diagnostics. global so can be called from lightline
 function get_lsp_diagnostic_metrics()
     local bufnr = vim.api.nvim_get_current_buf()
     return lsps_diagnostics_count[bufnr]
 end
 
--- global so can be called from lightline
+-- returns true if LSP server is ready. global so can be called from lightline
 function get_lsp_client_status()
     local bufnr = vim.api.nvim_get_current_buf()
     local status, client_id = pcall(get_buf_var, bufnr, "lsp_client_id")
@@ -290,6 +282,7 @@ function get_lsp_client_status()
     return false
 end
 
+-- check if LSP server implements capability
 function get_lsp_client_capability(capability)
     local bufnr = vim.api.nvim_get_current_buf()
     local status, client_id = pcall(get_buf_var, bufnr, "lsp_client_id")
@@ -300,6 +293,184 @@ function get_lsp_client_capability(capability)
         end
     end
     return false
+end
+
+-- configure client capabilities
+local function config_client_callback(initialize_params, config)
+
+    -- needed by qlls
+    initialize_params['workspaceFolders'] = {{
+        name = 'workspace',
+        uri = initialize_params['rootUri']
+    }}
+
+    -- yes we can!
+    initialize_params['capabilities']['workspace'] = {
+        applyEdit = true,
+        workspaceEdit = {
+            documentChanges = true,
+            resourceOperations = { "create", "rename", "delete" },
+            failureHandling = "textOnlyTransactional",
+        },
+        didChangeConfiguration = {
+            dynamicRegistration = true
+        },
+        didChangeWatchedFiles = {
+            dynamicRegistration = true
+        },
+        symbol = {
+            dynamicRegistration = true,
+            symbolKind = {
+                valueSet = {1 ,2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26}
+            }
+        },
+        executeCommand = {
+            dynamicRegistration = true
+        },
+        configuration = true,
+        workspaceFolders = true
+    }
+    initialize_params['capabilities']['textDocument'] = {
+        publishDiagnostics = {
+            relatedInformation = true
+        },
+        completion = {
+            dynamicRegistration = true,
+            contextSupport = true,
+            completionItem = {
+                snippetSupport = true,
+                commitCharactersSupport = true,
+                documentationFormat = { "markdown", "plaintext" },
+                deprecatedSupport = true,
+                preselectSupport = true
+            },
+            completionItemKind = {
+                valueSet = {1 ,2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26}
+            }
+        },
+        hover = {
+            dynamicRegistration = true,
+            contentFormat = { "markdown", "plaintext" }
+        },
+        signatureHelp = {
+            dynamicRegistration = true,
+            signatureInformation = {
+                documentationFormat = { "markdown", "plaintext" },
+                parameterInformation = {
+                    labelOffsetSupport = true
+                }
+            }
+        },
+        definition = {
+            dynamicRegistration = true,
+            linkSupport = true
+        },
+        references = {
+            dynamicRegistration = true
+        },
+        documentHighlight = {
+            dynamicRegistration = true
+        },
+        documentSymbol = {
+            dynamicRegistration = true,
+            symbolKind = {
+                valueSet = {1 ,2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26}
+            },
+            hierarchicalDocumentSymbolSupport = true
+        },
+        codeAction = {
+            dynamicRegistration = true,
+            codeActionLiteralSupport = {
+                codeActionKind = {
+                    valueSet = { 
+                        "",
+                        "quickfix",
+                        "refactor", 
+                        "refactor.extract", 
+                        "refactor.inline", 
+                        "refactor.rewrite", 
+                        "source", 
+                        "source.organizeImports"
+                    }
+                }
+            }
+        },
+        codeLens = {
+            dynamicRegistration = true
+        },
+        formatting = {
+            dynamicRegistration = true
+        },
+        rangeFormatting = {
+            dynamicRegistration = true
+        },
+        onTypeFormatting = {
+            dynamicRegistration = true
+        },
+        rename = {
+            dynamicRegistration = true,
+            prepareSupport = true
+        },
+        documentLink = {
+            dynamicRegistration = true
+        },
+        typeDefinition = {
+            dynamicRegistration = true,
+            linkSupport = true
+        },
+        implementation = {
+            dynamicRegistration = true,
+            linkSupport = true
+        },
+        colorProvider = {
+            dynamicRegistration = true
+        },
+        foldingRange = {
+            dynamicRegistration = true,
+            rangeLimit = 5000,
+            lineFoldingOnly = true
+        },
+        declaration = {
+            dynamicRegistration = true,
+            linkSupport = true
+        }
+    }
+end
+
+-- debug initialization, show server capabilities
+local function debug_init(client, result)
+    print("INIT")
+    print(dump(result))
+end
+
+-- configure buffer after LSP client is attached
+local function on_attach_callback(client, bufnr)
+    vim.api.nvim_buf_set_var(bufnr, "lsp_client_id", client.id)
+
+    -- mappings and settings
+    vim.api.nvim_buf_set_keymap(bufnr, "n", "gD", "<Cmd>lua show_diagnostics_details()<CR>", { silent = true; })
+    vim.api.nvim_buf_set_keymap(bufnr, "n", "gd", "<Cmd>lua vim.lsp.buf.definition()<CR>", { silent = true; })
+    vim.api.nvim_buf_set_keymap(bufnr, "n", "gi", "<Cmd>lua vim.lsp.buf.implementation()<CR>", { silent = true; })
+    vim.api.nvim_buf_set_keymap(bufnr, "n", "K", "<Cmd>lua vim.lsp.buf.hover()<CR>", { silent = true; })
+    vim.api.nvim_buf_set_keymap(bufnr, "n", "gh", "<Cmd>lua vim.lsp.buf.signature_help()<CR>", { silent = true; })
+    vim.api.nvim_buf_set_keymap(bufnr, "n", "ga", "<Cmd>lua request_code_actions()<CR>", { silent = true; })
+    vim.api.nvim_command [[autocmd CursorHold <buffer> lua highlight_references()]]
+    vim.api.nvim_command [[autocmd CursorHoldI <buffer> lua highlight_references()]]
+    vim.api.nvim_command [[autocmd CursorMoved <buffer> lua clear_references()]]
+end
+
+-- custom replacement for publishDiagnostics callback
+-- https://github.com/neovim/neovim/blob/master/runtime/lua/vim/lsp/callbacks.lua
+local function diagnostics_callback(_, _, result)
+    if not result then return end
+    local uri = result.uri
+    local bufnr = vim.fn.bufadd((vim.uri_to_fname(uri)))
+    if not bufnr then
+        api.nvim_err_writeln(string.format("LSP.publishDiagnostics: Couldn't find buffer for %s", uri))
+        return
+    end
+    lsps_diagnostics[bufnr] = result.diagnostics
+    buf_show_diagnostics(bufnr)
 end
 
 local function setup()
@@ -316,181 +487,6 @@ local function setup()
     -- in case I'm reloading.
     vim.lsp.stop_all_clients()
 
-    local function config_client(initialize_params, config)
-        initialize_params['workspaceFolders'] = {{
-            name = 'workspace',
-            uri = initialize_params['rootUri']
-        }}
-        initialize_params['capabilities']['workspace'] = {
-            applyEdit = true,
-            workspaceEdit = {
-                documentChanges = true,
-                resourceOperations = { "create", "rename", "delete" },
-                failureHandling = "textOnlyTransactional",
-            },
-            didChangeConfiguration = {
-                dynamicRegistration = true
-            },
-            didChangeWatchedFiles = {
-                dynamicRegistration = true
-            },
-            symbol = {
-                dynamicRegistration = true,
-                symbolKind = {
-                    valueSet = {1 ,2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26}
-                }
-            },
-            executeCommand = {
-                dynamicRegistration = true
-            },
-            configuration = true,
-            workspaceFolders = true
-        }
-        initialize_params['capabilities']['textDocument'] = {
-            publishDiagnostics = {
-                relatedInformation = true
-            },
-            completion = {
-                dynamicRegistration = true,
-                contextSupport = true,
-                completionItem = {
-                    snippetSupport = true,
-                    commitCharactersSupport = true,
-                    documentationFormat = { "markdown", "plaintext" },
-                    deprecatedSupport = true,
-                    preselectSupport = true
-                },
-                completionItemKind = {
-                    valueSet = {1 ,2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26}
-                }
-            },
-            hover = {
-                dynamicRegistration = true,
-                contentFormat = { "markdown", "plaintext" }
-            },
-            signatureHelp = {
-                dynamicRegistration = true,
-                signatureInformation = {
-                    documentationFormat = { "markdown", "plaintext" },
-                    parameterInformation = {
-                        labelOffsetSupport = true
-                    }
-                }
-            },
-            definition = {
-                dynamicRegistration = true,
-                linkSupport = true
-            },
-            references = {
-                dynamicRegistration = true
-            },
-            documentHighlight = {
-                dynamicRegistration = true
-            },
-            documentSymbol = {
-                dynamicRegistration = true,
-                symbolKind = {
-                    valueSet = {1 ,2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26}
-                },
-                hierarchicalDocumentSymbolSupport = true
-            },
-            codeAction = {
-                dynamicRegistration = true,
-                codeActionLiteralSupport = {
-                    codeActionKind = {
-                        valueSet = { 
-                            "",
-                            "quickfix",
-                            "refactor", 
-                            "refactor.extract", 
-                            "refactor.inline", 
-                            "refactor.rewrite", 
-                            "source", 
-                            "source.organizeImports"
-                        }
-                    }
-                }
-            },
-            codeLens = {
-                dynamicRegistration = true
-            },
-            formatting = {
-                dynamicRegistration = true
-            },
-            rangeFormatting = {
-                dynamicRegistration = true
-            },
-            onTypeFormatting = {
-               dynamicRegistration = true
-            },
-            rename = {
-               dynamicRegistration = true,
-               prepareSupport = true
-            },
-            documentLink = {
-               dynamicRegistration = true
-            },
-            typeDefinition = {
-               dynamicRegistration = true,
-               linkSupport = true
-            },
-            implementation = {
-               dynamicRegistration = true,
-               linkSupport = true
-            },
-            colorProvider = {
-               dynamicRegistration = true
-            },
-            foldingRange = {
-               dynamicRegistration = true,
-               rangeLimit = 5000,
-               lineFoldingOnly = true
-            },
-            declaration = {
-               dynamicRegistration = true,
-               linkSupport = true
-            }
-        }
-    end
-
-    local function debug_init(client, result)
-        print("INIT")
-        print(dump(result))
-    end
-
-    local function on_attach(client, bufnr)
-        vim.api.nvim_buf_set_var(bufnr, "lsp_client_id", client.id)
-
-        -- mappings and settings
-        vim.api.nvim_buf_set_keymap(bufnr, "n", "gD", "<Cmd>lua show_diagnostics_details()<CR>", { silent = true; })
-        vim.api.nvim_buf_set_keymap(bufnr, "n", "gd", "<Cmd>lua vim.lsp.buf.definition()<CR>", { silent = true; })
-        vim.api.nvim_buf_set_keymap(bufnr, "n", "gi", "<Cmd>lua vim.lsp.buf.implementation()<CR>", { silent = true; })
-        vim.api.nvim_buf_set_keymap(bufnr, "n", "K", "<Cmd>lua vim.lsp.buf.hover()<CR>", { silent = true; })
-        vim.api.nvim_buf_set_keymap(bufnr, "n", "gh", "<Cmd>lua vim.lsp.buf.signature_help()<CR>", { silent = true; })
-        vim.api.nvim_buf_set_keymap(bufnr, "n", "ga", "<Cmd>lua request_code_actions()<CR>", { silent = true; })
-        vim.api.nvim_command [[autocmd CursorHold <buffer> lua highlight_references()]]
-        vim.api.nvim_command [[autocmd CursorHoldI <buffer> lua highlight_references()]]
-        vim.api.nvim_command [[autocmd CursorMoved <buffer> lua clear_references()]]
-    end
-
-    -- custom replacement for publishDiagnostics callback
-    -- https://github.com/neovim/neovim/blob/master/runtime/lua/vim/lsp/callbacks.lua
-    local diagnostics_callback = vim.schedule_wrap(function(_, _, result)
-        if not result then return end
-        local uri = result.uri
-        local bufnr = vim.fn.bufadd((vim.uri_to_fname(uri)))
-        if not bufnr then
-            api.nvim_err_writeln(string.format("LSP.publishDiagnostics: Couldn't find buffer for %s", uri))
-            return
-        end
-        lsps_diagnostics[bufnr] = result.diagnostics
-        buf_diagnostics_show(bufnr)
-    end)
-
-    local lsp4j_status_callback = vim.schedule_wrap(function(_, _, result)
-        vim.api.nvim_command(string.format(':echohl Function | echo "%s" | echohl None', result.message))
-    end)
-
     function start_fls()
         -- prevent LSP on large files
         if vim.api.nvim_buf_line_count(0) > 10000 then return end
@@ -501,7 +497,9 @@ local function setup()
             cmd = "fls";
             root_dir = root_dir;
             callbacks = { ["textDocument/publishDiagnostics"] = diagnostics_callback };
-            on_attach = on_attach;
+            on_attach = on_attach_callback;
+            before_init = config_client_callback;
+            -- on_init = debug_init;
         }
         local bufnr = vim.api.nvim_get_current_buf()
         local status, client_id = pcall(get_buf_var, bufnr, "lsp_client_id")
@@ -525,8 +523,8 @@ local function setup()
             callbacks = { 
                 ["textDocument/publishDiagnostics"] = diagnostics_callback
             };
-            on_attach = on_attach;
-            before_init = config_client;
+            on_attach = on_attach_callback;
+            before_init = config_client_callback;
             -- on_init = debug_init;
         }
         -- capabilities:
@@ -558,8 +556,9 @@ local function setup()
             cmd = "gopls";
             root_dir = root_dir;
             callbacks = { ["textDocument/publishDiagnostics"] = diagnostics_callback };
-            on_attach = on_attach;
-            before_init = config_client;
+            on_attach = on_attach_callback;
+            before_init = config_client_callback;
+            -- on_init = debug_init;
         }
         local client_id = lsps_dirs[root_dir]
         if not client_id then
@@ -573,6 +572,9 @@ local function setup()
         local bufnr = vim.api.nvim_get_current_buf()
         local root_dir = root_pattern(bufnr, "pom.xml", "build.gradle");
         if not root_dir then return end
+        local lsp4j_status_callback = vim.schedule_wrap(function(_, _, result)
+            vim.api.nvim_command(string.format(':echohl Function | echo "%s" | echohl None', result.message))
+        end)
         local config = {
             name = "eclipse.jdt.ls";
             cmd = "jdtls";
@@ -581,7 +583,9 @@ local function setup()
                 ["textDocument/publishDiagnostics"] = diagnostics_callback,
                 ["language/status"] = lsp4j_status_callback,
             };
-            on_attach = on_attach;
+            on_attach = on_attach_callback;
+            before_init = config_client_callback;
+            -- on_init = debug_init;
         }
         local client_id = lsps_dirs[root_dir]
         if not client_id then
@@ -602,7 +606,9 @@ local function setup()
             callbacks = { 
                 ["textDocument/publishDiagnostics"] = diagnostics_callback,
             };
-            on_attach = on_attach;
+            on_attach = on_attach_callback;
+            before_init = config_client_callback;
+            -- on_init = debug_init;
         }
         local client_id = lsps_dirs[root_dir]
         if not client_id then
