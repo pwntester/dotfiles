@@ -255,20 +255,14 @@ augroup dirvish_config
     " indent text by adding a transparent sign
     autocmd FileType dirvish sign place 1 line=1 name=indent
 
-    " Map `<CR>` to open in previous window.
+    " map `<CR>` to open in previous window.
     autocmd FileType dirvish nnoremap <silent><buffer><expr> <CR> getline(".") =~ "^.*\/$" ? 
         \ ":<C-U>.call dirvish#open(getline('.'))<Return>" : ":<C-U>.call dirvish#open('wincmd p<BAR>edit', 0)<Return>"
     autocmd FileType dirvish xnoremap <silent><buffer><expr> <CR> getline(".") =~ "^.*\/$" ? 
         \ ":<C-U>.call dirvish#open(getline('.'))<Return>" : ":<C-U>.call dirvish#open('wincmd p<BAR>edit', 0)<Return>"
 
-    " Map `gr` to reload.
-    autocmd FileType dirvish nnoremap <silent><buffer> gr :<C-U>Dirvish %<CR>
-
-    " Map `gh` to hide dot-prefixed files.  Press `R` to "toggle" (reload).
+    " map `gh` to hide dot-prefixed files.  Press `R` to "toggle" (reload).
     autocmd FileType dirvish nnoremap <silent><buffer> gh :silent keeppatterns g@\v/\.[^\/]+/?$@d _<cr>:setl cole=3<cr>
-
-    " Map `gq` to close window
-    autocmd FileType dirvish nnoremap <silent><buffer> gq :quit<CR>
 
     " reload dirvish after shell commands
     autocmd ShellCmdPost * if nvim_buf_get_option(0, 'filetype') == 'dirvish' | Dirvish % | endif
