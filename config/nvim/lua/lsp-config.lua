@@ -165,17 +165,17 @@ end
 
 -- apply selected codeAction. global to be called from vimL
 function apply_code_action(selection)
-    local command = lsps_actions[selection]['command']
-    local arguments = lsps_actions[selection]['arguments']
-    local edit = lsps_actions[selection]['edit']
-    local title = lsps_actions[selection]['title']
+    local command = lsps_actions[selection]['command']['command']
+    local arguments = lsps_actions[selection]['command']['arguments']
+    local edit = lsps_actions[selection]['command']['edit']
+    local title = lsps_actions[selection]['command']['title']
 
     if command == 'java.apply.workspaceEdit' then
         -- eclipse.jdt.ls does not follow spec here
         for _, argument in ipairs(arguments) do
-            for uri, text_edit in pairs(argument['changes']) do
-                local bufnr = vim.fn.bufadd((vim.uri_to_fname(uri)))
-                apply_text_edits(text_edit, bufnr)
+            for _, change in ipairs(argument['documentChanges']) do
+                local bufnr = vim.fn.bufadd((vim.uri_to_fname(change['textDocument']['uri'])))
+                apply_text_edits(change['edits'], bufnr)
             end
         end
     elseif command then
@@ -193,6 +193,8 @@ end
 
 -- send codeAction request. global to be called from mapping
 function request_code_actions()
+    -- JDT does not publish it
+    -- if not get_lsp_client_capability("completionProvider") then return end
     local bufnr = vim.api.nvim_get_current_buf()
     local buffer_line_diagnostics = all_buffer_diagnostics[bufnr]
     if not buffer_line_diagnostics then
@@ -585,7 +587,7 @@ local function setup()
             };
             on_attach = on_attach_callback;
             before_init = config_client_callback;
-            -- on_init = debug_init;
+            on_init = debug_init;
         }
         local client_id = lsps_dirs[root_dir]
         if not client_id then
