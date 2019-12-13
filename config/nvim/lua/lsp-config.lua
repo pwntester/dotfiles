@@ -551,9 +551,10 @@ local function setup()
         --  experimental.guessLocationProvider 
         --  experimental.checkErrorsProvider  
         local bufnr = vim.api.nvim_get_current_buf()
-        local status, client_id = pcall(get_buf_var, bufnr, "lsp_client_id")
-        if type(client_id) ~= "number" then
+        local client_id = lsps_dirs[root_dir]
+        if not client_id then
             client_id = vim.lsp.start_client(config)
+            lsps_dirs[root_dir] = client_id
         end
         vim.lsp.buf_attach_client(bufnr, client_id)
     end
