@@ -267,6 +267,7 @@ augroup dirvish_config
     " reload dirvish after shell commands
     autocmd ShellCmdPost * if nvim_buf_get_option(0, 'filetype') == 'dirvish' | Dirvish % | endif
 
+    " fix dirvish win width
     autocmd FileType dirvish :call nvim_win_set_option(0, 'winfixwidth', v:true)
 
 augroup END
