@@ -26,7 +26,7 @@ call plug#begin('~/.nvim/plugged')
     Plug 'alvan/vim-closetag'
     Plug 'tommcdo/vim-lion'
     Plug 'tmsvg/pear-tree'
-    Plug 'hrsh7th/vim-vsnip'
+    Plug 'hrsh7th/vim-vsnip', { 'branch': 'prev'}
     Plug 'hrsh7th/vim-vsnip-integ'
     Plug 'AndrewRadev/linediff.vim'
     Plug 'airblade/vim-rooter'
@@ -35,6 +35,7 @@ call plug#begin('~/.nvim/plugged')
     Plug 'psliwka/vim-smoothie'
     Plug 'liuchengxu/vista.vim'
     Plug 'justinmk/vim-dirvish'
+    Plug 'lifepillar/vim-colortemplate'
     
     " Local plugins
     Plug '/usr/local/opt/fzf'
@@ -234,12 +235,11 @@ function! ApplyAction(callback, chosen) abort
 endfunction
 
 " VIM-VSNIP
-let g:loaded_lsc = 1
 let g:vsnip_snippet_dir = "~/dotfiles/snippets"
-imap <expr> <Tab> vsnip#available() ? '<Plug>(vsnip-expand-or-jump)' : '<Tab>'
-smap <expr> <Tab> vsnip#available() ? '<Plug>(vsnip-expand-or-jump)' : '<Tab>'
-imap <expr> <S-Tab> vsnip#available() ? '<Plug>(vsnip-jump-prev)' : '<S-Tab>'
-smap <expr> <S-Tab> vsnip#available() ? '<Plug>(vsnip-jump-prev)' : '<S-Tab>'
+imap <expr> <Tab> vsnip#available(1) ? '<Plug>(vsnip-expand-or-jump)' : '<Tab>'
+smap <expr> <Tab> vsnip#available(1) ? '<Plug>(vsnip-expand-or-jump)' : '<Tab>'
+imap <expr> <S-Tab> vsnip#available(-1) ? '<Plug>(vsnip-jump-prev)' : '<S-Tab>'
+smap <expr> <S-Tab> vsnip#available(-1) ? '<Plug>(vsnip-jump-prev)' : '<S-Tab>'
 
 " VIM-DIRVISH
 call sign_define("indent", {"text": " "})
