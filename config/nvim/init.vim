@@ -369,17 +369,17 @@ inoremap <silent><expr> <C-k> pumvisible() ? "\<C-p>" : ''
 " ================ THEME ======================== {{{
 syntax enable
 set background=dark
-colorscheme cobalt2
+colorscheme cobalt3
 
 " NVIM-LSP
 hi LspDiagnosticsError guifg=#FF0000
 hi LspDiagnosticsWarning guifg=#FFC600
 hi LspDiagnosticInformation guifg=#00AAFF
 hi LspDiagnosticHint guifg=#00AAFF
-hi LspDiagnosticsUnderline guifg=None gui=underline
-hi LspReferenceText guifg=None gui=underline
-hi LspReferenceRead guifg=None gui=underline
-hi LspReferenceWrite guifg=None gui=underline
+hi LspDiagnosticsUnderline guifg=None gui=undercurl guisp=#FF0000
+hi LspReferenceText guifg=None gui=undercurl guisp=#FF0000
+hi LspReferenceRead guifg=None gui=undercurl guisp=#FF0000
+hi LspReferenceWrite guifg=None gui=undercurl guisp=#FF0000
 
 " VIM-GO
 hi def link goDiagnosticError SpellBad
@@ -389,5 +389,6 @@ hi def link goDiagnosticWarning SpellRare
 hi def link DirvishPathTail Comment
 hi def link DirvishPathHead Function
 hi def link DirvishSuffix Identifier
+
 
 "}}}
