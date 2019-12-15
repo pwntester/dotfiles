@@ -60,7 +60,6 @@ bindkey '^[[B' history-substring-search-down
 alias awb="auditworkbench"
 alias sca="sourceanalyzer"
 alias vi='nvim'
-alias ctags="`brew --prefix`/bin/ctags"
 alias ls='gls --color=auto --group-directories-first'
 alias tree="exa --tree"
 
