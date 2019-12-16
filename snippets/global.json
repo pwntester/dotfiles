@@ -3,9 +3,8 @@
     "prefix": "foo",
     "body": [
         "FOO ${1:test}",
-        "BAZ ${3|baz,lol,luz|}",
-        "BAR ${2:bar}",
-        "LM ${TM_CURRENT_LINE}"
+        "BAZ ${2|baz,lol,luz|}",
+        "BAR ${3:bar}"
     ],
     "description": "FOO TEST."
   }

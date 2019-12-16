@@ -299,7 +299,7 @@ function get_lsp_client_capability(capability)
     local status, client_id = pcall(get_buf_var, bufnr, "lsp_client_id")
     if type(client_id) == "number" then
         local client = vim.lsp.get_client_by_id(client_id)
-        if client.server_capabilities[capability] == true then
+        if client and client.server_capabilities[capability] == true then
             return true
         end
     end

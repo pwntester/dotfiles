@@ -30,30 +30,28 @@ let g:vimsyn_embed             = 1
 let g:loaded_matchit           = 1 
 
 " ================ GENERAL ==================== {{{
-set autowrite                                                     " Write on shell/make command
+set hidden                                                        " Hide buffers when unloaded
+if &encoding != 'utf-8'                                           " Skip this on resourcing with Neovim (E905).
+    set encoding=utf-8
+    set fileencoding=utf-8
+endif
 set nrformats=alpha,hex,octal                                     " Increment/decrement numbers. C-a,a (tmux), C-x
 set shell=/bin/zsh                                                " ZSH ftw!
 set visualbell                                                    " Silent please
-set ffs=unix                                                      " Use Unix EOL
-set hidden                                                        " Hide buffers when unloaded
+set fileformats=unix,dos                                          " Use Unix EOL
 set inccommand=nosplit                                            " Live preview for :substitute
-set fileencoding=utf-8
-set encoding=utf-8
-set nottimeout
-set updatetime=800                                               " CursorHold waiting time
+set updatetime=750                                                " CursorHold waiting time
+set noequalalways                                                 " Dset backspaceo not auto-resize windows when opening/closing them!
 " }}}
 
 " ================ UI ==================== {{{
 set foldmethod=manual                                             " Fold manually (zf)
 set foldcolumn=0                                                  " Do not show fold levels in side bar
 set cursorline                                                    " Print cursorline
-set guioptions=-Mfl                                               " nomenu, nofork, scrollbar
 set laststatus=2                                                  " status line always on
 set showtabline=2                                                 " always shows tabline
 set lazyredraw                                                    " Don't update the display while executing macros
 set number                                                        " Print the line number
-set t_Co=256                                                      " 256 colors
-set ttyfast                                                       " Faster redraw
 set showcmd                                                       " Show partial commands in status line
 set noshowmode                                                    " Dont show the mode in the command line
 set signcolumn=auto                                               " Only sho sign column if there are signs to be shown
@@ -65,13 +63,16 @@ set linebreak                                                     " Wrap lines a
 set listchars=tab:>-,trail:.,extends:>,precedes:<,nbsp:%          " Showing trailing whitespace
 set diffopt+=vertical                                             " Show vimdiff in vertical splits
 set diffopt+=algorithm:patience                                   " Use git diffing algorithm
+set diffopt+=context:1000000                                      " Don't fold
+set ttimeoutlen=10                                                " Use short timeout after Escape sequence in terminal mode (for keycodes)
+set timeoutlen=2000
 
 " syntax improvements
 let g:java_highlight_all = 1
 let g:java_space_errors = 1
 let g:java_comment_strings = 1
 let g:java_highlight_functions = 1
-let g:java_highlight_debug = 1
+let g:java_highlight_debug = 1 
 let g:java_mark_braces_in_parens_as_errors = 1
 " }}}
 
@@ -369,17 +370,17 @@ inoremap <silent><expr> <C-k> pumvisible() ? "\<C-p>" : ''
 " ================ THEME ======================== {{{
 syntax enable
 set background=dark
-colorscheme cobalt2
+colorscheme cobalt3
 
 " NVIM-LSP
 hi LspDiagnosticsError guifg=#FF0000
 hi LspDiagnosticsWarning guifg=#FFC600
 hi LspDiagnosticInformation guifg=#00AAFF
 hi LspDiagnosticHint guifg=#00AAFF
-hi LspDiagnosticsUnderline guifg=None gui=underline
-hi LspReferenceText guifg=None gui=underline
-hi LspReferenceRead guifg=None gui=underline
-hi LspReferenceWrite guifg=None gui=underline
+hi LspDiagnosticsUnderline guifg=None gui=undercurl guisp=#FFFFFF
+hi LspReferenceText guibg=#668799
+hi LspReferenceRead guibg=#668799
+hi LspReferenceWrite guibg=#668799
 
 " VIM-GO
 hi def link goDiagnosticError SpellBad
