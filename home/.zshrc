@@ -47,12 +47,8 @@ fi
 
 # autoload
 fpath=(~/.zsh "${fpath[@]}")
-autoload -Uz bip compinit
+autoload -Uz bip compinit add-zsh-hook
 # tmuxify
-
-# Completion for kitty
-compinit
-kitty + complete setup zsh | source /dev/stdin
 
 # every time we load .zshrc, ditch duplicate path entries
 typeset -U PATH fpath
@@ -95,7 +91,8 @@ export EDITOR='nvim'
 export VISUAL='nvim'
 export PAGER='less'
 export SHELL=`which zsh`
-export TERM="screen-256color"  
+#export TERM="screen-256color"  
+export TERM="xterm-kitty"
 export NODE_PATH="/usr/local/lib/node"
 export ANT_OPTS="-XX:MaxPermSize=256m" 
 export GOPATH=$(go env GOPATH)
@@ -162,5 +159,21 @@ fi
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="/Users/alvaro/.sdkman"
 [[ -s "/Users/alvaro/.sdkman/bin/sdkman-init.sh" ]] && source "/Users/alvaro/.sdkman/bin/sdkman-init.sh"
+
+# Completion for kitty
+compinit
+kitty + complete setup zsh | source /dev/stdin
+
+# kitty window title
+function set-title-precmd() {
+  printf "\e]2;%s\a" "${PWD/#$HOME/~}"
+}
+
+function set-title-preexec() {
+  printf "\e]2;%s\a" "$1"
+}
+
+add-zsh-hook precmd set-title-precmd
+add-zsh-hook preexec set-title-preexec
 
 #tmuxify
