@@ -47,7 +47,12 @@ fi
 
 # autoload
 fpath=(~/.zsh "${fpath[@]}")
-autoload -Uz bip tmuxify
+autoload -Uz bip compinit
+# tmuxify
+
+# Completion for kitty
+compinit
+kitty + complete setup zsh | source /dev/stdin
 
 # every time we load .zshrc, ditch duplicate path entries
 typeset -U PATH fpath
@@ -158,4 +163,4 @@ fi
 export SDKMAN_DIR="/Users/alvaro/.sdkman"
 [[ -s "/Users/alvaro/.sdkman/bin/sdkman-init.sh" ]] && source "/Users/alvaro/.sdkman/bin/sdkman-init.sh"
 
-tmuxify
+#tmuxify
