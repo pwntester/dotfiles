@@ -24,13 +24,28 @@ end
 -- modified from https://github.com/neovim/neovim/blob/master/runtime/lua/vim/lsp/util.lua#L593
 local function buf_diagnostics_underline(bufnr, diagnostics)
     for _, diagnostic in ipairs(diagnostics) do
-      local start = diagnostic.range.start
+      local start = diagnostic.range["start"]
       local finish = diagnostic.range["end"]
 
       -- workaround for fls
       if start.character == 1 and finish.character == 100 then return end
 
-      highlight_range(bufnr, diagnostic_ns, underline_highlight_name,
+      local hl = underline_highlight_name
+      if diagnostic.severity == 1 then
+          hl = underline_highlight_name..'Error'
+      -- warnings
+      elseif diagnostic.severity == 2 then
+          hl = underline_highlight_name..'Warning'
+      -- info
+      elseif diagnostic.severity == 3 then
+          hl = underline_highlight_name..'Info'
+      -- hint
+      elseif diagnostic.severity == 4 then
+          hl = underline_highlight_name..'Hint'
+      end
+
+      print(hl)
+      highlight_range(bufnr, diagnostic_ns, hl,
           {start.line, start.character},
           {finish.line, finish.character}
       )

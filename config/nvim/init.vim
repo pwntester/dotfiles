@@ -378,6 +378,10 @@ hi LspDiagnosticsWarning guifg=#FFC600
 hi LspDiagnosticInformation guifg=#00AAFF
 hi LspDiagnosticHint guifg=#00AAFF
 hi LspDiagnosticsUnderline guifg=None gui=undercurl guisp=#FFFFFF
+hi LspDiagnosticsUnderlineError guifg=None gui=undercurl guisp=#FF0000
+hi LspDiagnosticsUnderlineWarning guifg=None gui=undercurl guisp=#FFC600
+hi LspDiagnosticsUnderlineInfo guifg=None gui=undercurl guisp=#00AAFF
+hi LspDiagnosticsUnderlineHint guifg=None gui=undercurl guisp=#00AAFF
 hi LspReferenceText guibg=#668799
 hi LspReferenceRead guibg=#668799
 hi LspReferenceWrite guibg=#668799
