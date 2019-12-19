@@ -12,7 +12,6 @@ fi
 zplug 'zplug/zplug',                            hook-build:'zplug --self-manage'
 zplug "modules/tmux",                           from:prezto
 zplug "modules/history",                        from:prezto
-zplug "modules/ruby",                           from:prezto
 zplug "modules/terminal",                       from:prezto
 zplug "modules/directory",                      from:prezto
 zplug "modules/completion",                     from:prezto
@@ -48,7 +47,6 @@ fi
 # autoload
 fpath=(~/.zsh "${fpath[@]}")
 autoload -Uz bip compinit add-zsh-hook
-# tmuxify
 
 # every time we load .zshrc, ditch duplicate path entries
 typeset -U PATH fpath
@@ -176,4 +174,3 @@ function set-title-preexec() {
 add-zsh-hook precmd set-title-precmd
 add-zsh-hook preexec set-title-preexec
 
-#tmuxify

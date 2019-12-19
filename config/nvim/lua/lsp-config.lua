@@ -44,7 +44,6 @@ local function buf_diagnostics_underline(bufnr, diagnostics)
           hl = underline_highlight_name..'Hint'
       end
 
-      print(hl)
       highlight_range(bufnr, diagnostic_ns, hl,
           {start.line, start.character},
           {finish.line, finish.character}
