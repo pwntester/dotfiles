@@ -378,29 +378,8 @@ inoremap <silent><expr> <C-k> pumvisible() ? "\<C-p>" : ''
 " ================ THEME ======================== {{{
 syntax enable
 set background=dark
-colorscheme cobalt3
+colorscheme cobange
 
-" NVIM-LSP
-hi LspDiagnosticsError guifg=#FF0000
-hi LspDiagnosticsWarning guifg=#FFC600
-hi LspDiagnosticInformation guifg=#00AAFF
-hi LspDiagnosticHint guifg=#00AAFF
-hi LspDiagnosticsUnderline guifg=None gui=undercurl guisp=#FFFFFF
-hi LspDiagnosticsUnderlineError guifg=None gui=undercurl guisp=#FF0000
-hi LspDiagnosticsUnderlineWarning guifg=None gui=undercurl guisp=#FFC600
-hi LspDiagnosticsUnderlineInfo guifg=None gui=undercurl guisp=#00AAFF
-hi LspDiagnosticsUnderlineHint guifg=None gui=undercurl guisp=#00AAFF
-hi LspReferenceText guibg=#444444 gui=bold,italic
-hi LspReferenceRead guibg=#444444 gui=bold,italic
-hi LspReferenceWrite guibg=#444444 gui=bold,italic
-
-" VIM-GO
-hi def link goDiagnosticError SpellBad
-hi def link goDiagnosticWarning SpellRare
-
-" DIRVISH
-hi def link DirvishPathTail Comment
-hi def link DirvishPathHead Function
-hi def link DirvishSuffix Identifier
+execute 'source' fnameescape(expand('~/.config/nvim/statusline.vim'))
 
 "}}}
