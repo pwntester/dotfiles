@@ -273,26 +273,27 @@ function buf_diagnostics_statusline(bufnr, diagnostics)
     end
 
     -- update statusline
-    vim.api.nvim_command("call lightline#update()")
+    --vim.api.nvim_command("call lightline#update()")
+    vim.api.nvim_command("redrawstatus")
+    vim.api.nvim_command("doautocmd User LSPServerInitialized")
 end
 
 -- show popup with line diagnostics. global so can be called from mapping
 function show_diagnostics_details()
-    local _, winnr = show_line_diagnostics()
-    if winnr ~= nil then
-        local bufnr = vim.api.nvim_win_get_buf(winnr)
+    local bufnr, winnr = show_line_diagnostics()
+    if winnr ~= nil and bufnr ~= nil then
         vim.api.nvim_buf_clear_namespace(bufnr, -1, 0, -1)
-        vim.api.nvim_win_set_option(winnr, "winhl", "Normal:PMenu")
+        vim.api.nvim_win_set_option(winnr, "winhighlight", "Normal:PMenu")
     end
 end
 
--- returns number if diagnostics. global so can be called from lightline
+-- returns number if diagnostics. global so can be called from statusline
 function get_lsp_diagnostic_metrics()
     local bufnr = vim.api.nvim_get_current_buf()
     return lsps_diagnostics_count[bufnr]
 end
 
--- returns true if LSP server is ready. global so can be called from lightline
+-- returns true if LSP server is ready. global so can be called from statusline
 function get_lsp_client_status()
     local bufnr = vim.api.nvim_get_current_buf()
     local status, client_id = pcall(get_buf_var, bufnr, "lsp_client_id")
@@ -463,9 +464,17 @@ local function config_client_callback(initialize_params, config)
 end
 
 -- debug initialization, show server capabilities
-local function debug_init(client, result)
-    print("INIT")
-    print(dump(result))
+local function init_callback(client, result)
+    -- print("INIT")
+    -- print(dump(result))
+ 
+    local bufnr = vim.api.nvim_get_current_buf()
+    lsps_diagnostics_count[bufnr] = { errors=0, warnings=0 }
+
+    -- update statusline
+    --vim.api.nvim_command("call lightline#update()")
+    vim.api.nvim_command("redrawstatus")
+    vim.api.nvim_command("doautocmd User LSPServerInitialized")
 end
 
 -- configure buffer after LSP client is attached
@@ -478,10 +487,19 @@ local function on_attach_callback(client, bufnr)
     vim.api.nvim_buf_set_keymap(bufnr, "n", "gi", "<Cmd>lua vim.lsp.buf.implementation()<CR>", { silent = true; })
     vim.api.nvim_buf_set_keymap(bufnr, "n", "K", "<Cmd>lua vim.lsp.buf.hover()<CR>", { silent = true; })
     vim.api.nvim_buf_set_keymap(bufnr, "n", "gh", "<Cmd>lua vim.lsp.buf.signature_help()<CR>", { silent = true; })
+    vim.api.nvim_buf_set_keymap(bufnr, "n", "gr", "<Cmd>lua vim.lsp.buf.references()<CR>", { silent = true; })
     vim.api.nvim_buf_set_keymap(bufnr, "n", "ga", "<Cmd>lua request_code_actions()<CR>", { silent = true; })
     vim.api.nvim_command [[autocmd CursorHold <buffer> lua highlight_references()]]
     vim.api.nvim_command [[autocmd CursorHoldI <buffer> lua highlight_references()]]
     vim.api.nvim_command [[autocmd CursorMoved <buffer> lua clear_references()]]
+    -- peek_definition()
+    -- declaration()
+    -- type_definition()
+    -- formatting(options)
+    -- range_formatting(options, start_pos, end_pos)
+    -- rename(new_name)
+    -- references(context)
+
 end
 
 -- custom replacement for publishDiagnostics callback
@@ -496,6 +514,25 @@ local function diagnostics_callback(_, _, result)
     end
     lsps_diagnostics[bufnr] = result.diagnostics
     buf_show_diagnostics(bufnr)
+end
+
+-- custom replacement for publishDiagnostics callback
+-- https://github.com/neovim/neovim/blob/master/runtime/lua/vim/lsp/callbacks.lua
+local function hover_callback(_, method, result)
+  local bufnr, winnr = vim.lsp.util.focusable_preview(method, function()
+    if not (result and result.contents) then
+      return { 'No information available' }
+    end
+    local markdown_lines = vim.lsp.util.convert_input_to_markdown_lines(result.contents)
+    markdown_lines = vim.lsp.util.trim_empty_lines(markdown_lines)
+    if vim.tbl_isempty(markdown_lines) then
+      return { 'No information available' }
+    end
+    return markdown_lines, vim.lsp.util.try_trim_markdown_code_blocks(markdown_lines)
+  end)
+  if winnr ~= nil and bufnr ~= nil then
+    vim.api.nvim_win_set_option(winnr, "winhighlight", "Normal:NormalFloat")
+  end
 end
 
 local function setup()
@@ -521,10 +558,13 @@ local function setup()
             name = "fortify-language-server";
             cmd = "fls";
             root_dir = root_dir;
-            callbacks = { ["textDocument/publishDiagnostics"] = diagnostics_callback };
+            callbacks = { 
+                ["textDocument/publishDiagnostics"] = diagnostics_callback,
+                ["textDocument/hover"] = hover_callback 
+            };
             on_attach = on_attach_callback;
             before_init = config_client_callback;
-            -- on_init = debug_init;
+            on_init = init_callback;
         }
         local bufnr = vim.api.nvim_get_current_buf()
         local status, client_id = pcall(get_buf_var, bufnr, "lsp_client_id")
@@ -546,11 +586,12 @@ local function setup()
             cmd = "codeql execute language-server --check-errors ON_CHANGE -q --search-path="..search_path;
             root_dir = root_dir;
             callbacks = { 
-                ["textDocument/publishDiagnostics"] = diagnostics_callback
+                ["textDocument/publishDiagnostics"] = diagnostics_callback,
+                ["textDocument/hover"] = hover_callback 
             };
             on_attach = on_attach_callback;
             before_init = config_client_callback;
-            -- on_init = debug_init;
+            on_init = init_callback;
         }
         -- capabilities:
         --  definitionProvider - The server provides goto definition support.
@@ -581,10 +622,13 @@ local function setup()
             name = "gopls";
             cmd = "gopls";
             root_dir = root_dir;
-            callbacks = { ["textDocument/publishDiagnostics"] = diagnostics_callback };
+            callbacks = { 
+                ["textDocument/publishDiagnostics"] = diagnostics_callback,
+                ["textDocument/hover"] = hover_callback 
+            };
             on_attach = on_attach_callback;
             before_init = config_client_callback;
-            -- on_init = debug_init;
+            on_init = init_callback;
         }
         local client_id = lsps_dirs[root_dir]
         if not client_id then
@@ -611,7 +655,7 @@ local function setup()
             };
             on_attach = on_attach_callback;
             before_init = config_client_callback;
-            on_init = debug_init;
+            on_init = init_callback;
         }
         local client_id = lsps_dirs[root_dir]
         if not client_id then
@@ -634,7 +678,7 @@ local function setup()
             };
             on_attach = on_attach_callback;
             before_init = config_client_callback;
-            -- on_init = debug_init;
+            on_init = init_callback;
         }
         local client_id = lsps_dirs[root_dir]
         if not client_id then
