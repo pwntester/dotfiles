@@ -45,10 +45,11 @@ set noequalalways                                                 " Dset backspa
 " }}}
 
 " ================ UI ==================== {{{
+set noshowmode
+set laststatus=2
 set foldmethod=manual                                             " Fold manually (zf)
 set foldcolumn=0                                                  " Do not show fold levels in side bar
 set cursorline                                                    " Print cursorline
-set laststatus=2                                                  " status line always on
 set showtabline=2                                                 " always shows tabline
 set lazyredraw                                                    " Don't update the display while executing macros
 set number                                                        " Print the line number
@@ -103,7 +104,8 @@ set wildignore+=tmp/**
 set wildignore+=*.jpg,*.bmp,*.gif,*.png,*.jpeg,*.svg
 
 set complete=.,w,b,u,U,i,d,t
-set completeopt=menu,menuone,noinsert,noselect
+set completeopt=menu,menuone,noselect                               
+" noinsert: https://www.reddit.com/r/neovim/comments/efxpa1/latest_version_of_deoplete_autocompletion_break/
 
 set shortmess+=c                                                    " suppress the annoying 'match x of y', 'The only match' and 'Pattern not found' messages
 set shortmess-=F
@@ -140,12 +142,18 @@ augroup END
 augroup active_win 
     " dont show column
     autocmd BufEnter *.* :set colorcolumn=0
+
     " show cursor line only in active windows
-    autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline
-    autocmd WinLeave * setlocal nocursorline
+    autocmd FocusGained,VimEnter,WinNew,WinEnter,BufWinEnter * setlocal cursorline
+    autocmd FocusLost,WinLeave * setlocal nocursorline
+
     " highlight active window
-    autocmd BufEnter,FocusGained,VimEnter,WinEnter * set winhighlight=CursorLineNr:CursorLineNr,EndOfBuffer:ColorColumn,IncSearch:ColorColumn,Normal:ColorColumn,NormalNC:ColorColumn,SignColumn:ColorColumn
-    autocmd FocusLost,WinLeave * set winhighlight=
+    autocmd FocusGained,VimEnter,WinNew,WinEnter,BufWinEnter * set winhighlight=Normal:Normal,EndOfBuffer:EndOfBuffer,SignColumn:Normal,VertSplit:EndOfBuffer
+    autocmd FocusLost,WinLeave * set winhighlight=Normal:NormalNC,EndOfBuffer:EndOfBufferNC,SignColumn:NormalNC,VertSplit:EndOfBufferNC
+
+    " hide statusline on non-current windows
+    autocmd FocusGained,VimEnter,WinNew,WinEnter,BufWinEnter * call StatusLine()
+    autocmd FocusLost,WinLeave * call StatusLineNC()
 augroup END
 
 augroup numbertoggle

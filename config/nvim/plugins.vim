@@ -5,7 +5,6 @@ call plug#begin('~/.nvim/plugged')
     Plug 'fatih/vim-go',                    { 'do': ':GoInstallBinaries' }
     Plug 'Shougo/deoplete.nvim',            { 'do': ':UpdateRemotePlugins'} 
     Plug 'Shougo/deoplete-lsp'
-    Plug 'drzel/vim-line-no-indicator'
     Plug 'Shougo/neco-vim',
     Plug 'junegunn/fzf.vim' 
     Plug 'pbogut/fzf-mru.vim'
@@ -20,7 +19,7 @@ call plug#begin('~/.nvim/plugged')
     Plug 'haya14busa/is.vim'
     Plug 'Yggdroot/indentLine'
     Plug 'matze/vim-move'
-    Plug 'itchyny/lightline.vim'
+    Plug 'ap/vim-buftabline'
     Plug 'chaoren/vim-wordmotion'
     Plug 'junegunn/rainbow_parentheses.vim'
     Plug 'alvan/vim-closetag'
@@ -57,7 +56,7 @@ execute 'source' fnameescape(expand('~/.config/nvim/fortify.vim'))
 execute 'source' fnameescape(expand('~/.config/nvim/fzf.vim'))
 
 " LIGHTLINE 
-execute 'source' fnameescape(expand('~/.config/nvim/lightline.vim'))
+"execute 'source' fnameescape(expand('~/.config/nvim/lightline.vim'))
 
 " INDENTLINE
 let g:indentLine_color_gui = '#17252c'
@@ -233,6 +232,7 @@ function! ApplyAction(callback, chosen) abort
     let l:idx = split(a:chosen, '::')[0] + 1
     execute 'call '.a:callback.'('.l:idx.')'
 endfunction
+autocmd User LSPServerInitialized call StatusLine()
 
 " VIM-VSNIP
 let g:vsnip_snippet_dir = "~/dotfiles/snippets"
@@ -270,6 +270,8 @@ augroup dirvish_config
     " fix dirvish win width
     autocmd FileType dirvish :call nvim_win_set_option(0, 'winfixwidth', v:true)
 
+    " disable status line
+    autocmd FileType dirvish let &l:statusline=' '
 augroup END
 
 function ToggleDirvish(...)
@@ -290,5 +292,10 @@ endfunction
 cnoreabbrev <expr> rm    ((nvim_buf_get_option(0, 'filetype') == 'dirvish' && getcmdtype() is# ":" && getcmdline() is# "rm")? ("silent !rm %") : ("rm"))
 cnoreabbrev <expr> touch ((nvim_buf_get_option(0, 'filetype') == 'dirvish' && getcmdtype() is# ":" && getcmdline() is# "touch")? ("silent !touch %") : ("touch"))
 cnoreabbrev <expr> mv    ((nvim_buf_get_option(0, 'filetype') == 'dirvish' && getcmdtype() is# ":" && getcmdline() is# "mv")? ("silent !mv %") : ("mv"))
+
+" VIM-BUFTABLINE
+let g:buftabline_show = 1
+let g:buftabline_indicators = 1
+let g:buftabline_separators = 1
 
 " }}}
