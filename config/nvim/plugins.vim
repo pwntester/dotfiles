@@ -38,15 +38,9 @@ call plug#begin('~/.nvim/plugged')
     
     " Local plugins
     Plug '/usr/local/opt/fzf'
-    if isdirectory(fnameescape(expand('~/Development')))
-        Plug fnameescape(expand('~/Fortify/SSR/repos/vim-fortify'))
-        Plug fnameescape(expand('~/Development/GitRepos/cobalt2.vim'))
-        Plug fnameescape(expand('~/Development/GitRepos/codeql.nvim'))
-    elseif isdirectory(fnameescape(expand('~/Dev')))
-        Plug fnameescape(expand('~/Dev/vim-fortify'))
-        Plug fnameescape(expand('~/Dev/cobalt2.vim'))
-        Plug fnameescape(expand('~/Dev/codeql.nvim'))
-    endif
+    Plug fnameescape(expand('~/Dev/vim-fortify'))
+    Plug fnameescape(expand('~/Dev/cobange.vim'))
+    Plug fnameescape(expand('~/Dev/codeql.nvim'))
 call plug#end()
 
 " VIM-FORTIFY
