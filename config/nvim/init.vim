@@ -292,7 +292,7 @@ augroup windows
     autocmd WinEnter,BufEnter *  nested if index(g:special_buffers, &filetype) > -1 | call s:pinBuffer() | endif
     autocmd WinEnter,BufEnter {} nested if index(g:special_buffers, &filetype) > -1 | call s:pinBuffer() | endif
     " BufEnter is not triggered for defx and dirvish buffer
-    autocmd FileType defx call s:pinBuffer()
+    " autocmd FileType defx call s:pinBuffer()
     autocmd FileType dirvish call s:pinBuffer()
 augroup END
 " }}}
