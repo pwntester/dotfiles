@@ -168,8 +168,10 @@ augroup active_win
     autocmd FocusLost,WinLeave * setlocal nocursorline
 
     " highlight active window
-    autocmd FocusGained,VimEnter,WinNew,WinEnter,BufWinEnter *  if !IsFloatWin() | set winhighlight=EndOfBuffer:EndOfBuffer,SignColumn:Normal,VertSplit:EndOfBuffer,Normal:Normal | endif
-    autocmd FocusLost,WinLeave * if !IsFloatWin() | set winhighlight=EndOfBuffer:EndOfBufferNC,SignColumn:NormalNC,VertSplit:EndOfBufferNC,Normal:NormalNC | endif
+    autocmd FocusGained,VimEnter,WinNew,WinEnter,BufWinEnter,BufEnter * if !IsFloatWin() | 
+        \ set winhighlight=EndOfBuffer:EndOfBuffer,SignColumn:Normal,VertSplit:EndOfBuffer,Normal:Normal | endif
+    autocmd FocusLost,WinLeave * if !IsFloatWin() | 
+        \ set winhighlight=EndOfBuffer:EndOfBufferNC,SignColumn:NormalNC,VertSplit:EndOfBufferNC,Normal:NormalNC | endif
 
     " hide statusline on non-current windows
     autocmd FocusGained,VimEnter,WinNew,WinEnter,BufWinEnter * call StatusLine()
