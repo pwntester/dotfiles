@@ -14,9 +14,8 @@ call plug#begin('~/.nvim/plugged')
     Plug 'machakann/vim-sandwich'
     Plug 'airblade/vim-gitgutter'
     Plug 'tomtom/tcomment_vim'
-    Plug 'osyo-manga/vim-anzu'
-    Plug 'haya14busa/vim-asterisk'
-    Plug 'haya14busa/is.vim'
+    Plug 'google/vim-searchindex'
+    Plug 'romainl/vim-cool'
     Plug 'Yggdroot/indentLine'
     Plug 'matze/vim-move'
     Plug 'ap/vim-buftabline'
@@ -25,7 +24,7 @@ call plug#begin('~/.nvim/plugged')
     Plug 'alvan/vim-closetag'
     Plug 'tommcdo/vim-lion'
     Plug 'tmsvg/pear-tree'
-    Plug 'hrsh7th/vim-vsnip', { 'branch': 'prev'}
+    Plug 'hrsh7th/vim-vsnip'
     Plug 'hrsh7th/vim-vsnip-integ'
     Plug 'AndrewRadev/linediff.vim'
     Plug 'airblade/vim-rooter'
@@ -35,6 +34,7 @@ call plug#begin('~/.nvim/plugged')
     Plug 'liuchengxu/vista.vim'
     Plug 'justinmk/vim-dirvish'
     Plug 'lifepillar/vim-colortemplate'
+    Plug 'glacambre/firenvim' 
     
     " Local plugins
     Plug '/usr/local/opt/fzf'
@@ -44,13 +44,10 @@ call plug#begin('~/.nvim/plugged')
 call plug#end()
 
 " VIM-FORTIFY
-execute 'source' fnameescape(expand('~/.config/nvim/fortify.vim'))
+"execute 'source' fnameescape(expand('~/.config/nvim/fortify.vim'))
 
 " FZF
 execute 'source' fnameescape(expand('~/.config/nvim/fzf.vim'))
-
-" LIGHTLINE 
-"execute 'source' fnameescape(expand('~/.config/nvim/lightline.vim'))
 
 " INDENTLINE
 let g:indentLine_color_gui = '#17252c'
@@ -79,22 +76,20 @@ let g:closetag_filetypes = 'html,xhtml,phtml,fortifyrulepack,xml,jsp'
 let g:closetag_xhtml_filenames = '*.xml,*.xhtml,*.jsp,*.html'
 let g:closetag_xhtml_filetypes = 'xhtml,jsx,fortifyrulepack'
 
-" VIM-MARKDOWN
-let g:vim_markdown_folding_disabled = 1
-
 " MATCHUP
 let g:matchup_matchparen_status_offscreen = 0                            " Do not show offscreen closing match in statusline
 let g:matchup_matchparen_nomode = "ivV\<c-v>"                            " Enable matchup only in normal mode
 let g:matchup_matchparen_deferred = 1                                    " Defer matchup highlights to allow better cursor movement performance
 
-" ANZU / IS.VIM / ASTERISK
-let g:anzu_enable_CursorMoved_AnzuUpdateSearchStatus=1
-map n <Plug>(is-nohl)<Plug>(anzu-n-with-echo)
-map N <Plug>(is-nohl)<Plug>(anzu-N-with-echo)
-map * <Plug>(asterisk-z*)<Plug>(is-nohl-1)<Plug>(anzu-update-search-status)
-map # <Plug>(asterisk-z#)<Plug>(is-nohl-1)<Plug>(anzu-update-search-status)
-map g* <Plug>(asterisk-gz*)<Plug>(is-nohl-1)<Plug>(anzu-update-search-status)
-map g# <Plug>(asterisk-gz#)<Plug>(is-nohl-1)<Plug>(anzu-update-search-status)
+" SEARCHINDEX
+nmap n n<Plug>SearchIndex
+nmap N N<Plug>SearchIndex
+nmap * *<Plug>SearchIndex
+nmap # #<Plug>SearchIndex
+
+" VIM-COOL
+" not working on neovim, check later to see if we can remove searchindex
+"let g:CoolTotalMatches = 1
 
 " PEAR-TREE
 let g:pear_tree_repeatable_expand = 0
@@ -145,6 +140,9 @@ autocmd FileType go nmap <buffer> <leader>r :call ReuseVimGoTerm('GoRun')<Return
 " VIM-POLYGLOT
 let g:polyglot_disabled = ["jsx", "hive"]
 let g:no_csv_maps = 1
+let g:vim_markdown_folding_disabled = 1
+let g:vim_markdown_conceal = 0
+let g:vim_markdown_fenced_languages = ['csharp=cs', 'c++=cpp', 'viml=vim', 'bash=sh', 'ini=dosini']
 
 " VIM-LION
 let g:lion_squeeze_spaces = 1 " align around a given char: gl<character>
@@ -183,7 +181,6 @@ lua require('colorizer').setup()
 
 " VIM-PLUG
 let g:plug_window = 'cal FloatingPlug()'
-
 function! FloatingPlug()
   let buf = nvim_create_buf(v:false, v:true)
   call setbufvar(buf, '&signcolumn', 'no')
@@ -192,7 +189,6 @@ function! FloatingPlug()
   let width = float2nr(150)
   let horizontal = float2nr((&columns - width) / 2)
   let vertical = 10
-
   let opts = {
     \ 'relative': 'editor',
     \ 'row': vertical,
@@ -201,7 +197,6 @@ function! FloatingPlug()
     \ 'height': height,
     \ 'style': 'minimal'
     \ }
-
   let win = nvim_open_win(buf, v:true, opts)
   call nvim_buf_set_keymap(buf, 'n', 'q', ':call nvim_win_close()', {'nowait': v:true})
 endfunction
@@ -210,23 +205,6 @@ endfunction
 let g:smoothie_no_default_mappings = v:true
 nmap <C-d> <Plug>(SmoothieDownwards)
 nmap <C-e> <Plug>(SmoothieUpwards)
-
-" NVIM-LSP
-lua require("lsp-config").setup()
-let g:LSP_qlls_search_path = '~/codeql-home/codeql-repo'
-let g:nvim_lsp_code_action_menu = 'FZFCodeActionMenu'
-function! FZFCodeActionMenu(actions, callback) abort
-    call fzf#run(fzf#wrap({
-        \ 'source': map(deepcopy(a:actions), {idx, item -> string(idx).'::'.item.title}),
-        \ 'sink': function('ApplyAction', [a:callback]),
-        \ 'options': '+m --with-nth 2.. -d "::"',
-        \ }))
-endfunction
-function! ApplyAction(callback, chosen) abort
-    let l:idx = split(a:chosen, '::')[0] + 1
-    execute 'call '.a:callback.'('.l:idx.')'
-endfunction
-autocmd User LSPServerInitialized call StatusLine()
 
 " VIM-VSNIP
 let g:vsnip_snippet_dir = "~/dotfiles/snippets"
@@ -291,5 +269,27 @@ cnoreabbrev <expr> mv    ((nvim_buf_get_option(0, 'filetype') == 'dirvish' && ge
 let g:buftabline_show = 1
 let g:buftabline_indicators = 1
 let g:buftabline_separators = 1
+
+" NVIM-LSP
+lua require("lsp-config").setup()
+let g:LSP_qlls_search_path = '~/codeql-home/codeql-repo'
+let g:nvim_lsp_code_action_menu = 'FZFCodeActionMenu'
+function! FZFCodeActionMenu(actions, callback) abort
+    call fzf#run(fzf#wrap({
+        \ 'source': map(deepcopy(a:actions), {idx, item -> string(idx).'::'.item.title}),
+        \ 'sink': function('ApplyAction', [a:callback]),
+        \ 'options': '+m --with-nth 2.. -d "::"',
+        \ }))
+endfunction
+function! ApplyAction(callback, chosen) abort
+    let l:idx = split(a:chosen, '::')[0] + 1
+    execute 'call '.a:callback.'('.l:idx.')'
+endfunction
+autocmd User LspDiagnosticsChanged call StatusLine()
+
+let g:LspDiagnosticsWarningSign = "W"
+
+" FIRENVIM
+au BufEnter github.com_*.txt set filetype=markdown
 
 " }}}

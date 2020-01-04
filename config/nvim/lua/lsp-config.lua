@@ -1,10 +1,10 @@
 require 'util'
 require 'nvim-lsp'
+local protocol = require 'vim.lsp.protocol'
 
 local lsps_actions = {}
 local lsps_dirs = {}
 local lsps_diagnostics = {}
-local lsps_diagnostics_count = {}
 local references_ns = vim.api.nvim_create_namespace("vim_lsp_references")
 
 -- clear diagnostics namespace
@@ -31,16 +31,13 @@ local function buf_diagnostics_underline(bufnr, diagnostics)
       if start.character == 1 and finish.character == 100 then return end
 
       local hl = underline_highlight_name
-      if diagnostic.severity == 1 then
+      if diagnostic.severity == protocol.DiagnosticSeverity.Error then
           hl = underline_highlight_name..'Error'
-      -- warnings
-      elseif diagnostic.severity == 2 then
+      elseif diagnostic.severity == protocol.DiagnosticSeverity.Warning then
           hl = underline_highlight_name..'Warning'
-      -- info
-      elseif diagnostic.severity == 3 then
-          hl = underline_highlight_name..'Info'
-      -- hint
-      elseif diagnostic.severity == 4 then
+      elseif diagnostic.severity == protocol.DiagnosticSeverity.Information then
+          hl = underline_highlight_name..'Information'
+      elseif diagnostic.severity == protocol.DiagnosticSeverity.Hint then
           hl = underline_highlight_name..'Hint'
       end
 
@@ -123,8 +120,8 @@ local function buf_show_diagnostics(bufnr)
     buf_diagnostics_save_positions(bufnr, lsps_diagnostics[bufnr])
     buf_diagnostics_underline(bufnr, lsps_diagnostics[bufnr])
     buf_diagnostics_virtual_text(bufnr, lsps_diagnostics[bufnr])
-    buf_diagnostics_statusline(bufnr, lsps_diagnostics[bufnr])
     buf_diagnostics_signs(bufnr, lsps_diagnostics[bufnr])
+    vim.api.nvim_command("doautocmd User LspDiagnosticsChanged")
 end
 
 -- prepare range params
@@ -171,14 +168,11 @@ function highlight_references()
         for _, reference in ipairs(result) do
             local start_pos = {reference["range"]["start"]["line"], reference["range"]["start"]["character"]}
             local end_pos = {reference["range"]["end"]["line"], reference["range"]["end"]["character"]}
-            if reference["kind"] == 1 then
-                -- TEXT
+            if reference["kind"] == protocol.DocumentHighlightKind.Text then
                 highlight_range(bufnr, references_ns, "LspReferenceText", start_pos, end_pos)
-            elseif reference["kind"] == 2 then
-                -- READ
+            elseif reference["kind"] == protocol.DocumentHighlightKind.Read then
                 highlight_range(bufnr, references_ns, "LspReferenceRead", start_pos, end_pos)
-            elseif reference["kind"] == 3 then
-                -- WRITE
+            elseif reference["kind"] == protocol.DocumentHighlightKind.Write then
                 highlight_range(bufnr, references_ns, "LspReferenceWrite", start_pos, end_pos)
             end
         end
@@ -202,11 +196,7 @@ function apply_code_action(selection)
             end
         end
     elseif command then
-        local callback = vim.schedule_wrap(function(_, _, result)
-            if not result then return end
-            vim.api.nvim_command(string.format(':echohl Function | echo "%s" | echohl None', result))
-        end)
-        vim.lsp.buf_request(0, 'workspace/executeCommand', { command = command, arguments = arguments }, callback)
+        vim.lsp.buf_request(0, 'workspace/executeCommand', { command = command, arguments = arguments })
     elseif edit then
         -- TODO: not tested 
         local bufnr = vim.fn.bufadd((vim.uri_to_fname(uri)))
@@ -216,8 +206,6 @@ end
 
 -- send codeAction request. global to be called from mapping
 function request_code_actions()
-    -- JDT does not publish it
-    -- if not get_lsp_client_capability("completionProvider") then return end
     local bufnr = vim.api.nvim_get_current_buf()
     local buffer_line_diagnostics = all_buffer_diagnostics[bufnr]
     if not buffer_line_diagnostics then
@@ -236,7 +224,6 @@ function request_code_actions()
     local callback = vim.schedule_wrap(function(_, _, actions)
         if not actions then return end
         lsps_actions = actions
-        -- FZF_menu(lsps_actions)
         vim.fn[vim.g.nvim_lsp_code_action_menu](lsps_actions, 'v:lua.apply_code_action')
     end)
     vim.lsp.buf_request(0, 'textDocument/codeAction', params, callback)
@@ -261,40 +248,21 @@ function buf_diagnostics_signs(bufnr, diagnostics)
     end
 end
 
--- collect metrics for status line
-function buf_diagnostics_statusline(bufnr, diagnostics)
-    lsps_diagnostics_count[bufnr] = { errors=0, warnings=0 }
-    for _, diagnostic in ipairs(diagnostics) do
-        if diagnostic.severity == 2 then
-            lsps_diagnostics_count[bufnr]['warnings'] = lsps_diagnostics_count[bufnr]['warnings'] + 1
-        elseif diagnostic.severity == 1 then
-            lsps_diagnostics_count[bufnr]['errors'] = lsps_diagnostics_count[bufnr]['errors'] + 1
-        end
-    end
-
-    -- update statusline
-    --vim.api.nvim_command("call lightline#update()")
-    vim.api.nvim_command("redrawstatus")
-    vim.api.nvim_command("doautocmd User LSPServerInitialized")
-end
-
 -- show popup with line diagnostics. global so can be called from mapping
 function show_diagnostics_details()
+    --TODO: when we can use default publishDiagnostics callback, we will be
+    -- able to use default show_line_diagnostics
     local bufnr, winnr = show_line_diagnostics()
-    if winnr ~= nil and bufnr ~= nil then
+    if bufnr ~= nil then
         vim.api.nvim_buf_clear_namespace(bufnr, -1, 0, -1)
-        vim.api.nvim_win_set_option(winnr, "winhighlight", "Normal:PMenu")
+        -- TODO: show_line_diagnostics does not trigger WinEnter
+        -- so we need to set the window highlight manually for now
+        vim.api.nvim_win_set_option(winnr, "winhighlight", "Normal:NormalFloat")
     end
-end
-
--- returns number if diagnostics. global so can be called from statusline
-function get_lsp_diagnostic_metrics()
-    local bufnr = vim.api.nvim_get_current_buf()
-    return lsps_diagnostics_count[bufnr]
 end
 
 -- returns true if LSP server is ready. global so can be called from statusline
-function get_lsp_client_status()
+function server_ready()
     local bufnr = vim.api.nvim_get_current_buf()
     local status, client_id = pcall(get_buf_var, bufnr, "lsp_client_id")
     if type(client_id) == "number" then
@@ -306,6 +274,20 @@ function get_lsp_client_status()
         end
     end
     return false
+end
+
+-- returns number of diagnostics. global so can be called from statusline
+function buf_diagnostics_count(kind)
+  local bufnr = vim.api.nvim_get_current_buf()
+  buffer_line_diagnostics = all_buffer_diagnostics[bufnr]
+  if not buffer_line_diagnostics then return end
+    local count = 0
+  for _, line_diags in pairs(buffer_line_diagnostics) do
+    for _, diag in ipairs(line_diags) do
+      if protocol.DiagnosticSeverity[kind] == diag.severity then count = count + 1 end
+    end
+  end
+  return count
 end
 
 -- check if LSP server implements capability
@@ -467,14 +449,6 @@ end
 local function init_callback(client, result)
     -- print("INIT")
     -- print(dump(result))
- 
-    local bufnr = vim.api.nvim_get_current_buf()
-    lsps_diagnostics_count[bufnr] = { errors=0, warnings=0 }
-
-    -- update statusline
-    --vim.api.nvim_command("call lightline#update()")
-    vim.api.nvim_command("redrawstatus")
-    vim.api.nvim_command("doautocmd User LSPServerInitialized")
 end
 
 -- configure buffer after LSP client is attached
@@ -489,9 +463,15 @@ local function on_attach_callback(client, bufnr)
     vim.api.nvim_buf_set_keymap(bufnr, "n", "gh", "<Cmd>lua vim.lsp.buf.signature_help()<CR>", { silent = true; })
     vim.api.nvim_buf_set_keymap(bufnr, "n", "gr", "<Cmd>lua vim.lsp.buf.references()<CR>", { silent = true; })
     vim.api.nvim_buf_set_keymap(bufnr, "n", "ga", "<Cmd>lua request_code_actions()<CR>", { silent = true; })
+    -- my version
     vim.api.nvim_command [[autocmd CursorHold <buffer> lua highlight_references()]]
     vim.api.nvim_command [[autocmd CursorHoldI <buffer> lua highlight_references()]]
     vim.api.nvim_command [[autocmd CursorMoved <buffer> lua clear_references()]]
+    -- pr
+    -- vim.api.nvim_command [[autocmd CursorHold <buffer> lua vim.lsp.buf.document_highlight()]]
+    -- vim.api.nvim_command [[autocmd CursorHoldI <buffer> lua vim.lsp.buf.document_highlight()]]
+    -- vim.api.nvim_command [[autocmd CursorMoved <buffer> lua vim.lsp.util.buf_clear_references()]]
+    
     -- peek_definition()
     -- declaration()
     -- type_definition()
@@ -516,25 +496,6 @@ local function diagnostics_callback(_, _, result)
     buf_show_diagnostics(bufnr)
 end
 
--- custom replacement for publishDiagnostics callback
--- https://github.com/neovim/neovim/blob/master/runtime/lua/vim/lsp/callbacks.lua
-local function hover_callback(_, method, result)
-  local bufnr, winnr = vim.lsp.util.focusable_preview(method, function()
-    if not (result and result.contents) then
-      return { 'No information available' }
-    end
-    local markdown_lines = vim.lsp.util.convert_input_to_markdown_lines(result.contents)
-    markdown_lines = vim.lsp.util.trim_empty_lines(markdown_lines)
-    if vim.tbl_isempty(markdown_lines) then
-      return { 'No information available' }
-    end
-    return markdown_lines, vim.lsp.util.try_trim_markdown_code_blocks(markdown_lines)
-  end)
-  if winnr ~= nil and bufnr ~= nil then
-    vim.api.nvim_win_set_option(winnr, "winhighlight", "Normal:NormalFloat")
-  end
-end
-
 local function setup()
 
     -- define signs
@@ -547,7 +508,7 @@ local function setup()
     end
 
     -- in case I'm reloading.
-    vim.lsp.stop_all_clients()
+    --vim.lsp.stop_all_clients()
 
     function start_fls()
         -- prevent LSP on large files
@@ -560,7 +521,6 @@ local function setup()
             root_dir = root_dir;
             callbacks = { 
                 ["textDocument/publishDiagnostics"] = diagnostics_callback,
-                ["textDocument/hover"] = hover_callback 
             };
             on_attach = on_attach_callback;
             before_init = config_client_callback;
@@ -587,7 +547,6 @@ local function setup()
             root_dir = root_dir;
             callbacks = { 
                 ["textDocument/publishDiagnostics"] = diagnostics_callback,
-                ["textDocument/hover"] = hover_callback 
             };
             on_attach = on_attach_callback;
             before_init = config_client_callback;
@@ -624,7 +583,6 @@ local function setup()
             root_dir = root_dir;
             callbacks = { 
                 ["textDocument/publishDiagnostics"] = diagnostics_callback,
-                ["textDocument/hover"] = hover_callback 
             };
             on_attach = on_attach_callback;
             before_init = config_client_callback;
@@ -650,8 +608,8 @@ local function setup()
             cmd = "jdtls";
             root_dir = root_dir;
             callbacks = { 
-                ["textDocument/publishDiagnostics"] = diagnostics_callback,
                 ["language/status"] = lsp4j_status_callback,
+                --["textDocument/publishDiagnostics"] = diagnostics_callback,
             };
             on_attach = on_attach_callback;
             before_init = config_client_callback;

@@ -30,24 +30,6 @@ function! SetFiletype(filetype) abort
   endif
 endfunction
 
-function! LSPErrors() abort
-    let l:metrics = luaeval("get_lsp_diagnostic_metrics()")
-    if type(l:metrics) == v:t_dict
-        return l:metrics['errors']
-    else
-        return ''
-    endif
-endfunction
-
-function! LSPWarnings() abort
-    let l:metrics = luaeval("get_lsp_diagnostic_metrics()")
-    if type(l:metrics) == v:t_dict
-        return l:metrics['warnings']
-    else
-        return ''
-    endif
-endfunction
-
 function! Filename() abort
     if index(g:special_buffers, &filetype) > -1 | return '' | endif
 
@@ -85,6 +67,32 @@ function! StatusLineNC() abort
     else
         let &l:statusline='%#MyStatuslineBarNC#%{HR("▁")}'
     endi
+endfunction
+
+function! LspStatus() abort
+    let sl = ''
+    if luaeval('server_ready()')
+        let sl.='%#MyStatuslineLSP#E:'
+        let sl.='%#MyStatuslineLSPErrors#%{luaeval("buf_diagnostics_count(\"Error\")")}'
+        let sl.='%#MyStatuslineLSP# W:'
+        let sl.='%#MyStatuslineLSPWarnings#%{luaeval("buf_diagnostics_count(\"Warning\")")}'
+    else
+        let sl.='%#MyStatuslineLSPErrors#off'
+    endif
+    return sl
+endfunction
+
+function! LSP_disabled() abort
+    let sl = ''
+    if luaeval('vim.lsp.buf.server_ready()')
+        let sl.='%#MyStatuslineLSP#E:'
+        let sl.='%#MyStatuslineLSPErrors#%{luaeval("vim.lsp.util.buf_diagnostics_count(\"Error\")")}'
+        let sl.='%#MyStatuslineLSP# W:'
+        let sl.='%#MyStatuslineLSPWarnings#%{luaeval("vim.lsp.util.buf_diagnostics_count(\"Warning\")")}'
+    else
+        let sl.='%#MyStatuslineLSPErrors#off'
+    endif
+    return sl
 endfunction
 
 function! StatusLine() abort
@@ -139,20 +147,12 @@ function! StatusLine() abort
     let statusline.=' '
 
     " LSP
-    if luaeval('get_lsp_client_status()')
-        let statusline.='%#MyStatuslineSeparator#'
-        let statusline.='%#MyStatuslineLSP#E:'
-        let statusline.='%#MyStatuslineLSPErrors#%{LSPErrors()}'
-        let statusline.='%#MyStatuslineLSP# W:'
-        let statusline.='%#MyStatuslineLSPWarnings#%{LSPWarnings()}'
-        let statusline.='%#MyStatuslineSeparator#'
-        let statusline.=' '
-    else
-        let statusline.='%#MyStatuslineSeparator#'
-        let statusline.='%#MyStatuslineLSPErrors#LSP off'
-        let statusline.='%#MyStatuslineSeparator#'
-        let statusline.=' '
-    endif
+    let statusline.='%#MyStatuslineSeparator#'
+    let statusline.='%#MyStatuslineLSP#LSP '.LspStatus()
+
+    let statusline.='%#MyStatuslineSeparator#'
+    let statusline.=' '
+
     let &l:statusline = statusline
 endfunction
 

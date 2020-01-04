@@ -55,3 +55,48 @@ let g:fortify_ScanOpts += ['-Dcom.fortify.sca.DOMModeling.tags=div ']
 " let g:fortify_ScanOpts += ['-Dic.debug=issue_calculator.log']                             " Dump issue calculator log
 " let g:fortify_ScanOpts += ['-Dcom.fortify.sca.ThreadCount=1']                             " Disable multi-threading
 " let g:fortify_ScanOpts += ['-project-root', 'sca_build']
+
+function! s:fzf_nst_files()
+    let buffer_path = resolve(expand('%:p'))
+    let pattern = buffer_path . '.nst'
+    if exists("g:fortify_NSTRoot") && g:fortify_NSTRoot != ""
+        let home = g:fortify_NSTRoot
+    else 
+        let home = glob('~')
+    endif
+    if exists("g:fortify_SCAVersion") && g:fortify_SCAVersion != ""
+        let sca_version = 'sca'. string(g:fortify_SCAVersion)
+    else
+        call GetSCAVersion()
+        let sca_version = 'sca'. string(g:fortify_SCAVersion)
+    endif
+    let root = home . '/.fortify/' . sca_version . '/build'
+    let command = 'rg --files -g "**' . pattern . '" ' . root
+    call fzf#run(fzf#wrap({
+        \ 'source': command,
+        \ 'sink':   'e',
+        \ 'options': '+s -e --ansi --prompt ""',
+        \ }))
+endfunction
+
+function! s:fzf_rulepack_files()
+    let command = 'rg --files -g "**/src/*.xml" /Users/alvaro/Fortify/SSR/repos/rules'
+    call fzf#run(fzf#wrap({
+        \ 'source': command,
+        \ 'sink':   'e',
+        \ 'options': '+s -e --ansi --prompt ""',
+        \ }))
+endfunction
+
+function! s:fzf_rulepack_descriptions()
+    let command = 'rg --files -g "**/descriptions/en/*.xml" /Users/alvaro/Fortify/SSR/repos/rules'
+    call fzf#run(fzf#wrap({
+        \ 'source': command,
+        \ 'sink':   'e',
+        \ 'options': '+s -e --ansi --prompt ""',
+        \ }))
+endfunction
+
+nnoremap <leader>n :call <SID>fzf_nst_files()<Return>
+nnoremap <leader>r :call <SID>fzf_rulepack_files()<Return>
+nnoremap <leader>d :call <SID>fzf_rulepack_descriptions()<Return>

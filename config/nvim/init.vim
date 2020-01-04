@@ -46,13 +46,11 @@ set noequalalways                                                 " Dset backspa
 
 " ================ UI ==================== {{{
 set noshowmode
-set laststatus=2
 set foldmethod=manual                                             " Fold manually (zf)
 set foldcolumn=0                                                  " Do not show fold levels in side bar
 set cursorline                                                    " Print cursorline
 set showtabline=2                                                 " always shows tabline
 set lazyredraw                                                    " Don't update the display while executing macros
-set number                                                        " Print the line number
 set showcmd                                                       " Show partial commands in status line
 set noshowmode                                                    " Dont show the mode in the command line
 set signcolumn=auto                                               " Only sho sign column if there are signs to be shown
@@ -67,6 +65,24 @@ set diffopt+=algorithm:patience                                   " Use git diff
 set diffopt+=context:1000000                                      " Don't fold
 set ttimeoutlen=10                                                " Use short timeout after Escape sequence in terminal mode (for keycodes)
 set timeoutlen=2000
+
+if exists('g:started_by_firenvim') && g:started_by_firenvim
+    set laststatus=0
+    set nonumber
+    set norelativenumber
+    augroup firenvim
+        autocmd!
+        autocmd BufEnter *.txt setlocal filetype=markdown.pandoc
+    augroup END
+else
+    set laststatus=2
+    set number
+    augroup numbertoggle
+        autocmd!
+        autocmd BufEnter * set relativenumber
+        autocmd BufLeave * set norelativenumber
+    augroup END
+endif
 
 " syntax improvements
 let g:java_highlight_all = 1
@@ -105,10 +121,7 @@ set wildignore+=*.jpg,*.bmp,*.gif,*.png,*.jpeg,*.svg
 
 set complete=.,w,b,u,U,i,d,t
 set completeopt=menu,menuone,noselect                               
-" noinsert: https://www.reddit.com/r/neovim/comments/efxpa1/latest_version_of_deoplete_autocompletion_break/
-
-set shortmess+=c                                                    " suppress the annoying 'match x of y', 'The only match' and 'Pattern not found' messages
-set shortmess-=F
+set shortmess=aoOstTWAIcqFS
 " }}}
 
 " ================ SWAP/UNDO FILES ==================== {{{
@@ -139,6 +152,13 @@ augroup vimrc
     autocmd VimLeave * wshada!
 augroup END
 
+function! IsFloatWin() abort
+    if has_key(nvim_win_get_config(0), 'relative') && nvim_win_get_config(0).relative == "editor"
+        return v:true
+    endif
+    return v:false
+endfunction
+
 augroup active_win 
     " dont show column
     autocmd BufEnter *.* :set colorcolumn=0
@@ -148,19 +168,14 @@ augroup active_win
     autocmd FocusLost,WinLeave * setlocal nocursorline
 
     " highlight active window
-    autocmd FocusGained,VimEnter,WinNew,WinEnter,BufWinEnter * set winhighlight=Normal:Normal,EndOfBuffer:EndOfBuffer,SignColumn:Normal,VertSplit:EndOfBuffer
-    autocmd FocusLost,WinLeave * set winhighlight=Normal:NormalNC,EndOfBuffer:EndOfBufferNC,SignColumn:NormalNC,VertSplit:EndOfBufferNC
+    autocmd FocusGained,VimEnter,WinNew,WinEnter,BufWinEnter *  if !IsFloatWin() | set winhighlight=EndOfBuffer:EndOfBuffer,SignColumn:Normal,VertSplit:EndOfBuffer,Normal:Normal | endif
+    autocmd FocusLost,WinLeave * if !IsFloatWin() | set winhighlight=EndOfBuffer:EndOfBufferNC,SignColumn:NormalNC,VertSplit:EndOfBufferNC,Normal:NormalNC | endif
 
     " hide statusline on non-current windows
     autocmd FocusGained,VimEnter,WinNew,WinEnter,BufWinEnter * call StatusLine()
     autocmd FocusLost,WinLeave * call StatusLineNC()
 augroup END
 
-augroup numbertoggle
-    autocmd!
-    autocmd BufEnter * set relativenumber
-    autocmd BufLeave * set norelativenumber
-augroup END
 " }}}
 
 " ================ MAPPINGS ==================== {{{
@@ -168,6 +183,9 @@ augroup END
 " center after search
 nnoremap n nzz
 nnoremap N Nzz
+
+" * for visual selected text
+vnoremap * y/\V<C-R>=escape(@",'/\')<CR><CR>
 
 " escape to normal mode in insert mode
 inoremap jk <ESC>
@@ -380,6 +398,10 @@ syntax enable
 set background=dark
 colorscheme cobange
 
+hi mkdLineBreak guibg=none
+" }}}
+
+" ================ STATUSLINE ======================== {{{
 execute 'source' fnameescape(expand('~/.config/nvim/statusline.vim'))
 
 "}}}
