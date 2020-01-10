@@ -12,9 +12,7 @@ call plug#begin('~/.nvim/plugged')
     Plug 'jreybert/vimagit'
     Plug 'andymass/vim-matchup' 
     Plug 'machakann/vim-sandwich'
-    Plug 'airblade/vim-gitgutter'
     Plug 'tomtom/tcomment_vim'
-    Plug 'google/vim-searchindex'
     Plug 'romainl/vim-cool'
     Plug 'Yggdroot/indentLine'
     Plug 'matze/vim-move'
@@ -24,8 +22,8 @@ call plug#begin('~/.nvim/plugged')
     Plug 'alvan/vim-closetag'
     Plug 'tommcdo/vim-lion'
     Plug 'tmsvg/pear-tree'
-    Plug 'hrsh7th/vim-vsnip'
-    Plug 'hrsh7th/vim-vsnip-integ'
+    "Plug 'hrsh7th/vim-vsnip'
+    "Plug 'hrsh7th/vim-vsnip-integ'
     Plug 'AndrewRadev/linediff.vim'
     Plug 'airblade/vim-rooter'
     Plug 'norcalli/nvim-colorizer.lua'
@@ -44,10 +42,23 @@ call plug#begin('~/.nvim/plugged')
 call plug#end()
 
 " VIM-FORTIFY
-"execute 'source' fnameescape(expand('~/.config/nvim/fortify.vim'))
+execute 'source' fnameescape(expand('~/.config/nvim/fortify.vim'))
 
 " FZF
-execute 'source' fnameescape(expand('~/.config/nvim/fzf.vim'))
+let g:fzf_layout = { 'window': 'lua require("window").floating_window()' }
+let $FZF_DEFAULT_OPTS='--no-inline-info --layout=reverse --margin=1,2 --color=dark ' .
+    \ '--color=fg:#d0d0d0,bg:#020511,hl:#0088ff '.
+    \ '--color=fg+:#ffc600,bg+:#020511,hl+:#ffc600 '.
+    \ '--color=marker:#3ad900,spinner:#967efb,header:#0088ff '.
+    \ '--color=info:#020511,prompt:#0088ff,pointer:#0088ff'
+
+nnoremap <leader>f :call fzf#vim#files('.', {'options': '--prompt ""'})<Return>
+nnoremap <leader>h :FZFFreshMru --prompt ""<Return>
+nnoremap <leader>c :BCommits<Return>
+nnoremap <leader>s :Snippets<Return>
+nnoremap <leader>o :Buffers<Return>
+nnoremap <leader>/ :call fzf#vim#search_history()<Return>
+nnoremap <leader>: :call fzf#vim#command_history()<Return>
 
 " INDENTLINE
 let g:indentLine_color_gui = '#17252c'
@@ -81,16 +92,6 @@ let g:matchup_matchparen_status_offscreen = 0                            " Do no
 let g:matchup_matchparen_nomode = "ivV\<c-v>"                            " Enable matchup only in normal mode
 let g:matchup_matchparen_deferred = 1                                    " Defer matchup highlights to allow better cursor movement performance
 
-" SEARCHINDEX
-nmap n n<Plug>SearchIndex
-nmap N N<Plug>SearchIndex
-nmap * *<Plug>SearchIndex
-nmap # #<Plug>SearchIndex
-
-" VIM-COOL
-" not working on neovim, check later to see if we can remove searchindex
-"let g:CoolTotalMatches = 1
-
 " PEAR-TREE
 let g:pear_tree_repeatable_expand = 0
 let g:pear_tree_smart_backspace   = 1
@@ -112,17 +113,17 @@ let g:magit_refresh_gitgutter = 1
 let g:magit_auto_close = 1
 autocmd User VimagitEnterCommit startinsert
 nnoremap <Leader>g :Magit<Return> 
-nnoremap gP :!git push<Return> 
+autocmd FileType magit lua require("window").dettach_magit()
 
 " VIM-GO
 function! ReuseVimGoTerm(cmd) abort
-    for w in nvim_list_wins()
-        if "goterm" == nvim_buf_get_option(nvim_win_get_buf(w), 'filetype')
-            call nvim_win_close(w, v:true)
-            break
-        endif
-    endfor
-    execute a:cmd
+  for w in nvim_list_wins()
+    if "goterm" == nvim_buf_get_option(nvim_win_get_buf(w), 'filetype')
+      call nvim_win_close(w, v:true)
+      break
+    endif
+  endfor
+  execute a:cmd
 endfunction
 let g:go_gopls_enabled = 0
 let g:go_term_enabled = 1
@@ -180,26 +181,7 @@ nmap <leader>vf :Vista finder<Return>
 lua require('colorizer').setup()
 
 " VIM-PLUG
-let g:plug_window = 'cal FloatingPlug()'
-function! FloatingPlug()
-  let buf = nvim_create_buf(v:false, v:true)
-  call setbufvar(buf, '&signcolumn', 'no')
-
-  let height = float2nr(40)
-  let width = float2nr(150)
-  let horizontal = float2nr((&columns - width) / 2)
-  let vertical = 10
-  let opts = {
-    \ 'relative': 'editor',
-    \ 'row': vertical,
-    \ 'col': horizontal,
-    \ 'width': width,
-    \ 'height': height,
-    \ 'style': 'minimal'
-    \ }
-  let win = nvim_open_win(buf, v:true, opts)
-  call nvim_buf_set_keymap(buf, 'n', 'q', ':call nvim_win_close()', {'nowait': v:true})
-endfunction
+let g:plug_window = 'lua require("window").floating_window(true)'
 
 " VIM-SMOOTHIE
 let g:smoothie_no_default_mappings = v:true
@@ -270,9 +252,11 @@ let g:buftabline_show = 1
 let g:buftabline_indicators = 1
 let g:buftabline_separators = 1
 
+" CODEQL.NVIM
+let g:LSP_qlls_search_path = '~/codeql-home/codeql-repo'
+
 " NVIM-LSP
 lua require("lsp-config").setup()
-let g:LSP_qlls_search_path = '~/codeql-home/codeql-repo'
 let g:nvim_lsp_code_action_menu = 'FZFCodeActionMenu'
 function! FZFCodeActionMenu(actions, callback) abort
     call fzf#run(fzf#wrap({
@@ -287,9 +271,29 @@ function! ApplyAction(callback, chosen) abort
 endfunction
 autocmd User LspDiagnosticsChanged call StatusLine()
 
-let g:LspDiagnosticsWarningSign = "W"
-
 " FIRENVIM
 au BufEnter github.com_*.txt set filetype=markdown
+let g:firenvim_config = { 
+    \ 'globalSettings': {
+        \ 'cmdline': 'firenvim',
+    \  },
+    \ 'localSettings': {
+        \ '.*': {
+            \ 'cmdline': 'firenvim',
+            \ 'priority': 0,
+            \ 'selector': 'textarea',
+            \ 'takeover': 'once',
+        \ },
+    \ }
+    \ }
+
+" JAVA
+let g:java_highlight_all = 1
+let g:java_space_errors = 1
+let g:java_comment_strings = 1
+let g:java_highlight_functions = 1
+let g:java_highlight_debug = 1 
+let g:java_mark_braces_in_parens_as_errors = 1
 
 " }}}
+

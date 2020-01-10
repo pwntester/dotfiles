@@ -129,3 +129,20 @@ function get_buf_var(bufnr, var)
     return vim.api.nvim_buf_get_var(bufnr, var) 
 end
 
+function trim_empty_lines(lines)
+  local start = 1
+  for i = 1, #lines do
+    if #lines[i] > 0 then
+      start = i
+      break
+    end
+  end
+  local finish = 1
+  for i = #lines, 1, -1 do
+    if #lines[i] > 0 then
+      finish = i
+      break
+    end
+  end
+  return vim.list_extend({}, lines, start, finish)
+end

@@ -3,31 +3,17 @@ if &compatible
 endif
 
 " ================ PLUGINS ==================== {{{
-
 " Disable built-in plugins
 let g:loaded_2html_plugin      = 1
-let g:loaded_getscript         = 1
-let g:loaded_getscriptPlugin   = 1
 let g:loaded_gzip              = 1
-let g:loaded_logipat           = 1
-let g:loaded_logiPat           = 1
 let g:loaded_matchparen        = 1
-let g:loaded_netrw             = 1
-let g:loaded_netrwFileHandlers = 1
 let g:loaded_netrwPlugin       = 1
-let g:loaded_netrwSettings     = 1
 let g:loaded_rrhelper          = 1
 let g:loaded_spellfile_plugin  = 1
-let g:loaded_sql_completion    = 1
-let g:loaded_syntax_completion = 1
-let g:loaded_tar               = 1
 let g:loaded_tarPlugin         = 1
-let g:loaded_vimball           = 1
-let g:loaded_vimballPlugin     = 1
-let g:loaded_zip               = 1
 let g:loaded_zipPlugin         = 1
-let g:vimsyn_embed             = 1
 let g:loaded_matchit           = 1 
+let g:loaded_tutor_mode_plugin = 1
 
 " ================ GENERAL ==================== {{{
 set hidden                                                        " Hide buffers when unloaded
@@ -45,17 +31,12 @@ set noequalalways                                                 " Dset backspa
 " }}}
 
 " ================ UI ==================== {{{
-set noshowmode
-set foldmethod=manual                                             " Fold manually (zf)
-set foldcolumn=0                                                  " Do not show fold levels in side bar
-set cursorline                                                    " Print cursorline
-set showtabline=2                                                 " always shows tabline
 set lazyredraw                                                    " Don't update the display while executing macros
-set showcmd                                                       " Show partial commands in status line
+set foldmethod=manual                                             " Fold manually (zf)
+set cursorline                                                    " Print cursorline
 set noshowmode                                                    " Dont show the mode in the command line
 set signcolumn=auto                                               " Only sho sign column if there are signs to be shown
 set termguicolors
-set wrap                                                          " Wrap lines visually
 set sidescroll=5                                                  " Side scroll when wrap is disabled
 set scrolloff=8                                                   " Start scrolling when we're 8 lines away from margins
 set linebreak                                                     " Wrap lines at special characters instead of at max width
@@ -64,36 +45,8 @@ set diffopt+=vertical                                             " Show vimdiff
 set diffopt+=algorithm:patience                                   " Use git diffing algorithm
 set diffopt+=context:1000000                                      " Don't fold
 set ttimeoutlen=10                                                " Use short timeout after Escape sequence in terminal mode (for keycodes)
-set timeoutlen=2000
-
-if exists('g:started_by_firenvim') && g:started_by_firenvim
-    set laststatus=0
-    set nonumber
-    set norelativenumber
-    augroup firenvim
-        autocmd!
-        autocmd BufEnter *.txt setlocal filetype=markdown.pandoc
-    augroup END
-else
-    set laststatus=2
-    set number
-    augroup numbertoggle
-        autocmd!
-        autocmd BufEnter * set relativenumber
-        autocmd BufLeave * set norelativenumber
-    augroup END
-endif
-
-" syntax improvements
-let g:java_highlight_all = 1
-let g:java_space_errors = 1
-let g:java_comment_strings = 1
-let g:java_highlight_functions = 1
-let g:java_highlight_debug = 1 
-let g:java_mark_braces_in_parens_as_errors = 1
-" }}}
-
-" ================ IDENT/STYLE ==================== {{{
+set timeoutlen=1000
+set shortmess=aoOstTWAIcqF
 set shiftwidth=4                                                  " Reduntant with above
 set tabstop=4                                                     " How many spaces on tab
 set softtabstop=4                                                 " One tab = 4 spaces
@@ -102,7 +55,26 @@ set autoindent                                                    " Auto-ident
 set smartindent                                                   " Smart ident
 set shiftround                                                    " Round indent to multiple of 'shiftwidth'
 set smarttab                                                      " Reset autoindent after a blank line
-" }}}
+
+if exists('g:started_by_firenvim') && g:started_by_firenvim
+    set showtabline=0
+    set laststatus=0
+    set nonumber
+    set norelativenumber
+    augroup firenvim
+        autocmd!
+        autocmd BufEnter *.txt setlocal filetype=markdown.pandoc
+    augroup END
+else
+    set showtabline=2
+    set laststatus=2
+    set number
+    augroup numbertoggle
+        autocmd!
+        autocmd BufEnter * set relativenumber
+        autocmd BufLeave * set norelativenumber
+    augroup END
+endif
 
 " ================ COMPLETION ==================== {{{
 set wildmode=longest,full                                         "stuff to ignore when tab completing
@@ -118,10 +90,8 @@ set wildignore+=*DS_Store*
 set wildignore+=log/**
 set wildignore+=tmp/**
 set wildignore+=*.jpg,*.bmp,*.gif,*.png,*.jpeg,*.svg
-
 set complete=.,w,b,u,U,i,d,t
 set completeopt=menu,menuone,noselect                               
-set shortmess=aoOstTWAIcqFS
 " }}}
 
 " ================ SWAP/UNDO FILES ==================== {{{
@@ -140,8 +110,6 @@ set smartcase                                                     " If the searc
 
 " ================ AUTOCOMMANDS ==================== {{{
 augroup vimrc
-    " disable paste mode when leaving Insert mode
-    autocmd InsertLeave * set nopaste
     " check if buffer was changed outside of vim
     autocmd FocusGained,BufEnter * checktime
     " spell check
@@ -168,23 +136,27 @@ augroup active_win
     autocmd FocusLost,WinLeave * setlocal nocursorline
 
     " highlight active window
-    autocmd FocusGained,VimEnter,WinNew,WinEnter,BufWinEnter,BufEnter * if !IsFloatWin() | 
-        \ set winhighlight=EndOfBuffer:EndOfBuffer,SignColumn:Normal,VertSplit:EndOfBuffer,Normal:Normal | endif
-    autocmd FocusLost,WinLeave * if !IsFloatWin() | 
-        \ set winhighlight=EndOfBuffer:EndOfBufferNC,SignColumn:NormalNC,VertSplit:EndOfBufferNC,Normal:NormalNC | endif
+    autocmd FocusGained,VimEnter,WinEnter * set winhighlight=EndOfBuffer:EndOfBuffer,SignColumn:Normal,VertSplit:EndOfBuffer,Normal:Normal
+    autocmd FocusLost,WinLeave * set winhighlight=EndOfBuffer:EndOfBufferNC,SignColumn:NormalNC,VertSplit:EndOfBufferNC,Normal:NormalNC
+
+    " autocmd FocusGained,VimEnter,WinNew,WinEnter,BufWinEnter,BufEnter * if !IsFloatWin() | 
+    "     \ set winhighlight=EndOfBuffer:EndOfBuffer,SignColumn:Normal,VertSplit:EndOfBuffer,Normal:Normal | endif
+    " autocmd FocusLost,WinLeave * if !IsFloatWin() | 
+    "     \ set winhighlight=EndOfBuffer:EndOfBufferNC,SignColumn:NormalNC,VertSplit:EndOfBufferNC,Normal:NormalNC | endif
 
     " hide statusline on non-current windows
-    autocmd FocusGained,VimEnter,WinNew,WinEnter,BufWinEnter * call StatusLine()
-    autocmd FocusLost,WinLeave * call StatusLineNC()
+    autocmd FocusGained,VimEnter,WinEnter,BufEnter * call StatusLine()
+    autocmd FocusLost,WinLeave,BufLeave * call StatusLineNC()
+
 augroup END
 
 " }}}
 
 " ================ MAPPINGS ==================== {{{
 
-" center after search
-nnoremap n nzz
-nnoremap N Nzz
+" repeat last search updating search index 
+nnoremap n /<CR>
+nnoremap N ?<CR>
 
 " * for visual selected text
 vnoremap * y/\V<C-R>=escape(@",'/\')<CR><CR>
@@ -255,6 +227,9 @@ let mapleader = "\<Space>"
 " navigate faster
 nnoremap <Leader>j 12j
 nnoremap <Leader>k 12k
+
+" for firenvim
+inoremap <D-v> <C-r>+
 
 " paste keeping the default register
 vnoremap <Leader>p "_dP
@@ -399,6 +374,7 @@ inoremap <silent><expr> <C-k> pumvisible() ? "\<C-p>" : ''
 syntax enable
 set background=dark
 colorscheme cobange
+" colorscheme nord 
 
 hi mkdLineBreak guibg=none
 " }}}
