@@ -110,7 +110,6 @@ let g:gitgutter_map_keys = 0
 " VIMAGIT
 let g:magit_auto_foldopen = 0
 let g:magit_refresh_gitgutter = 1
-let g:magit_auto_close = 1
 autocmd User VimagitEnterCommit startinsert
 nnoremap <Leader>g :Magit<Return> 
 autocmd FileType magit lua require("window").dettach_magit()
