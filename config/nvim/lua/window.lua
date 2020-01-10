@@ -52,6 +52,7 @@ function M.floating_window(border, width_per, heigth_per)
     api.nvim_win_set_option(border_win, 'wrap', false)
     api.nvim_win_set_option(border_win, 'number', false)
     api.nvim_win_set_option(border_win, 'relativenumber', false)
+    api.nvim_win_set_option(border_win, 'cursorline', false)
     api.nvim_win_set_option(border_win, 'signcolumn', 'no')
     api.nvim_command("autocmd BufWipeout <buffer> exe 'bw '"..border_buf)
   end
@@ -70,13 +71,15 @@ function M.floating_window(border, width_per, heigth_per)
   api.nvim_win_set_option(content_win, 'wrap', false)
   api.nvim_win_set_option(content_win, 'number', false)
   api.nvim_win_set_option(content_win, 'relativenumber', false)
+  api.nvim_win_set_option(content_win, 'cursorline', false)
   api.nvim_win_set_option(content_win, 'signcolumn', 'no')
 
   -- map 'q' to close window
-  api.nvim_buf_set_keymap(content_buf, 'n', 'q', ':lua pcall(vim.api.nvim_win_close, '..content_win..', true)<CR>', {["silent"]=true})
+  --api.nvim_buf_set_keymap(content_buf, 'n', 'q', ':lua pcall(vim.api.nvim_win_close, '..content_win..', true)<CR>', {["silent"]=true})
   if border then
     -- close border window when leaving the main buffer
-    api.nvim_command("autocmd BufLeave <buffer> ++once lua pcall(vim.api.nvim_win_close, "..border_win..", true)")
+    --api.nvim_command("autocmd BufLeave <buffer> ++once lua pcall(vim.api.nvim_win_close, "..border_win..", true)")
+    vim.lsp.util.close_preview_autocmd({"BufLeave", "BufHidden"}, border_win)
   end
 end
 
@@ -116,7 +119,7 @@ function M.popup_window(contents, filetype, opts, border)
     api.nvim_buf_set_option(content_buf, 'filetype', filetype)
   end
   api.nvim_buf_set_option(content_buf, 'modifiable', false)
-  local content_opts = make_floating_popup_options(width, height, opts)
+  local content_opts = M.make_popup_options(width, height, opts)
   if border then
       content_opts.row = content_opts.row + 1 
       content_opts.col = content_opts.col + 1 
@@ -126,6 +129,7 @@ function M.popup_window(contents, filetype, opts, border)
     api.nvim_win_set_option(content_win, 'conceallevel', 2)
   end
   api.nvim_win_set_option(content_win, "winhighlight", "Normal:NormalFloat")
+  api.nvim_win_set_option(content_win, 'cursorline', false)
 
   -- border window
   if border then
@@ -147,18 +151,19 @@ function M.popup_window(contents, filetype, opts, border)
     end
     api.nvim_buf_add_highlight(border_buf, 0, 'EndOfBufferNC', border_height-1, 0, -1)
     api.nvim_command("autocmd BufWipeout <buffer> exe 'bw '"..border_buf)
-    border_opts = make_floating_popup_options(border_width, border_height, opts)
+    border_opts = M.make_popup_options(border_width, border_height, opts)
     border_win = api.nvim_open_win(border_buf, false, border_opts)
     api.nvim_win_set_option(border_win, "winhighlight", "Normal:NormalFloat")
+    api.nvim_win_set_option(border_win, 'cursorline', false)
   end
 
   if border then
-    util.close_preview_autocmd({"CursorMoved", "BufHidden", "InsertCharPre"}, border_win)
+    vim.lsp.util.close_preview_autocmd({"CursorMoved", "BufHidden", "InsertCharPre"}, border_win)
   end
-  util.close_preview_autocmd({"CursorMoved", "BufHidden", "InsertCharPre"}, content_win)
+  vim.lsp.util.close_preview_autocmd({"CursorMoved", "BufHidden", "InsertCharPre"}, content_win)
 end
 
-local function make_floating_popup_options(width, height, opts)
+function M.make_popup_options(width, height, opts)
   validate {
     opts = { opts, 't', true };
   }

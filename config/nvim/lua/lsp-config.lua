@@ -234,7 +234,7 @@ function show_diagnostics_details()
         table.insert(highlights, {0, hiname})
       end
     end
-    popup_window(lines, 'plaintext', {}, true)
+    require("window").popup_window(lines, 'plaintext', {}, true)
 end
 
 -- returns true if LSP server is ready. global so can be called from statusline
@@ -264,6 +264,14 @@ function buf_diagnostics_count(kind)
     end
   end
   return count
+end
+
+local function hover_callback(_, method, result)
+  if not (result and result.contents) then return end
+  local markdown_lines = util.convert_input_to_markdown_lines(result.contents)
+  markdown_lines = util.trim_empty_lines(markdown_lines)
+  if vim.tbl_isempty(markdown_lines) then return end
+  require("window").popup_window(markdown_lines, 'markdown', {}, true)
 end
 
 -- debug initialization, show server capabilities
@@ -357,6 +365,7 @@ local function setup()
             root_dir = root_dir;
             callbacks = { 
                 ["textDocument/publishDiagnostics"] = diagnostics_callback,
+                ["textDocument/hover"] = hover_callback
             };
             on_attach = on_attach_callback;
             on_init = init_callback;
@@ -390,6 +399,7 @@ local function setup()
             root_dir = root_dir;
             callbacks = { 
                 ["textDocument/publishDiagnostics"] = diagnostics_callback,
+                ["textDocument/hover"] = hover_callback
             };
             on_attach = on_attach_callback;
             before_init = config_workspacefolders;
@@ -414,6 +424,7 @@ local function setup()
             root_dir = root_dir;
             callbacks = { 
                 ["textDocument/publishDiagnostics"] = diagnostics_callback,
+                ["textDocument/hover"] = hover_callback
             };
             on_attach = on_attach_callback;
             on_init = init_callback;
@@ -440,6 +451,7 @@ local function setup()
             callbacks = { 
                 ["language/status"] = lsp4j_status_callback,
                 ["textDocument/publishDiagnostics"] = diagnostics_callback,
+                ["textDocument/hover"] = hover_callback
             };
             on_attach = on_attach_callback;
             on_init = init_callback;
@@ -462,6 +474,7 @@ local function setup()
             root_dir = root_dir;
             callbacks = { 
                 ["textDocument/publishDiagnostics"] = diagnostics_callback,
+                ["textDocument/hover"] = hover_callback
             };
             on_attach = on_attach_callback;
             on_init = init_callback;
