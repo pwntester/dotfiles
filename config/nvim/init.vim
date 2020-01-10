@@ -33,7 +33,7 @@ set noequalalways                                                 " Dset backspa
 " ================ UI ==================== {{{
 set lazyredraw                                                    " Don't update the display while executing macros
 set foldmethod=manual                                             " Fold manually (zf)
-set cursorline                                                    " Print cursorline
+set nocursorline                                                  " Print cursorline
 set noshowmode                                                    " Dont show the mode in the command line
 set signcolumn=auto                                               " Only sho sign column if there are signs to be shown
 set termguicolors
@@ -132,8 +132,8 @@ augroup active_win
     autocmd BufEnter *.* :set colorcolumn=0
 
     " show cursor line only in active windows
-    autocmd FocusGained,VimEnter,WinNew,WinEnter,BufWinEnter * setlocal cursorline
-    autocmd FocusLost,WinLeave * setlocal nocursorline
+    " autocmd FocusGained,VimEnter,WinNew,WinEnter,BufWinEnter * if !IsFloatWin() | setlocal cursorline | endif
+    " autocmd FocusLost,WinLeave * setlocal nocursorline
 
     " highlight active window
     autocmd FocusGained,VimEnter,WinEnter * set winhighlight=EndOfBuffer:EndOfBuffer,SignColumn:Normal,VertSplit:EndOfBuffer,Normal:Normal

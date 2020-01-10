@@ -181,6 +181,7 @@ lua require('colorizer').setup()
 
 " VIM-PLUG
 let g:plug_window = 'lua require("window").floating_window(true)'
+autocmd FileType vim-plug set nocursorline
 
 " VIM-SMOOTHIE
 let g:smoothie_no_default_mappings = v:true
@@ -295,4 +296,3 @@ let g:java_highlight_debug = 1
 let g:java_mark_braces_in_parens_as_errors = 1
 
 " }}}
-
