@@ -267,6 +267,7 @@ function M.dettach_window(win, width_per, heigth_per, border)
 
   api.nvim_win_set_config(win, opts)
   api.nvim_set_current_win(win)
+  api.nvim_win_set_option(win, "winhighlight", "Normal:Normal")
 
   if border then
     -- close border window when leaving the main buffer
