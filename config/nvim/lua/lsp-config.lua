@@ -326,7 +326,10 @@ local function diagnostics_callback(_, _, result)
   buf_clear_diagnostics(bufnr)
 
   -- underline diagnosticed code
-  util.buf_diagnostics_underline(bufnr, result.diagnostics)
+  local ft = api.nvim_buf_get_option(bufnr, "filetype")
+  if ft ~= "fortifyrulepack" then
+    util.buf_diagnostics_underline(bufnr, result.diagnostics)
+  end
 
   -- add marks to signcolumn
   buf_diagnostics_signs(bufnr, result.diagnostics)
@@ -379,7 +382,7 @@ local function setup()
     end
 
     function start_qlls()
-        local search_path = vim.fn.expand(vim.g.LSP_qlls_search_path)
+        local search_path = vim.fn.expand(vim.g.codeql_search_path)
         if not search_path then return end
         local root_dir = root_pattern(bufnr, "qlpack.yml");
         if not root_dir then 

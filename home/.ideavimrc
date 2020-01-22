@@ -89,3 +89,4 @@ vnoremap <Leader>p "_dP
 
 " }}}
 
+set clipboard+=ideaput

@@ -120,29 +120,13 @@ augroup vimrc
     autocmd VimLeave * wshada!
 augroup END
 
-function! IsFloatWin() abort
-    if has_key(nvim_win_get_config(0), 'relative') && nvim_win_get_config(0).relative == "editor"
-        return v:true
-    endif
-    return v:false
-endfunction
-
 augroup active_win 
     " dont show column
     autocmd BufEnter *.* :set colorcolumn=0
 
-    " show cursor line only in active windows
-    " autocmd FocusGained,VimEnter,WinNew,WinEnter,BufWinEnter * if !IsFloatWin() | setlocal cursorline | endif
-    " autocmd FocusLost,WinLeave * setlocal nocursorline
-
     " highlight active window
-    autocmd FocusGained,VimEnter,WinEnter * set winhighlight=EndOfBuffer:EndOfBuffer,SignColumn:Normal,VertSplit:EndOfBuffer,Normal:Normal
+    autocmd FocusGained,VimEnter,WinEnter,TermEnter * set winhighlight=EndOfBuffer:EndOfBuffer,SignColumn:Normal,VertSplit:EndOfBuffer,Normal:Normal
     autocmd FocusLost,WinLeave * set winhighlight=EndOfBuffer:EndOfBufferNC,SignColumn:NormalNC,VertSplit:EndOfBufferNC,Normal:NormalNC
-
-    " autocmd FocusGained,VimEnter,WinNew,WinEnter,BufWinEnter,BufEnter * if !IsFloatWin() | 
-    "     \ set winhighlight=EndOfBuffer:EndOfBuffer,SignColumn:Normal,VertSplit:EndOfBuffer,Normal:Normal | endif
-    " autocmd FocusLost,WinLeave * if !IsFloatWin() | 
-    "     \ set winhighlight=EndOfBuffer:EndOfBufferNC,SignColumn:NormalNC,VertSplit:EndOfBufferNC,Normal:NormalNC | endif
 
     " hide statusline on non-current windows
     autocmd FocusGained,VimEnter,WinEnter,BufEnter * call StatusLine()
@@ -160,6 +144,10 @@ nnoremap N ?<CR>
 
 " * for visual selected text
 vnoremap * y/\V<C-R>=escape(@",'/\')<CR><CR>
+
+" These work like * and g*, but do not move the cursor and always set hls.
+map * :let @/ = '\<'.expand('<cword>').'\>'\|set hlsearch<C-M>
+map g* :let @/ = expand('<cword>')\|set hlsearch<C-M>
 
 " escape to normal mode in insert mode
 inoremap jk <ESC>
@@ -267,7 +255,8 @@ let g:special_buffers = [
     \ 'goterm',
     \ 'vista_kind',
     \ 'codeqltestpanel',
-    \ 'codeqlauditpanel'
+    \ 'codeqlauditpanel',
+    \ 'terminal'
     \ ]
 function! s:pinBuffer()
     " prevent changing buffer
@@ -286,9 +275,14 @@ augroup windows
     autocmd!
     autocmd WinEnter,BufEnter *  nested if index(g:special_buffers, &filetype) > -1 | call s:pinBuffer() | endif
     autocmd WinEnter,BufEnter {} nested if index(g:special_buffers, &filetype) > -1 | call s:pinBuffer() | endif
+
     " BufEnter is not triggered for defx and dirvish buffer
     " autocmd FileType defx call s:pinBuffer()
     autocmd FileType dirvish call s:pinBuffer()
+
+    " Terminal
+    autocmd TermOpen * set ft=terminal
+    autocmd TermEnter * call s:pinBuffer()
 augroup END
 " }}}
 
@@ -370,16 +364,25 @@ inoremap <silent><expr> <C-k> pumvisible() ? "\<C-p>" : ''
 
 " }}}
 
+" ================ STATUSLINE ======================== {{{
+execute 'source' fnameescape(expand('~/.config/nvim/statusline.vim'))
+
+" }}}
+
 " ================ THEME ======================== {{{
 syntax enable
 set background=dark
 colorscheme cobange
-" colorscheme nord 
 
-hi mkdLineBreak guibg=none
+let g:term_ansi_colors = [
+ 	\ '#616e64', '#0d0a79',
+ 	\ '#6d610d', '#0a7373',
+ 	\ '#690d0a', '#6d696e',
+ 	\ '#0d0a6f', '#616e0d',
+ 	\ '#0a6479', '#6d0d0a',
+ 	\ '#617373', '#0d0a69',
+ 	\ '#6d690d', '#0a6e6f',
+ 	\ '#610d0a', '#6e6479',
+ 	\]
+
 " }}}
-
-" ================ STATUSLINE ======================== {{{
-execute 'source' fnameescape(expand('~/.config/nvim/statusline.vim'))
-
-"}}}

@@ -33,6 +33,8 @@ call plug#begin('~/.nvim/plugged')
     Plug 'justinmk/vim-dirvish'
     Plug 'lifepillar/vim-colortemplate'
     Plug 'glacambre/firenvim' 
+    Plug 'arcticicestudio/nord-vim'
+    Plug 'skywind3000/vim-terminal-help'
     
     " Local plugins
     Plug '/usr/local/opt/fzf'
@@ -45,7 +47,7 @@ call plug#end()
 execute 'source' fnameescape(expand('~/.config/nvim/fortify.vim'))
 
 " FZF
-let g:fzf_layout = { 'window': 'lua require("window").floating_window()' }
+let g:fzf_layout = { 'window': 'lua require("window").floating_window(false,0.8,0.7)' }
 let $FZF_DEFAULT_OPTS='--no-inline-info --layout=reverse --margin=1,2 --color=dark ' .
     \ '--color=fg:#d0d0d0,bg:#020511,hl:#0088ff '.
     \ '--color=fg+:#ffc600,bg+:#020511,hl+:#ffc600 '.
@@ -224,8 +226,11 @@ augroup dirvish_config
     " fix dirvish win width
     autocmd FileType dirvish :call nvim_win_set_option(0, 'winfixwidth', v:true)
 
-    " disable status line
-    autocmd FileType dirvish let &l:statusline=' '
+    " status line
+    autocmd FileType dirvish call StatusLine()
+
+    " map .. to -
+    autocmd FileType dirvish nnoremap <silent><buffer> .. :Dirvish ..<CR>
 augroup END
 
 function ToggleDirvish(...)
@@ -241,6 +246,7 @@ function ToggleDirvish(...)
     else
         execute "leftabove 30 vsplit | silent Dirvish"
     endif
+    set winhighlight=EndOfBuffer:EndOfBuffer,SignColumn:Normal,VertSplit:EndOfBuffer,Normal:Normal
 endfunction
 
 cnoreabbrev <expr> rm    ((nvim_buf_get_option(0, 'filetype') == 'dirvish' && getcmdtype() is# ":" && getcmdline() is# "rm")? ("silent !rm %") : ("rm"))
@@ -253,7 +259,7 @@ let g:buftabline_indicators = 1
 let g:buftabline_separators = 1
 
 " CODEQL.NVIM
-let g:LSP_qlls_search_path = '~/codeql-home/codeql-repo'
+let g:codeql_search_path = '~/codeql-home/codeql-repo' 
 
 " NVIM-LSP
 lua require("lsp-config").setup()
@@ -294,5 +300,12 @@ let g:java_comment_strings = 1
 let g:java_highlight_functions = 1
 let g:java_highlight_debug = 1 
 let g:java_mark_braces_in_parens_as_errors = 1
+
+" VIM-HELP-TERMINAL
+tnoremap jk <C-\><C-n>
+let g:terminal_key="<C-t>"
+let g:terminal_height=15
+let g:terminal_list=0
+" ALT + -: paste register 0 to terminal
 
 " }}}
