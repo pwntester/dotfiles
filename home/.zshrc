@@ -113,3 +113,5 @@ fi
 # sdkman
 export SDKMAN_DIR="/Users/pwntester/.sdkman"
 [[ -s "/Users/pwntester/.sdkman/bin/sdkman-init.sh" ]] && source "/Users/pwntester/.sdkman/bin/sdkman-init.sh"
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
