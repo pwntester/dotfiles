@@ -259,7 +259,8 @@ let g:buftabline_indicators = 1
 let g:buftabline_separators = 1
 
 " CODEQL.NVIM
-let g:codeql_search_path = '~/codeql-home/codeql-repo' 
+"let g:codeql_search_path = ['~/codeql-home/codeql-repo', '~/codeql-home/pwntester-repo']
+let g:codeql_search_path = ['~/codeql-home/pwntester-repo', '~/codeql-home/codeql-repo']
 
 " NVIM-LSP
 lua require("lsp-config").setup()

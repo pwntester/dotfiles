@@ -382,9 +382,14 @@ local function setup()
     end
 
     function start_qlls()
-        local search_path = vim.fn.expand(vim.g.codeql_search_path)
+        local search_path = vim.g.codeql_search_path
+        local search_path_str="--search-path="
+        for _, path in ipairs(search_path) do
+            search_path_str=search_path_str..vim.fn.expand(path)..":"
+        end
         if not search_path then return end
-        local root_dir = root_pattern(bufnr, "qlpack.yml");
+        local bufnr = api.nvim_get_current_buf()
+        local root_dir = root_pattern(bufnr, "qlpack.yml")
         if not root_dir then 
             local root_dir = vim.fn.expand('%:p:h')
         end
@@ -398,7 +403,7 @@ local function setup()
 
         local config = {
             name = "codeql-language-server";
-            cmd = "codeql execute language-server --check-errors ON_CHANGE -q --search-path="..search_path;
+            cmd = "codeql execute language-server --check-errors ON_CHANGE -q "..search_path_str;
             root_dir = root_dir;
             callbacks = { 
                 ["textDocument/publishDiagnostics"] = diagnostics_callback,
@@ -499,8 +504,18 @@ local function setup()
 
 end
 
+    function qlls()
+        local search_path = vim.g.codeql_search_path
+        local search_path_str="--search-path="
+        for _, path in ipairs(search_path) do
+            search_path_str=search_path_str..vim.fn.expand(path)..":"
+        end
+        print(search_path_str)
+    end
+
 --- @export
 return {
 	setup = setup;
+    qlls = qlls;
 }
 

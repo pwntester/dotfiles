@@ -151,6 +151,7 @@ map g* :let @/ = expand('<cword>')\|set hlsearch<C-M>
 
 " escape to normal mode in insert mode
 inoremap jk <ESC>
+vnoremap jk <ESC>
 
 " shifting visual block should keep it selected
 vnoremap < <gv
