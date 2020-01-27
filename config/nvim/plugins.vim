@@ -102,7 +102,7 @@ let g:pear_tree_smart_openers     = 1
 
 " VIM-ROOTER
 let g:rooter_use_lcd = 1
-let g:rooter_patterns = ['build.gradle', 'build.sbt', 'pom.xml', '.git/']
+let g:rooter_patterns = ['.git/'] "['build.gradle', 'build.sbt', 'pom.xml', '.git/']
 let g:rooter_silent_chdir = 1
 let g:rooter_change_directory_for_non_project_files = 'current'
 
