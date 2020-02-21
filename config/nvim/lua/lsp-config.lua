@@ -11,7 +11,7 @@ local lsps_actions = {}
 local lsps_dirs = {}
 local all_buffer_diagnostics = {}
 
-local references_ns = api.nvim_create_namespace("vim_lsp_references")
+local reference_ns = api.nvim_create_namespace("vim_lsp_references")
 
 -- clear diagnostics namespace
 -- modified from https://github.com/neovim/neovim/blob/6e8c5779cf960893850501e4871dc9be671db298/runtime/lua/vim/lsp/util.lua#L506
@@ -109,7 +109,7 @@ end
 
 -- clear reference highlighting
 function clear_references() 
-    api.nvim_buf_clear_namespace(0, references_ns, 0, -1)
+    api.nvim_buf_clear_namespace(0, reference_ns, 0, -1)
 end
 
 -- highlight references for symbol under cursor
@@ -121,13 +121,12 @@ function highlight_references()
         for _, reference in ipairs(result) do
             local start_pos = {reference["range"]["start"]["line"], reference["range"]["start"]["character"]}
             local end_pos = {reference["range"]["end"]["line"], reference["range"]["end"]["character"]}
-            if reference["kind"] == protocol.DocumentHighlightKind.Text then
-                highlight_range(bufnr, references_ns, "LspReferenceText", start_pos, end_pos)
-            elseif reference["kind"] == protocol.DocumentHighlightKind.Read then
-                highlight_range(bufnr, references_ns, "LspReferenceRead", start_pos, end_pos)
-            elseif reference["kind"] == protocol.DocumentHighlightKind.Write then
-                highlight_range(bufnr, references_ns, "LspReferenceWrite", start_pos, end_pos)
-            end
+            local document_highlight_kind = {
+                [protocol.DocumentHighlightKind.Text] = "LspReferenceText";
+                [protocol.DocumentHighlightKind.Read] = "LspReferenceRead";
+                [protocol.DocumentHighlightKind.Write] = "LspReferenceWrite";
+            }
+            highlight_range(bufnr, reference_ns, document_highlight_kind[reference["kind"]], start_pos, end_pos)
         end
     end)
     vim.lsp.buf_request(0, 'textDocument/documentHighlight', params, callback)
@@ -197,19 +196,13 @@ end
 -- show diagnostics in sign column
 function buf_diagnostics_signs(bufnr, diagnostics)
     for _, diagnostic in ipairs(diagnostics) do
-        -- errors
-        if diagnostic.severity == 1 then
-            vim.fn.sign_place(0, 'nvim-lsp', 'LspErrorSign', bufnr, {lnum=(diagnostic.range.start.line+1)})
-        -- warnings
-        elseif diagnostic.severity == 2 then
-            vim.fn.sign_place(0, 'nvim-lsp', 'LspWarningSign', bufnr, {lnum=(diagnostic.range.start.line+1)})
-        -- info
-        elseif diagnostic.severity == 3 then
-            vim.fn.sign_place(0, 'nvim-lsp', 'LspInfoSign', bufnr, {lnum=(diagnostic.range.start.line+1)})
-        -- hint
-        elseif diagnostic.severity == 4 then
-            vim.fn.sign_place(0, 'nvim-lsp', 'LspHintSign', bufnr, {lnum=(diagnostic.range.start.line+1)})
-        end
+      local diagnostic_severity_map = {
+        [protocol.DiagnosticSeverity.Error] = "LspDiagnosticsErrorSign";
+        [protocol.DiagnosticSeverity.Warning] = "LspDiagnosticsWarningSign";
+        [protocol.DiagnosticSeverity.Information] = "LspDiagnosticsInformationSign";
+        [protocol.DiagnosticSeverity.Hint] = "LspDiagnosticsHintSign";
+      }
+      vim.fn.sign_place(0, sign_ns, diagnostic_severity_map[diagnostic.severity], bufnr, {lnum=(diagnostic.range.start.line+1)})
     end
 end
 
@@ -347,10 +340,10 @@ end
 do
     -- define signs
     if not sign_defined then
-        vim.fn.sign_define('LspErrorSign', {text='x', texthl='LspDiagnosticsError', linehl='', numhl=''})
-        vim.fn.sign_define('LspWarningSign', {text='x', texthl='LspDiagnosticsWarning', linehl='', numhl=''})
-        vim.fn.sign_define('LspInfoSign', {text='x', texthl='LspDiagnosticsInfo', linehl='', numhl=''})
-        vim.fn.sign_define('LspHintSign', {text='x', texthl='LspDiagnosticsHint', linehl='', numhl=''})
+        vim.fn.sign_define('LspDiagnosticsErrorSign', {text='x', texthl='LspDiagnosticsError', linehl='', numhl=''})
+        vim.fn.sign_define('LspDiagnosticsWarningSign', {text='x', texthl='LspDiagnosticsWarning', linehl='', numhl=''})
+        vim.fn.sign_define('LspDiagnosticsInformationSign', {text='x', texthl='LspDiagnosticsInfo', linehl='', numhl=''})
+        vim.fn.sign_define('LspDiagnosticsHintSign', {text='x', texthl='LspDiagnosticsHint', linehl='', numhl=''})
         sign_defined = true
     end
 end
