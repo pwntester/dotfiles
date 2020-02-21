@@ -143,7 +143,7 @@ nnoremap n /<CR>
 nnoremap N ?<CR>
 
 " * for visual selected text
-vnoremap * y/\V<C-R>=escape(@",'/\')<CR><CR>
+"vnoremap * y/\V<C-R>=escape(@",'/\')<CR><CR>
 
 " These work like * and g*, but do not move the cursor and always set hls.
 map * :let @/ = '\<'.expand('<cword>').'\>'\|set hlsearch<C-M>
@@ -151,6 +151,7 @@ map g* :let @/ = expand('<cword>')\|set hlsearch<C-M>
 
 " escape to normal mode in insert mode
 inoremap jk <ESC>
+"vnoremap jk <ESC>
 
 " shifting visual block should keep it selected
 vnoremap < <gv

@@ -281,10 +281,11 @@ local function on_attach_callback(client, bufnr)
     api.nvim_buf_set_keymap(bufnr, "n", "gD", "<Cmd>lua show_diagnostics_details()<CR>", { silent = true; })
     api.nvim_buf_set_keymap(bufnr, "n", "gd", "<Cmd>lua vim.lsp.buf.definition()<CR>", { silent = true; })
     api.nvim_buf_set_keymap(bufnr, "n", "gi", "<Cmd>lua vim.lsp.buf.implementation()<CR>", { silent = true; })
-    api.nvim_buf_set_keymap(bufnr, "n", "K", "<Cmd>lua vim.lsp.buf.hover()<CR>", { silent = true; })
+    api.nvim_buf_set_keymap(bufnr, "n",  "K", "<Cmd>lua vim.lsp.buf.hover()<CR>", { silent = true; })
     api.nvim_buf_set_keymap(bufnr, "n", "gh", "<Cmd>lua vim.lsp.buf.signature_help()<CR>", { silent = true; })
     api.nvim_buf_set_keymap(bufnr, "n", "gr", "<Cmd>lua vim.lsp.buf.references()<CR>", { silent = true; })
     api.nvim_buf_set_keymap(bufnr, "n", "ga", "<Cmd>lua request_code_actions()<CR>", { silent = true; })
+    api.nvim_buf_set_keymap(bufnr, "n", "gF", "<Cmd>lua vim.lsp.buf.formatting()<CR>", { silent = true; })
     -- pre-PR version
     api.nvim_command [[autocmd CursorHold <buffer> lua highlight_references()]]
     api.nvim_command [[autocmd CursorHoldI <buffer> lua highlight_references()]]
@@ -357,7 +358,7 @@ local function setup()
         local root_dir = vim.fn.expand('%:p:h')
         local config = {
             name = "fortify-language-server";
-            cmd = "fls";
+            cmd = {"fls"};
             root_dir = root_dir;
             callbacks = { 
                 ["textDocument/publishDiagnostics"] = diagnostics_callback,
@@ -374,49 +375,13 @@ local function setup()
         vim.lsp.buf_attach_client(bufnr, client_id)
     end
 
-    function start_qlls()
-        local search_path = vim.fn.expand(vim.g.codeql_search_path)
-        if not search_path then return end
-        local root_dir = root_pattern(bufnr, "qlpack.yml");
-        if not root_dir then 
-            local root_dir = vim.fn.expand('%:p:h')
-        end
-
-        local config_workspacefolders = vim.schedule_wrap(function(initialize_params, config)
-            initialize_params['workspaceFolders'] = {{
-                name = 'workspace',
-                uri = initialize_params['rootUri']
-            }}
-        end)
-
-        local config = {
-            name = "codeql-language-server";
-            cmd = "codeql execute language-server --check-errors ON_CHANGE -q --search-path="..search_path;
-            root_dir = root_dir;
-            callbacks = { 
-                ["textDocument/publishDiagnostics"] = diagnostics_callback,
-                ["textDocument/hover"] = hover_callback
-            };
-            on_attach = on_attach_callback;
-            before_init = config_workspacefolders;
-            on_init = init_callback;
-        }
-        local bufnr = api.nvim_get_current_buf()
-        local client_id = lsps_dirs[root_dir]
-        if not client_id then
-            client_id = vim.lsp.start_client(config)
-            lsps_dirs[root_dir] = client_id
-        end
-        vim.lsp.buf_attach_client(bufnr, client_id)
-    end
-
     function start_gopls()
         local bufnr = api.nvim_get_current_buf()
         local root_dir = root_pattern(bufnr, "go.mod", ".git");
         if not root_dir then return end
         local config = {
             name = "gopls";
-            cmd = "gopls";
+            cmd = {"gopls"};
             root_dir = root_dir;
             callbacks = { 
                 ["textDocument/publishDiagnostics"] = diagnostics_callback,
@@ -442,7 +407,7 @@ local function setup()
         end)
         local config = {
             name = "eclipse.jdt.ls";
-            cmd = "jdtls";
+            cmd = {"jdtls"};
             root_dir = root_dir;
             callbacks = { 
                 ["language/status"] = lsp4j_status_callback,
@@ -465,7 +430,7 @@ local function setup()
         local root_dir = root_pattern(bufnr, "compile_commands.json", "compile_flags.txt", ".git");
         if not root_dir then return end
         local config = {
-            name = "clangd";
+            name = {"clangd"};
             cmd = "/usr/local/opt/llvm/bin/clangd --background-index";
             root_dir = root_dir;
             callbacks = { 
@@ -483,13 +448,64 @@ local function setup()
         vim.lsp.buf_attach_client(bufnr, client_id)
     end
 
+    function start_qlls()
+        print("FOO")
+        local search_path = vim.g.codeql_search_path
+        local search_path_str="--search-path="
+        for _, path in ipairs(search_path) do
+            search_path_str=search_path_str..vim.fn.expand(path)..":"
+        end
+        if not search_path then return end
+        local bufnr = api.nvim_get_current_buf()
+        local root_dir = root_pattern(bufnr, "qlpack.yml")
+        if not root_dir then 
+            local root_dir = vim.fn.expand('%:p:h')
+        end
+
+        local config_workspacefolders = vim.schedule_wrap(function(initialize_params, config)
+            initialize_params['workspaceFolders'] = {{
+                name = 'workspace',
+                uri = initialize_params['rootUri']
+            }}
+        end)
+
+        local config = {
+            name = "codeql-language-server";
+            cmd = {"codeql", "execute", "language-server", "--check-errors", "ON_CHANGE", "-q", search_path_str};
+            root_dir = root_dir;
+            callbacks = { 
+                ["textDocument/publishDiagnostics"] = diagnostics_callback,
+                ["textDocument/hover"] = hover_callback
+            };
+            on_attach = on_attach_callback;
+            before_init = config_workspacefolders;
+            on_init = init_callback;
+        }
+        local client_id = lsps_dirs[root_dir]
+        if not client_id then
+            client_id = vim.lsp.start_client(config)
+            lsps_dirs[root_dir] = client_id
+        end
+        vim.lsp.buf_attach_client(bufnr, client_id)
+    end
+
     -- autocommands
     api.nvim_command("autocmd Filetype fortifyrulepack lua start_fls()")
     api.nvim_command("autocmd Filetype java lua start_jdt()")
-    api.nvim_command("autocmd Filetype codeql lua start_qlls()")
+    --api.nvim_command("autocmd Filetype codeql lua start_qlls()")
     api.nvim_command("autocmd Filetype go lua start_gopls()")
     api.nvim_command("autocmd Filetype c,cpp,objc lua start_clangd()")
 
+    require'nvim_lsp'.codeqlls.setup{
+        on_attach = on_attach_callback;
+        callbacks = { 
+            ["textDocument/publishDiagnostics"] = diagnostics_callback,
+            ["textDocument/hover"] = hover_callback
+        };
+        settings = {
+            search_path = {'~/codeql-home/codeql-repo', '~/codeql-home/pwntester-repo'};
+        };
+    }
 end
 
 --- @export

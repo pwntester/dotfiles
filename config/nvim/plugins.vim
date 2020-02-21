@@ -41,6 +41,7 @@ call plug#begin('~/.nvim/plugged')
     Plug fnameescape(expand('~/Dev/vim-fortify'))
     Plug fnameescape(expand('~/Dev/cobange.vim'))
     Plug fnameescape(expand('~/Dev/codeql.nvim'))
+    Plug fnameescape(expand('~/Dev/nvim-lsp'))
 call plug#end()
 
 " VIM-FORTIFY
@@ -259,7 +260,7 @@ let g:buftabline_indicators = 1
 let g:buftabline_separators = 1
 
 " CODEQL.NVIM
-let g:codeql_search_path = '~/codeql-home/codeql-repo' 
+let g:codeql_search_path = ['~/codeql-home/codeql-repo', '~/codeql-home/pwntester-repo']
 
 " NVIM-LSP
 lua require("lsp-config").setup()
@@ -276,22 +277,6 @@ function! ApplyAction(callback, chosen) abort
     execute 'call '.a:callback.'('.l:idx.')'
 endfunction
 autocmd User LspDiagnosticsChanged call StatusLine()
-
-" FIRENVIM
-au BufEnter github.com_*.txt set filetype=markdown
-let g:firenvim_config = { 
-    \ 'globalSettings': {
-        \ 'cmdline': 'firenvim',
-    \  },
-    \ 'localSettings': {
-        \ '.*': {
-            \ 'cmdline': 'firenvim',
-            \ 'priority': 0,
-            \ 'selector': 'textarea',
-            \ 'takeover': 'once',
-        \ },
-    \ }
-    \ }
 
 " JAVA
 let g:java_highlight_all = 1
