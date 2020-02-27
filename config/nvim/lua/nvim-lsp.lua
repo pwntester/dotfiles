@@ -2,25 +2,10 @@ severity_highlights = {}
 severity_highlights[1] = 'LspDiagnosticsError'
 severity_highlights[2] = 'LspDiagnosticsWarning'
 
-underline_highlight_name = "LspDiagnosticsUnderline"
-
 -- copied from https://github.com/neovim/neovim/blob/6e8c5779cf960893850501e4871dc9be671db298/runtime/lua/vim/lsp/util.lua#L560
 validate = vim.validate
 all_buffer_diagnostics = {}
 diagnostic_ns = vim.api.nvim_create_namespace("vim_lsp_diagnostics")
-
--- copied from https://github.com/neovim/neovim/blob/6e8c5779cf960893850501e4871dc9be671db298/runtime/lua/vim/lsp/util.lua#L425
-function highlight_range(bufnr, ns, hiname, start, finish)
-    if start[1] == finish[1] then
-        vim.api.nvim_buf_add_highlight(bufnr, ns, hiname, start[1], start[2], finish[2])
-    else
-        vim.api.nvim_buf_add_highlight(bufnr, ns, hiname, start[1], start[2], -1)
-        for line = start[1] + 1, finish[1] - 1 do
-            vim.api.nvim_buf_add_highlight(bufnr, ns, hiname, line, 0, -1)
-        end
-        vim.api.nvim_buf_add_highlight(bufnr, ns, hiname, finish[1], 0, finish[2])
-    end
-end
 
 -- copied from https://github.com/neovim/neovim/blob/master/runtime/lua/vim/lsp/util.lua
 function set_lines(lines, A, B, new_lines)

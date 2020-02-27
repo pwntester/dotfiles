@@ -55,26 +55,15 @@ set autoindent                                                    " Auto-ident
 set smartindent                                                   " Smart ident
 set shiftround                                                    " Round indent to multiple of 'shiftwidth'
 set smarttab                                                      " Reset autoindent after a blank line
+set showtabline=2
+set laststatus=2
 
-if exists('g:started_by_firenvim') && g:started_by_firenvim
-    set showtabline=0
-    set laststatus=0
-    set nonumber
-    set norelativenumber
-    augroup firenvim
-        autocmd!
-        autocmd BufEnter *.txt setlocal filetype=markdown.pandoc
-    augroup END
-else
-    set showtabline=2
-    set laststatus=2
-    set number
-    augroup numbertoggle
-        autocmd!
-        autocmd BufEnter * set relativenumber
-        autocmd BufLeave * set norelativenumber
-    augroup END
-endif
+set number
+augroup numbertoggle
+    autocmd!
+    autocmd BufEnter * set relativenumber
+    autocmd BufLeave * set norelativenumber
+augroup END
 
 " ================ COMPLETION ==================== {{{
 set wildmode=longest,full                                         "stuff to ignore when tab completing
