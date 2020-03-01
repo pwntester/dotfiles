@@ -37,9 +37,9 @@ call plug#begin('~/.nvim/plugged')
     
     " Local plugins
     Plug '/usr/local/opt/fzf'
-    Plug fnameescape(expand('~/Dev/vim-fortify'))
     Plug fnameescape(expand('~/Dev/cobange.vim'))
     Plug fnameescape(expand('~/Dev/codeql.nvim'))
+    Plug fnameescape(expand('~/Dev/fortify.nvim'))
     Plug fnameescape(expand('~/Dev/nvim-lsp'))
 call plug#end()
 
