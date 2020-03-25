@@ -89,7 +89,7 @@ export TERM="xterm-kitty"
 export NODE_PATH="/usr/local/lib/node"
 export ANT_OPTS="-XX:MaxPermSize=256m" 
 export GOPATH=$(go env GOPATH)
-export PATH=$PATH:$HOME/bin:/usr/local/bin:/usr/local/sbin
+export PATH=$HOME/bin:/usr/local/bin:/usr/local/sbin:$PATH
 export PATH=$PATH:/usr/local/share/npm/bin
 export PATH=$PATH:/Applications/Fortify/sca/bin
 export PATH=$PATH:/Applications/Fortify/awb_main/bin

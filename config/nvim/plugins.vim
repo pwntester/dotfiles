@@ -32,15 +32,14 @@ call plug#begin('~/.nvim/plugged')
     Plug 'liuchengxu/vista.vim'
     Plug 'justinmk/vim-dirvish'
     Plug 'lifepillar/vim-colortemplate'
-    Plug 'glacambre/firenvim' 
     Plug 'arcticicestudio/nord-vim'
     Plug 'skywind3000/vim-terminal-help'
     
     " Local plugins
     Plug '/usr/local/opt/fzf'
-    Plug fnameescape(expand('~/Dev/vim-fortify'))
     Plug fnameescape(expand('~/Dev/cobange.vim'))
     Plug fnameescape(expand('~/Dev/codeql.nvim'))
+    Plug fnameescape(expand('~/Dev/fortify.nvim'))
     Plug fnameescape(expand('~/Dev/nvim-lsp'))
 call plug#end()
 
@@ -263,6 +262,11 @@ let g:buftabline_separators = 1
 let g:codeql_search_path = ['~/codeql-home/codeql-repo', '~/codeql-home/pwntester-repo']
 
 " NVIM-LSP
+let g:LspDiagnosticsErrorSign = 'x'
+let g:LspDiagnosticsWarningSign = 'w'
+let g:LspDiagnosticsInformationSign = 'i'
+let g:LspDiagnosticsHintSign = 'h'
+
 lua require("lsp-config").setup()
 let g:nvim_lsp_code_action_menu = 'FZFCodeActionMenu'
 function! FZFCodeActionMenu(actions, callback) abort

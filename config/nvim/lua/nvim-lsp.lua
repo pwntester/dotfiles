@@ -1,26 +1,21 @@
-severity_highlights = {}
-severity_highlights[1] = 'LspDiagnosticsError'
-severity_highlights[2] = 'LspDiagnosticsWarning'
+require 'window'
+require 'util'
 
-underline_highlight_name = "LspDiagnosticsUnderline"
+local validate = vim.validate
+local protocol = require 'vim.lsp.protocol'
+local util = require 'vim.lsp.util'
+local api = vim.api
+local lsps_actions = {}
+
+local severity_highlights = {
+    [1] = 'LspDiagnosticsError',
+    [2] = 'LspDiagnosticsWarning'
+}
 
 -- copied from https://github.com/neovim/neovim/blob/6e8c5779cf960893850501e4871dc9be671db298/runtime/lua/vim/lsp/util.lua#L560
 validate = vim.validate
 all_buffer_diagnostics = {}
 diagnostic_ns = vim.api.nvim_create_namespace("vim_lsp_diagnostics")
-
--- copied from https://github.com/neovim/neovim/blob/6e8c5779cf960893850501e4871dc9be671db298/runtime/lua/vim/lsp/util.lua#L425
-function highlight_range(bufnr, ns, hiname, start, finish)
-    if start[1] == finish[1] then
-        vim.api.nvim_buf_add_highlight(bufnr, ns, hiname, start[1], start[2], finish[2])
-    else
-        vim.api.nvim_buf_add_highlight(bufnr, ns, hiname, start[1], start[2], -1)
-        for line = start[1] + 1, finish[1] - 1 do
-            vim.api.nvim_buf_add_highlight(bufnr, ns, hiname, line, 0, -1)
-        end
-        vim.api.nvim_buf_add_highlight(bufnr, ns, hiname, finish[1], 0, finish[2])
-    end
-end
 
 -- copied from https://github.com/neovim/neovim/blob/master/runtime/lua/vim/lsp/util.lua
 function set_lines(lines, A, B, new_lines)
@@ -241,3 +236,220 @@ function config_client_callback(initialize_params, config)
     }
 end
 
+-- my custom functions
+function buf_cache_diagnostics(bufnr, diagnostics)
+    validate {
+        bufnr = {bufnr, 'n', true};
+        diagnostics = {diagnostics, 't', true};
+    }
+    if not diagnostics then return end
+
+    buffer_diagnostics = {}
+
+    for _, diagnostic in ipairs(diagnostics) do
+        local start = diagnostic.range.start
+        -- local mark_id = api.nvim_buf_set_extmark(bufnr, diagnostic_ns, 0, start.line, 0, {})
+        -- buffer_diagnostics[mark_id] = diagnostic
+        local line_diagnostics = buffer_diagnostics[start.line]
+        if not line_diagnostics then line_diagnostics = {} end
+        table.insert(line_diagnostics, diagnostic)
+        buffer_diagnostics[start.line] = line_diagnostics
+    end
+    all_buffer_diagnostics[bufnr] = buffer_diagnostics
+end
+
+-- show diagnostics as virtual text
+-- modified from https://github.com/neovim/neovim/blob/master/runtime/lua/vim/lsp/util.lua#L606
+function buf_diagnostics_virtual_text(bufnr, diagnostics)
+    -- return if we are called from a window that is not showing bufnr
+    if api.nvim_win_get_buf(0) ~= bufnr then return end
+
+    bufnr = bufnr == 0 and vim.api.nvim_get_current_buf() or bufnr
+
+    local line_no = api.nvim_buf_line_count(bufnr)
+    for _, line_diags in pairs(all_buffer_diagnostics[bufnr]) do
+
+        line = line_diags[1].range.start.line
+        if line+1 > line_no then goto continue end
+
+        local virt_texts = {}
+
+        -- window total width
+        local win_width = api.nvim_win_get_width(0)
+
+        -- line length
+        local lines = api.nvim_buf_get_lines(bufnr, line, line+1, 0)
+        local line_width = 0
+        if table.getn(lines) > 0 then
+            local line_content = lines[1]
+            if line_content == nil then goto continue end
+            line_width = vim.fn.strdisplaywidth(line_content)
+        end
+
+        -- window decoration with (sign + fold + number)
+        local decoration_width = window_decoration_columns()
+
+        -- available space for virtual text
+        local right_padding = 1
+        local available_space = win_width - decoration_width - line_width - right_padding
+
+        -- virtual text 
+        local last = line_diags[#line_diags]
+        local message = "■ "..last.message:gsub("\r", ""):gsub("\n", "  ") 
+
+        -- more than one diagnostic in line
+        if #line_diags > 1 then
+            local leading_space = available_space - vim.fn.strdisplaywidth(message) - #line_diags
+            local prefix = string.rep(" ", leading_space)
+            table.insert(virt_texts, {prefix..'■', severity_highlights[line_diags[1].severity]})
+            for i = 2, #line_diags - 1 do
+                table.insert(virt_texts, {'■', severity_highlights[line_diags[i].severity]})
+            end
+            table.insert(virt_texts, {message, severity_highlights[last.severity]})
+        -- 1 diagnostic in line
+        else 
+            local leading_space = available_space - vim.fn.strdisplaywidth(message) - #line_diags
+            local prefix = string.rep(" ", leading_space)
+            table.insert(virt_texts, {prefix..message, severity_highlights[last.severity]})
+        end
+        api.nvim_buf_set_virtual_text(bufnr, diagnostic_ns, line, virt_texts, {})
+        ::continue::
+    end
+end
+
+-- Code Actions
+-- prepare range params
+function make_range_params()
+  local row, col = unpack(api.nvim_win_get_cursor(0))
+  row = row - 1
+  local line = api.nvim_buf_get_lines(0, row, row+1, true)[1]
+  col = vim.str_utfindex(line, col)
+  return {
+    textDocument = { uri = vim.uri_from_bufnr(0) };
+    range = { ["start"] = { line = row, character = col }, ["end"] = { line = row, character = (col + 1) } }
+  }
+end
+
+-- apply selected codeAction. global to be called from vimL
+function apply_code_action(selection)
+    local command = lsps_actions[selection]['command']['command']
+    local arguments = lsps_actions[selection]['command']['arguments']
+    local edit = lsps_actions[selection]['command']['edit']
+    local title = lsps_actions[selection]['command']['title']
+
+    if command == 'java.apply.workspaceEdit' then
+        -- eclipse.jdt.ls does not follow spec here
+        for _, argument in ipairs(arguments) do
+            for _, change in ipairs(argument['documentChanges']) do
+                local bufnr = vim.fn.bufadd((vim.uri_to_fname(change['textDocument']['uri'])))
+                apply_text_edits(change['edits'], bufnr)
+            end
+        end
+    elseif command then
+        vim.lsp.buf_request(0, 'workspace/executeCommand', { command = command, arguments = arguments })
+    elseif edit then
+        -- TODO: not tested 
+        local bufnr = vim.fn.bufadd((vim.uri_to_fname(uri)))
+        apply_text_edits(edit, bufnr)
+    end
+end
+
+-- send codeAction request. global to be called from mapping
+function request_code_actions()
+    local bufnr = api.nvim_get_current_buf()
+    local buffer_line_diagnostics = all_buffer_diagnostics[bufnr]
+    if not buffer_line_diagnostics then
+        buf_diagnostics_save_positions(bufnr, diagnostics)
+    end
+    buffer_line_diagnostics = all_buffer_diagnostics[bufnr]
+    if not buffer_line_diagnostics then
+        return
+    end
+    local row, col = unpack(api.nvim_win_get_cursor(0))
+    row = row - 1
+    local line_diagnostics = buffer_line_diagnostics[row]
+ 
+    local params = make_range_params()
+    params.context = { diagnostics = line_diagnostics }
+    local callback = vim.schedule_wrap(function(_, _, actions)
+        if not actions then return end
+        lsps_actions = actions
+        vim.fn[vim.g.nvim_lsp_code_action_menu](lsps_actions, 'v:lua.apply_code_action')
+    end)
+    vim.lsp.buf_request(0, 'textDocument/codeAction', params, callback)
+end
+
+-- custom windows
+-- show popup with line diagnostics. global so can be called from mapping
+function show_diagnostics_details()
+    local bufnr = api.nvim_get_current_buf()
+    local line = api.nvim_win_get_cursor(0)[1] - 1
+    local lines = {}
+    local highlights = {{0, "Bold"}}
+    local buffer_diagnostics = all_buffer_diagnostics[bufnr]
+    if not buffer_diagnostics then return end
+    local line_diagnostics = buffer_diagnostics[line]
+    if not line_diagnostics then return end
+    for i, diagnostic in ipairs(line_diagnostics) do
+      local prefix = string.format("%d. ", i)
+      local hiname = severity_highlights[diagnostic.severity]
+      local message_lines = vim.split(diagnostic.message, '\n', true)
+      table.insert(lines, prefix..message_lines[1])
+      table.insert(highlights, {#prefix + 1, hiname})
+      for j = 2, #message_lines do
+        table.insert(lines, message_lines[j])
+        table.insert(highlights, {0, hiname})
+      end
+    end
+    require("window").popup_window(lines, 'plaintext', {}, true)
+end
+
+function hover_callback(_, method, result)
+  if not (result and result.contents) then return end
+  local markdown_lines = util.convert_input_to_markdown_lines(result.contents)
+  markdown_lines = util.trim_empty_lines(markdown_lines)
+  if vim.tbl_isempty(markdown_lines) then return end
+  require("window").popup_window(markdown_lines, 'markdown', {}, true)
+end
+
+-- custom replacement for publishDiagnostics callback
+-- https://github.com/neovim/neovim/blob/master/runtime/lua/vim/lsp/callbacks.lua
+function diagnostics_callback(_, _, result)
+  if not result then return end
+  local uri = result.uri
+  local bufnr = vim.fn.bufadd((vim.uri_to_fname(uri)))
+  if not bufnr then
+    api.nvim_err_writeln(string.format("LSP.publishDiagnostics: Couldn't find buffer for %s", uri))
+    return
+  end
+
+  -- clear hl and signcolumn namespaces
+  util.buf_clear_diagnostics(bufnr)
+  util.buf_diagnostics_save_positions(bufnr, result.diagnostics)
+
+  -- underline diagnosticed code
+  local ft = api.nvim_buf_get_option(bufnr, "filetype")
+  if ft ~= "fortifyrulepack" then
+    util.buf_diagnostics_underline(bufnr, result.diagnostics)
+  end
+
+  -- signcolumn
+  util.buf_diagnostics_signs(bufnr, result.diagnostics)
+
+  -- cache diagnostics so they are available for virtual text and codeactions
+  buf_cache_diagnostics(bufnr, result.diagnostics)
+
+  --custom virtual text uses diagnostics cache so need to go after
+  buf_diagnostics_virtual_text(bufnr, result.diagnostics)
+
+  -- Location list
+  if result and result.diagnostics then
+      for _, v in ipairs(result.diagnostics) do
+        v.uri = v.uri or result.uri
+      end
+      util.set_loclist(result.diagnostics)
+  end
+
+  -- notify user we are done processing diagnostics
+  api.nvim_command("doautocmd User LspDiagnosticsChanged")
+end

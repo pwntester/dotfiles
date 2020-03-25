@@ -1,9 +1,4 @@
 #!/bin/bash
 
-if [ -d "/Users/alvaro/Fortify/SSR/repos/fortify-language-server" ] 
-then
-    python3 /Users/alvaro/Fortify/SSR/repos/fortify-language-server/fortify-language-server.py
-else
-    python3 /Users/pwntester/Dev/fortify-language-server/fortify-language-server.py
-fi
-# --log-file /tmp/fls.log -vvvv
+python3 /Users/pwntester/Dev/fortify-language-server/fortify-language-server.py
+#--log-file /tmp/fls.log -vvvv
