@@ -491,7 +491,7 @@ local function setup()
 
     -- autocommands
     api.nvim_command("autocmd Filetype fortifyrulepack lua start_fls()")
-    api.nvim_command("autocmd Filetype java lua start_jdt()")
+    -- api.nvim_command("autocmd Filetype java lua start_jdt()")
     --api.nvim_command("autocmd Filetype codeql lua start_qlls()")
     api.nvim_command("autocmd Filetype go lua start_gopls()")
     api.nvim_command("autocmd Filetype c,cpp,objc lua start_clangd()")
