@@ -32,8 +32,6 @@ call plug#begin('~/.nvim/plugged')
     Plug 'liuchengxu/vista.vim'
     Plug 'justinmk/vim-dirvish'
     Plug 'lifepillar/vim-colortemplate'
-    Plug 'arcticicestudio/nord-vim'
-    Plug 'skywind3000/vim-terminal-help'
     
     " Local plugins
     Plug '/usr/local/opt/fzf'
@@ -289,12 +287,5 @@ let g:java_comment_strings = 1
 let g:java_highlight_functions = 1
 let g:java_highlight_debug = 1 
 let g:java_mark_braces_in_parens_as_errors = 1
-
-" VIM-HELP-TERMINAL
-tnoremap jk <C-\><C-n>
-let g:terminal_key="<C-t>"
-let g:terminal_height=15
-let g:terminal_list=0
-" ALT + -: paste register 0 to terminal
 
 " }}}
