@@ -40,7 +40,7 @@ call plug#begin('~/.nvim/plugged')
     Plug fnameescape(expand('~/Dev/cobange.vim'))
     Plug fnameescape(expand('~/Dev/codeql.nvim'))
     Plug fnameescape(expand('~/Dev/fortify.nvim'))
-    Plug fnameescape(expand('~/Dev/nvim-lsp'))
+    Plug fnameescape(expand('~/Dev/nvim-lsp.tbl')), {'branch': 'pr/178'}
 call plug#end()
 
 " VIM-FORTIFY
