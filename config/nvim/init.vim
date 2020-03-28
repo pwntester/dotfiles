@@ -206,9 +206,6 @@ let mapleader = "\<Space>"
 nnoremap <Leader>j 12j
 nnoremap <Leader>k 12k
 
-" for firenvim
-inoremap <D-v> <C-r>+
-
 " paste keeping the default register
 vnoremap <Leader>p "_dP
 
@@ -359,10 +356,42 @@ execute 'source' fnameescape(expand('~/.config/nvim/statusline.vim'))
 
 " }}}
 
+" ================ MARKDOWN ======================== {{{
+function! MarkdownBlocks()
+    sign define codeblock linehl=mkdCode
+    let l:continue = 0
+    execute "sign unplace * file=".expand("%")
+
+    " iterate through each line in the buffer
+    for l:lnum in range(1, len(getline(1, "$")))
+        " detect the start fo a code block
+        let l:line = getline(l:lnum)
+        if l:line == "```" || l:line =~ "^```.*$" || l:continue
+            " continue placing signs, until the block stops
+            let l:continue = 1
+            " place sign
+            execute "sign place ".l:lnum." line=".l:lnum." name=codeblock file=".expand("%")
+            " stop placing signs
+            if l:line =~ "^```$"
+                let l:continue = 0
+            endif
+        endif
+    endfor
+endfunction
+
+" Use signs to highlight code blocks
+" Set signs on loading the file, leaving insert mode, and after writing it
+au InsertLeave *.md call MarkdownBlocks()
+au BufEnter *.md call MarkdownBlocks()
+au BufWritePost *.md call MarkdownBlocks()
+au BufEnter *.md setl signcolumn=no
+" }}}
+
 " ================ THEME ======================== {{{
 syntax enable
 set background=dark
 colorscheme cobange
+hi mkdCode guifg=#3AD900 guibg=#101a20
 
 let g:term_ansi_colors = [
  	\ '#616e64', '#0d0a79',
