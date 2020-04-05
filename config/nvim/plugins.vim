@@ -283,18 +283,5 @@ let g:java_mark_braces_in_parens_as_errors = 1
 
 " LazyGit
 nnoremap <Leader>g :echo luaeval("require('window').floating_window(false,0.9,0.9)") <bar> call termopen("lazygit")<Return>
-augroup terminal_settings
-    autocmd!
 
-    autocmd TermOpen term://* startinsert
-    autocmd TermLeave term://* stopinsert
-    "autocmd TermClose term://* stopinsert
-
-    " Ignore various filetypes as those will close terminal automatically
-    " Ignore fzf, ranger, coc
-    autocmd TermClose term://*
-            \ if (expand('<afile>') !~ "fzf") |
-            \   call nvim_input('<CR>')  |
-            \ endif
-augroup END
 " }}}

@@ -267,9 +267,22 @@ augroup windows
     " autocmd FileType defx call s:pinBuffer()
     autocmd FileType dirvish call s:pinBuffer()
 
-    " Terminal
+augroup END
+
+augroup terminal_settings
+    autocmd!
+
     autocmd TermOpen * set ft=terminal
     autocmd TermEnter * call s:pinBuffer()
+    autocmd TermOpen term://* startinsert
+    autocmd TermLeave term://* stopinsert
+
+    " Ignore various filetypes as those will close terminal automatically
+    " Ignore fzf 
+    autocmd TermClose term://*
+            \ if (expand('<afile>') !~ "fzf") |
+            \   call nvim_input('<CR>')  |
+            \ endif
 augroup END
 " }}}
 
