@@ -64,13 +64,14 @@ local function setup()
     local lsp4j_status_callback = function(_, _, result)
         api.nvim_command(string.format(':echohl Function | echo "%s" | echohl None', result.message))
     end
+    local root_pattern = nvim_lsp.util.root_pattern('.project', 'pom.xml', 'project.xml', 'build.gradle', '.git');
     if not configs.java_lsp then
         configs.java_lsp = {
             default_config = {
                 cmd = {"jdtls"};
                 filetypes = {'java'};
                 root_dir = function(fname)
-                    return nvim_lsp.util.root_pattern('.project', 'pom.xml', 'project.xml', 'build.gradle', '.git');
+                    return root_pattern(fname) or vim.loop.os_homedir()
                 end;
             };
         }

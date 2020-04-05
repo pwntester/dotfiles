@@ -111,7 +111,7 @@ let g:gitgutter_map_keys = 0
 let g:magit_auto_foldopen = 0
 let g:magit_refresh_gitgutter = 1
 autocmd User VimagitEnterCommit startinsert
-nnoremap <Leader>g :Magit<Return> 
+"nnoremap <Leader>g :Magit<Return> 
 autocmd FileType magit lua require("window").dettach_magit()
 
 " VIM-GO
@@ -257,7 +257,8 @@ let g:buftabline_indicators = 1
 let g:buftabline_separators = 1
 
 " CODEQL.NVIM
-let g:codeql_search_path = ['~/codeql-home/codeql-repo', '~/codeql-home/pwntester-repo']
+"let g:codeql_search_path = ['~/codeql-home/codeql-repo', '~/codeql-home/pwntester-repo']
+let g:codeql_mem_opts = ["--threads", "1", "-J-Xmx8192M", "--off-heap-ram=8192", "-v", "--log-to-stderr"]
 
 " NVIM-LSP
 let g:LspDiagnosticsErrorSign = 'x'
@@ -288,4 +289,7 @@ let g:java_highlight_functions = 1
 let g:java_highlight_debug = 1 
 let g:java_mark_braces_in_parens_as_errors = 1
 
+" LazyGit
+nnoremap <Leader>g :echo luaeval("require('window').floating_window(false,0.9,0.9)") <bar> call termopen("lazygit")<Return>
+autocmd TermOpen term://* startinsert
 " }}}

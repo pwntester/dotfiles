@@ -1,0 +1,9 @@
+#!/bin/bash
+export LOGFILE=/tmp/codeql
+echo `env` > $LOGFILE-env
+echo "$@" >> $LOGFILE-arguments
+if [ "$2" == "query-server" ]; then
+    cat - | tee $LOGFILE-stdin | /Users/pwntester/codeql-home/codeql/codeql $@ | tee $LOGFILE-stdout
+else
+    /Users/pwntester/codeql-home/codeql/codeql $@
+fi
