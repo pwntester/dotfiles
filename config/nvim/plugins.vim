@@ -9,7 +9,6 @@ call plug#begin('~/.nvim/plugged')
     Plug 'junegunn/fzf.vim' 
     Plug 'pbogut/fzf-mru.vim'
     Plug 'tpope/vim-fugitive' 
-    Plug 'jreybert/vimagit'
     Plug 'andymass/vim-matchup' 
     Plug 'machakann/vim-sandwich'
     Plug 'tomtom/tcomment_vim'
@@ -106,13 +105,6 @@ let g:rooter_change_directory_for_non_project_files = 'current'
 
 " GITGUTTER 
 let g:gitgutter_map_keys = 0
-
-" VIMAGIT
-let g:magit_auto_foldopen = 0
-let g:magit_refresh_gitgutter = 1
-autocmd User VimagitEnterCommit startinsert
-"nnoremap <Leader>g :Magit<Return> 
-autocmd FileType magit lua require("window").dettach_magit()
 
 " VIM-GO
 function! ReuseVimGoTerm(cmd) abort
@@ -294,9 +286,10 @@ nnoremap <Leader>g :echo luaeval("require('window').floating_window(false,0.9,0.
 augroup terminal_settings
     autocmd!
 
-    autocmd BufWinEnter,WinEnter term://* startinsert
-    autocmd BufLeave term://* stopinsert
-    " autocmd TermOpen term://* startinsert
+    " autocmd BufWinEnter,WinEnter term://* startinsert
+    " autocmd BufLeave term://* stopinsert
+    autocmd TermOpen term://* startinsert
+    autocmd TermClose term://* stopinsert
 
     " Ignore various filetypes as those will close terminal automatically
     " Ignore fzf, ranger, coc

@@ -280,20 +280,4 @@ function M.dettach_window(win, width_per, heigth_per, border)
   end
 end
 
-function M.dettach_magit(width_per, heigth_per)
-  validate {
-    width_per = { width_per, 'n', true };
-    height_per = { height_per, 'n', true };
-  }
-  width_per = width_per or 0.7
-  height_per = height_per or 0.6
-
-  for _, w in ipairs(api.nvim_list_wins()) do
-    if "magit" == api.nvim_buf_get_option(api.nvim_win_get_buf(w), 'filetype') then
-      M.dettach_window(w, width_per, height_per, true)
-      return
-    end
-  end
-end 
-
 return M
