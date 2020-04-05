@@ -286,10 +286,9 @@ nnoremap <Leader>g :echo luaeval("require('window').floating_window(false,0.9,0.
 augroup terminal_settings
     autocmd!
 
-    " autocmd BufWinEnter,WinEnter term://* startinsert
-    " autocmd BufLeave term://* stopinsert
     autocmd TermOpen term://* startinsert
-    autocmd TermClose term://* stopinsert
+    autocmd TermLeave term://* stopinsert
+    "autocmd TermClose term://* stopinsert
 
     " Ignore various filetypes as those will close terminal automatically
     " Ignore fzf, ranger, coc
