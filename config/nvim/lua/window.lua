@@ -120,8 +120,17 @@ function M.popup_window(contents, filetype, opts, border)
   end
   api.nvim_buf_set_option(content_buf, 'modifiable', false)
   local content_opts = M.make_popup_options(width, height, opts)
-  if border then
+  if border and content_opts.anchor == 'SE' then
+      content_opts.row = content_opts.row - 1 
+      content_opts.col = content_opts.col - 1 
+  elseif border and content_opts.anchor == 'NE' then
       content_opts.row = content_opts.row + 1 
+      content_opts.col = content_opts.col - 1 
+  elseif border and content_opts.anchor == 'NW' then
+      content_opts.row = content_opts.row + 1 
+      content_opts.col = content_opts.col + 1 
+  elseif border and content_opts.anchor == 'SW' then
+      content_opts.row = content_opts.row - 1 
       content_opts.col = content_opts.col + 1 
   end
   local content_win = api.nvim_open_win(content_buf, false, content_opts)
@@ -139,7 +148,7 @@ function M.popup_window(contents, filetype, opts, border)
     local mid = "▌"..string.rep(" ", border_width-2).."▐"
     local bot = "▙"..string.rep("▄", border_width-2).."▟"
     local lines = { top }
-    for i=1,border_height-2 do
+    for i=1, height do
         table.insert(lines, mid)
     end
     table.insert(lines, bot)
@@ -155,9 +164,7 @@ function M.popup_window(contents, filetype, opts, border)
     border_win = api.nvim_open_win(border_buf, false, border_opts)
     api.nvim_win_set_option(border_win, "winhighlight", "Normal:NormalFloat")
     api.nvim_win_set_option(border_win, 'cursorline', false)
-  end
 
-  if border then
     vim.lsp.util.close_preview_autocmd({"CursorMoved", "BufHidden", "InsertCharPre"}, border_win)
   end
   vim.lsp.util.close_preview_autocmd({"CursorMoved", "BufHidden", "InsertCharPre"}, content_win)
