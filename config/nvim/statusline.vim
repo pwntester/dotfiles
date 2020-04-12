@@ -1,22 +1,22 @@
 function! RedrawModeColors(mode) abort
     " Normal mode
     if a:mode == 'n'
-        hi MyStatuslineFilename     guifg=#00AAFF guibg=#020511
+        hi MyStatuslineFilename     guifg=#00AAFF guibg=#1b2b34
     " Insert mode
     elseif a:mode == 'i'
-        hi MyStatuslineFilename     guifg=#88FF88 guibg=#020511    
+        hi MyStatuslineFilename     guifg=#88FF88 guibg=#1b2b34    
     " Replace mode
     elseif a:mode == 'R'
-        hi MyStatuslineFilename     guifg=#967EFB guibg=#020511    
+        hi MyStatuslineFilename     guifg=#967EFB guibg=#1b2b34    
     " Visual mode
     elseif a:mode == 'v' || a:mode == 'V' || a:mode == '^V'
-        hi MyStatuslineFilename     guifg=#FF9A00 guibg=#020511    
+        hi MyStatuslineFilename     guifg=#FF9A00 guibg=#1b2b34    
     " Command mode
     elseif a:mode == 'c'
-        hi MyStatuslineFilename     guifg=#668799 guibg=#020511    
+        hi MyStatuslineFilename     guifg=#668799 guibg=#1b2b34    
     " Terminal mode
     elseif a:mode == 't'
-        hi MyStatuslineFilename     guifg=#CCCCCC guibg=#020511    
+        hi MyStatuslineFilename     guifg=#CCCCCC guibg=#1b2b34    
     endif
     " Return empty string so as not to display anything in the statusline
     return ''

@@ -404,6 +404,7 @@ au BufEnter *.md setl signcolumn=no
 syntax enable
 set background=dark
 colorscheme cobange
+
 hi mkdCode guifg=#3AD900 guibg=#101a20
 
 let g:term_ansi_colors = [

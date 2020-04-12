@@ -45,11 +45,13 @@ execute 'source' fnameescape(expand('~/.config/nvim/fortify.vim'))
 
 " FZF
 let g:fzf_layout = { 'window': 'lua require("window").floating_window(false,0.8,0.7)' }
+"let bg_color = synIDattr(synIDtrans(hlID("Normal")), "bg#")
+let bg_color = "#1b2b34"
 let $FZF_DEFAULT_OPTS='--no-inline-info --layout=reverse --margin=1,2 --color=dark ' .
-    \ '--color=fg:#d0d0d0,bg:#020511,hl:#0088ff '.
-    \ '--color=fg+:#ffc600,bg+:#020511,hl+:#ffc600 '.
-    \ '--color=marker:#3ad900,spinner:#967efb,header:#0088ff '.
-    \ '--color=info:#020511,prompt:#0088ff,pointer:#0088ff'
+    \ '--color=fg:#d0d0d0,bg:'.bg_color.',hl:#0088ff '.
+    \ '--color=fg+:#ffc600,bg+:'.bg_color.',hl+:#ffc600 '.
+    \ '--color=marker:#88FF88,spinner:#967efb,header:#0088ff '.
+    \ '--color=info:'.bg_color.',prompt:#0088ff,pointer:#0088ff'
 
 nnoremap <leader>f :call fzf#vim#files('.', {'options': '--prompt ""'})<Return>
 nnoremap <leader>h :FZFFreshMru --prompt ""<Return>
