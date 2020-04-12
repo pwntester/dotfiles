@@ -405,17 +405,6 @@ syntax enable
 set background=dark
 colorscheme cobange
 
-hi mkdCode guifg=#3AD900 guibg=#101a20
-
-let g:term_ansi_colors = [
- 	\ '#616e64', '#0d0a79',
- 	\ '#6d610d', '#0a7373',
- 	\ '#690d0a', '#6d696e',
- 	\ '#0d0a6f', '#616e0d',
- 	\ '#0a6479', '#6d0d0a',
- 	\ '#617373', '#0d0a69',
- 	\ '#6d690d', '#0a6e6f',
- 	\ '#610d0a', '#6e6479',
- 	\]
+hi mkdCode guifg=#88FF88 guibg=#101a20
 
 " }}}
