@@ -65,10 +65,6 @@ function! HR(char) abort
     return repeat(a:char, winwidth(0))
 endfunction
 
-function! StatusLineNC() abort
-    let &l:statusline='%#MyStatuslineBarNC#%{HR("▁")}'
-endfunction
-
 function! LspStatus() abort
     let sl = ''
     if luaeval('vim.lsp.buf.server_ready()')
@@ -78,6 +74,10 @@ function! LspStatus() abort
         let sl.='%#MyStatuslineLSPWarnings#%{luaeval("vim.lsp.util.buf_diagnostics_count(\"Warning\")")}'
     endif
     return sl
+endfunction
+
+function! StatusLineNC() abort
+    let &l:statusline='%#MyStatuslineBarNC#%{HR("▁")}'
 endfunction
 
 function! StatusLine() abort
