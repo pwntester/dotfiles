@@ -413,5 +413,7 @@ set background=dark
 colorscheme cobange
 
 hi mkdCode guifg=#88FF88 guibg=#101a20
+hi PopupWindowBorder guibg=#1b2b34 guifg=#101a20
+hi InvertedPopupWindowBorder guifg=#1b2b34 guibg=#101a20
 
 " }}}
