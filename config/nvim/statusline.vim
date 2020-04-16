@@ -1,22 +1,30 @@
 function! RedrawModeColors(mode) abort
+
+    let bg_color = GetColorFromHighlight("Normal", "bg")
+    let blue = GetColorFromHighlight("SpecialKey", "fg")
+    let green = GetColorFromHighlight("Title", "fg")
+    let green2 = GetColorFromHighlight("Special", "fg")
+    let orange = GetColorFromHighlight("Identifier", "fg")
+    let grey = GetColorFromHighlight("PMenu", "fg")
+    let grey2 = GetColorFromHighlight("Directory", "fg")
     " Normal mode
     if a:mode == 'n'
-        hi MyStatuslineFilename     guifg=#00AAFF guibg=#1b2b34
+        execute("hi MyStatuslineFilename guifg=".blue." guibg=".bg_color)
     " Insert mode
     elseif a:mode == 'i'
-        hi MyStatuslineFilename     guifg=#88FF88 guibg=#1b2b34    
+        execute("hi MyStatuslineFilename guifg=".green." guibg=".bg_color)
     " Replace mode
     elseif a:mode == 'R'
-        hi MyStatuslineFilename     guifg=#967EFB guibg=#1b2b34    
+        execute("hi MyStatuslineFilename guifg=".green2." guibg=".bg_color)
     " Visual mode
     elseif a:mode == 'v' || a:mode == 'V' || a:mode == '^V'
-        hi MyStatuslineFilename     guifg=#FF9A00 guibg=#1b2b34    
+        execute("hi MyStatuslineFilename guifg=".orange." guibg=".bg_color)
     " Command mode
     elseif a:mode == 'c'
-        hi MyStatuslineFilename     guifg=#668799 guibg=#1b2b34    
+        execute("hi MyStatuslineFilename guifg=".grey2." guibg=".bg_color)
     " Terminal mode
     elseif a:mode == 't'
-        hi MyStatuslineFilename     guifg=#CCCCCC guibg=#1b2b34    
+        execute("hi MyStatuslineFilename guifg=".grey." guibg=".bg_color)
     endif
     " Return empty string so as not to display anything in the statusline
     return ''

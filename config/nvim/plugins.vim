@@ -21,7 +21,6 @@ call plug#begin('~/.nvim/plugged')
     Plug 'junegunn/rainbow_parentheses.vim'
     Plug 'alvan/vim-closetag'
     Plug 'tommcdo/vim-lion'
-    Plug 'tmsvg/pear-tree'
     Plug 'hrsh7th/vim-vsnip'
     Plug 'hrsh7th/vim-vsnip-integ'
     Plug 'AndrewRadev/linediff.vim'
@@ -33,6 +32,8 @@ call plug#begin('~/.nvim/plugged')
     Plug 'justinmk/vim-dirvish'
     Plug 'lifepillar/vim-colortemplate'
     Plug 'neovim/nvim-lsp'
+    "Plug 'tmsvg/pear-tree'
+    Plug 'doums/coBra'
     
     " Local plugins
     Plug '/usr/local/opt/fzf'
@@ -41,18 +42,28 @@ call plug#begin('~/.nvim/plugged')
     Plug fnameescape(expand('~/Dev/fortify.nvim'))
 call plug#end()
 
+" Make colors available to getColorFromHighlight"
+colorscheme cobange
+let cobalt1_color = GetColorFromHighlight('Normal', 'bg')
+let cobalt2_color = GetColorFromHighlight('EndOfBuffer', 'fg')
+let blue_color = GetColorFromHighlight('Comment', 'fg')
+let yellow_color = GetColorFromHighlight('Function', 'fg')
+let green_color = GetColorFromHighlight('Title', 'fg')
+let grey_color = GetColorFromHighlight('PMenu', 'fg')
+let orange_color = GetColorFromHighlight('Identifier', 'fg')
+
 " VIM-FORTIFY
 execute 'source' fnameescape(expand('~/.config/nvim/fortify.vim'))
 
 " FZF
-let g:fzf_layout = { 'window': 'lua require("window").floating_window(false,0.8,0.7)' }
-"let bg_color = synIDattr(synIDtrans(hlID("Normal")), "bg#")
-let bg_color = "#1b2b34"
-let $FZF_DEFAULT_OPTS='--no-inline-info --layout=reverse --margin=1,2 --color=dark ' .
-    \ '--color=fg:#d0d0d0,bg:'.bg_color.',hl:#0088ff '.
-    \ '--color=fg+:#ffc600,bg+:'.bg_color.',hl+:#ffc600 '.
-    \ '--color=marker:#88FF88,spinner:#967efb,header:#0088ff '.
-    \ '--color=info:'.bg_color.',prompt:#0088ff,pointer:#0088ff'
+let g:fzf_layout = { 'window': 'lua require("window").floating_window(false,0.8,0.8)' }
+let $FZF_DEFAULT_OPTS='--no-inline-info --layout=reverse --margin=1,2 --color=dark '.
+    \ '--color=fg:'.grey_color.',bg:'.cobalt1_color.',hl:'.blue_color.' '.
+    \ '--color=fg+:'.yellow_color.',bg+:'.cobalt1_color.',hl+:'.yellow_color.' '.
+    \ '--color=marker:'.green_color.',spinner:'.orange_color.',header:'.blue_color.' '.
+    \ '--color=info:'.cobalt1_color.',prompt:'.blue_color.',pointer:'.blue_color
+
+echom $FZF_DEFAULT_OPTS
 
 nnoremap <leader>f :call fzf#vim#files('.', {'options': '--prompt ""'})<Return>
 nnoremap <leader>h :FZFFreshMru --prompt ""<Return>
@@ -63,7 +74,7 @@ nnoremap <leader>/ :call fzf#vim#search_history()<Return>
 nnoremap <leader>: :call fzf#vim#command_history()<Return>
 
 " INDENTLINE
-let g:indentLine_color_gui = '#17252c'
+let g:indentLine_color_gui = cobalt2_color
 let g:indentLine_fileTypeExclude = g:special_buffers 
 let g:indentLine_faster = 1
 let g:indentLine_conceallevel = 2
@@ -175,7 +186,7 @@ nmap <leader>vf :Vista finder<Return>
 lua require('colorizer').setup()
 
 " VIM-PLUG
-let g:plug_window = 'lua require("window").floating_window(true)'
+let g:plug_window = 'lua require("window").floating_window(true,0.8,0.8)'
 autocmd FileType vim-plug set nocursorline
 
 " VIM-SMOOTHIE
@@ -256,7 +267,6 @@ let g:buftabline_indicators = 1
 let g:buftabline_separators = 1
 
 " CODEQL.NVIM
-"let g:codeql_search_path = ['~/codeql-home/codeql-repo', '~/codeql-home/pwntester-repo']
 let g:codeql_mem_opts = ["--threads", "1", "-J-Xmx8192M", "--off-heap-ram=8192", "-v", "--log-to-stderr"]
 
 " NVIM-LSP

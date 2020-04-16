@@ -109,20 +109,6 @@ augroup vimrc
     autocmd VimLeave * wshada!
 augroup END
 
-augroup active_win 
-    " dont show column
-    autocmd BufEnter *.* :set colorcolumn=0
-
-    " highlight active window
-    autocmd FocusGained,VimEnter,WinEnter,TermEnter * set winhighlight=EndOfBuffer:EndOfBuffer,SignColumn:Normal,VertSplit:EndOfBuffer,Normal:Normal
-    autocmd FocusLost,WinLeave * set winhighlight=EndOfBuffer:EndOfBufferNC,SignColumn:NormalNC,VertSplit:EndOfBufferNC,Normal:NormalNC
-
-    " hide statusline on non-current windows
-    autocmd FocusGained,VimEnter,WinEnter,BufEnter * call StatusLine()
-    autocmd FocusLost,WinLeave,BufLeave * call StatusLineNC()
-
-augroup END
-
 " }}}
 
 " ================ MAPPINGS ==================== {{{
@@ -351,6 +337,11 @@ endfunction
 autocmd VimEnter * call SetAliases()
 " }}}
 
+" ================ HELPER FUNCTIONS ====================== {{{
+function! GetColorFromHighlight(hl, element) abort
+    return synIDattr(synIDtrans(hlID(a:hl)), a:element.'#')
+endfunction
+
 " ================ PLUGIN SETUP ======================== {{{
 execute 'source' fnameescape(expand('~/.config/nvim/plugins.vim'))
 
@@ -365,6 +356,23 @@ inoremap <silent><expr> <C-k> pumvisible() ? "\<C-p>" : ''
 
 " ================ STATUSLINE ======================== {{{
 execute 'source' fnameescape(expand('~/.config/nvim/statusline.vim'))
+
+" }}}
+
+" ================ WINDOW DIMMING ======================== {{{
+augroup active_win 
+    " dont show column
+    autocmd BufEnter *.* :set colorcolumn=0
+
+    " highlight active window
+    autocmd FocusGained,VimEnter,WinEnter,TermEnter * set winhighlight=EndOfBuffer:EndOfBuffer,SignColumn:Normal,VertSplit:EndOfBuffer,Normal:Normal
+    autocmd FocusLost,WinLeave * set winhighlight=EndOfBuffer:EndOfBufferNC,SignColumn:NormalNC,VertSplit:EndOfBufferNC,Normal:NormalNC
+
+    " hide statusline on non-current windows
+    autocmd FocusGained,VimEnter,WinEnter,BufEnter * call StatusLine()
+    autocmd FocusLost,WinLeave,BufLeave * call StatusLineNC()
+
+augroup END
 
 " }}}
 
