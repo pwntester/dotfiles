@@ -14,6 +14,7 @@ call plug#begin('~/.nvim/plugged')
     Plug 'tomtom/tcomment_vim'
     Plug 'romainl/vim-cool'
     Plug 'Yggdroot/indentLine'
+    Plug 'lukas-reineke/indent-blankline.nvim'
     Plug 'matze/vim-move'
     Plug 'ap/vim-buftabline'
     Plug 'chaoren/vim-wordmotion'
@@ -64,8 +65,8 @@ nnoremap <leader>: :call fzf#vim#command_history()<Return>
 " INDENTLINE
 let g:indentLine_color_gui = '#17252c'
 let g:indentLine_fileTypeExclude = g:special_buffers 
-let g:indentLine_faster     = 1
-let g:indentLine_setConceal = 0
+let g:indentLine_faster = 1
+let g:indentLine_conceallevel = 2
 
 " VIM-MOVE
 " run `cat -v` in terminal and then the <Opt> combos to find out the char to use
