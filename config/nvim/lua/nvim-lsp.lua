@@ -5,15 +5,15 @@ local validate = vim.validate
 local protocol = require 'vim.lsp.protocol'
 local util = require 'vim.lsp.util'
 local api = vim.api
-local lsps_actions = {}
 
+local lsps_actions = {}
 local severity_highlights = {
     [1] = 'LspDiagnosticsError',
     [2] = 'LspDiagnosticsWarning'
 }
 
+cursor_pos = {}
 -- copied from https://github.com/neovim/neovim/blob/6e8c5779cf960893850501e4871dc9be671db298/runtime/lua/vim/lsp/util.lua#L560
-validate = vim.validate
 all_buffer_diagnostics = {}
 diagnostic_ns = vim.api.nvim_create_namespace("vim_lsp_diagnostics")
 
@@ -402,6 +402,17 @@ function show_diagnostics_details()
       end
     end
     require("window").popup_window(lines, 'plaintext', {}, true)
+end
+
+function format_document()
+  cursor_pos = vim.fn.getpos(".")    
+  vim.lsp.buf.formatting()
+end
+
+function formatting_callback(_, _, result)
+  if not result then return end
+  util.apply_text_edits(result)
+  vim.fn.setpos(".", cursor_pos)
 end
 
 function hover_callback(_, method, result)
