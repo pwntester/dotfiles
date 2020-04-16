@@ -234,8 +234,12 @@ function ToggleDirvish(...)
             return
         endif
     endfor
-    if a:0 > 0 
-        execute "leftabove 30 vsplit | silent Dirvish ".a:1
+    if a:0 > 0
+        if a:1 == "%"
+            execute "leftabove 30 vsplit | silent Dirvish ".getreg("%")
+        else
+            execute "leftabove 30 vsplit | silent Dirvish ".a:1
+        endif
     else
         execute "leftabove 30 vsplit | silent Dirvish"
     endif
