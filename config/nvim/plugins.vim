@@ -63,8 +63,6 @@ let $FZF_DEFAULT_OPTS='--no-inline-info --layout=reverse --margin=1,2 --color=da
     \ '--color=marker:'.green_color.',spinner:'.orange_color.',header:'.blue_color.' '.
     \ '--color=info:'.cobalt1_color.',prompt:'.blue_color.',pointer:'.blue_color
 
-echom $FZF_DEFAULT_OPTS
-
 nnoremap <leader>f :call fzf#vim#files('.', {'options': '--prompt ""'})<Return>
 nnoremap <leader>h :FZFFreshMru --prompt ""<Return>
 nnoremap <leader>c :BCommits<Return>
