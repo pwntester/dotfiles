@@ -32,8 +32,7 @@ call plug#begin('~/.nvim/plugged')
     Plug 'justinmk/vim-dirvish'
     Plug 'lifepillar/vim-colortemplate'
     Plug 'neovim/nvim-lsp'
-    "Plug 'tmsvg/pear-tree'
-    Plug 'doums/coBra'
+    Plug 'tmsvg/pear-tree'
     
     " Local plugins
     Plug '/usr/local/opt/fzf'
