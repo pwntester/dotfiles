@@ -119,7 +119,7 @@ function M.popup_window(contents, filetype, opts, border)
     api.nvim_buf_set_option(content_buf, 'filetype', filetype)
   end
   api.nvim_buf_set_option(content_buf, 'modifiable', false)
-  local content_opts = make_popup_options(width, height, opts)
+  local content_opts = M.make_popup_options(width, height, opts)
   if border and content_opts.anchor == 'SE' then
       content_opts.row = content_opts.row - 1 
       content_opts.col = content_opts.col - 1 
@@ -160,7 +160,7 @@ function M.popup_window(contents, filetype, opts, border)
     end
     api.nvim_buf_add_highlight(border_buf, 0, 'InvertedPopupWindowBorder', border_height-1, 0, -1)
     api.nvim_command("autocmd BufWipeout <buffer> exe 'bw '"..border_buf)
-    border_opts = make_popup_options(border_width, border_height, opts)
+    border_opts = M.make_popup_options(border_width, border_height, opts)
     border_win = api.nvim_open_win(border_buf, false, border_opts)
     api.nvim_win_set_option(border_win, "winhighlight", "Normal:NormalFloat")
     api.nvim_win_set_option(border_win, 'cursorline', false)
@@ -170,7 +170,7 @@ function M.popup_window(contents, filetype, opts, border)
   vim.lsp.util.close_preview_autocmd({"CursorMoved", "BufHidden", "InsertCharPre"}, content_win)
 end
 
-local function make_popup_options(width, height, opts)
+function M.make_popup_options(width, height, opts)
   validate {
     opts = { opts, 't', true };
   }
