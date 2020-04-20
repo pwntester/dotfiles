@@ -103,6 +103,8 @@ augroup vimrc
     autocmd FocusGained,BufEnter * checktime
     " spell check
     autocmd FileType markdown nested setlocal spell complete+=kspell
+    " disable concealing
+    autocmd BufEnter * nested if &ft == 'markdown'| setlocal conceallevel=0| endif
     " mark qf as not listed
     autocmd FileType qf setlocal nobuflisted 
     " force write shada on leaving nvim
@@ -411,9 +413,5 @@ au BufEnter *.md setl signcolumn=no
 syntax enable
 set background=dark
 colorscheme cobange
-
-hi mkdCode guifg=#88FF88 guibg=#101a20
-hi PopupWindowBorder guibg=#1b2b34 guifg=#101a20
-hi InvertedPopupWindowBorder guifg=#1b2b34 guibg=#101a20
 
 " }}}
