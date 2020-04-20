@@ -119,7 +119,7 @@ function M.popup_window(contents, filetype, opts, border)
     api.nvim_buf_set_option(content_buf, 'filetype', filetype)
   end
   api.nvim_buf_set_option(content_buf, 'modifiable', false)
-  local content_opts = M.make_popup_options(width, height, opts)
+  local content_opts = make_popup_options(width, height, opts)
   if border and content_opts.anchor == 'SE' then
       content_opts.row = content_opts.row - 1 
       content_opts.col = content_opts.col - 1 
@@ -160,7 +160,7 @@ function M.popup_window(contents, filetype, opts, border)
     end
     api.nvim_buf_add_highlight(border_buf, 0, 'InvertedPopupWindowBorder', border_height-1, 0, -1)
     api.nvim_command("autocmd BufWipeout <buffer> exe 'bw '"..border_buf)
-    border_opts = M.make_popup_options(border_width, border_height, opts)
+    border_opts = make_popup_options(border_width, border_height, opts)
     border_win = api.nvim_open_win(border_buf, false, border_opts)
     api.nvim_win_set_option(border_win, "winhighlight", "Normal:NormalFloat")
     api.nvim_win_set_option(border_win, 'cursorline', false)
@@ -170,7 +170,7 @@ function M.popup_window(contents, filetype, opts, border)
   vim.lsp.util.close_preview_autocmd({"CursorMoved", "BufHidden", "InsertCharPre"}, content_win)
 end
 
-function M.make_popup_options(width, height, opts)
+local function make_popup_options(width, height, opts)
   validate {
     opts = { opts, 't', true };
   }
@@ -214,77 +214,5 @@ function M.make_popup_options(width, height, opts)
     width = width,
   }
 end
-
--- function M.dettach_window(win, width_per, heigth_per, border)
---   validate {
---     win = { win, 'n', false};
---     width_per = { width_per, 'n', true };
---     height_per = { height_per, 'n', true };
---     border = { border, 'b', true };
---   }
---   border = border or false
---   width_per = width_per or 0.7
---   height_per = height_per or 0.6
---
---   local vim_width = api.nvim_get_option("columns")
---   local vim_height = api.nvim_get_option("lines")
---   local win_height = math.max(math.ceil(vim_height * height_per), 30)
---   local win_width = math.ceil(vim_width * width_per)
---   if (vim_width < 150) then win_width = math.ceil(vim_width - 8) end
---
---   -- border window
---   if border then
---     local border_opts = {
---         relative = "editor",
---         width = win_width,
---         height = win_height,
---         row = math.ceil((vim_height - win_height) / 2),
---         col = math.ceil((vim_width - win_width) / 2),
---         style = 'minimal'
---     }
---     -- local top = "╭"..string.rep("─", win_width - 2).."╮"
---     -- local mid = "│"..string.rep(" ", win_width - 2).."│"
---     -- local bot = "╰"..string.rep("─", win_width - 2).."╯"
---     local top = "▛"..string.rep("▀", win_width - 2).."▜"
---     local mid = "▌"..string.rep(" ", win_width - 2).."▐"
---     local bot = "▙"..string.rep("▄", win_width - 2).."▟"
---     local lines = { top }
---     for i=1,win_height-2 do
---         table.insert(lines, mid)
---     end
---     table.insert(lines, bot)
---     local border_buf = api.nvim_create_buf(false, true)
---     api.nvim_buf_set_lines(border_buf, 0, -1, true, lines)
---     for i=0,win_height-1 do
---       api.nvim_buf_add_highlight(border_buf, 0, 'PopupWindowBorder', i, 0, -1)
---     end
---     border_win = api.nvim_open_win(border_buf, false, border_opts)
---     api.nvim_win_set_option(border_win, "winhighlight", "Normal:Normal")
---     api.nvim_win_set_option(border_win, 'wrap', false)
---     api.nvim_win_set_option(border_win, 'number', false)
---     api.nvim_win_set_option(border_win, 'relativenumber', false)
---     api.nvim_win_set_option(border_win, 'signcolumn', 'no')
---     api.nvim_command("autocmd BufWipeout <buffer> exe 'bw '"..border_buf)
---   end
---
---   -- dettached window
---   local opts = {
---     relative = "editor",
---     width = win_width - 4,
---     height = win_height - 2,
---     row = 1 + math.ceil((vim_height - win_height) / 2),
---     col = 2 + math.ceil((vim_width - win_width) / 2),
---     style = 'minimal'
---   }
---
---   api.nvim_win_set_config(win, opts)
---   api.nvim_set_current_win(win)
---   api.nvim_win_set_option(win, "winhighlight", "Normal:Normal")
---
---   if border then
---     -- close border window when leaving the main buffer
---     api.nvim_command("autocmd BufLeave <buffer> ++once lua pcall(vim.api.nvim_win_close, "..border_win..", true)")
---   end
--- end
 
 return M
