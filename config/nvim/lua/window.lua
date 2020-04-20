@@ -165,9 +165,9 @@ function M.popup_window(contents, filetype, opts, border)
     api.nvim_win_set_option(border_win, "winhighlight", "Normal:NormalFloat")
     api.nvim_win_set_option(border_win, 'cursorline', false)
 
-    vim.lsp.util.close_preview_autocmd({"CursorMoved", "BufHidden", "InsertCharPre"}, border_win)
+    vim.lsp.util.close_preview_autocmd({"CursorMoved", "BufHidden", "InsertCharPre", "WinLeave", "FocusLost"}, border_win)
   end
-  vim.lsp.util.close_preview_autocmd({"CursorMoved", "BufHidden", "InsertCharPre"}, content_win)
+  vim.lsp.util.close_preview_autocmd({"CursorMoved", "BufHidden", "InsertCharPre", "WinLeave", "FocusLost"}, content_win)
 end
 
 function M.make_popup_options(width, height, opts)
