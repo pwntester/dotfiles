@@ -104,7 +104,7 @@ augroup vimrc
     " spell check
     autocmd FileType markdown nested setlocal spell complete+=kspell
     " disable concealing
-    autocmd BufEnter * nested if &ft == 'markdown'| setlocal conceallevel=0| endif
+    autocmd BufEnter * nested if &ft == 'markdown'| setlocal conceallevel=0 | endif
     " mark qf as not listed
     autocmd FileType qf setlocal nobuflisted 
     " force write shada on leaving nvim
@@ -388,15 +388,16 @@ function! MarkdownBlocks()
     for l:lnum in range(1, len(getline(1, "$")))
         " detect the start fo a code block
         let l:line = getline(l:lnum)
-        if l:line == "```" || l:line =~ "^```.*$" || l:continue
+        if (l:continue == 0 && l:line =~ "^```.*$") || (l:line !~ "^```.*$" && l:continue)
             " continue placing signs, until the block stops
             let l:continue = 1
             " place sign
             execute "sign place ".l:lnum." line=".l:lnum." name=codeblock file=".expand("%")
+        elseif l:line == "```" && l:continue
+            " place sign
+            execute "sign place ".l:lnum." line=".l:lnum." name=codeblock file=".expand("%")
             " stop placing signs
-            if l:line =~ "^```$"
-                let l:continue = 0
-            endif
+            let l:continue = 0
         endif
     endfor
 endfunction

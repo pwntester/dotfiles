@@ -72,7 +72,7 @@ nnoremap <leader>: :call fzf#vim#command_history()<Return>
 
 " INDENTLINE
 let g:indentLine_color_gui = cobalt2_color
-let g:indentLine_fileTypeExclude = g:special_buffers 
+let g:indentLine_fileTypeExclude = g:special_buffers + ['markdown']
 let g:indentLine_faster = 1
 let g:indentLine_conceallevel = 2
 
