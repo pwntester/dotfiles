@@ -33,6 +33,7 @@ call plug#begin('~/.nvim/plugged')
     Plug 'lifepillar/vim-colortemplate'
     Plug 'neovim/nvim-lsp'
     Plug 'tmsvg/pear-tree'
+    Plug 'plasticboy/vim-markdown'
     
     " Local plugins
     Plug '/usr/local/opt/fzf'
@@ -141,11 +142,13 @@ let g:go_highlight_diagnostic_warnings = 0
 autocmd FileType go nmap <buffer> <leader>r :call ReuseVimGoTerm('GoRun')<Return>
 
 " VIM-POLYGLOT
-let g:polyglot_disabled = ["jsx", "hive"]
+let g:polyglot_disabled = ["jsx", "hive", "markdown"]
 let g:no_csv_maps = 1
+
+" VIM-MARKDOWN
 let g:vim_markdown_folding_disabled = 1
-let g:vim_markdown_conceal = 0
 let g:vim_markdown_fenced_languages = ['csharp=cs', 'c++=cpp', 'viml=vim', 'bash=sh', 'ini=dosini']
+let g:vim_markdown_conceal = 1
 
 " VIM-LION
 let g:lion_squeeze_spaces = 1 " align around a given char: gl<character>
