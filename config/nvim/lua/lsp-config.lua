@@ -27,10 +27,10 @@ local function setup()
     local configs = require'nvim_lsp/configs'
 
     -- Go
-    --nvim_lsp.gopls.setup{}
+    nvim_lsp.gopls.setup{}
 
     -- Clangd
-    --nvim_lsp.clangd.setup{}
+    nvim_lsp.clangd.setup{}
 
     -- CodeQL 
     nvim_lsp.codeqlls.setup{
