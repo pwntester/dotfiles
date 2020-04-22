@@ -24,10 +24,10 @@ local function setup()
     local configs = require'nvim_lsp/configs'
 
     -- Go
-    nvim_lsp.gopls.setup{}
+    --nvim_lsp.gopls.setup{}
 
     -- Clangd
-    nvim_lsp.clangd.setup{}
+    --nvim_lsp.clangd.setup{}
 
     -- CodeQL 
     nvim_lsp.codeqlls.setup{
@@ -38,7 +38,7 @@ local function setup()
             ["textDocument/formatting"] = formatting_callback
         };
         settings = {
-            search_path = {'~/codeql-home/codeql-repo', '~/codeql-home/pwntester-repo'};
+            search_path = {'~/codeql-home/codeql-repo', '~/codeql-home/pwntester-repo', '~/codeql-home/codeql-go-repo'};
         };
     }
 
