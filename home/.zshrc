@@ -90,6 +90,7 @@ export NODE_PATH="/usr/local/lib/node"
 export ANT_OPTS="-XX:MaxPermSize=256m" 
 export GOPATH=$(go env GOPATH)
 export PATH=$HOME/bin:/usr/local/bin:/usr/local/sbin:$PATH
+export PATH=$PATH:~/codeql-home/cli
 export PATH=$PATH:/usr/local/share/npm/bin
 export PATH=$PATH:/Applications/Fortify/Fortify_SCA_and_Apps_19.2.0/bin
 export PATH=$PATH:$(go env GOPATH)/bin

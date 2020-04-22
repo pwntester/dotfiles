@@ -303,4 +303,23 @@ let g:java_mark_braces_in_parens_as_errors = 1
 " LazyGit
 nnoremap <Leader>g :echo luaeval("require('window').floating_window(false,0.9,0.9)") <bar> call termopen("lazygit")<Return>
 
+" COMPLETION-NVIM
+let g:completion_chain_complete_list = {
+    \ 'markdown': [
+    \    {'mode': 'keyn'},
+    \],
+    \ 'codeql': [
+    \    {'complete_items': ['lsp', 'snippet']},
+    \    {'mode': '<keyn>'},
+    \    {'mode': '<keyp>'}
+    \],
+    \ 'default': [
+    \    {'complete_items': ['lsp', 'snippet']},
+    \    {'mode': '<c-p>'},
+    \    {'mode': '<c-n>'}
+    \]
+\}
+imap <c-j> <cmd>lua require'source'.prevCompletion()<CR>
+imap <c-k> <cmd>lua require'source'.nextCompletion()<CR>
+
 " }}}

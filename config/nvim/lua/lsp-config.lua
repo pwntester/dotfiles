@@ -16,6 +16,7 @@ local function on_attach_callback(client, bufnr)
     api.nvim_command [[autocmd CursorMoved <buffer> lua vim.lsp.util.buf_clear_references()]] 
     api.nvim_command [[autocmd CursorHold  <buffer> lua vim.lsp.buf.hover() ]]
     api.nvim_command [[autocmd CursorHoldI <buffer> lua vim.lsp.buf.hover() ]]
+    api.nvim_command [[autocmd Filetype lua setlocal omnifunc=v:lua.vim.lsp.omnifunc]]
 
     -- completion-nvim
     require'completion'.on_attach()
@@ -26,11 +27,38 @@ local function setup()
     local nvim_lsp = require 'nvim_lsp'
     local configs = require'nvim_lsp/configs'
 
+    nvim_lsp.sumneko_lua.setup{
+        cmd = { 
+            "/Users/pwntester/.cache/nvim/nvim_lsp/sumneko_lua/lua-language-server/bin/macOS/lua-language-server",
+            "-E", 
+            "/Users/pwntester/.cache/nvim/nvim_lsp/sumneko_lua/lua-language-server/main.lua"
+        };
+        on_attach = on_attach_callback;
+        callbacks = { 
+            ["textDocument/publishDiagnostics"] = diagnostics_callback,
+            ["textDocument/hover"] = hover_callback,
+            ["textDocument/formatting"] = formatting_callback
+        };
+    }
     -- Go
-    nvim_lsp.gopls.setup{}
+    nvim_lsp.gopls.setup{
+        on_attach = on_attach_callback;
+        callbacks = { 
+            ["textDocument/publishDiagnostics"] = diagnostics_callback,
+            ["textDocument/hover"] = hover_callback,
+            ["textDocument/formatting"] = formatting_callback
+        };
+    }
 
     -- Clangd
-    nvim_lsp.clangd.setup{}
+    nvim_lsp.clangd.setup{
+        on_attach = on_attach_callback;
+        callbacks = { 
+            ["textDocument/publishDiagnostics"] = diagnostics_callback,
+            ["textDocument/hover"] = hover_callback,
+            ["textDocument/formatting"] = formatting_callback
+        };
+    }
 
     -- CodeQL 
     nvim_lsp.codeqlls.setup{
