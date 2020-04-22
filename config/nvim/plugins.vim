@@ -3,8 +3,9 @@ call plug#begin('~/.nvim/plugged')
 
     " Github plugins
     Plug 'fatih/vim-go',                    { 'do': ':GoInstallBinaries' }
-    Plug 'Shougo/deoplete.nvim',            { 'do': ':UpdateRemotePlugins'} 
-    Plug 'Shougo/deoplete-lsp'
+    "Plug 'Shougo/deoplete.nvim',            { 'do': ':UpdateRemotePlugins'} 
+    "Plug 'Shougo/deoplete-lsp'
+    Plug 'haorenW1025/completion-nvim'
     Plug 'Shougo/neco-vim',
     Plug 'junegunn/fzf.vim' 
     Plug 'pbogut/fzf-mru.vim'
@@ -167,12 +168,12 @@ function! s:enableRainbowParentheses() abort
 endfunction
 
 " DEOPLETE
-autocmd BufEnter * nested if nvim_buf_line_count(0) < 10000 | call deoplete#enable() | endif
-let g:deoplete#enable_at_startup = 0
-call deoplete#custom#option({
-    \ 'auto_complete_delay': 300,
-    \ 'smart_case': v:true,
-    \ })
+" autocmd BufEnter * nested if nvim_buf_line_count(0) < 10000 | call deoplete#enable() | endif
+" let g:deoplete#enable_at_startup = 0
+" call deoplete#custom#option({
+"     \ 'auto_complete_delay': 300,
+"     \ 'smart_case': v:true,
+"     \ })
 
 " VISTA
 let g:vista_default_executive = 'nvim_lsp'
