@@ -16,6 +16,9 @@ local function on_attach_callback(client, bufnr)
     api.nvim_command [[autocmd CursorMoved <buffer> lua vim.lsp.util.buf_clear_references()]] 
     api.nvim_command [[autocmd CursorHold  <buffer> lua vim.lsp.buf.hover() ]]
     api.nvim_command [[autocmd CursorHoldI <buffer> lua vim.lsp.buf.hover() ]]
+
+    -- completion-nvim
+    require'completion'.on_attach()
 end
 
 local function setup()

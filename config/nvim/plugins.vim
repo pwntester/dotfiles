@@ -6,6 +6,7 @@ call plug#begin('~/.nvim/plugged')
     "Plug 'Shougo/deoplete.nvim',            { 'do': ':UpdateRemotePlugins'} 
     "Plug 'Shougo/deoplete-lsp'
     Plug 'haorenW1025/completion-nvim'
+    Plug 'nvim-treesitter/completion-treesitter'
     Plug 'Shougo/neco-vim',
     Plug 'junegunn/fzf.vim' 
     Plug 'pbogut/fzf-mru.vim'
