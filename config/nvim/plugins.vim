@@ -33,7 +33,6 @@ call plug#begin('~/.nvim/plugged')
     Plug 'liuchengxu/vista.vim'
     Plug 'justinmk/vim-dirvish'
     Plug 'lifepillar/vim-colortemplate'
-    Plug 'neovim/nvim-lsp'
     Plug 'tmsvg/pear-tree'
     Plug 'plasticboy/vim-markdown'
     
@@ -42,6 +41,7 @@ call plug#begin('~/.nvim/plugged')
     Plug fnameescape(expand('~/Dev/cobange.vim'))
     Plug fnameescape(expand('~/Dev/codeql.nvim'))
     Plug fnameescape(expand('~/Dev/fortify.nvim'))
+    Plug fnameescape(expand('~/Dev/nvim-lsp'))
 call plug#end()
 
 " Make colors available to getColorFromHighlight"
@@ -230,7 +230,7 @@ augroup dirvish_config
     autocmd ShellCmdPost * if nvim_buf_get_option(0, 'filetype') == 'dirvish' | Dirvish % | endif
 
     " fix dirvish win width
-    autocmd FileType dirvish :call nvim_win_set_option(0, 'winfixwidth', v:true)
+    autocmd FileType dirvish call nvim_win_set_option(0, 'winfixwidth', v:true)
 
     " status line
     autocmd FileType dirvish call StatusLine()
@@ -300,26 +300,32 @@ let g:java_highlight_functions = 1
 let g:java_highlight_debug = 1 
 let g:java_mark_braces_in_parens_as_errors = 1
 
-" LazyGit
+" LAZYGIT 
 nnoremap <Leader>g :echo luaeval("require('window').floating_window(false,0.9,0.9)") <bar> call termopen("lazygit")<Return>
 
 " COMPLETION-NVIM
 let g:completion_chain_complete_list = {
     \ 'markdown': [
-    \    {'mode': 'keyn'},
+    \    {'mode': 'keyp'},
+    \    {'mode': '<c-p'},
     \],
-    \ 'codeql': [
-    \    {'complete_items': ['lsp', 'snippet']},
-    \    {'mode': '<keyn>'},
-    \    {'mode': '<keyp>'}
+    \'lua' : [
+    \	{'complete_items': ['ts']}
     \],
-    \ 'default': [
-    \    {'complete_items': ['lsp', 'snippet']},
-    \    {'mode': '<c-p>'},
-    \    {'mode': '<c-n>'}
-    \]
+    \'ql' : [
+    \	{'complete_items': ['ts', 'lsp']}
+    \],
+    \'default' : {
+    \	'default' : [
+    \		{'complete_items' : ['lsp', 'snippet']},
+    \       {'mode': 'keyp'},
+    \		{'mode' : 'file'}
+    \	],
+    \	'comment' : [],
+    \	'string' : []
+    \},
 \}
-imap <c-j> <cmd>lua require'source'.prevCompletion()<CR>
-imap <c-k> <cmd>lua require'source'.nextCompletion()<CR>
+let g:completion_auto_change_source = 1
+autocmd BufEnter * lua require'completion'.on_attach()
 
 " }}}

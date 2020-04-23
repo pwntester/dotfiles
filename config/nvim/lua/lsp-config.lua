@@ -1,9 +1,10 @@
 require 'nvim-lsp'
 
+local vim = vim
 local api = vim.api
 
 -- configure buffer after LSP client is attached
-local function on_attach_callback(client, bufnr)
+local function on_attach_callback(_, bufnr)
     api.nvim_buf_set_keymap(bufnr, "n", "gD", "<Cmd>lua show_diagnostics_details()<CR>", { silent = true; })
     api.nvim_buf_set_keymap(bufnr, "n", "gd", "<Cmd>lua vim.lsp.buf.definition()<CR>", { silent = true; })
     api.nvim_buf_set_keymap(bufnr, "n", "gi", "<Cmd>lua vim.lsp.buf.implementation()<CR>", { silent = true; })
@@ -11,15 +12,12 @@ local function on_attach_callback(client, bufnr)
     api.nvim_buf_set_keymap(bufnr, "n", "gr", "<Cmd>lua vim.lsp.buf.references()<CR>", { silent = true; })
     api.nvim_buf_set_keymap(bufnr, "n", "gF", "<Cmd>lua format_document()<CR>", { silent = true; })
     api.nvim_buf_set_keymap(bufnr, "n", "ga", "<Cmd>lua request_code_actions()<CR>", { silent = true; })
-    api.nvim_command [[autocmd CursorHold  <buffer> lua vim.lsp.buf.document_highlight()]]
-    api.nvim_command [[autocmd CursorHoldI <buffer> lua vim.lsp.buf.document_highlight()]]
-    api.nvim_command [[autocmd CursorMoved <buffer> lua vim.lsp.util.buf_clear_references()]] 
-    api.nvim_command [[autocmd CursorHold  <buffer> lua vim.lsp.buf.hover() ]]
-    api.nvim_command [[autocmd CursorHoldI <buffer> lua vim.lsp.buf.hover() ]]
+    -- api.nvim_command [[autocmd CursorHold  <buffer> lua vim.lsp.buf.document_highlight()]]
+    -- api.nvim_command [[autocmd CursorHoldI <buffer> lua vim.lsp.buf.document_highlight()]]
+    -- api.nvim_command [[autocmd CursorMoved <buffer> lua vim.lsp.util.buf_clear_references()]]
+    -- api.nvim_command [[autocmd CursorHold  <buffer> lua vim.lsp.buf.hover() ]]
+    -- api.nvim_command [[autocmd CursorHoldI <buffer> lua vim.lsp.buf.hover() ]]
     api.nvim_command [[autocmd Filetype lua setlocal omnifunc=v:lua.vim.lsp.omnifunc]]
-
-    -- completion-nvim
-    require'completion'.on_attach()
 end
 
 local function setup()
@@ -28,13 +26,13 @@ local function setup()
     local configs = require'nvim_lsp/configs'
 
     nvim_lsp.sumneko_lua.setup{
-        cmd = { 
+        cmd = {
             "/Users/pwntester/.cache/nvim/nvim_lsp/sumneko_lua/lua-language-server/bin/macOS/lua-language-server",
-            "-E", 
+            "-E",
             "/Users/pwntester/.cache/nvim/nvim_lsp/sumneko_lua/lua-language-server/main.lua"
         };
         on_attach = on_attach_callback;
-        callbacks = { 
+        callbacks = {
             ["textDocument/publishDiagnostics"] = diagnostics_callback,
             ["textDocument/hover"] = hover_callback,
             ["textDocument/formatting"] = formatting_callback
@@ -43,7 +41,7 @@ local function setup()
     -- Go
     nvim_lsp.gopls.setup{
         on_attach = on_attach_callback;
-        callbacks = { 
+        callbacks = {
             ["textDocument/publishDiagnostics"] = diagnostics_callback,
             ["textDocument/hover"] = hover_callback,
             ["textDocument/formatting"] = formatting_callback
@@ -53,17 +51,17 @@ local function setup()
     -- Clangd
     nvim_lsp.clangd.setup{
         on_attach = on_attach_callback;
-        callbacks = { 
+        callbacks = {
             ["textDocument/publishDiagnostics"] = diagnostics_callback,
             ["textDocument/hover"] = hover_callback,
             ["textDocument/formatting"] = formatting_callback
         };
     }
 
-    -- CodeQL 
+    -- CodeQL
     nvim_lsp.codeqlls.setup{
         on_attach = on_attach_callback;
-        callbacks = { 
+        callbacks = {
             ["textDocument/publishDiagnostics"] = diagnostics_callback,
             ["textDocument/hover"] = hover_callback,
             ["textDocument/formatting"] = formatting_callback
@@ -87,7 +85,7 @@ local function setup()
     end
     nvim_lsp.fortify_lsp.setup{
         on_attach = on_attach_callback;
-        callbacks = { 
+        callbacks = {
             ["textDocument/publishDiagnostics"] = diagnostics_callback,
             ["textDocument/hover"] = hover_callback
         };
@@ -111,7 +109,7 @@ local function setup()
     end
     nvim_lsp.java_lsp.setup{
         on_attach = on_attach_callback;
-        callbacks = { 
+        callbacks = {
             ["language/status"] = lsp4j_status_callback,
             ["textDocument/publishDiagnostics"] = diagnostics_callback,
             ["textDocument/hover"] = hover_callback
@@ -119,7 +117,6 @@ local function setup()
     }
 end
 
---- @export
 return {
 	setup = setup;
 }
