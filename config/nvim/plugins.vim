@@ -6,7 +6,7 @@ call plug#begin('~/.nvim/plugged')
     "Plug 'Shougo/deoplete.nvim',            { 'do': ':UpdateRemotePlugins'} 
     "Plug 'Shougo/deoplete-lsp'
     Plug 'haorenW1025/completion-nvim'
-    Plug 'nvim-treesitter/completion-treesitter'
+    " Plug 'nvim-treesitter/completion-treesitter'
     Plug 'Shougo/neco-vim',
     Plug 'junegunn/fzf.vim' 
     Plug 'pbogut/fzf-mru.vim'
@@ -35,13 +35,13 @@ call plug#begin('~/.nvim/plugged')
     Plug 'lifepillar/vim-colortemplate'
     Plug 'tmsvg/pear-tree'
     Plug 'plasticboy/vim-markdown'
+    Plug 'neovim/nvim-lsp'
     
     " Local plugins
     Plug '/usr/local/opt/fzf'
     Plug fnameescape(expand('~/Dev/cobange.vim'))
     Plug fnameescape(expand('~/Dev/codeql.nvim'))
     Plug fnameescape(expand('~/Dev/fortify.nvim'))
-    Plug fnameescape(expand('~/Dev/nvim-lsp'))
 call plug#end()
 
 " Make colors available to getColorFromHighlight"
