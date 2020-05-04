@@ -35,13 +35,13 @@ call plug#begin('~/.nvim/plugged')
     Plug 'lifepillar/vim-colortemplate'
     Plug 'tmsvg/pear-tree'
     Plug 'plasticboy/vim-markdown'
+    Plug 'neovim/nvim-lsp'
     
     " Local plugins
     Plug '/usr/local/opt/fzf'
     Plug fnameescape(expand('~/Dev/cobange.vim'))
     Plug fnameescape(expand('~/Dev/codeql.nvim'))
     Plug fnameescape(expand('~/Dev/fortify.nvim'))
-    Plug fnameescape(expand('~/Dev/nvim-lsp'))
 call plug#end()
 
 " Make colors available to getColorFromHighlight"
@@ -313,7 +313,7 @@ let g:completion_chain_complete_list = {
     \	{'complete_items': ['ts']}
     \],
     \'ql' : [
-    \	{'complete_items': ['ts', 'lsp']}
+    \	{'complete_items': ['lsp', 'snippet']}
     \],
     \'default' : {
     \	'default' : [
@@ -325,7 +325,13 @@ let g:completion_chain_complete_list = {
     \	'string' : []
     \},
 \}
+" TODO: enable ql completion via TS
 let g:completion_auto_change_source = 1
 autocmd BufEnter * lua require'completion'.on_attach()
 
+augroup CompletionTS
+	autocmd CursorHold *.ql,*.qll,*.c,*.py,*.lua call completion_treesitter#highlight_usages()
+	autocmd CursorMoved *.ql,*.qll,*.c,*.py,*.lua call nvim_buf_clear_namespace(0, g:completion_ts_ns, 0, -1)
+	autocmd InsertEnter *.ql,*.qll,*.c,*.py,*.lua call nvim_buf_clear_namespace(0, g:completion_ts_ns, 0, -1)
+augroup END
 " }}}
