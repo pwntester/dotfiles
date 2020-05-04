@@ -229,8 +229,7 @@ let g:special_buffers = [
     \ 'magit',
     \ 'goterm',
     \ 'vista_kind',
-    \ 'codeqltestpanel',
-    \ 'codeqlauditpanel',
+    \ 'codeqlpanel',
     \ 'terminal'
     \ ]
 function! s:pinBuffer()
