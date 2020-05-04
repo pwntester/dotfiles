@@ -17,7 +17,7 @@ function M.floating_window(border, width_per, heigth_per)
 
   local vim_width = api.nvim_get_option("columns")
   local vim_height = api.nvim_get_option("lines")
-  local win_height = math.max(math.ceil(vim_height * height_per), 30)
+  local win_height = math.max(math.ceil(vim_height * height_per), 25)
   local win_width = math.ceil(vim_width * width_per)
   if (vim_width < 150) then win_width = math.ceil(vim_width - 8) end
 
