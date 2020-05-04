@@ -3,19 +3,20 @@ function! RedrawModeColors(mode) abort
     let bg_color = GetColorFromHighlight("Normal", "bg")
     let blue = GetColorFromHighlight("SpecialKey", "fg")
     let green = GetColorFromHighlight("Title", "fg")
-    let green2 = GetColorFromHighlight("Special", "fg")
     let orange = GetColorFromHighlight("Identifier", "fg")
     let grey = GetColorFromHighlight("PMenu", "fg")
     let grey2 = GetColorFromHighlight("Directory", "fg")
+    let yellow = GetColorFromHighlight("Function", "fg")
+
     " Normal mode
     if a:mode == 'n'
-        execute("hi MyStatuslineFilename guifg=".blue." guibg=".bg_color)
+        execute("hi MyStatuslineFilename guifg=".yellow." guibg=".bg_color)
     " Insert mode
     elseif a:mode == 'i'
         execute("hi MyStatuslineFilename guifg=".green." guibg=".bg_color)
     " Replace mode
     elseif a:mode == 'R'
-        execute("hi MyStatuslineFilename guifg=".green2." guibg=".bg_color)
+        execute("hi MyStatuslineFilename guifg=".green." guibg=".bg_color)
     " Visual mode
     elseif a:mode == 'v' || a:mode == 'V' || a:mode == '^V'
         execute("hi MyStatuslineFilename guifg=".orange." guibg=".bg_color)

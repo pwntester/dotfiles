@@ -451,4 +451,9 @@ syntax enable
 set background=dark
 colorscheme cobange
 
+highlight link htmlH1 Function
+highlight link htmlH2 Function
+highlight link htmlH3 Function
+highlight link htmlH4 Function
+
 " }}}
