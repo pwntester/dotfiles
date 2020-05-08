@@ -13,7 +13,7 @@ function! RedrawModeColors(mode) abort
         execute("hi MyStatuslineFilename guifg=".yellow." guibg=".bg_color)
     " Insert mode
     elseif a:mode == 'i'
-        execute("hi MyStatuslineFilename guifg=".green." guibg=".bg_color)
+        execute("hi MyStatuslineFilename guifg=".blue." guibg=".bg_color)
     " Replace mode
     elseif a:mode == 'R'
         execute("hi MyStatuslineFilename guifg=".green." guibg=".bg_color)

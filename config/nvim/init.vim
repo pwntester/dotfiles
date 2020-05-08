@@ -229,8 +229,7 @@ let g:special_buffers = [
     \ 'magit',
     \ 'goterm',
     \ 'vista_kind',
-    \ 'codeqltestpanel',
-    \ 'codeqlauditpanel',
+    \ 'codeqlpanel',
     \ 'terminal'
     \ ]
 function! s:pinBuffer()
@@ -378,39 +377,6 @@ augroup END
 
 " }}}
 
-" ================ MARKDOWN ======================== {{{
-function! MarkdownBlocks()
-    sign define codeblock linehl=mkdCode
-    let l:continue = 0
-    execute "sign unplace * file=".expand("%")
-
-    " iterate through each line in the buffer
-    for l:lnum in range(1, len(getline(1, "$")))
-        " detect the start fo a code block
-        let l:line = getline(l:lnum)
-        if (l:continue == 0 && l:line =~ "^```.*$") || (l:line !~ "^```.*$" && l:continue)
-            " continue placing signs, until the block stops
-            let l:continue = 1
-            " place sign
-            execute "sign place ".l:lnum." line=".l:lnum." name=codeblock file=".expand("%")
-        elseif l:line == "```" && l:continue
-            " place sign
-            execute "sign place ".l:lnum." line=".l:lnum." name=codeblock file=".expand("%")
-            " stop placing signs
-            let l:continue = 0
-        endif
-    endfor
-endfunction
-
-" Use signs to highlight code blocks
-" Set signs on loading the file, leaving insert mode, and after writing it
-au InsertLeave *.md call MarkdownBlocks()
-au BufEnter *.md call MarkdownBlocks()
-au BufWritePost *.md call MarkdownBlocks()
-au BufEnter *.md setl signcolumn=no
-
-" }}}
-
 " ===================== REDIR ==================== {{{
 function! Redir(cmd, rng, start, end)
 	for win in range(1, winnr('$'))
@@ -441,10 +407,41 @@ function! Redir(cmd, rng, start, end)
 	call setline(1, output)
 endfunction
 
+command! -nargs=1 -complete=command -bar -range Redir silent call Redir(<q-args>, <range>, <line1>, <line2>)
+
 " }}}
 
+" ================ MARKDOWN ======================== {{{
+function! MarkdownBlocks()
+    sign define codeblock linehl=mkdCode
+    let l:continue = 0
+    execute "sign unplace * file=".expand("%")
 
-command! -nargs=1 -complete=command -bar -range Redir silent call Redir(<q-args>, <range>, <line1>, <line2>)
+    " iterate through each line in the buffer
+    for l:lnum in range(1, len(getline(1, "$")))
+        " detect the start fo a code block
+        let l:line = getline(l:lnum)
+        if (l:continue == 0 && l:line =~ "^```.*$") || (l:line !~ "^```.*$" && l:continue)
+            " continue placing signs, until the block stops
+            let l:continue = 1
+            " place sign
+            execute "sign place ".l:lnum." line=".l:lnum." name=codeblock file=".expand("%")
+        elseif l:line == "```" && l:continue
+            " place sign
+            execute "sign place ".l:lnum." line=".l:lnum." name=codeblock file=".expand("%")
+            " stop placing signs
+            let l:continue = 0
+        endif
+    endfor
+endfunction
+
+au InsertLeave *.md call MarkdownBlocks()
+au BufEnter *.md call MarkdownBlocks()
+au BufWritePost *.md call MarkdownBlocks()
+au CursorMoved *.md call MarkdownBlocks()
+au BufEnter *.md setl signcolumn=no
+
+" }}}
 
 " ================ THEME ======================== {{{
 syntax enable
@@ -455,5 +452,9 @@ highlight link htmlH1 Function
 highlight link htmlH2 Function
 highlight link htmlH3 Function
 highlight link htmlH4 Function
+
+highlight mkdCode guifg=#9e9e9e guibg=#17252c
+highlight mkdCodeDelimiter guifg=#9e9e9e guibg=#17252c
+highlight mkdURL guifg=#00AAFF
 
 " }}}

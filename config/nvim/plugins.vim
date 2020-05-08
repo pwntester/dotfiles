@@ -6,7 +6,7 @@ call plug#begin('~/.nvim/plugged')
     "Plug 'Shougo/deoplete.nvim',            { 'do': ':UpdateRemotePlugins'} 
     "Plug 'Shougo/deoplete-lsp'
     Plug 'haorenW1025/completion-nvim'
-    " Plug 'nvim-treesitter/completion-treesitter'
+    Plug 'nvim-treesitter/completion-treesitter'
     Plug 'Shougo/neco-vim',
     Plug 'junegunn/fzf.vim' 
     Plug 'pbogut/fzf-mru.vim'
@@ -149,7 +149,8 @@ let g:no_csv_maps = 1
 
 " VIM-MARKDOWN
 let g:vim_markdown_folding_disabled = 1
-let g:vim_markdown_fenced_languages = ['csharp=cs', 'c++=cpp', 'viml=vim', 'bash=sh', 'ini=dosini']
+let g:vim_markdown_fenced_languages = ['csharp=cs', 'c++=cpp', 'viml=vim', 'bash=sh', 'ini=dosini', 'java', 'ql']
+"let g:markdown_fenced_languages = ['html', 'python', 'bash=sh']
 let g:vim_markdown_conceal = 1
 
 " VIM-LION
