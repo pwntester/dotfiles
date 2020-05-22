@@ -405,7 +405,7 @@ function show_diagnostics_details()
 end
 
 function format_document()
-  cursor_pos = vim.fn.getpos(".")    
+  cursor_pos = vim.fn.getpos(".")
   vim.lsp.buf.formatting()
 end
 
