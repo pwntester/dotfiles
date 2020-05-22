@@ -59,6 +59,7 @@ set showtabline=2
 set laststatus=2
 set number
 set norelativenumber
+set cursorline
 
 " ================ COMPLETION ==================== {{{
 set wildmode=longest,full                                         "stuff to ignore when tab completing
