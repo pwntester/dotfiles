@@ -57,13 +57,8 @@ set shiftround                                                    " Round indent
 set smarttab                                                      " Reset autoindent after a blank line
 set showtabline=2
 set laststatus=2
-
 set number
-augroup numbertoggle
-    autocmd!
-    autocmd BufEnter * set relativenumber
-    autocmd BufLeave * set norelativenumber
-augroup END
+set norelativenumber
 
 " ================ COMPLETION ==================== {{{
 set wildmode=longest,full                                         "stuff to ignore when tab completing
@@ -241,8 +236,6 @@ function! s:pinBuffer()
     cmap <silent><buffer><expr>bd<Return> (getcmdtype()==':' && getcmdpos()==1? "<Space>": "bd<Return>")
     cmap <silent><buffer><expr>bp<Return> (getcmdtype()==':' && getcmdpos()==1? "<Space>": "bp<Return>")
     cmap <silent><buffer><expr>bn<Return> (getcmdtype()==':' && getcmdpos()==1? "<Space>": "bn<Return>")
-    set nonumber
-    set norelativenumber
 endfunction
 
 augroup windows
