@@ -270,7 +270,7 @@ let g:buftabline_indicators = 1
 let g:buftabline_separators = 1
 
 " CODEQL.NVIM
-let g:codeql_mem_opts = ["--threads", "1", "-J-Xmx8192M", "--off-heap-ram=8192", "-v", "--log-to-stderr"]
+let g:codeql_max_ram = 32000
 
 " NVIM-LSP
 let g:LspDiagnosticsErrorSign = 'x'
