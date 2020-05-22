@@ -10,13 +10,17 @@ local function on_attach_callback(_, bufnr)
     api.nvim_buf_set_keymap(bufnr, "n", "gi", "<Cmd>lua vim.lsp.buf.implementation()<CR>", { silent = true; })
     api.nvim_buf_set_keymap(bufnr, "n", "gh", "<Cmd>lua vim.lsp.buf.signature_help()<CR>", { silent = true; })
     api.nvim_buf_set_keymap(bufnr, "n", "gr", "<Cmd>lua vim.lsp.buf.references()<CR>", { silent = true; })
+    api.nvim_buf_set_keymap(bufnr, "n", "ga", "<Cmd>lua vim.lsp.buf.code_action()<CR>", { silent = true; })
     api.nvim_buf_set_keymap(bufnr, "n", "gF", "<Cmd>lua format_document()<CR>", { silent = true; })
-    api.nvim_buf_set_keymap(bufnr, "n", "ga", "<Cmd>lua request_code_actions()<CR>", { silent = true; })
+    --api.nvim_buf_set_keymap(bufnr, "n", "ga", "<Cmd>lua request_code_actions()<CR>", { silent = true; })
     api.nvim_command [[autocmd CursorHold  <buffer> lua vim.lsp.buf.hover() ]]
     api.nvim_command [[autocmd CursorHoldI <buffer> lua vim.lsp.buf.hover() ]]
     --api.nvim_command [[autocmd Filetype lua setlocal omnifunc=v:lua.vim.lsp.omnifunc]]
-    local ft = api.nvim_buf_get_option(bufnr, 'filetype')
+    -- lua vim.lsp.buf.declaration()
+    -- lua vim.lsp.buf.type_definition()
+
     -- disable LSP highlighted for TS enabled buffers (completion-treesitter)
+    local ft = api.nvim_buf_get_option(bufnr, 'filetype')
     if ft ~= 'ql' and ft ~= 'lua' then
         api.nvim_command [[autocmd CursorHold  <buffer> lua vim.lsp.buf.document_highlight()]]
         api.nvim_command [[autocmd CursorHoldI <buffer> lua vim.lsp.buf.document_highlight()]]
@@ -42,6 +46,7 @@ local function setup()
             ["textDocument/formatting"] = formatting_callback
         };
     }
+
     -- Go
     nvim_lsp.gopls.setup{
         on_attach = on_attach_callback;
