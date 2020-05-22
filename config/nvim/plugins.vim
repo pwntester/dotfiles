@@ -311,7 +311,7 @@ let g:completion_chain_complete_list = {
     \    {'mode': '<c-p'},
     \],
     \'lua' : [
-    \	{'complete_items': ['ts']}
+    \	{'complete_items': ['lsp', 'snippet']}
     \],
     \'ql' : [
     \	{'complete_items': ['lsp', 'snippet']}
@@ -326,7 +326,6 @@ let g:completion_chain_complete_list = {
     \	'string' : []
     \},
 \}
-" TODO: enable ql completion via TS
 let g:completion_auto_change_source = 1
 autocmd BufEnter * lua require'completion'.on_attach()
 
