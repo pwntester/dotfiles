@@ -451,4 +451,8 @@ highlight mkdCode guifg=#9e9e9e guibg=#17252c
 highlight mkdCodeDelimiter guifg=#9e9e9e guibg=#17252c
 highlight mkdURL guifg=#00AAFF
 
+augroup highlight_yank
+    autocmd!
+    autocmd TextYankPost * silent! lua require'vim.highlight'.on_yank("IncSearch", 1000)
+augroup END
 " }}}
