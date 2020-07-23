@@ -3,10 +3,9 @@ call plug#begin('~/.nvim/plugged')
 
     " Github plugins
     Plug 'fatih/vim-go',                    { 'do': ':GoInstallBinaries' }
-    "Plug 'Shougo/deoplete.nvim',            { 'do': ':UpdateRemotePlugins'} 
-    "Plug 'Shougo/deoplete-lsp'
     Plug 'haorenW1025/completion-nvim'
-    Plug 'nvim-treesitter/completion-treesitter'
+    "Plug 'nvim-treesitter/completion-treesitter'
+    Plug 'nvim-treesitter/nvim-treesitter'
     Plug 'Shougo/neco-vim',
     Plug 'junegunn/fzf.vim' 
     Plug 'pbogut/fzf-mru.vim'
@@ -44,7 +43,7 @@ call plug#begin('~/.nvim/plugged')
     Plug fnameescape(expand('~/Dev/fortify.nvim'))
 call plug#end()
 
-" Make colors available to getColorFromHighlight"
+" Make colors available to getColorFromHighlight
 colorscheme cobange
 let cobalt1_color = GetColorFromHighlight('Normal', 'bg')
 let cobalt2_color = GetColorFromHighlight('EndOfBuffer', 'fg')
@@ -169,14 +168,6 @@ function! s:enableRainbowParentheses() abort
     endif
 endfunction
 
-" DEOPLETE
-" autocmd BufEnter * nested if nvim_buf_line_count(0) < 10000 | call deoplete#enable() | endif
-" let g:deoplete#enable_at_startup = 0
-" call deoplete#custom#option({
-"     \ 'auto_complete_delay': 300,
-"     \ 'smart_case': v:true,
-"     \ })
-
 " VISTA
 let g:vista_default_executive = 'nvim_lsp'
 let g:vista_sidebar_position = 'vertical topleft 15'
@@ -271,6 +262,7 @@ let g:buftabline_separators = 1
 
 " CODEQL.NVIM
 let g:codeql_max_ram = 32000
+let g:codeql_search_path = '/Users/pwntester/codeql-home/codeql-repo'
 
 " NVIM-LSP
 let g:LspDiagnosticsErrorSign = 'x'
@@ -303,35 +295,3 @@ let g:java_mark_braces_in_parens_as_errors = 1
 
 " LAZYGIT 
 nnoremap <Leader>g :echo luaeval("require('window').floating_window(false,0.9,0.9)") <bar> call termopen("lazygit")<Return>
-
-" COMPLETION-NVIM
-let g:completion_chain_complete_list = {
-    \ 'markdown': [
-    \    {'mode': 'keyp'},
-    \    {'mode': '<c-p'},
-    \],
-    \'lua' : [
-    \	{'complete_items': ['lsp', 'snippet']}
-    \],
-    \'ql' : [
-    \	{'complete_items': ['lsp', 'snippet']}
-    \],
-    \'default' : {
-    \	'default' : [
-    \		{'complete_items' : ['lsp', 'snippet']},
-    \       {'mode': 'keyp'},
-    \		{'mode' : 'file'}
-    \	],
-    \	'comment' : [],
-    \	'string' : []
-    \},
-\}
-let g:completion_auto_change_source = 1
-autocmd BufEnter * lua require'completion'.on_attach()
-
-augroup CompletionTS
-	autocmd CursorHold *.ql,*.qll,*.c,*.py,*.lua call completion_treesitter#highlight_usages()
-	autocmd CursorMoved *.ql,*.qll,*.c,*.py,*.lua call nvim_buf_clear_namespace(0, g:completion_ts_ns, 0, -1)
-	autocmd InsertEnter *.ql,*.qll,*.c,*.py,*.lua call nvim_buf_clear_namespace(0, g:completion_ts_ns, 0, -1)
-augroup END
-" }}}
