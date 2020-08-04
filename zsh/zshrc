@@ -1,0 +1,92 @@
+# https://thevaluable.dev/zsh-install-configure/[201~
+# https://github.com/Phantas0s/.dotfiles/tree/master/zsh
+
+# options
+setopt SHARE_HISTORY
+setopt EXTENDED_GLOB        # Use extended globbing syntax.
+setopt PROMPT_SUBST 
+setopt AUTO_CD              # Go to folder path without using cd.
+setopt CORRECT              # Spelling correction
+setopt CDABLE_VARS          # Change directory to a path stored in a variable.
+setopt HIST_IGNORE_ALL_DUPS # remove older command from the history if a duplicate is to be added.
+
+# language
+if [[ -z "$LANG" ]]; then
+	export LANG='en_US.UTF-8'
+fi
+if [[ -z "$LC_ALL" ]]; then
+	export LC_ALL='en_US.UTF-8'
+fi
+
+# vi(m) style key bindings.
+bindkey -v
+export KEYTIMEOUT=1
+bindkey -M viins 'jk' vi-cmd-mode
+bindkey 'jk' vi-cmd-mode
+
+# Use vim keys in tab complete menu
+zmodload zsh/complist
+bindkey -M menuselect 'h' vi-backward-char
+bindkey -M menuselect 'k' vi-up-line-or-history
+bindkey -M menuselect 'l' vi-forward-char
+bindkey -M menuselect 'j' vi-down-line-or-history
+
+# aliases
+source ~/dotfiles/zsh/aliases
+
+# Remove path separator from WORDCHARS.
+WORDCHARS=${WORDCHARS//[\/]}
+
+# completion
+fpath=(~/dotfiles/zsh/plugins/zsh-completions/src $fpath)
+autoload -Uz compinit; compinit 
+_comp_options+=(globdots) # With hidden files
+source ~/dotfiles/zsh/plugins/completion.zsh
+
+# prompt
+fpath=(~/dotfiles/zsh/prompts $fpath)
+autoload -Uz purification;purification 
+
+# dir stack
+setopt AUTO_PUSHD           # Push the current directory visited on the stack.
+setopt PUSHD_IGNORE_DUPS    # Do not store duplicates in the stack.
+setopt PUSHD_SILENT         # Do not print the directory stack after pushd or popd.
+
+# change cursor
+fpath=(~/dotfiles/zsh/plugins $fpath)
+autoload -Uz cursor_mode; cursor_mode
+
+# syntax highlighting
+source ~/dotfiles/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+# Post-init module configuration
+# zsh-history-substring-search
+# Bind ^[[A/^[[B manually so up/down works both before and after zle-line-init
+# bindkey '^[[A' history-substring-search-up
+# bindkey '^[[B' history-substring-search-down
+
+# Bind up and down keys
+# zmodload -F zsh/terminfo +p:terminfo
+# if [[ -n ${terminfo[kcuu1]} && -n ${terminfo[kcud1]} ]]; then
+#   bindkey ${terminfo[kcuu1]} history-substring-search-up
+#   bindkey ${terminfo[kcud1]} history-substring-search-down
+# fi
+#
+# bindkey '^P' history-substring-search-up
+# bindkey '^N' history-substring-search-down
+# bindkey -M vicmd 'k' history-substring-search-up
+# bindkey -M vicmd 'j' history-substring-search-down
+
+# pyenv
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+if command -v pyenv 1>/dev/null 2>&1; then
+    eval "$(pyenv init -)"
+fi
+
+# sdkman
+export SDKMAN_DIR="/Users/pwntester/.sdkman"
+[[ -s "/Users/pwntester/.sdkman/bin/sdkman-init.sh" ]] && source "/Users/pwntester/.sdkman/bin/sdkman-init.sh"
+
+# fzf
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
