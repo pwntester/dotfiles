@@ -111,7 +111,7 @@ let g:pear_tree_smart_closers     = 1
 let g:pear_tree_smart_openers     = 1
 
 " VIM-ROOTER
-let g:rooter_use_lcd = 1
+let g:rooter_cd_cmd = "lcd" 
 let g:rooter_patterns = ['.git/'] "['build.gradle', 'build.sbt', 'pom.xml', '.git/']
 let g:rooter_silent_chdir = 1
 let g:rooter_change_directory_for_non_project_files = 'current'
@@ -295,3 +295,6 @@ let g:java_mark_braces_in_parens_as_errors = 1
 
 " LAZYGIT 
 nnoremap <Leader>g :echo luaeval("require('window').floating_window(false,0.9,0.9)") <bar> call termopen("lazygit")<Return>
+
+" TREESITTER
+"lua require('treesitter').setup()
