@@ -4,8 +4,6 @@ call plug#begin('~/.nvim/plugged')
     " Github plugins
     Plug 'fatih/vim-go',                    { 'do': ':GoInstallBinaries' }
     Plug 'haorenW1025/completion-nvim'
-    "Plug 'nvim-treesitter/completion-treesitter'
-    Plug 'nvim-treesitter/nvim-treesitter'
     Plug 'Shougo/neco-vim',
     Plug 'junegunn/fzf.vim' 
     Plug 'pbogut/fzf-mru.vim'
@@ -17,7 +15,7 @@ call plug#begin('~/.nvim/plugged')
     Plug 'Yggdroot/indentLine'
     Plug 'lukas-reineke/indent-blankline.nvim'
     Plug 'matze/vim-move'
-    Plug 'ap/vim-buftabline'
+    Plug 'pacha/vem-tabline'
     Plug 'chaoren/vim-wordmotion'
     Plug 'junegunn/rainbow_parentheses.vim'
     Plug 'alvan/vim-closetag'
@@ -33,8 +31,21 @@ call plug#begin('~/.nvim/plugged')
     Plug 'justinmk/vim-dirvish'
     Plug 'lifepillar/vim-colortemplate'
     Plug 'tmsvg/pear-tree'
-    Plug 'plasticboy/vim-markdown'
     Plug 'neovim/nvim-lsp'
+
+    " Notes
+    Plug 'ferrine/md-img-paste.vim'
+    Plug 'junegunn/goyo.vim'
+    Plug 'pbrisbin/vim-mkdir'
+    Plug 'jkramer/vim-checkbox', { 'for': 'markdown' }
+    Plug 'plasticboy/vim-markdown', { 'for': 'markdown' }
+
+    "Plug 'nvim-treesitter/completion-treesitter'
+    "Plug 'nvim-treesitter/nvim-treesitter'
+    "Plug 'norcalli/snippets.nvim'
+    "Plug 'vimwiki/vimwiki'
+    "Plug 'Alok/notational-fzf-vim'
+
     
     " Local plugins
     Plug '/usr/local/opt/fzf'
@@ -57,15 +68,15 @@ let orange_color = GetColorFromHighlight('Identifier', 'fg')
 execute 'source' fnameescape(expand('~/.config/nvim/fortify.vim'))
 
 " FZF
-let g:fzf_layout = { 'window': 'lua require("window").floating_window(false,0.8,0.8)' }
-let $FZF_DEFAULT_OPTS='--no-inline-info --layout=reverse --margin=1,2 --color=dark '.
+let g:fzf_layout = { 'window': 'lua require("window").floating_window(true,0.7,0.7)' }
+let $FZF_DEFAULT_OPTS='--no-inline-info --layout=reverse --margin=0,0 --color=dark '.
     \ '--color=fg:'.grey_color.',bg:'.cobalt1_color.',hl:'.blue_color.' '.
     \ '--color=fg+:'.yellow_color.',bg+:'.cobalt1_color.',hl+:'.yellow_color.' '.
     \ '--color=marker:'.green_color.',spinner:'.orange_color.',header:'.blue_color.' '.
     \ '--color=info:'.cobalt1_color.',prompt:'.blue_color.',pointer:'.blue_color
 
 nnoremap <leader>f :call fzf#vim#files('.', {'options': '--prompt ""'})<Return>
-nnoremap <leader>h :FZFFreshMru --prompt ""<Return>
+nnoremap <leader>m :FZFFreshMru --prompt ""<Return>
 nnoremap <leader>c :BCommits<Return>
 nnoremap <leader>s :Snippets<Return>
 nnoremap <leader>o :Buffers<Return>
@@ -148,9 +159,21 @@ let g:no_csv_maps = 1
 
 " VIM-MARKDOWN
 let g:vim_markdown_folding_disabled = 1
-let g:vim_markdown_fenced_languages = ['csharp=cs', 'c++=cpp', 'viml=vim', 'bash=sh', 'ini=dosini', 'java', 'ql']
-"let g:markdown_fenced_languages = ['html', 'python', 'bash=sh']
-let g:vim_markdown_conceal = 1
+let g:vim_markdown_fenced_languages = [
+    \ 'csharp=cs', 
+    \ 'c++=cpp', 
+    \ 'viml=vim', 
+    \ 'bash=sh', 
+    \ 'ini=dosini', 
+    \ 'java', 
+    \ 'ql'
+\ ]
+let g:vim_markdown_emphasis_multiline = 0
+let g:vim_markdown_conceal = 0
+let g:vim_markdown_conceal_code_blocks = 0
+let g:vim_markdown_new_list_item_indent = 0 
+let g:vim_markdown_no_extensions_in_markdown = 1
+let g:vim_markdown_autowrite = 1
 
 " VIM-LION
 let g:lion_squeeze_spaces = 1 " align around a given char: gl<character>
@@ -187,13 +210,6 @@ autocmd FileType vim-plug set nocursorline
 let g:smoothie_no_default_mappings = v:true
 nmap <C-d> <Plug>(SmoothieDownwards)
 nmap <C-e> <Plug>(SmoothieUpwards)
-
-" VIM-VSNIP
-let g:vsnip_snippet_dir = "~/dotfiles/snippets"
-imap <expr> <Tab> vsnip#available(1) ? '<Plug>(vsnip-expand-or-jump)' : '<Tab>'
-smap <expr> <Tab> vsnip#available(1) ? '<Plug>(vsnip-expand-or-jump)' : '<Tab>'
-imap <expr> <S-Tab> vsnip#available(-1) ? '<Plug>(vsnip-jump-prev)' : '<S-Tab>'
-smap <expr> <S-Tab> vsnip#available(-1) ? '<Plug>(vsnip-jump-prev)' : '<S-Tab>'
 
 " VIM-DIRVISH
 call sign_define("indent", {"text": " "})
@@ -255,11 +271,6 @@ cnoreabbrev <expr> rm    ((nvim_buf_get_option(0, 'filetype') == 'dirvish' && ge
 cnoreabbrev <expr> touch ((nvim_buf_get_option(0, 'filetype') == 'dirvish' && getcmdtype() is# ":" && getcmdline() is# "touch")? ("silent !touch %") : ("touch"))
 cnoreabbrev <expr> mv    ((nvim_buf_get_option(0, 'filetype') == 'dirvish' && getcmdtype() is# ":" && getcmdline() is# "mv")? ("silent !mv %") : ("mv"))
 
-" VIM-BUFTABLINE
-let g:buftabline_show = 1
-let g:buftabline_indicators = 1
-let g:buftabline_separators = 1
-
 " CODEQL.NVIM
 let g:codeql_max_ram = 32000
 let g:codeql_search_path = '/Users/pwntester/codeql-home/codeql-repo'
@@ -296,5 +307,69 @@ let g:java_mark_braces_in_parens_as_errors = 1
 " LAZYGIT 
 nnoremap <Leader>g :echo luaeval("require('window').floating_window(false,0.9,0.9)") <bar> call termopen("lazygit")<Return>
 
+" VIM-VSNIP
+let g:vsnip_snippet_dir = "~/dotfiles/snippets"
+imap <expr> <Tab> vsnip#available(1) ? '<Plug>(vsnip-expand-or-jump)' : '<Tab>'
+smap <expr> <Tab> vsnip#available(1) ? '<Plug>(vsnip-expand-or-jump)' : '<Tab>'
+imap <expr> <S-Tab> vsnip#available(-1) ? '<Plug>(vsnip-jump-prev)' : '<S-Tab>'
+smap <expr> <S-Tab> vsnip#available(-1) ? '<Plug>(vsnip-jump-prev)' : '<S-Tab>'
+
+" MD-IMG-PASTE
+nnoremap <leader>p :call mdip#MarkdownClipboardImage()<CR>
+let g:mdip_imgdir = 'images'
+
+" GOYO
+nnoremap <leader>y :Goyo<CR>
+inoremap <leader>y :Goyo<CR>
+
+function! s:goyo_enter()
+    highlight NormalNC guifg=#FFFFFF guibg=#101a20
+endfunction
+
+function! s:goyo_leave()
+    highlight NormalNC guifg=#FFFFFF guibg=#1b2b34
+endfunction
+
+autocmd! User GoyoEnter nested call <SID>goyo_enter()
+autocmd! User GoyoLeave nested call <SID>goyo_leave()
+
+" VEM-Tabline 
+nmap <S-h> <Plug>vem_prev_buffer-
+nmap <S-l> <Plug>vem_next_buffer-
+nmap <leader>h <Plug>vem_move_buffer_left-
+nmap <leader>l <Plug>vem_move_buffer_right-
+function! DeleteCurrentBuffer() abort
+    let current_buffer = bufnr('%')
+    let next_buffer = g:vem_tabline#tabline.get_replacement_buffer()
+    try
+        exec 'confirm ' . current_buffer . 'bdelete'
+        if next_buffer != 0
+            exec next_buffer . 'buffer'
+        endif
+    catch /E516:/
+       " If the operation is cancelled, do nothing
+    endtry
+endfunction
+
+" VIMWIKI
+" let g:vimwiki_global_ext = 0
+" let g:vimwiki_list = [
+"    \ {
+"     \ 'path': '~/bitacora', 
+"     \ 'syntax': 'markdown', 
+"     \ 'ext': '.md'
+"    \ }
+" \ ] 
+
+" NOTATIONAL-FZF-VIM
+" let g:nv_search_paths = ['~/bitacora']
+" nnoremap <leader>e :NV<CR>
+
+" SNIPPET.NVIM
+" lua require("snippets-config")
+" inoremap <c-k> <cmd>lua return require'snippets'.expand_or_advance(1)<CR>
+" inoremap <c-j> <cmd>lua return require'snippets'.advance_snippet(-1)<CR>
+
 " TREESITTER
 "lua require('treesitter').setup()
+

@@ -1,11 +1,12 @@
 require 'util'
 
+local vim = vim
 local validate = vim.validate
 local api = vim.api
 
 local M = {}
 
-function M.floating_window(border, width_per, heigth_per)
+function M.floating_window(border, width_per, height_per)
   validate {
     width_per = { width_per, 'n', true };
     height_per = { height_per, 'n', true };
@@ -48,7 +49,7 @@ function M.floating_window(border, width_per, heigth_per)
       api.nvim_buf_add_highlight(border_buf, 0, 'PopupWindowBorder', i, 0, -1)
     end
     border_win = api.nvim_open_win(border_buf, false, border_opts)
-    api.nvim_win_set_option(border_win, "winhighlight", "Normal:Normal")
+    api.nvim_win_set_option(border_win, "winhighlight", "Normal:NormalNC")
     api.nvim_win_set_option(border_win, 'wrap', false)
     api.nvim_win_set_option(border_win, 'number', false)
     api.nvim_win_set_option(border_win, 'relativenumber', false)
@@ -68,6 +69,7 @@ function M.floating_window(border, width_per, heigth_per)
   }
   local content_buf = api.nvim_create_buf(false, true)
   local content_win = api.nvim_open_win(content_buf, true, content_opts)
+  api.nvim_win_set_option(content_win, "winhighlight", "Normal:Normal")
   api.nvim_win_set_option(content_win, 'wrap', false)
   api.nvim_win_set_option(content_win, 'number', false)
   api.nvim_win_set_option(content_win, 'relativenumber', false)
@@ -160,7 +162,7 @@ function M.popup_window(contents, filetype, opts, border)
     end
     api.nvim_buf_add_highlight(border_buf, 0, 'InvertedPopupWindowBorder', border_height-1, 0, -1)
     api.nvim_command("autocmd BufWipeout <buffer> exe 'bw '"..border_buf)
-    border_opts = M.make_popup_options(border_width, border_height, opts)
+    local border_opts = M.make_popup_options(border_width, border_height, opts)
     border_win = api.nvim_open_win(border_buf, false, border_opts)
     api.nvim_win_set_option(border_win, "winhighlight", "Normal:NormalFloat")
     api.nvim_win_set_option(border_win, 'cursorline', false)

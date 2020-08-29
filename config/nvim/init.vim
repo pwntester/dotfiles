@@ -1,5 +1,5 @@
 if &compatible 
-    set nocompatible 
+    nset nocompatible 
 endif
 
 " ================ PLUGINS ==================== {{{
@@ -173,10 +173,6 @@ cnoremap <C-j> <RIGHT>
 cnoremap <C-h> <Space><BS><Left>
 cnoremap <C-l> <Space><BS><Right>
 
-" buffer switching
-nnoremap <S-l> :bnext<Return>
-nnoremap <S-h> :bprevious<Return>
-
 " window navigation
 nnoremap <C-J> <C-W><C-J>
 nnoremap <C-K> <C-W><C-K>
@@ -226,13 +222,14 @@ let g:special_buffers = [
     \ 'goterm',
     \ 'vista_kind',
     \ 'codeqlpanel',
+    \ 'goyo_pad',
     \ 'terminal'
     \ ]
 function! s:pinBuffer()
     " prevent changing buffer
     nnoremap <silent><buffer><S-l> <Nop>
     nnoremap <silent><buffer><S-h> <Nop>
-    nnoremap <silent><buffer><leader>h <Nop>
+    nnoremap <silent><buffer><leader>m <Nop>
     cmap <silent><buffer><expr>e<Space> (getcmdtype()==':' && getcmdpos()==1? "<Space>": "e<Space>")
     cmap <silent><buffer><expr>bd<Return> (getcmdtype()==':' && getcmdpos()==1? "<Space>": "bd<Return>")
     cmap <silent><buffer><expr>bp<Return> (getcmdtype()==':' && getcmdpos()==1? "<Space>": "bp<Return>")
@@ -307,7 +304,7 @@ function! CloseWin()
 endfunction
 function! SetAliases() abort
     " close buffers without closing the window 
-    call SetupCommandAlias("bd","bp<bar>sp<bar>bn<bar>bd")
+    call SetupCommandAlias("bd","bp<bar>sp<bar>bn<bar>call DeleteCurrentBuffer()")
 
     " close all buffers but the current one
     call SetupCommandAlias("bo","%bd<bar>e#<bar>bd#")
@@ -360,8 +357,11 @@ augroup active_win
     autocmd BufEnter *.* :set colorcolumn=0
 
     " highlight active window
-    autocmd FocusGained,VimEnter,WinEnter,TermEnter * set winhighlight=EndOfBuffer:EndOfBuffer,SignColumn:Normal,VertSplit:EndOfBuffer,Normal:Normal
-    autocmd FocusLost,WinLeave * set winhighlight=EndOfBuffer:EndOfBufferNC,SignColumn:NormalNC,VertSplit:EndOfBufferNC,Normal:NormalNC
+    " autocmd FocusGained,VimEnter,WinEnter,TermEnter * set winhighlight=EndOfBuffer:EndOfBuffer,SignColumn:Normal,VertSplit:EndOfBuffer
+    " autocmd FocusLost,WinLeave * set winhighlight=EndOfBuffer:EndOfBufferNC,SignColumn:NormalNC,VertSplit:EndOfBufferNC
+
+    autocmd FocusGained,VimEnter,WinEnter,TermEnter * set winhighlight=EndOfBuffer:EndOfBuffer,SignColumn:Normal
+    autocmd FocusLost,WinLeave * set winhighlight=EndOfBuffer:EndOfBufferNC,SignColumn:NormalNC
 
     " hide statusline on non-current windows
     autocmd FocusGained,VimEnter,WinEnter,BufEnter * call StatusLine()
@@ -450,6 +450,7 @@ highlight link htmlH4 Function
 highlight mkdCode guifg=#9e9e9e guibg=#17252c
 highlight mkdCodeDelimiter guifg=#9e9e9e guibg=#17252c
 highlight mkdURL guifg=#00AAFF
+
 
 augroup highlight_yank
     autocmd!
