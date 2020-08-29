@@ -39,12 +39,10 @@ call plug#begin('~/.nvim/plugged')
     Plug 'pbrisbin/vim-mkdir'
     Plug 'jkramer/vim-checkbox', { 'for': 'markdown' }
     Plug 'plasticboy/vim-markdown', { 'for': 'markdown' }
+    "Plug 'Alok/notational-fzf-vim'
 
     "Plug 'nvim-treesitter/completion-treesitter'
     "Plug 'nvim-treesitter/nvim-treesitter'
-    "Plug 'norcalli/snippets.nvim'
-    "Plug 'vimwiki/vimwiki'
-    "Plug 'Alok/notational-fzf-vim'
 
     
     " Local plugins
@@ -350,16 +348,6 @@ function! DeleteCurrentBuffer() abort
        " If the operation is cancelled, do nothing
     endtry
 endfunction
-
-" VIMWIKI
-" let g:vimwiki_global_ext = 0
-" let g:vimwiki_list = [
-"    \ {
-"     \ 'path': '~/bitacora', 
-"     \ 'syntax': 'markdown', 
-"     \ 'ext': '.md'
-"    \ }
-" \ ] 
 
 " NOTATIONAL-FZF-VIM
 " let g:nv_search_paths = ['~/bitacora']
