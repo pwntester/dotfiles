@@ -2,7 +2,6 @@
 call plug#begin('~/.nvim/plugged') 
 
     " Github plugins
-    Plug 'fatih/vim-go',                    { 'do': ':GoInstallBinaries' }
     Plug 'haorenW1025/completion-nvim'
     Plug 'Shougo/neco-vim',
     Plug 'junegunn/fzf.vim' 
@@ -19,7 +18,6 @@ call plug#begin('~/.nvim/plugged')
     Plug 'chaoren/vim-wordmotion'
     Plug 'junegunn/rainbow_parentheses.vim'
     Plug 'alvan/vim-closetag'
-    Plug 'tommcdo/vim-lion'
     Plug 'hrsh7th/vim-vsnip'
     Plug 'hrsh7th/vim-vsnip-integ'
     Plug 'AndrewRadev/linediff.vim'
@@ -32,15 +30,13 @@ call plug#begin('~/.nvim/plugged')
     Plug 'lifepillar/vim-colortemplate'
     Plug 'tmsvg/pear-tree'
     Plug 'neovim/nvim-lsp'
+    Plug 'tommcdo/vim-lion'
 
     " Notes
-    Plug 'ferrine/md-img-paste.vim'
     Plug 'junegunn/goyo.vim'
-    Plug 'pbrisbin/vim-mkdir'
-    Plug 'jkramer/vim-checkbox', { 'for': 'markdown' }
-    Plug 'plasticboy/vim-markdown', { 'for': 'markdown' }
-    "Plug 'Alok/notational-fzf-vim'
+    Plug 'SidOfc/mkdx'
 
+    " Treesitter
     "Plug 'nvim-treesitter/completion-treesitter'
     "Plug 'nvim-treesitter/nvim-treesitter'
 
@@ -81,6 +77,18 @@ nnoremap <leader>o :Buffers<Return>
 nnoremap <leader>/ :call fzf#vim#search_history()<Return>
 nnoremap <leader>: :call fzf#vim#command_history()<Return>
 
+" insert relative link to file in project
+function! s:make_relative(lines)
+    let root = expand('%:p:h')
+    let cmd = 'realpath --relative-to='.root.' '.a:lines[0]
+    let relative = trim(system(cmd))
+    return substitute(relative, '\n\+$', '', '')
+endfunction
+inoremap <expr> <c-x><c-f> fzf#vim#complete(fzf#wrap({
+    \ 'source': 'find '.getcwd().' -type f -name "*.md" -not -path "*/\.*"\; \| xargs realpath',
+    \ 'reducer': function('<sid>make_relative'),
+    \ }))
+
 " INDENTLINE
 let g:indentLine_color_gui = cobalt2_color
 let g:indentLine_fileTypeExclude = g:special_buffers + ['markdown']
@@ -109,9 +117,9 @@ let g:closetag_xhtml_filenames = '*.xml,*.xhtml,*.jsp,*.html'
 let g:closetag_xhtml_filetypes = 'xhtml,jsx,fortifyrulepack'
 
 " MATCHUP
-let g:matchup_matchparen_status_offscreen = 0                            " Do not show offscreen closing match in statusline
-let g:matchup_matchparen_nomode = "ivV\<c-v>"                            " Enable matchup only in normal mode
-let g:matchup_matchparen_deferred = 1                                    " Defer matchup highlights to allow better cursor movement performance
+let g:matchup_matchparen_status_offscreen = 0 " Do not show offscreen closing match in statusline
+let g:matchup_matchparen_nomode = "ivV\<c-v>" " Enable matchup only in normal mode
+let g:matchup_matchparen_deferred = 1         " Defer matchup highlights to allow better cursor movement performance
 
 " PEAR-TREE
 let g:pear_tree_repeatable_expand = 0
@@ -121,60 +129,22 @@ let g:pear_tree_smart_openers     = 1
 
 " VIM-ROOTER
 let g:rooter_cd_cmd = "lcd" 
-let g:rooter_patterns = ['.git/'] "['build.gradle', 'build.sbt', 'pom.xml', '.git/']
+let g:rooter_patterns = ['.git/'] "['build.gradle', 'build.sbt', 'pom.xml']
 let g:rooter_silent_chdir = 1
 let g:rooter_change_directory_for_non_project_files = 'current'
 
 " GITGUTTER 
 let g:gitgutter_map_keys = 0
 
-" VIM-GO
-function! ReuseVimGoTerm(cmd) abort
-  for w in nvim_list_wins()
-    if "goterm" == nvim_buf_get_option(nvim_win_get_buf(w), 'filetype')
-      call nvim_win_close(w, v:true)
-      break
-    endif
-  endfor
-  execute a:cmd
-endfunction
-let g:go_gopls_enabled = 0
-let g:go_term_enabled = 1
-let g:go_term_mode = "silent keepalt rightbelow 15 split"
-let g:go_def_reuse_buffer = 1
-let g:go_def_mapping_enabled = 0
-let g:go_fold_enable = []
-let g:go_code_completion_enabled = 0
-let g:go_textobj_enabled = 0
-let g:go_echo_command_info = 0
-let g:go_highlight_diagnostic_errors = 0
-let g:go_highlight_diagnostic_warnings = 0
-autocmd FileType go nmap <buffer> <leader>r :call ReuseVimGoTerm('GoRun')<Return>
-
 " VIM-POLYGLOT
 let g:polyglot_disabled = ["jsx", "hive", "markdown"]
 let g:no_csv_maps = 1
 
-" VIM-MARKDOWN
-let g:vim_markdown_folding_disabled = 1
-let g:vim_markdown_fenced_languages = [
-    \ 'csharp=cs', 
-    \ 'c++=cpp', 
-    \ 'viml=vim', 
-    \ 'bash=sh', 
-    \ 'ini=dosini', 
-    \ 'java', 
-    \ 'ql'
-\ ]
-let g:vim_markdown_emphasis_multiline = 0
-let g:vim_markdown_conceal = 0
-let g:vim_markdown_conceal_code_blocks = 0
-let g:vim_markdown_new_list_item_indent = 0 
-let g:vim_markdown_no_extensions_in_markdown = 1
-let g:vim_markdown_autowrite = 1
-
-" VIM-LION
-let g:lion_squeeze_spaces = 1 " align around a given char: gl<character>
+" MKDX
+let g:mkdx#settings = { 'highlight': { 'enable': 1 },
+                      \ 'gf_on_steroids': 1,
+                      \ 'enter': { 'enable': 1, 'shift': 1 },
+                      \ }
 
 " RAINBOW-PARENTHESES
 autocmd WinEnter,BufEnter * nested call s:enableRainbowParentheses()
@@ -212,8 +182,8 @@ nmap <C-e> <Plug>(SmoothieUpwards)
 " VIM-DIRVISH
 call sign_define("indent", {"text": " "})
 let g:dirvish_mode = ':sort ,^.*[\/], | silent keeppatterns g@\v/\.[^\/]+/?$@d _'
-nnoremap ge :call ToggleDirvish()<Return>
-nnoremap gf :call ToggleDirvish('%')<Return>
+nnoremap gE :call ToggleDirvish()<Return>
+nnoremap ge :call ToggleDirvish('%')<Return>
 augroup dirvish_config
     autocmd!
 
@@ -312,13 +282,8 @@ smap <expr> <Tab> vsnip#available(1) ? '<Plug>(vsnip-expand-or-jump)' : '<Tab>'
 imap <expr> <S-Tab> vsnip#available(-1) ? '<Plug>(vsnip-jump-prev)' : '<S-Tab>'
 smap <expr> <S-Tab> vsnip#available(-1) ? '<Plug>(vsnip-jump-prev)' : '<S-Tab>'
 
-" MD-IMG-PASTE
-nnoremap <leader>p :call mdip#MarkdownClipboardImage()<CR>
-let g:mdip_imgdir = 'images'
-
 " GOYO
 nnoremap <leader>y :Goyo<CR>
-inoremap <leader>y :Goyo<CR>
 
 function! s:goyo_enter()
     highlight NormalNC guifg=#FFFFFF guibg=#101a20
@@ -348,15 +313,6 @@ function! DeleteCurrentBuffer() abort
        " If the operation is cancelled, do nothing
     endtry
 endfunction
-
-" NOTATIONAL-FZF-VIM
-" let g:nv_search_paths = ['~/bitacora']
-" nnoremap <leader>e :NV<CR>
-
-" SNIPPET.NVIM
-" lua require("snippets-config")
-" inoremap <c-k> <cmd>lua return require'snippets'.expand_or_advance(1)<CR>
-" inoremap <c-j> <cmd>lua return require'snippets'.advance_snippet(-1)<CR>
 
 " TREESITTER
 "lua require('treesitter').setup()

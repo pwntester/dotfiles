@@ -97,10 +97,6 @@ set smartcase                                                     " If the searc
 augroup vimrc
     " check if buffer was changed outside of vim
     autocmd FocusGained,BufEnter * checktime
-    " spell check
-    autocmd FileType markdown nested setlocal spell complete+=kspell
-    " disable concealing
-    autocmd BufEnter * nested if &ft == 'markdown'| setlocal conceallevel=0 | endif
     " mark qf as not listed
     autocmd FileType qf setlocal nobuflisted 
     " force write shada on leaving nvim
@@ -429,12 +425,50 @@ function! MarkdownBlocks()
     endfor
 endfunction
 
-au InsertLeave *.md call MarkdownBlocks()
-au BufEnter *.md call MarkdownBlocks()
-au BufWritePost *.md call MarkdownBlocks()
-au CursorMoved *.md call MarkdownBlocks()
-au BufEnter *.md setl signcolumn=no
+augroup markdown
+    au InsertLeave *.md call MarkdownBlocks()
+    au BufEnter *.md call MarkdownBlocks()
+    au BufWritePost *.md call MarkdownBlocks()
+    au CursorMoved *.md call MarkdownBlocks()
+    au FileType markdown nested if exists('g:mkdx#settings') | let b:pear_tree_map_special_keys = 0 | endif
+    au FileType markdown nested setlocal conceallevel=2
+    au FileType markdown nested setlocal concealcursor=c
+    au FileType markdown nested setlocal signcolumn=no
+    au FileType markdown nested setlocal spell complete+=kspell
+augroup END
 
+function! s:OnEvent(job_id, data, event) dict
+    if a:event == 'stderr'
+        let s:errormsg=s:errormsg.join(a:data)
+    endif
+endfunction
+function! s:OnExit(job_id, code, event) dict
+    if a:code == 0 
+        let img = s:img_dir.'/'.s:uuid.'.png'
+        let line = getline('.')
+        let link = '![]('.img.')'
+        call setline('.', strpart(line, 0, col('.') - 1) . link . strpart(line, col('.') - 1))
+    else
+        echo s:errormsg
+    endif
+endfunction
+function! PasteImage(dir)
+    let uuid = trim(system('uuidgen'))
+    let s:uuid = substitute(uuid, '\n\+$', '', '')
+    let s:img_dir = a:dir
+    let s:errormsg=''
+    let s:callbacks = {
+    \ 'on_stdout': function('s:OnEvent'),
+    \ 'on_stderr': function('s:OnEvent'),
+    \ 'on_exit': function('s:OnExit')
+    \ }
+    let s:dir = expand('%:p:h').'/'.s:img_dir
+    if !isdirectory(s:dir)
+        call mkdir(s:dir, 'p')
+    endif
+    let job = jobstart(['pngpaste',s:dir.'/'.s:uuid.'.png'], extend({'shell': 'shell 1'}, s:callbacks))
+endfunction
+nnoremap <leader>p :call PasteImage('images')<CR>
 " }}}
 
 " ================ THEME ======================== {{{
@@ -449,7 +483,11 @@ highlight link htmlH4 Function
 
 highlight mkdCode guifg=#9e9e9e guibg=#17252c
 highlight mkdCodeDelimiter guifg=#9e9e9e guibg=#17252c
+highlight mkdxInlineCode guifg=#9e9e9e guibg=#17252c
+highlight mkdxCode guifg=#9e9e9e guibg=#17252c
 highlight mkdURL guifg=#00AAFF
+highlight markdownLinkTextDelimiter guifg=#ff9a00
+highlight markdownLinkText guifg=#88ff88
 
 
 augroup highlight_yank
