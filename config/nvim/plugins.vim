@@ -290,7 +290,7 @@ endfunction
 autocmd! User GoyoEnter nested call <SID>goyo_enter()
 autocmd! User GoyoLeave nested call <SID>goyo_leave()
 
-" VEM-Tabline 
+" VEM-TABLINE
 nmap <S-h> <Plug>vem_prev_buffer-
 nmap <S-l> <Plug>vem_next_buffer-
 nmap <leader>h <Plug>vem_move_buffer_left-
@@ -308,14 +308,11 @@ function! DeleteCurrentBuffer() abort
     endtry
 endfunction
 
-" TREESITTER
-"lua require('treesitter').setup()
-
 " SNIPPETS.NVIM
 lua require'snips'
 inoremap <silent><expr> <Return> pumvisible() ? "\<c-y>\<cr>" : "\<Return>"
 inoremap <silent><expr> <C-j> pumvisible() ? "\<C-n>" : "\<cmd>lua return require'snippets'.expand_or_advance(1)<CR>"
 inoremap <silent><expr> <C-k> pumvisible() ? "\<C-p>" : "\<cmd>lua return require'snippets'.expand_or_advance(-1)<CR>"
-"inoremap <Tab> <cmd>lua return require'snippets'.expand_or_advance(1)<CR>
-"noremap <S-Tab> <cmd>lua return require'snippets'.advance_snippet(-1)<CR>
 
+" TREESITTER
+"lua require('treesitter').setup()
