@@ -346,12 +346,6 @@ execute 'source' fnameescape(expand('~/.config/nvim/plugins.vim'))
 
 " }}}
 
-" ================ POP-UP MENU (PUM) ======================== {{{
-inoremap <silent><expr> <Return> pumvisible() ? "\<c-y>\<cr>" : "\<Return>"
-inoremap <silent><expr> <C-j> pumvisible() ? "\<C-n>" : ''
-inoremap <silent><expr> <C-k> pumvisible() ? "\<C-p>" : ''
-
-" }}}
 
 " ================ STATUSLINE ======================== {{{
 execute 'source' fnameescape(expand('~/.config/nvim/statusline.vim'))
