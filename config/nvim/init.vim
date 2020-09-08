@@ -1,5 +1,5 @@
 if &compatible 
-    nset nocompatible 
+    set nocompatible 
 endif
 
 " ================ PLUGINS ==================== {{{
