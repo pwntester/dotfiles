@@ -101,7 +101,14 @@ augroup vimrc
     autocmd FileType qf setlocal nobuflisted 
     " force write shada on leaving nvim
     autocmd VimLeave * wshada!
+
 augroup END
+
+" augroup highlight_yank
+"     autocmd!
+"     au TextYankPost * lua vim.highlight.on_yank()
+"     au TextYankPost * silent! lua vim.highlight.on_yank {on_visual=false, higroup="IncSearch", timeout=150}
+" augroup END
 
 " }}}
 
@@ -488,10 +495,4 @@ highlight mkdxCode guifg=#9e9e9e guibg=#17252c
 highlight mkdURL guifg=#00AAFF
 highlight markdownLinkTextDelimiter guifg=#ff9a00
 highlight markdownLinkText guifg=#88ff88
-
-
-augroup highlight_yank
-    autocmd!
-    autocmd TextYankPost * silent! lua require'vim.highlight'.on_yank("IncSearch", 1000)
-augroup END
 " }}}
