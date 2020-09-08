@@ -2,7 +2,7 @@
 call plug#begin('~/.nvim/plugged') 
 
     " Github plugins
-    Plug 'haorenW1025/completion-nvim'
+    Plug 'nvim-lua/completion-nvim'
     Plug 'Shougo/neco-vim',
     Plug 'junegunn/fzf.vim' 
     Plug 'pbogut/fzf-mru.vim'
