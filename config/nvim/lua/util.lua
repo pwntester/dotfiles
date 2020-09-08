@@ -1,3 +1,5 @@
+local vim = vim
+
 -- from https://github.com/neovim/nvim-lsp/blob/master/lua/nvim_lsp/util.lua
 local path_sep = is_windows and "\\" or "/"
 local strip_dir_pat = path_sep.."([^"..path_sep.."]+)$"
