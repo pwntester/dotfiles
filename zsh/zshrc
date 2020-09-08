@@ -77,5 +77,8 @@ fi
 export SDKMAN_DIR="/Users/pwntester/.sdkman"
 [[ -s "/Users/pwntester/.sdkman/bin/sdkman-init.sh" ]] && source "/Users/pwntester/.sdkman/bin/sdkman-init.sh"
 
+# import secrets
+source ~/secrets
+
 # fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
