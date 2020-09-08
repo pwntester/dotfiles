@@ -48,6 +48,7 @@ call plug#begin('~/.nvim/plugged')
     Plug fnameescape(expand('~/Dev/cobange.vim'))
     Plug fnameescape(expand('~/Dev/codeql.nvim'))
     Plug fnameescape(expand('~/Dev/fortify.nvim'))
+    Plug fnameescape(expand('~/Dev/octo.nvim'))
 call plug#end()
 
 " Make colors available to getColorFromHighlight
