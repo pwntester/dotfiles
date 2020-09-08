@@ -443,6 +443,7 @@ augroup markdown
     au BufWritePost ~/bitacora/* call CommitAndPush()
 augroup END
 
+" paste images on markdown files
 function! s:OnEvent(job_id, data, event) dict
     if a:event == 'stderr'
         let s:errormsg=s:errormsg.join(a:data)
