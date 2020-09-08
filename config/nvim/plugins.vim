@@ -18,8 +18,8 @@ call plug#begin('~/.nvim/plugged')
     Plug 'chaoren/vim-wordmotion'
     Plug 'junegunn/rainbow_parentheses.vim'
     Plug 'alvan/vim-closetag'
-    Plug 'hrsh7th/vim-vsnip'
-    Plug 'hrsh7th/vim-vsnip-integ'
+    " Plug 'hrsh7th/vim-vsnip'
+    " Plug 'hrsh7th/vim-vsnip-integ'
     Plug 'AndrewRadev/linediff.vim'
     Plug 'airblade/vim-rooter'
     Plug 'norcalli/nvim-colorizer.lua'
@@ -35,6 +35,8 @@ call plug#begin('~/.nvim/plugged')
     " Notes
     Plug 'junegunn/goyo.vim'
     Plug 'SidOfc/mkdx'
+
+    Plug 'norcalli/snippets.nvim'
 
     " Treesitter
     "Plug 'nvim-treesitter/completion-treesitter'
@@ -276,11 +278,11 @@ let g:java_mark_braces_in_parens_as_errors = 1
 nnoremap <Leader>g :echo luaeval("require('window').floating_window(false,0.9,0.9)") <bar> call termopen("lazygit")<Return>
 
 " VIM-VSNIP
-let g:vsnip_snippet_dir = "~/dotfiles/snippets"
-imap <expr> <Tab> vsnip#available(1) ? '<Plug>(vsnip-expand-or-jump)' : '<Tab>'
-smap <expr> <Tab> vsnip#available(1) ? '<Plug>(vsnip-expand-or-jump)' : '<Tab>'
-imap <expr> <S-Tab> vsnip#available(-1) ? '<Plug>(vsnip-jump-prev)' : '<S-Tab>'
-smap <expr> <S-Tab> vsnip#available(-1) ? '<Plug>(vsnip-jump-prev)' : '<S-Tab>'
+" let g:vsnip_snippet_dir = "~/dotfiles/snippets"
+" imap <expr> <Tab> vsnip#available(1) ? '<Plug>(vsnip-expand-or-jump)' : '<Tab>'
+" smap <expr> <Tab> vsnip#available(1) ? '<Plug>(vsnip-expand-or-jump)' : '<Tab>'
+" imap <expr> <S-Tab> vsnip#available(-1) ? '<Plug>(vsnip-jump-prev)' : '<S-Tab>'
+" smap <expr> <S-Tab> vsnip#available(-1) ? '<Plug>(vsnip-jump-prev)' : '<S-Tab>'
 
 " GOYO
 nnoremap <leader>y :Goyo<CR>
@@ -316,4 +318,12 @@ endfunction
 
 " TREESITTER
 "lua require('treesitter').setup()
+
+" SNIPPETS.NVIM
+lua require'snips'
+inoremap <silent><expr> <Return> pumvisible() ? "\<c-y>\<cr>" : "\<Return>"
+inoremap <silent><expr> <C-j> pumvisible() ? "\<C-n>" : "\<cmd>lua return require'snippets'.expand_or_advance(1)<CR>"
+inoremap <silent><expr> <C-k> pumvisible() ? "\<C-p>" : "\<cmd>lua return require'snippets'.expand_or_advance(-1)<CR>"
+"inoremap <Tab> <cmd>lua return require'snippets'.expand_or_advance(1)<CR>
+"noremap <S-Tab> <cmd>lua return require'snippets'.advance_snippet(-1)<CR>
 
