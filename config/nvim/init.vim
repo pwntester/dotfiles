@@ -440,6 +440,7 @@ augroup markdown
     au FileType markdown nested setlocal concealcursor=c
     au FileType markdown nested setlocal signcolumn=no
     au FileType markdown nested setlocal spell complete+=kspell
+    au BufWritePost ~/bitacora/* call CommitAndPush()
 augroup END
 
 function! s:OnEvent(job_id, data, event) dict
@@ -474,6 +475,32 @@ function! PasteImage(dir)
     let job = jobstart(['pngpaste',s:dir.'/'.s:uuid.'.png'], extend({'shell': 'shell 1'}, s:callbacks))
 endfunction
 nnoremap <leader>p :call PasteImage('images')<CR>
+
+" autocommits on wiki file save
+function! s:OnEvent_git(job_id, data, event) dict
+    if a:event == 'stderr'
+        let s:git_errormsg = s:git_errormsg.join(a:data)
+    endif
+endfunction
+function! s:OnExit_git(job_id, code, event) dict
+    if a:code == 0 
+        echo "Saved!"
+    else
+        echo s:git_errormsg
+    endif
+endfunction
+function! CommitAndPush()
+    let s:git_errormsg = ''
+    let s:git_callbacks = {
+    \ 'on_stdout': function('s:OnEvent_git'),
+    \ 'on_stderr': function('s:OnEvent_git'),
+    \ 'on_exit': function('s:OnExit_git')
+    \ }
+    let s:cmd = 'git add '.expand('%').';git commit -m "Auto commit of '.expand('%:t').'" "'.expand('%').'";git push;'
+    redraw
+    echo "AutoCommiting changes ..."
+    let job = jobstart(['sh', '-c', s:cmd], extend({'shell': 'shell 1'}, s:git_callbacks))
+endfunction
 " }}}
 
 " ================ THEME ======================== {{{
