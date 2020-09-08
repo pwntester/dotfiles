@@ -287,19 +287,23 @@ function! CloseWin()
             quit
         elseif len(winids) > 1
             " other windows
-            let l:non_special_buffers_count = 0
+            let l:regular_buffer_count = 0
             for w in l:winids
                 if index(g:special_buffers, nvim_buf_get_option(nvim_win_get_buf(w), 'filetype')) == -1 
-                    let l:non_special_buffers_count = l:non_special_buffers_count + 1
+                    echom nvim_win_get_config(w)
+                    if nvim_win_get_config(w)['relative'] == ''
+                        let l:regular_buffer_count = l:regular_buffer_count + 1
+                    endif
                 endif
             endfor
-            if l:non_special_buffers_count == 1
+            if l:regular_buffer_count == 1
                 " only this window with regular buffer, rest are special ones.
-                " close then all
+                " close them all
                 quitall
             else 
                 " there are other windows with regular buffers, close only
                 " this split
+                echom l:regular_buffer_count
                 call nvim_win_close(l:current_window, v:true)
             endif
         endif
