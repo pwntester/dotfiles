@@ -18,8 +18,6 @@ call plug#begin('~/.nvim/plugged')
     Plug 'chaoren/vim-wordmotion'
     Plug 'junegunn/rainbow_parentheses.vim'
     Plug 'alvan/vim-closetag'
-    " Plug 'hrsh7th/vim-vsnip'
-    " Plug 'hrsh7th/vim-vsnip-integ'
     Plug 'AndrewRadev/linediff.vim'
     Plug 'airblade/vim-rooter'
     Plug 'norcalli/nvim-colorizer.lua'
@@ -171,7 +169,7 @@ nmap <leader>v :Vista<Return>
 nmap <leader>vf :Vista finder<Return>
 
 " COLORIZER
-lua require('colorizer').setup()
+lua require('colorizer').setup({'*';'!fzf';})
 
 " VIM-PLUG
 let g:plug_window = 'lua require("window").floating_window(true,0.8,0.8)'
@@ -277,13 +275,6 @@ let g:java_mark_braces_in_parens_as_errors = 1
 
 " LAZYGIT 
 nnoremap <Leader>g :echo luaeval("require('window').floating_window(false,0.9,0.9)") <bar> call termopen("lazygit")<Return>
-
-" VIM-VSNIP
-" let g:vsnip_snippet_dir = "~/dotfiles/snippets"
-" imap <expr> <Tab> vsnip#available(1) ? '<Plug>(vsnip-expand-or-jump)' : '<Tab>'
-" smap <expr> <Tab> vsnip#available(1) ? '<Plug>(vsnip-expand-or-jump)' : '<Tab>'
-" imap <expr> <S-Tab> vsnip#available(-1) ? '<Plug>(vsnip-jump-prev)' : '<S-Tab>'
-" smap <expr> <S-Tab> vsnip#available(-1) ? '<Plug>(vsnip-jump-prev)' : '<S-Tab>'
 
 " GOYO
 nnoremap <leader>y :Goyo<CR>
