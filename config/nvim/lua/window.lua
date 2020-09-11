@@ -23,6 +23,7 @@ function M.floating_window(border, width_per, height_per)
   if (vim_width < 150) then win_width = math.ceil(vim_width - 8) end
 
   -- border window
+  local border_win
   if border then
     local border_opts = {
         relative = "editor",
@@ -49,7 +50,7 @@ function M.floating_window(border, width_per, height_per)
       api.nvim_buf_add_highlight(border_buf, 0, 'PopupWindowBorder', i, 0, -1)
     end
     border_win = api.nvim_open_win(border_buf, false, border_opts)
-    api.nvim_win_set_option(border_win, "winhighlight", "Normal:NormalNC")
+    --api.nvim_win_set_option(border_win, "winhighlight", "Normal:NormalNC")
     api.nvim_win_set_option(border_win, 'wrap', false)
     api.nvim_win_set_option(border_win, 'number', false)
     api.nvim_win_set_option(border_win, 'relativenumber', false)
@@ -69,7 +70,7 @@ function M.floating_window(border, width_per, height_per)
   }
   local content_buf = api.nvim_create_buf(false, true)
   local content_win = api.nvim_open_win(content_buf, true, content_opts)
-  api.nvim_win_set_option(content_win, "winhighlight", "Normal:Normal")
+  --api.nvim_win_set_option(content_win, "winhighlight", "Normal:Normal")
   api.nvim_win_set_option(content_win, 'wrap', false)
   api.nvim_win_set_option(content_win, 'number', false)
   api.nvim_win_set_option(content_win, 'relativenumber', false)
@@ -123,26 +124,27 @@ function M.popup_window(contents, filetype, opts, border)
   api.nvim_buf_set_option(content_buf, 'modifiable', false)
   local content_opts = M.make_popup_options(width, height, opts)
   if border and content_opts.anchor == 'SE' then
-      content_opts.row = content_opts.row - 1 
-      content_opts.col = content_opts.col - 1 
+      content_opts.row = content_opts.row - 1
+      content_opts.col = content_opts.col - 1
   elseif border and content_opts.anchor == 'NE' then
-      content_opts.row = content_opts.row + 1 
-      content_opts.col = content_opts.col - 1 
+      content_opts.row = content_opts.row + 1
+      content_opts.col = content_opts.col - 1
   elseif border and content_opts.anchor == 'NW' then
-      content_opts.row = content_opts.row + 1 
-      content_opts.col = content_opts.col + 1 
+      content_opts.row = content_opts.row + 1
+      content_opts.col = content_opts.col + 1
   elseif border and content_opts.anchor == 'SW' then
-      content_opts.row = content_opts.row - 1 
-      content_opts.col = content_opts.col + 1 
+      content_opts.row = content_opts.row - 1
+      content_opts.col = content_opts.col + 1
   end
   local content_win = api.nvim_open_win(content_buf, false, content_opts)
   if filetype == 'markdown' then
     api.nvim_win_set_option(content_win, 'conceallevel', 2)
   end
-  api.nvim_win_set_option(content_win, "winhighlight", "Normal:NormalFloat")
+  api.nvim_win_set_option(content_win, "winhighlight", "Normal:NormalNC")
   api.nvim_win_set_option(content_win, 'cursorline', false)
 
   -- border window
+  local border_win
   if border then
     local border_width = width + 2
     local border_height = height + 2
@@ -164,7 +166,7 @@ function M.popup_window(contents, filetype, opts, border)
     api.nvim_command("autocmd BufWipeout <buffer> exe 'bw '"..border_buf)
     local border_opts = M.make_popup_options(border_width, border_height, opts)
     border_win = api.nvim_open_win(border_buf, false, border_opts)
-    api.nvim_win_set_option(border_win, "winhighlight", "Normal:NormalFloat")
+    api.nvim_win_set_option(border_win, "winhighlight", "Normal:NormalNC")
     api.nvim_win_set_option(border_win, 'cursorline', false)
 
     vim.lsp.util.close_preview_autocmd({"CursorMoved", "BufHidden", "InsertCharPre", "WinLeave", "FocusLost"}, border_win)
@@ -218,3 +220,5 @@ function M.make_popup_options(width, height, opts)
 end
 
 return M
+
+

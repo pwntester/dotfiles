@@ -513,18 +513,21 @@ endfunction
 " ================ THEME ======================== {{{
 syntax enable
 set background=dark
-colorscheme cobange
 
-highlight link htmlH1 Function
-highlight link htmlH2 Function
-highlight link htmlH3 Function
-highlight link htmlH4 Function
+"colorscheme cobange
+lua require'theme'.setup()
 
-highlight mkdCode guifg=#9e9e9e guibg=#17252c
-highlight mkdCodeDelimiter guifg=#9e9e9e guibg=#17252c
-highlight mkdxInlineCode guifg=#9e9e9e guibg=#17252c
-highlight mkdxCode guifg=#9e9e9e guibg=#17252c
-highlight mkdURL guifg=#00AAFF
-highlight markdownLinkTextDelimiter guifg=#ff9a00
-highlight markdownLinkText guifg=#88ff88
+" highlight link htmlH1 Function
+" highlight link htmlH2 Function
+" highlight link htmlH3 Function
+" highlight link htmlH4 Function
+
+" highlight mkdCode guifg=#9e9e9e guibg=#17252c
+" highlight mkdCodeDelimiter guifg=#9e9e9e guibg=#17252c
+" highlight mkdxInlineCode guifg=#9e9e9e guibg=#17252c
+" highlight mkdxCode guifg=#9e9e9e guibg=#17252c
+" highlight mkdURL guifg=#00AAFF
+" highlight markdownLinkTextDelimiter guifg=#ff9a00
+" highlight markdownLinkText guifg=#88ff88
 " }}}
+
