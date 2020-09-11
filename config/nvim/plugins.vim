@@ -32,7 +32,6 @@ call plug#begin('~/.nvim/plugged')
     Plug 'SidOfc/mkdx'
 
     Plug 'norcalli/snippets.nvim'
-    " Treesitter
     Plug 'norcalli/nvim-colorizer.lua', { 'branch': 'color-editor' }
     Plug 'norcalli/nvim-base16.lua'
  
@@ -53,7 +52,8 @@ call plug#begin('~/.nvim/plugged')
 call plug#end()
 
 " Make colors available to getColorFromHighlight
-colorscheme cobange
+"colorscheme cobange
+lua require'theme'.setup()
 let cobalt1_color = GetColorFromHighlight('Normal', 'bg')
 let cobalt2_color = GetColorFromHighlight('EndOfBuffer', 'fg')
 let blue_color = GetColorFromHighlight('Comment', 'fg')
@@ -61,6 +61,10 @@ let yellow_color = GetColorFromHighlight('Function', 'fg')
 let green_color = GetColorFromHighlight('Title', 'fg')
 let grey_color = GetColorFromHighlight('PMenu', 'fg')
 let orange_color = GetColorFromHighlight('Identifier', 'fg')
+
+" VIM-POLYGLOT
+let g:polyglot_disabled = ["jsx", "hive", "markdown"]
+let g:no_csv_maps = 1
 
 " VIM-FORTIFY
 execute 'source' fnameescape(expand('~/.config/nvim/fortify.vim'))
@@ -142,10 +146,6 @@ let g:rooter_change_directory_for_non_project_files = 'current'
 " GITGUTTER 
 let g:gitgutter_map_keys = 0
 
-" VIM-POLYGLOT
-let g:polyglot_disabled = ["jsx", "hive", "markdown"]
-let g:no_csv_maps = 1
-
 " MKDX
 let g:mkdx#settings = { 'highlight': { 'enable': 1 },
                       \ 'gf_on_steroids': 1,
@@ -172,9 +172,6 @@ let g:vista_fzf_preview = ['right:50%']
 let g:vista_keep_fzf_colors = 1
 nmap <leader>v :Vista<Return>
 nmap <leader>vf :Vista finder<Return>
-
-" COLORIZER
-lua require('colorizer').setup({'*';'!fzf';})
 
 " VIM-PLUG
 let g:plug_window = 'lua require("window").floating_window(true,0.8,0.8)'
@@ -238,7 +235,7 @@ function ToggleDirvish(...)
     else
         execute "leftabove 30 vsplit | silent Dirvish"
     endif
-    set winhighlight=EndOfBuffer:EndOfBuffer,SignColumn:Normal,VertSplit:EndOfBuffer,Normal:Normal
+    "set winhighlight=EndOfBuffer:EndOfBuffer,SignColumn:Normal,VertSplit:EndOfBuffer,Normal:Normal
 endfunction
 
 cnoreabbrev <expr> rm    ((nvim_buf_get_option(0, 'filetype') == 'dirvish' && getcmdtype() is# ":" && getcmdline() is# "rm")? ("silent !rm %") : ("rm"))
