@@ -5,7 +5,6 @@ call plug#begin('~/.nvim/plugged')
     Plug 'nvim-lua/completion-nvim'
     Plug 'Shougo/neco-vim',
     Plug 'junegunn/fzf.vim' 
-    Plug 'pbogut/fzf-mru.vim'
     Plug 'tpope/vim-fugitive' 
     Plug 'andymass/vim-matchup' 
     Plug 'machakann/vim-sandwich'
@@ -33,13 +32,15 @@ call plug#begin('~/.nvim/plugged')
     Plug 'SidOfc/mkdx'
 
     Plug 'norcalli/snippets.nvim'
-
     " Treesitter
     Plug 'norcalli/nvim-colorizer.lua', { 'branch': 'color-editor' }
     Plug 'norcalli/nvim-base16.lua'
+ 
     "Plug 'nvim-treesitter/completion-treesitter'
     "Plug 'nvim-treesitter/nvim-treesitter'
     "Plug 'lifepillar/vim-colortemplate'
+    "Plug 'norcalli/ui.nvim'
+    "Plug 'pbogut/fzf-mru.vim'
 
     
     " Local plugins
@@ -48,6 +49,7 @@ call plug#begin('~/.nvim/plugged')
     Plug fnameescape(expand('~/Dev/codeql.nvim'))
     Plug fnameescape(expand('~/Dev/fortify.nvim'))
     Plug fnameescape(expand('~/Dev/octo.nvim'))
+    Plug fnameescape(expand('~/Dev/ui.nvim'))
 call plug#end()
 
 " Make colors available to getColorFromHighlight
@@ -72,10 +74,10 @@ let $FZF_DEFAULT_OPTS='--no-inline-info --layout=reverse --margin=0,0 --color=da
     \ '--color=info:'.cobalt1_color.',prompt:'.blue_color.',pointer:'.blue_color
 
 nnoremap <leader>f :call fzf#vim#files('.', {'options': '--prompt ""'})<Return>
-nnoremap <leader>m :FZFFreshMru --prompt ""<Return>
-nnoremap <leader>c :BCommits<Return>
-nnoremap <leader>s :Snippets<Return>
-nnoremap <leader>o :Buffers<Return>
+"nnoremap <leader>m :FZFFreshMru --prompt ""<Return>
+nnoremap <leader>m :lua require'fuzzy'.mru()<Return>
+"nnoremap <leader>o :Buffers<Return>
+nnoremap <leader>o :lua require'fuzzy'.buffers()<Return>
 nnoremap <leader>/ :call fzf#vim#search_history()<Return>
 nnoremap <leader>: :call fzf#vim#command_history()<Return>
 
@@ -128,6 +130,8 @@ let g:pear_tree_repeatable_expand = 0
 let g:pear_tree_smart_backspace   = 1
 let g:pear_tree_smart_closers     = 1
 let g:pear_tree_smart_openers     = 1
+let g:pear_tree_map_special_keys = 0
+autocmd BufEnter * if &ft != '' | let b:pear_tree_map_special_keys = 1 | endif
 
 " VIM-ROOTER
 let g:rooter_cd_cmd = "lcd" 
