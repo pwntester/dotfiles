@@ -1,12 +1,15 @@
---require'snippets'.set_ux(require'snippets.inserters.floaty')
+require'snippets'.set_ux(require'snippets.inserters.floaty')
 --require'snippets'.set_ux(require'snippets.inserters.vim_input')
-require'snippets'.set_ux(require'snippets.inserters.text_markers')
+--require'snippets'.set_ux(require'snippets.inserters.text_markers')
 require'snippets.contrib.clippy'.setup()
+require'snippets.contrib.clippy'.message_template = [[
+You have a snippet for that: %q
+]]
 require'snippets'.snippets = {
   lua = {
     -- Courtesy of @norcalli
     func = [[function${1|vim.trim(S.v):gsub("^%S"," %0")}(${2|vim.trim(S.v)})$0 end]];
-    req = [[local ${2:${1|S.v:match"%w+$"}} = require '$1']];
+    req = [[local ${2:${1|(S.v:match("([^.()]+)[()]*$") or ""):gsub("%-+","_")}} = require '$1']];
     ["local"] = [[local ${2:${1|S.v:match"[^.]+$"}} = ${1}]];
 
     ["for"] = "for ${1:i}, ${2:v} in ipairs(${3:t}) do\n$0\nend";
@@ -18,6 +21,5 @@ require'snippets'.snippets = {
       return string.format("#%06X", math.floor(math.random() * 0xFFFFFF))
     end;
 
-    -- ["local"] = [[local ${2:${1|S.v:match"([^.()]+)[()]*$"}} = ${1}]];
   }
 }
