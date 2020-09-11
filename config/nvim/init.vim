@@ -2,8 +2,9 @@ if &compatible
     set nocompatible 
 endif
 
-" ================ PLUGINS ==================== {{{
-" Disable built-in plugins
+let g:polyglot_disabled = ["jsx", "hive", "markdown"]
+
+" ================ BUILTIN PLUGINS ==================== {{{
 let g:loaded_2html_plugin      = 1
 let g:loaded_gzip              = 1
 let g:loaded_matchparen        = 1
@@ -33,7 +34,6 @@ set noequalalways                                                 " Dset backspa
 " ================ UI ==================== {{{
 set lazyredraw                                                    " Don't update the display while executing macros
 set foldmethod=manual                                             " Fold manually (zf)
-set nocursorline                                                  " Print cursorline
 set noshowmode                                                    " Dont show the mode in the command line
 set signcolumn=auto                                               " Only sho sign column if there are signs to be shown
 set termguicolors
@@ -59,7 +59,6 @@ set showtabline=2
 set laststatus=2
 set number
 set norelativenumber
-set cursorline
 
 " ================ COMPLETION ==================== {{{
 set wildmode=longest,full                                         "stuff to ignore when tab completing
@@ -290,7 +289,7 @@ function! CloseWin()
             let l:regular_buffer_count = 0
             for w in l:winids
                 if index(g:special_buffers, nvim_buf_get_option(nvim_win_get_buf(w), 'filetype')) == -1 
-                    echom nvim_win_get_config(w)
+                    "echom nvim_win_get_config(w)
                     if nvim_win_get_config(w)['relative'] == ''
                         let l:regular_buffer_count = l:regular_buffer_count + 1
                     endif
@@ -353,18 +352,25 @@ execute 'source' fnameescape(expand('~/.config/nvim/statusline.vim'))
 " }}}
 
 " ================ WINDOW DIMMING ======================== {{{
+function! Dim_win() abort
+    set winhighlight=EndOfBuffer:EndOfBuffer,SignColumn:Normal,LineNr:LineNr
+    set cursorline
+endfunction
+
+function! Undim_win() abort
+    set winhighlight=EndOfBuffer:EndOfBufferNC,SignColumn:NormalNC,LineNr:LineNrNC
+    set nocursorline
+endfunction
+
 augroup active_win 
     " dont show column
     autocmd BufEnter *.* :set colorcolumn=0
 
-    " highlight active window
-    " autocmd FocusGained,VimEnter,WinEnter,TermEnter * set winhighlight=EndOfBuffer:EndOfBuffer,SignColumn:Normal,VertSplit:EndOfBuffer
-    " autocmd FocusLost,WinLeave * set winhighlight=EndOfBuffer:EndOfBufferNC,SignColumn:NormalNC,VertSplit:EndOfBufferNC
+    " dim active win
+    autocmd FocusGained,VimEnter,WinEnter,TermEnter,BufEnter * call Dim_win()
+    autocmd FocusLost,WinLeave * call Undim_win()
 
-    autocmd FocusGained,VimEnter,WinEnter,TermEnter * set winhighlight=EndOfBuffer:EndOfBuffer,SignColumn:Normal
-    autocmd FocusLost,WinLeave * set winhighlight=EndOfBuffer:EndOfBufferNC,SignColumn:NormalNC
-
-    " hide statusline on non-current windows
+    " hide statusline on non-active windows
     autocmd FocusGained,VimEnter,WinEnter,BufEnter * call StatusLine()
     autocmd FocusLost,WinLeave,BufLeave * call StatusLineNC()
 
