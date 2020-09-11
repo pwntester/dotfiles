@@ -35,9 +35,9 @@ local function setup()
 
     nvim_lsp.sumneko_lua.setup{
         cmd = {
-            "/Users/pwntester/.cache/nvim/nvim_lsp/sumneko_lua/lua-language-server/bin/macOS/lua-language-server",
+            "/Users/pwntester/repos/lua-language-server/bin/macOS/lua-language-server",
             "-E",
-            "/Users/pwntester/.cache/nvim/nvim_lsp/sumneko_lua/lua-language-server/main.lua"
+            "/Users/pwntester/repos/lua-language-server/main.lua",
         };
         on_attach = on_attach_callback;
         callbacks = {
