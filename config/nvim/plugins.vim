@@ -20,12 +20,10 @@ call plug#begin('~/.nvim/plugged')
     Plug 'alvan/vim-closetag'
     Plug 'AndrewRadev/linediff.vim'
     Plug 'airblade/vim-rooter'
-    Plug 'norcalli/nvim-colorizer.lua'
     Plug 'sheerun/vim-polyglot'
     Plug 'psliwka/vim-smoothie'
     Plug 'liuchengxu/vista.vim'
     Plug 'justinmk/vim-dirvish'
-    Plug 'lifepillar/vim-colortemplate'
     Plug 'tmsvg/pear-tree'
     Plug 'neovim/nvim-lsp'
     Plug 'tommcdo/vim-lion'
@@ -37,8 +35,11 @@ call plug#begin('~/.nvim/plugged')
     Plug 'norcalli/snippets.nvim'
 
     " Treesitter
+    Plug 'norcalli/nvim-colorizer.lua', { 'branch': 'color-editor' }
+    Plug 'norcalli/nvim-base16.lua'
     "Plug 'nvim-treesitter/completion-treesitter'
     "Plug 'nvim-treesitter/nvim-treesitter'
+    "Plug 'lifepillar/vim-colortemplate'
 
     
     " Local plugins
