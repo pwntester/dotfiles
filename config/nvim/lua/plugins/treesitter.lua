@@ -2,19 +2,18 @@ local function setup()
     require'nvim-treesitter.configs'.setup {
         highlight = {
             enable = true,                    -- false will disable the whole extension
-            disable = { 'c', 'rust' },        -- list of language that will be disabled
+            disable = {},
             custom_captures = {               -- mapping of user defined captures to highlight groups
-            -- ["foo.bar"] = "Identifier"   -- highlight own capture @foo.bar with highlight group "Identifier", see :h nvim-treesitter-query-extensions
+            -- ["foo.bar"] = "Identifier"     -- highlight own capture @foo.bar with highlight group "Identifier", see :h nvim-treesitter-query-extensions
             },
         },
         incremental_selection = {
             enable = true,
-            disable = { 'cpp', 'lua' },
             keymaps = {                       -- mappings for incremental selection (visual mappings)
-            init_selection = 'gnn',         -- maps in normal mode to init the node/scope selection
-            node_incremental = "grn",       -- increment to the upper named parent
-            scope_incremental = "grc",      -- increment to the upper scope (as defined in locals.scm)
-            node_decremental = "grm",       -- decrement to the previous node
+                init_selection = 'gnn',       -- maps in normal mode to init the node/scope selection
+                node_incremental = "grn",     -- increment to the upper named parent
+                node_decremental = "grm",     -- decrement to the previous node
+                scope_incremental = "grc",    -- increment to the upper scope (as defined in locals.scm)
             }
         },
         refactor = {
@@ -22,19 +21,21 @@ local function setup()
                 enable = true
             },
             highlight_current_scope = {
-                enable = true
+                enable = false
             },
             smart_rename = {
                 enable = true,
                 keymaps = {
-                smart_rename = "grr"            -- mapping to rename reference under cursor
+                    smart_rename = "grr"            -- mapping to rename reference under cursor
                 }
             },
             navigation = {
                 enable = true,
                 keymaps = {
-                goto_definition = "gnd",        -- mapping to go to definition of symbol under cursor
-                list_definitions = "gnD"        -- mapping to list all definitions in current file
+                    goto_definition_lsp_fallback = "gnd", -- mapping to go to definition of symbol under cursor
+                    list_definitions = "gnD",        -- mapping to list all definitions in current file
+                    goto_next_usage = "<a-*>",
+                    goto_previous_usage = "<a-#>",
                 }
             }
         },
@@ -42,7 +43,7 @@ local function setup()
             enable = true,
             disable = {},
             keymaps = {
-                ["iL"] = { -- you can define your own textobjects directly here
+                ["iF"] = { -- you can define your own textobjects directly here
                     python = "(function_definition) @function",
                     cpp = "(function_definition) @function",
                     c = "(function_definition) @function",
