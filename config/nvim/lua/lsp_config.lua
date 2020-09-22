@@ -5,9 +5,12 @@ local function on_attach_callback(_, bufnr)
 
     bufnr = bufnr or api.nvim_get_current_buf()
 
+	-- filetype
+	local ft = api.nvim_buf_get_option(bufnr, 'filetype')
+
     -- mappings
     local map = function(type, key, value)
-	    vim.fn.nvim_buf_set_keymap(0,type,key,value,{noremap = true, silent = true});
+	    vim.fn.nvim_buf_set_keymap(bufnr,type,key,value,{noremap = true, silent = true});
     end
 
     --map('n','gD','<cmd>lua vim.lsp.buf.declaration()<CR>')

@@ -93,4 +93,3 @@ require'mappings'.setup()
 
 -- THEME
 require'theme'.setup()
-

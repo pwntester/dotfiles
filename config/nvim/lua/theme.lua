@@ -59,7 +59,7 @@ function M.norcalli()
 	local theme = base16.theme_from_array(colors)
     base16(theme, true)
 
-	hl('NormalFloat',				theme.base05, theme.base01)
+	hl('NormalFloat',				theme.base05, theme.base00)
 	hl('NormalNC',					nil,		  theme.base01)
 	hl('LineNr',					theme.base02, theme.base00)
 	hl('LineNrNC',					theme.base02, theme.base01)

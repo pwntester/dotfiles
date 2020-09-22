@@ -432,6 +432,24 @@ local function floating_fuzzy_menu(options)
     end
     api.nvim_buf_clear_namespace(bufnr, ns, 0, -1)
 
+    if prompt_position == 'bottom' then
+	  schedule(function()
+        api.nvim_buf_add_highlight(bufnr, ns, 'Title', height-1, 0, #prompt)
+        if virtual_text ~= '' then
+          local padding = (' '):rep(width - #prompt - #user_input - #virtual_text - 2)
+          api.nvim_buf_set_virtual_text(bufnr, vtns, height-1, {{padding..virtual_text, 'SpecialKey'}}, {})
+        end
+      end)
+    elseif prompt_position == 'top' then
+	  schedule(function()
+        api.nvim_buf_add_highlight(bufnr, ns, 'Title', 0, 0, #prompt)
+        if virtual_text ~= '' then
+          local padding = (' '):rep(width - #prompt - #user_input - #virtual_text - 2)
+          api.nvim_buf_set_virtual_text(bufnr, vtns, 0, {{padding..virtual_text, 'SpecialKey'}}, {})
+        end
+      end)
+    end
+
     local offset = 0
 	if prompt_position == 'bottom' then
 	    api.nvim_buf_set_lines(bufnr, 0, -2, false, {})
@@ -455,19 +473,6 @@ local function floating_fuzzy_menu(options)
       -- ERROR
 	end
 
-    if prompt_position == 'bottom' then
-      api.nvim_buf_add_highlight(bufnr, ns, 'Title', height-1, 0, #prompt)
-      if virtual_text ~= '' then
-        local padding = (' '):rep(width - #prompt - #user_input - #virtual_text - 1)
-        api.nvim_buf_set_virtual_text(bufnr, vtns, height-1, {{padding..virtual_text, 'SpecialKey'}}, {})
-      end
-    elseif prompt_position == 'top' then
-      api.nvim_buf_add_highlight(bufnr, ns, 'Title', 0, 0, #prompt)
-      if virtual_text ~= '' then
-        local padding = (' '):rep(width - #prompt - #user_input - #virtual_text - 1)
-        api.nvim_buf_set_virtual_text(bufnr, vtns, 0, {{padding..virtual_text, 'SpecialKey'}}, {})
-      end
-    end
   end
 
   local function update_user_input()
@@ -599,7 +604,6 @@ local function floating_fuzzy_menu(options)
   if hscroll_all then
     horizontal_start = longest_prefix or 0
   end
-  redraw()
   --local offset = 0
   --if leave_empty_line then offset = 1 end
   if prompt_position == 'bottom' then
@@ -611,24 +615,25 @@ local function floating_fuzzy_menu(options)
 		api.nvim_win_set_cursor(winnr, {height, #prefix+#user_input})
         api.nvim_buf_add_highlight(bufnr, ns, 'Title', height-1, 0, #prompt)
         if virtual_text ~= '' then
-          local padding = (' '):rep(width - #prompt - #user_input - #virtual_text - 1)
+          local padding = (' '):rep(width - #prompt - #user_input - #virtual_text - 2)
           api.nvim_buf_set_virtual_text(bufnr, vtns, height-1, {{padding..virtual_text, 'SpecialKey'}}, {})
         end
 	end)
   elseif prompt_position == 'top' then
 	api.nvim_buf_set_lines(bufnr, 0, 1, false, {prefix})
 	schedule(function()
-		api.nvim_win_set_cursor(winnr, {1, #prefix})
-		local line = api.nvim_get_current_line()
-		api.nvim_set_current_line(line..user_input)
-		api.nvim_win_set_cursor(winnr, {1, #prefix+#user_input})
-        api.nvim_buf_add_highlight(bufnr, ns, 'Title', 0, 0, #prompt)
-        if virtual_text ~= '' then
-          local padding = (' '):rep(width - #prompt - #user_input - #virtual_text - 1)
-          api.nvim_buf_set_virtual_text(bufnr, vtns, 0, {{padding..virtual_text, 'SpecialKey'}}, {})
-        end
+      api.nvim_win_set_cursor(winnr, {1, #prefix})
+      local line = api.nvim_get_current_line()
+      api.nvim_set_current_line(line..user_input)
+      api.nvim_win_set_cursor(winnr, {1, #prefix+#user_input})
+      api.nvim_buf_add_highlight(bufnr, ns, 'Title', 0, 0, #prompt)
+      if virtual_text ~= '' then
+        local padding = (' '):rep(width - #prompt - #user_input - #virtual_text - 2)
+        api.nvim_buf_set_virtual_text(bufnr, vtns, 0, {{padding..virtual_text, 'SpecialKey'}}, {})
+      end
 	end)
   end
+  redraw()
 
   vim.cmd "startinsert"
   vim.cmd(format("autocmd BufEnter <buffer=%d> startinsert", bufnr))
