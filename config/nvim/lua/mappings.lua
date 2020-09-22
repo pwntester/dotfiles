@@ -1,120 +1,121 @@
-require'nvim_utils'
+local api = vim.api
+
+local function map(mappings, defaults)
+  local opts = vim.fn.deepcopy(defaults)
+    for k, v in pairs(mappings) do
+        local mode = k:sub(1,1)
+        if mode == '_' then mode = '' end
+        local lhs = k:sub(2)
+        local rhs = v[1]
+        v[1] = nil
+        for i,j in pairs(v) do opts[i] = j end
+        pcall(api.nvim_set_keymap, mode, lhs, rhs, opts)
+        v[1] = rhs
+    end
+end;
 
 local function setup()
 
   vim.cmd [[ let mapleader = "\<Space>" ]]
 
-  local default_options = { silent = true; }
+  local default_options = { silent = true; noremap = true;}
 
   local mappings = {
+
+    -- * for visual selected text
+    ['v*'] = { [[y/\V<C-R>=escape(@",'/\')<CR><CR>]] };
 
     -- debug syntax
     ['ngs'] = { ':lua require"functions".debugSyntax()<CR>', noremap = false; };
 
     -- repeat last search updating search index
-    ['nn'] = { '/<CR>', noremap = true; };
-    ['nN'] = { '/<CR>', noremap = true; };
-
-    -- * for visual selected text
-    ['v*'] = { [[y/ 0 bytes scape(@",'/\')<CR><CR>]], noremap = true; };
-
-    -- these work like * and g*, but do not move the cursor and always set hls.
-    -- map * :let @/ = '\<'.expand('<cword>').'\>'\|set hlsearch<C-M>
-    -- map g* :let @/ = expand('<cword>')\|set hlsearch<C-M>
+    ['nn'] = { '/<CR>' };
+    ['nN'] = { '/<CR>' };
 
     -- escape to normal mode in insert mode
-    ['ijk'] = { '<ESC>', noremap = true; };
+    ['ijk'] = { '<ESC>' };
 
     -- shifting visual block should keep it selected
-    ['v<'] = { '<gv', noremap = true; };
-    ['v>'] = { '>gv|', noremap = true; };
+    ['v<'] = { '<gv' };
+    ['v>'] = { '>gv|' };
 
     -- automatically jump to end of text you pasted
-    ['vy'] = { 'y`', noremap = true; };
-    ['vp'] = { 'p`', noremap = true; };
-    ['np'] = { 'p`', noremap = true; };
-
-    -- quickly select text you pasted
-    -- nnoremap <expr> gp '`[' . strpart(getregtype(), 0, 1) . '`]'
+    ['vy'] = { 'y`' };
+    ['vp'] = { 'p`' };
+    ['np'] = { 'p`' };
 
     -- go up/down on visual line
     ['nj'] = { 'gj', noremap = false; };
     ['nk'] = { 'gk', noremap = false; };
 
     -- go to begining or End of line
-    ['nB'] = { '^', noremap = true; };
-    ['nE'] = { '$', noremap = true; };
+    ['nB'] = { '^' };
+    ['nE'] = { '$' };
 
     -- disable keys
-    ['n<up>'] = { '<nop>', noremap = true; };
-    ['n<down>'] = { '<nop>', noremap = true; };
-    ['n<left>'] = { '<nop>', noremap = true; };
-    ['n<right>'] = { '<nop>', noremap = true; };
-    ['i<up>'] = { '<nop>', noremap = true; };
-    ['i<down>'] = { '<nop>', noremap = true; };
-    ['i<left>'] = { '<nop>', noremap = true; };
-    ['i<right>'] = { '<nop>', noremap = true; };
-    ['n<space>'] = { '<nop>', noremap = true; };
-    ['n<esc>'] = { '<nop>', noremap = true; };
-
-    -- save one keystroke
-    ['n;'] = { ':', noremap = true; };
+    ['n<up>'] = { '<nop>' };
+    ['n<down>'] = { '<nop>' };
+    ['n<left>'] = { '<nop>' };
+    ['n<right>'] = { '<nop>' };
+    ['i<up>'] = { '<nop>' };
+    ['i<down>'] = { '<nop>' };
+    ['i<left>'] = { '<nop>' };
+    ['i<right>'] = { '<nop>' };
+    ['n<space>'] = { '<nop>' };
+    ['n<esc>'] = { '<nop>' };
 
     -- resize splits
-    ['n>'] = { ':execute "vertical resize +5"<CR>', noremap = true; };
-    ['n<'] = { ':execute "vertical resize -5"<CR>', noremap = true; };
-    ['n+'] = { ':execute "resize +5"<CR>', noremap = true; };
-    ['n-'] = { ':execute "resize -5"<CR>', noremap = true; };
+    ['n>'] = { ':execute "vertical resize +5"<CR>' };
+    ['n<'] = { ':execute "vertical resize -5"<CR>' };
+    ['n+'] = { ':execute "resize +5"<CR>' };
+    ['n-'] = { ':execute "resize -5"<CR>' };
 
     -- move around command line wildmenu
-    -- cnoremap <C-k> <LEFT>
-    -- cnoremap <C-j> <RIGHT>
-    -- cnoremap <C-h> <Space><BS><Left>
-    -- cnoremap <C-l> <Space><BS><Right>
+    ['c<c-k>'] = { '<left>' };
+    ['c<c-j>'] = { '<right>' };
+    ['c<c-h>'] = { '<space><bs><left>' };
+    ['c<c-l>'] = { '<space><bs><right>' };
 
     -- window navigation
-    ['n<c-j>'] = { '<c-w><c-j>', noremap = true; };
-    ['n<c-k>'] = { '<c-w><c-k>', noremap = true; };
-    ['n<c-l>'] = { '<C-w><c-l>', noremap = true; };
-    ['n<c-h>'] = { '<c-w><c-h>', noremap = true; };
+    ['n<c-j>'] = { '<c-w><c-j>' };
+    ['n<c-k>'] = { '<c-w><c-k>' };
+    ['n<c-l>'] = { '<C-w><c-l>' };
+    ['n<c-h>'] = { '<c-w><c-h>' };
 
     -- navigate faster
-    ['n<leader>j'] = { '12j', noremap = true; };
-    ['n<leader>k'] = { '12k', noremap = true; };
+    ['n<leader>j'] = { '12j' };
+    ['n<leader>k'] = { '12k' };
 
     -- paste keeping the default register
-    ['v<leader>p'] = { '"_dP', noremap = true; };
+    ['v<leader>p'] = { '"_dP' };
 
     -- copy & paste to system clipboard
     ['v<leader>y'] = { '"*y', noremap = false; };
 
     -- FUZZY MENU
-    ['n<leader>f'] = { require'fuzzy'.files, noremap = true; };
-    ['n<leader>m'] = { require'fuzzy'.mru, noremap = true; };
-    ['n<leader>o'] = { require'fuzzy'.buffers, noremap = true; };
+    ['n<leader>f'] = { [[<cmd>lua require'fuzzy'.files()<CR>]] };
+    ['n<leader>m'] = { [[<cmd>lua require'fuzzy'.mru()<CR>]] };
+    ['n<leader>o'] = { [[<cmd>lua require'fuzzy'.buffers()<CR>]] };
 
     -- FZF
-    ['n<leader>d'] = { [[:call fzf#vim#files('.', {'options': '--prompt ""'})<Return>]], noremap = true; };
+    ['n<leader>d'] = { [[:call fzf#vim#files('.', {'options': '--prompt ""'})<Return>]] };
 
     -- VISTA
-    ['n<leader>v'] = { ':Vista<CR>', noremap = true; };
-    ['n<leader>vf'] = { ':Vista finder<CR>', noremap = true; };
+    ['n<leader>v'] = { ':Vista<CR>' };
+    ['n<leader>vf'] = { ':Vista finder<CR>' };
 
     -- VIM-SMOOTHIE
     ['n<c-d>'] = { '<Plug>(SmoothieDownwards)', noremap = false; };
     ['n<c-e>'] = { '<Plug>(SmoothieUpwards)', noremap = false; };
 
     -- VIM-FLOATERM
-    ['n<leader>t'] = { ':FloatermNew --height=0.8 --width=0.8<CR>', noremap = true; };
+    ['n<leader>t'] = { ':FloatermNew --height=0.8 --width=0.8<CR>' };
 
     -- GOYO
-    ['n<leader>y'] = { ':Goyo<CR>', noremap = true; };
+    ['n<leader>y'] = { ':Goyo<CR>' };
 
     -- LAZY-GIT
-    ['n<Leader>g'] = { function()
-      require('window').floating_window({border=false;width_per=0.9;height_per=0.9;})
-      vim.fn.termopen('lazygit')
-    end, noremap = true; };
+    ['n<Leader>g'] = { [[:call luaeval('require("window").floating_window({border=false;width_per=0.9;height_per=0.9;})')<bar>call termopen('lazygit')<CR>]] };
 
     -- VEM-TABLINE
     ['n<s-h>'] = { '<Plug>vem_prev_buffer-', noremap = false; };
@@ -123,16 +124,27 @@ local function setup()
     ['n<leader>]'] = { '<Plug>vem_move_buffer_right-', noremap = false; };
 
     -- DIRVISH
-    ['ngE'] = { function() require'functions'.toggleDirvish() end, noremap = true; };
-    ['nge'] = { function() require'functions'.toggleDirvish('%') end, noremap = true; };
+    ['ngE'] = { [[<cmd>lua require'functions'.toggleDirvish()<CR>]] };
+    ['nge'] = { [[<cmd>lua require'functions'.toggleDirvish('%')<CR>]] };
+
+    -- these work like * and g*, but do not move the cursor and always set hls.
+    ['_*'] = { [[:let @/ = '\<'.expand('<cword>').'\>'<bar>set hlsearch<C-M>]] };
+    ['_g*'] = { [[:let @/ = expand('<cword>')<bar>set hlsearch<C-M>]] };
   }
 
-  -- SNIPPETS.NVIM
-  vim.cmd [[ inoremap <silent><expr> <Return> pumvisible() ? "\<c-y>\<cr>" : "\<CR>" ]]
-  vim.cmd [[ inoremap <silent><expr> <C-j> pumvisible() ? "\<C-n>" : "\<cmd>lua return require'snippets'.expand_or_advance()<CR>" ]]
-  vim.cmd [[ inoremap <silent><expr> <C-k> pumvisible() ? "\<C-p>" : "\<cmd>lua return require'snippets'.expand_or_advance(-1)<CR>" ]]
+  map(mappings, default_options)
 
-  nvim_apply_mappings(mappings, default_options)
+  local expr_mappings = {
+    -- quickly select text you pasted
+    ['ngp'] = { [['`[' . strpart(getregtype(), 0, 1) . '`]']] };
+
+    -- SNIPPETS.NVIM
+    ['i<CR>'] = { [[pumvisible() ? "\<c-y>\<cr>" : "\<CR>"]] };
+    ['i<c-j>'] = { [[pumvisible() ? "\<C-n>" : "\<cmd>lua return require'snippets'.expand_or_advance()<CR>"]] };
+    ['i<c-k>'] = { [[pumvisible() ? "\<C-p>" : "\<cmd>lua return require'snippets'.advance_snippet(-1)<CR>" ]] };
+  }
+  map(expr_mappings, { expr = true; })
+
 end
 
 return {

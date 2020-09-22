@@ -150,9 +150,6 @@ local function setup()
     -- TERMINAL
     use {'voldikss/vim-floaterm'}
 
-    --CONFIG
-    use {'norcalli/nvim_utils'}
-
     -- STATIC ANALYSIS
     use {'~/Dev/codeql.nvim', config = function()
       vim.g.codeql_max_ram = 32000
