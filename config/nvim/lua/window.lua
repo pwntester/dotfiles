@@ -3,38 +3,6 @@ local api = vim.api
 local validate = vim.validate
 local floor = math.floor
 
-local function fuzzy_popup(opts)
-	opts = opts or {}
-	local buf = api.nvim_create_buf(false, true)
-
-	api.nvim_buf_set_option(buf, 'bufhidden', 'delete')
-    api.nvim_buf_set_option(buf, 'ft', 'fuzzy_menu')
-
-	local win
-	local uis = api.nvim_list_uis()
-	local ui_min_width = math.huge
-	local ui_min_height = math.huge
-	for _, ui in ipairs(uis) do
-		ui_min_width = math.min(ui.width, ui_min_width)
-		ui_min_height = math.min(ui.height, ui_min_height)
-	end
-
-	opts.relative = opts.relative or 'editor'
-	opts.width = opts.width or floor(ui_min_width * 80 / 100)
-	opts.height = opts.height or floor(ui_min_height * 80 / 100)
-	opts.anchor = opts.anchor or 'NW'
-	opts.style = opts.style or 'minimal'
-	opts.focusable = opts.focusable or false
-	opts.col = floor((ui_min_width - opts.width) / 2)
-	opts.row = floor((ui_min_height - opts.height) / 2)
-
-	win = api.nvim_open_win(buf, 0, opts)
-	api.nvim_win_set_option(win, 'wrap', false)
-	api.nvim_buf_set_option(buf, 'ul', -1)
-	api.nvim_win_set_option(win, 'concealcursor', 'nc')
-	return buf, win
-end
-
 local function make_popup_options(width, height, opts)
   validate {
     opts = { opts, 't', true };
