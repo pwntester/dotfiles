@@ -1,6 +1,7 @@
 local vim = vim
 local api = vim.api
 local uv = vim.loop
+local format = string.format
 local menu = require'fuzzy_menu'
 
 local function is_file(fname)
@@ -103,10 +104,36 @@ local function fuzzy_files()
     }
 end
 
+local function fuzzy_gh_issues(repo)
+
+    local resp = require'octo'.get_repo_issues(repo, {})
+
+    local source = {}
+    for _,i in ipairs(resp.issues) do
+        table.insert(source, {
+            number = i['number'];
+            display = string.format('#%d - %s', i['number'], i['title']);
+        })
+    end
+
+    require'fuzzy_menu'.floating_fuzzy_menu{
+        inputs = source;
+        prompt_position = 'top';
+        leave_empty_space = true;
+        height = 30;
+        prompt = 'Search:';
+        virtual_text = format('%d out of %d', resp.count, resp.total);
+        callback = function(e, _, _)
+            api.nvim_command(format('lua require"octo".get_issue(%d, %s)', e.number, repo))
+        end
+    }
+end
+
 return {
     buffers = fuzzy_buffers;
     mru = fuzzy_mru;
     files = fuzzy_files;
     list_files = list_files;
+    fuzzy_gh_issues = fuzzy_gh_issues;
 }
 

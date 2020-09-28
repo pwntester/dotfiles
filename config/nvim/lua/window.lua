@@ -3,6 +3,12 @@ local api = vim.api
 local validate = vim.validate
 local floor = math.floor
 
+-- define border colors based on Normal and NormalNC bg colors
+local bg = util.getColorFromHighlight('Normal', 'bg')
+local fg = util.getColorFromHighlight('NormalNC', 'bg')
+vim.cmd("hi PopupWindowBorder guifg="..fg.." guibg="..bg)
+vim.cmd("hi InvertedPopupWindowBorder guifg="..bg.." guibg="..fg)
+
 local function make_popup_options(width, height, opts)
   validate {
     opts = { opts, 't', true };

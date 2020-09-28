@@ -1,5 +1,7 @@
 local api = vim.api
 
+local colors_loaded = false
+
 local function redrawModeColors(mode)
 
   local bg_color = util.getColorFromHighlight('Normal', 'bg')
@@ -86,6 +88,22 @@ local function inactive()
 end
 
 local function active()
+
+  -- lazy load colors
+  if not colors_loaded then
+    local fg = util.getColorFromHighlight('Normal', 'bg')
+    local bg = util.getColorFromHighlight('NormalNC', 'bg')
+    vim.cmd [[hi def link MyStatuslineBar Normal]]
+    vim.cmd [[hi def link MyStatuslineGit Normal]]
+    vim.cmd [[hi def link MyStatuslineFiletype Comment]]
+    vim.cmd [[hi def link MyStatuslinePercentage Comment]]
+    vim.cmd [[hi def link MyStatuslineLineCol Comment]]
+    vim.cmd [[hi def link MyStatuslineLSPErrors Identifier]]
+    vim.cmd [[hi def link MyStatuslineLSPWarnings Constant]]
+    vim.cmd [[hi def link MyStatuslineLSP Comment]]
+    vim.cmd('hi! MyStatuslineBarNC guifg='..fg..' guibg='..bg)
+    colors_loaded = true
+  end
 
   local ft = api.nvim_buf_get_option(0, 'ft')
 

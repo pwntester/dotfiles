@@ -47,7 +47,7 @@ end
 function M.norcalli()
 
     local norcalli = {
-		--'#111b2b'; '#213554'; '#1d3872'; '#80b2d6';
+	  --'#111b2b'; '#213554'; '#1d3872'; '#80b2d6';
         '#0b1f41'; '#11305f'; '#3a5488'; '#80b2d6';
         '#3aa3e9'; '#abb2bf'; '#b6bdca'; '#c8ccd4';
         '#f04c75'; '#d19a66'; '#e5c07b'; '#98c379';
@@ -60,7 +60,7 @@ function M.norcalli()
     base16(theme, true)
 
 	hl('NormalFloat',				theme.base05, theme.base00)
-	hl('NormalNC',					nil,		  theme.base01)
+	hl('NormalNC',					theme.base05, theme.base01)
 	hl('LineNr',					theme.base02, theme.base00)
 	hl('LineNrNC',					theme.base02, theme.base01)
 	hl('StatusLine',				theme.base02, theme.base00)
@@ -70,40 +70,32 @@ function M.norcalli()
 	hl('SignColumn',				theme.base01, theme.base00)
 	hl('VertSplit',					theme.base02, theme.base00)
 	hl('ColorColumn',				theme.base01, theme.base01)
-
-	hl('PopupWindowBorder',			theme.base01, theme.base00)
-	hl('InvertedPopupWindowBorder', theme.base00, theme.base01)
-
-    hl('MyStatuslineSeparator',     theme.base00, theme.base00)
-    hl('MyStatuslineBar',          	theme.base00, theme.base00)
-    hl('MyStatuslineGit',          	theme.base07, theme.base00)
-    hl('MyStatuslineFiletype',     	theme.base03, theme.base00)
-    hl('MyStatuslinePercentage',   	theme.base03, theme.base00)
-    hl('MyStatuslineLineCol',      	theme.base03, theme.base00)
-    hl('MyStatuslineLSPErrors',    	theme.base08, theme.base00)
-    hl('MyStatuslineLSPWarnings',  	theme.base15, theme.base00)
-    hl('MyStatuslineLSP',          	theme.base03, theme.base00)
-    hl('MyStatuslineBarNC',        	theme.base00, theme.base01)
-
-    hl('TabLineSel',				theme.base08, theme.base01)
-
+    hl('TabLineSel',				theme.base03, theme.base01)
+    hl('TabLine'	,				theme.base01, theme.base03)
+    hl('TabLineFill',				theme.base01, theme.base03)
 	hl('MatchParen',                theme.base07, theme.base08)
+    hl('Search',					theme.base00, theme.base04)
+    hl('IncSearch',					theme.base00, theme.base09)
+	-- LspDiagnosticsError                 red         none
+	-- LspDiagnosticsWarning               yellow      none
+	-- LspDiagnosticsInformation           blue        none
+	-- LspDiagnosticsHint                  blue        none
+	-- LspDiagnosticsUnderline             none        none        undercurl       guisp=white
+	-- LspDiagnosticsUnderlineError        none        none        undercurl       guisp=red
+	-- LspDiagnosticsUnderlineWarning      none        none        undercurl       guisp=yellow
+	-- LspDiagnosticsUnderlineInformation  none        none        undercurl       guisp=blue
+	-- LspDiagnosticsUnderlineHint         none        none        undercurl       guisp=blue
+	-- LspReferenceText                    none        darker_grey bold,italic
+	-- LspReferenceRead                    none        darker_grey bold,italic
+	-- LspReferenceWrite                   none        darker_grey bold,italic
 
+	-- plugins
 	hl('markdownCode',				nil,		  theme.base01)
+	hl('TelescopeBorder',			theme.base01, theme.base00)
+	hl('TelescopeMatching',			theme.base04, theme.base00)
+	hl('TelescopeSelection',		theme.base03, theme.base00)
+	hl('TelescopeNormal',   		theme.base05, theme.base00)
 
--- LspDiagnosticsError                 red         none
--- LspDiagnosticsWarning               yellow      none
--- LspDiagnosticsInformation           blue        none
--- LspDiagnosticsHint                  blue        none
--- LspDiagnosticsUnderline             none        none        undercurl       guisp=white
--- LspDiagnosticsUnderlineError        none        none        undercurl       guisp=red
--- LspDiagnosticsUnderlineWarning      none        none        undercurl       guisp=yellow
--- LspDiagnosticsUnderlineInformation  none        none        undercurl       guisp=blue
--- LspDiagnosticsUnderlineHint         none        none        undercurl       guisp=blue
--- LspReferenceText                    none        darker_grey bold,italic
--- LspReferenceRead                    none        darker_grey bold,italic
--- LspReferenceWrite                   none        darker_grey bold,italic
 end
-
 
 return M

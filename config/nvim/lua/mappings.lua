@@ -30,7 +30,7 @@ local function setup()
 
     -- repeat last search updating search index
     ['nn'] = { '/<CR>' };
-    ['nN'] = { '/<CR>' };
+    ['nN'] = { '?<CR>' };
 
     -- escape to normal mode in insert mode
     ['ijk'] = { '<ESC>' };
@@ -70,12 +70,6 @@ local function setup()
     ['n+'] = { ':execute "resize +5"<CR>' };
     ['n-'] = { ':execute "resize -5"<CR>' };
 
-    -- move around command line wildmenu
-    ['c<c-k>'] = { '<left>' };
-    ['c<c-j>'] = { '<right>' };
-    ['c<c-h>'] = { '<space><bs><left>' };
-    ['c<c-l>'] = { '<space><bs><right>' };
-
     -- window navigation
     ['n<c-j>'] = { '<c-w><c-j>' };
     ['n<c-k>'] = { '<c-w><c-k>' };
@@ -93,9 +87,16 @@ local function setup()
     ['v<leader>y'] = { '"*y', noremap = false; };
 
     -- FUZZY MENU
-    ['n<leader>f'] = { [[<cmd>lua require'fuzzy'.files()<CR>]] };
-    ['n<leader>m'] = { [[<cmd>lua require'fuzzy'.mru()<CR>]] };
-    ['n<leader>o'] = { [[<cmd>lua require'fuzzy'.buffers()<CR>]] };
+    -- ['n<leader>f'] = { [[<cmd>lua require'fuzzy'.files()<CR>]] };
+    -- ['n<leader>m'] = { [[<cmd>lua require'fuzzy'.mru()<CR>]] };
+    -- ['n<leader>o'] = { [[<cmd>lua require'fuzzy'.buffers()<CR>]] };
+
+    -- TELESCOPE
+    --['n<leader>f'] = { [[<cmd>lua require'telescope.builtin'.find_files{}<CR>]] };
+    ['n<leader>m'] = { [[<cmd>lua require'plugins.telescope'.mru()<CR>]] };
+    ['n<leader>f'] = { [[<cmd>lua require'plugins.telescope'.files{}<CR>]] };
+    ['n<leader>o'] = { [[<cmd>lua require'plugins.telescope'.buffers{}<CR>]] };
+    --['n<leader>o'] = { [[<cmd>lua require'telescope.builtin'.buffers{}<CR>]] };
 
     -- FZF
     ['n<leader>d'] = { [[:call fzf#vim#files('.', {'options': '--prompt ""'})<Return>]] };
@@ -130,6 +131,13 @@ local function setup()
     -- these work like * and g*, but do not move the cursor and always set hls.
     ['_*'] = { [[:let @/ = '\<'.expand('<cword>').'\>'<bar>set hlsearch<C-M>]] };
     ['_g*'] = { [[:let @/ = expand('<cword>')<bar>set hlsearch<C-M>]] };
+
+    -- move around command line wildmenu
+    ['c<c-j>'] = { '<right>' };
+    ['c<c-k>'] = { '<left>' };
+    ['c<c-h>'] = { '<space><bs><left>' };
+    ['c<c-l>'] = { '<space><bs><right>' };
+
   }
 
   map(mappings, default_options)
@@ -138,10 +146,15 @@ local function setup()
     -- quickly select text you pasted
     ['ngp'] = { [['`[' . strpart(getregtype(), 0, 1) . '`]']] };
 
+    -- jump to next/previous search match
+    ['c<C-j>'] = { [[getcmdtype() == "/" <bar><bar> getcmdtype() == "?" ? "<C-g>" : "<C-j>"]] };
+    ['c<C-k>'] = { [[getcmdtype() == "/" <bar><bar> getcmdtype() == "?" ? "<C-t>" : "<C-j>"]] };
+
     -- SNIPPETS.NVIM
     ['i<CR>'] = { [[pumvisible() ? "\<c-y>\<cr>" : "\<CR>"]] };
     ['i<c-j>'] = { [[pumvisible() ? "\<C-n>" : "\<cmd>lua return require'snippets'.expand_or_advance()<CR>"]] };
     ['i<c-k>'] = { [[pumvisible() ? "\<C-p>" : "\<cmd>lua return require'snippets'.advance_snippet(-1)<CR>" ]] };
+
   }
   map(expr_mappings, { expr = true; })
 
