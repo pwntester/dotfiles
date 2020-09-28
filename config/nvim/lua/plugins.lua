@@ -34,6 +34,16 @@ local function setup()
       }
     end}
 
+    -- TELESCOPE.NVIM
+    use {'kyazdani42/nvim-web-devicons', config = function()
+      require'nvim-web-devicons'.setup()
+    end}
+    use {'nvim-lua/popup.nvim'}
+    use {'nvim-lua/plenary.nvim'}
+    use {'nvim-lua/telescope.nvim', config = function()
+      require'plugins.telescope'.setup()
+    end}
+
     -- TREESITTER
     use {'nvim-treesitter/nvim-treesitter', config = function()
       require'plugins.treesitter'.setup()
@@ -60,6 +70,16 @@ local function setup()
 
     -- GIT
     use {'tpope/vim-fugitive'}
+    use {'jaxbot/github-issues.vim'}
+    use {'~/Dev/octo.nvim', config = function()
+      vim.cmd [[ augroup octo ]]
+      vim.cmd [[ autocmd! ]]
+      vim.cmd [[ autocmd FileType octo_issue lua statusline.active() ]]
+      vim.cmd [[ autocmd FileType octo_issue nested setlocal conceallevel=2 ]]
+      vim.cmd [[ autocmd FileType octo_issue nested setlocal concealcursor=c ]]
+      vim.cmd [[ augroup END ]]
+      vim.cmd [[command! -nargs=? ListIssues :lua require('fuzzy').fuzzy_gh_issues(<f-args>)]]
+    end}
 
     -- UI
     use {'Yggdroot/indentLine', config = function()
@@ -91,7 +111,7 @@ local function setup()
       vim.g.pear_tree_smart_backspace = 1
       vim.g.pear_tree_smart_closers = 1
       vim.g.pear_tree_smart_openers = 1
-      vim.g.pear_tree_ft_disabled = {'fuzzy_menu', 'TelescopePrompt'}
+      vim.g.pear_tree_ft_disabled = {'ui.nvim', 'fuzzy_menu', 'TelescopePrompt'}
     end}
     use {'alvan/vim-closetag', config = function()
       vim.g.closetag_filenames = '*.html,*.xhtml,*.phtml,*.xml,*.jsp'
@@ -157,16 +177,6 @@ local function setup()
     end}
     use {'~/Dev/fortify.nvim', config = function()
       --require'plugins.fortify'.setup()
-    end}
-
-    -- GITHUB
-    use {'~/Dev/octo.nvim', config = function()
-      vim.cmd [[ augroup octo ]]
-      vim.cmd [[ autocmd! ]]
-      vim.cmd [[ autocmd FileType octo_issue lua statusline.active() ]]
-      vim.cmd [[ autocmd FileType octo_issue nested setlocal conceallevel=2 ]]
-      vim.cmd [[ autocmd FileType octo_issue nested setlocal concealcursor=c ]]
-      vim.cmd [[ augroup END ]]
     end}
   end
 

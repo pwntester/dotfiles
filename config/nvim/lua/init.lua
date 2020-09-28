@@ -23,8 +23,8 @@ vim.g.special_buffers = {
   'terminal'
 }
 
-statusline = require'statusline'
 util = require'functions'
+statusline = require'statusline'
 
 -- AUTOCOMMANDS
 vim.cmd [[ augroup vimrc ]]
@@ -73,14 +73,14 @@ vim.cmd [[ augroup vimrc ]]
   -- ignore fzf
   vim.cmd [[ autocmd TermClose term://* if (expand('<afile>') !~ "fzf") | call nvim_input('<CR>') | endif ]]
 
+  -- help in vertical split
+  vim.cmd [[ autocmd BufEnter *.txt if &buftype == 'help' | wincmd L | endif ]]
+
 vim.cmd [[ augroup END ]]
 
 -- ALIASES
 util.alias('bd', "bp<bar>sp<bar>bn<bar>lua<space>util.deleteCurrentBuffer()")
 util.alias('w1', 'w!')
-
--- COMMANDS
--- vim.cmd [[ command! -nargs=0 -bang Q quitall!<bang> ]]
 
 -- MODULES
 require'markdown'.setup()
