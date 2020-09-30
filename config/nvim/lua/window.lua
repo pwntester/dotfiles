@@ -9,6 +9,19 @@ local fg = util.getColorFromHighlight('NormalNC', 'bg')
 vim.cmd("hi PopupWindowBorder guifg="..fg.." guibg="..bg)
 vim.cmd("hi InvertedPopupWindowBorder guifg="..bg.." guibg="..fg)
 
+local function scale_win(w, h)
+  local uis = api.nvim_list_uis()
+  local ui_min_width = math.huge
+  local ui_min_height = math.huge
+  for _, ui in ipairs(uis) do
+    ui_min_width = math.min(ui.width, ui_min_width)
+    ui_min_height = math.min(ui.height, ui_min_height)
+  end
+  local	win_width = floor(ui_min_width * w)
+  local win_height = floor(ui_min_height * h)
+  return win_width, win_height
+end
+
 local function make_popup_options(width, height, opts)
   validate {
     opts = { opts, 't', true };
@@ -278,6 +291,7 @@ return {
   floating_window = floating_window;
   popup_window = popup_window;
   window_decoration_columns = window_decoration_columns;
+  scale_win = scale_win;
 }
 
 
