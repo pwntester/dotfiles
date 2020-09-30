@@ -1,5 +1,3 @@
-local api = vim.api
-local format = string.format
 local uv = vim.loop
 local filter = vim.tbl_filter
 local make_entry = require('telescope.make_entry')
@@ -8,33 +6,44 @@ local finders = require('telescope.finders')
 local pickers = require('telescope.pickers')
 local sorters = require('telescope.sorters')
 
-local function mappings (prompt_bufnr, map)
-  map('i', '<C-j>', function()
-    actions.move_selection_next(prompt_bufnr)
-  end)
-  map('i', '<C-k>', function()
-    actions.move_selection_previous(prompt_bufnr)
-  end)
-  return true
-end
-
 local function setup()
   require('telescope').setup{
     defaults = {
       --shorten_path = false -- currently the default value is true
     }
   }
-end
 
-local function mru()
-  local dropdown_opts = require('telescope.themes').get_dropdown({
+  -- custom theme
+  local width, height = require'window'.scale_win(0.8, 0.9)
+  padded_dropdown = require('telescope.themes').get_dropdown({
+    width = width;
+    height = height;
     winblend = 10;
     borderchars = {
       prompt = {'▀', '▐', '▄', '▌', '▛', '▜', '▟', '▙' };
       results = {' ', '▐', '▄', '▌', '▌', '▐', '▟', '▙' };
     }
   })
-  pickers.new(dropdown_opts, {
+
+  -- custom mappings
+  function mappings (prompt_bufnr, map)
+    map('i', '<C-j>', function()
+      actions.move_selection_next(prompt_bufnr)
+    end)
+    map('i', '<C-k>', function()
+      actions.move_selection_previous(prompt_bufnr)
+    end)
+    return true
+  end
+
+  -- no cursor line
+  vim.cmd [[ autocmd FileType TelescopePrompt set nocursorline ]]
+end
+
+-- most recent files
+local function mru()
+  local opts = vim.deepcopy(padded_dropdown)
+  pickers.new(opts, {
     prompt = '';
     finder = finders.new_table(vim.tbl_filter(function(val)
       return 0 ~= vim.fn.filereadable(val)
@@ -44,10 +53,10 @@ local function mru()
   }):find()
 end
 
+-- cwd files
 local function files()
   local function list_files(dir, exclude)
     local _files = {}
-
     local function scan(dir)
       local req = uv.fs_scandir(dir)
       local function iter()
@@ -69,20 +78,15 @@ local function files()
     return _files
   end
 
-  local dropdown_opts = require('telescope.themes').get_dropdown({
-    winblend = 10;
-    borderchars = {
-      prompt = {'▀', '▐', '▄', '▌', '▛', '▜', '▟', '▙' };
-      results = {' ', '▐', '▄', '▌', '▌', '▐', '▟', '▙' };
-    }
-  })
   local _files = list_files(nil, {
     exts = {'png'};
     files = {'.DS_Store'};
     dirs = {'.git'};
   })
 
-  pickers.new(dropdown_opts, {
+  local opts = vim.deepcopy(padded_dropdown)
+
+  pickers.new(opts, {
     prompt = '';
     finder = finders.new_table(_files);
     sorter = sorters.get_fuzzy_file();
@@ -90,28 +94,20 @@ local function files()
   }):find()
 end
 
+-- buffers
 local function buffers()
-  local dropdown_opts = require('telescope.themes').get_dropdown({
-    winblend = 10;
-    borderchars = {
-      prompt = {'▀', '▐', '▄', '▌', '▛', '▜', '▟', '▙' };
-      results = {' ', '▐', '▄', '▌', '▌', '▐', '▟', '▙' };
-    }
-  })
   local _buffers = filter(function(b)
     return vim.api.nvim_buf_is_loaded(b) and 1 == vim.fn.buflisted(b)
   end, vim.api.nvim_list_bufs())
 
-  if not dropdown_opts.bufnr_width then
-    local max_bufnr = math.max(unpack(_buffers))
-    dropdown_opts.bufnr_width = #tostring(max_bufnr)
-  end
+  local opts = vim.deepcopy(padded_dropdown)
+  opts.bufnr_width = #tostring(math.max(unpack(_buffers)))
 
-  pickers.new(dropdown_opts, {
+  pickers.new(opts, {
     prompt = '';
     finder = finders.new_table {
       results = _buffers;
-      entry_maker = make_entry.gen_from_buffer(dropdown_opts);
+      entry_maker = make_entry.gen_from_buffer(opts);
     };
     sorter = sorters.get_generic_fuzzy_sorter();
     attach_mappings = mappings;
