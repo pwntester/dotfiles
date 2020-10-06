@@ -115,38 +115,38 @@ local mappings = {
   ['c<c-l>'] = { '<space><bs><right>' };
 
   -- Treesitter
-  ['ngnn'] = { [[<Plug>(TsSelInit)]] };
-  ['xgrn'] = { [[<Plug>(TsSelNodeIncr)]] };
-  ['xgrm'] = { [[<Plug>(TsSelNodeDecr)]] };
-  ['xgrc'] = { [[<Plug>(TsSelScopeIncr)]] };
-  ['xgrd'] = { [[<Plug>(TsSelScopeDecr)]] };
-  ['ngrr'] = { [[<Plug>(TsRename)]] };
-  ['ngtd'] = { [[<Plug>(TsGotoDef)]] };
-  ['ngnu'] = { [[<Plug>(TsGotoNextUse)]] };
-  --['ngpu'] = { [[<Plug>(TsGotoPrevUse)]] };
-  ['ngnD'] = { [[<Plug>(TsListDefs)]] };
+  -- ['ngnn'] = { [[<Plug>(TsSelInit)]] };
+  -- ['xgrn'] = { [[<Plug>(TsSelNodeIncr)]] };
+  -- ['xgrm'] = { [[<Plug>(TsSelNodeDecr)]] };
+  -- ['xgrc'] = { [[<Plug>(TsSelScopeIncr)]] };
+  -- ['xgrd'] = { [[<Plug>(TsSelScopeDecr)]] };
+  -- ['ngrr'] = { [[<Plug>(TsRename)]] };
+  -- ['ngtd'] = { [[<Plug>(TsGotoDef)]] };
+  -- ['ngnu'] = { [[<Plug>(TsGotoNextUse)]] };
+  -- ['ngpu'] = { [[<Plug>(TsGotoPrevUse)]] };
+  -- ['ngnD'] = { [[<Plug>(TsListDefs)]] };
 
   -- LSP
-  --['ngtd'] = { [[<Plug>(LspGotoDef)]] };
-  --['grr'] = { [[<Plug>(LspRename)]] };
-  ['ngtD'] = { [[<Plug>(LspGotoDecl)]] };
-  ['ngS'] = { [[<Plug>(LspShowDiagnostics)]] };
-  ['ngh'] = { [[<Plug>(LspHover)]] };
-  ['ngr'] = { [[<Plug>(LspShowReferences)]] };
-  ['ngH'] = { [[<Plug>(LspShowSignatureHelp)]] };
-  ['ngi'] = { [[<Plug>(LspGotoImpl)]] };
-  ['ngtt'] = { [[<Plug>(LspGotoTypeDef)]] };
-  ['ngds'] = { [[<Plug><LspDocumentSymbol)]] };
-  ['ngws'] = { [[<Plug><LspWorkspaceSymbol)]] };
-  ['ngfd'] = { [[<Plug>(LspFormat)']] };
-  ['ngic'] = { [[<Plug>(LspIncomingCalls)]] };
-  ['ngoc'] = { [[<Plug>(LspOutgoingCalls)]] };
-  ['ngca'] = { [[<Plug>(LspCodeActions)]] };
-  ['vgva'] = { [[<Plug>(LspVisualCodeActions)]] };
+  -- ['ngtd'] = { [[<Plug>(LspGotoDef)]] };
+  -- ['grr'] = { [[<Plug>(LspRename)]] };
+  -- ['ngtD'] = { [[<Plug>(LspGotoDecl)]] };
+  -- ['ngS'] = { [[<Plug>(LspShowDiagnostics)]] };
+  -- ['ngh'] = { [[<Plug>(LspHover)]] };
+  -- ['ngr'] = { [[<Plug>(LspShowReferences)]] };
+  -- ['ngH'] = { [[<Plug>(LspShowSignatureHelp)]] };
+  -- ['ngi'] = { [[<Plug>(LspGotoImpl)]] };
+  -- ['ngtt'] = { [[<Plug>(LspGotoTypeDef)]] };
+  -- ['ngds'] = { [[<Plug><LspDocumentSymbol)]] };
+  -- ['ngws'] = { [[<Plug><LspWorkspaceSymbol)]] };
+  -- ['ngfd'] = { [[<Plug>(LspFormat)']] };
+  -- ['ngic'] = { [[<Plug>(LspIncomingCalls)]] };
+  -- ['ngoc'] = { [[<Plug>(LspOutgoingCalls)]] };
+  -- ['ngca'] = { [[<Plug>(LspCodeActions)]] };
+  -- ['vgva'] = { [[<Plug>(LspVisualCodeActions)]] };
 
   -- JDTLS
-  ['ngR'] = { [[<Plug>(LspRefactor)]] };
-  ['ngoi'] = { [[<Plug>(LspOrganizeImports)]] };
+  -- ['ngR'] = { [[<Plug>(LspRefactor)]] };
+  -- ['ngoi'] = { [[<Plug>(LspOrganizeImports)]] };
   -- ['ngev'] = { [[<Plug>(LspExtractVar)]] };
   -- ['ngem'] = { [[<Plug>(LspExtractMethod)]] };
   -- ['vgev'] = { [[<Plug>(VisualLspExtractVar)]] };
