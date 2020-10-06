@@ -56,6 +56,9 @@ local function fuzzy_buffers()
     local winnr = api.nvim_get_current_win()
     menu.floating_fuzzy_menu{
         buffers,
+        prompt_position = 'top';
+        prompt = 'Buffers>';
+        leave_empty_line = true;
         function(e, _, _)
             api.nvim_win_set_buf(winnr, e.id)
         end

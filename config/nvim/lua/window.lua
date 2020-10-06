@@ -10,15 +10,8 @@ vim.cmd("hi PopupWindowBorder guifg="..fg.." guibg="..bg)
 vim.cmd("hi InvertedPopupWindowBorder guifg="..bg.." guibg="..fg)
 
 local function scale_win(w, h)
-  local uis = api.nvim_list_uis()
-  local ui_min_width = math.huge
-  local ui_min_height = math.huge
-  for _, ui in ipairs(uis) do
-    ui_min_width = math.min(ui.width, ui_min_width)
-    ui_min_height = math.min(ui.height, ui_min_height)
-  end
-  local	win_width = floor(ui_min_width * w)
-  local win_height = floor(ui_min_height * h)
+  local	win_width = floor(vim.fn.winwidth(0) * w)
+  local win_height = floor(vim.fn.winheight(0) * h)
   return win_width, win_height
 end
 

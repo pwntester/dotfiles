@@ -79,6 +79,3 @@ export SDKMAN_DIR="/Users/pwntester/.sdkman"
 
 # import secrets
 source ~/secrets
-
-# fzf
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
