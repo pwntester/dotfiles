@@ -1,4 +1,7 @@
 -- GLOBALS
+util = require'functions'
+statusline = require'statusline'
+
 RELOAD = function(module)
   package.loaded[module] = nil
   return require(module)
@@ -23,11 +26,9 @@ vim.g.special_buffers = {
   'packer'
 }
 
-util = require'functions'
-statusline = require'statusline'
 
 -- ALIASES
-util.alias('bd', "bp<bar>sp<bar>bn<bar>bd")
 --util.alias('bd', "bp<bar>sp<bar>bn<bar>lua<space>util.deleteCurrentBuffer()")
+util.alias('bd', "bp<bar>sp<bar>bn<bar>bd")
 util.alias('w1', 'w!')
 
