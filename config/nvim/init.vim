@@ -20,14 +20,14 @@ set softtabstop=2                                                 " One tab = 2 
 set expandtab                                                     " Tabs are spaces
 set smartindent                                                   " Smart indent
 set shiftround                                                    " Round indent to multiple of 'shiftwidth'
-set showtabline=0
+set showtabline=2
 set laststatus=2
 set number
 set norelativenumber
-set keywordprg=:help                                         " Press K to show help for word under cursor
+set keywordprg=:help                                              " Press K to show help for word under cursor
 set conceallevel=2
 set concealcursor=nc
-set wildmode=longest,full                                         "stuff to ignore when tab completing
+set wildmode=longest,full                                         " Stuff to ignore when tab completing
 set wildoptions=pum
 set pumblend=10
 set wildignorecase
@@ -47,19 +47,19 @@ set nowritebackup
 silent !mkdir ~/.nvim/backups > /dev/null 2>&1
 set undodir=~/.nvim/backups
 set undofile
-set ignorecase                                                 " Disable case-sensitive searches (override with \c or \C)
-set smartcase                                                  " If the search term contains uppercase letters, do case-sensitive search
+set ignorecase                                                    " Disable case-sensitive searches (override with \c or \C)
+set smartcase                                                     " If the search term contains uppercase letters, do case-sensitive search
 set shada=!,%,'1000,<1000,s100,h
-set formatoptions-=a    " Auto formatting is BAD.
-set formatoptions-=t    " Don't auto format my code. I got linters for that.
-set formatoptions+=c    " In general, I like it when comments respect textwidth
-set formatoptions+=q    " Allow formatting comments w/ gq
-set formatoptions-=o    " O and o, don't continue comments
-set formatoptions+=r    " But do continue when pressing enter.
-set formatoptions+=n    " Indent past the formatlistpat, not underneath it.
-set formatoptions+=j    " Auto-remove comments if possible.
-set formatoptions-=2    " I'm not in gradeschool anymore
-set nojoinspaces        " Two spaces and grade school, we're done
+set formatoptions-=a                                              " Auto formatting is BAD.
+set formatoptions-=t                                              " Don't auto format my code. I got linters for that.
+set formatoptions+=c                                              " In general, I like it when comments respect textwidth
+set formatoptions+=q                                              " Allow formatting comments w/ gq
+set formatoptions-=o                                              " O and o, don't continue comments
+set formatoptions+=r                                              " But do continue when pressing enter.
+set formatoptions+=n                                              " Indent past the formatlistpat, not underneath it.
+set formatoptions+=j                                              " Auto-remove comments if possible.
+set formatoptions-=2                                              " I'm not in gradeschool anymore
+set nojoinspaces
 
 " AUTOCOMMANDS
 augroup vimrc 

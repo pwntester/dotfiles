@@ -73,7 +73,7 @@ local function truncate_path()
         break
       end
     end
-    fname = '/'..segments[1]..'/...'..truncated
+    fname = '/'..segments[1]..'/..'..truncated
   end
   return fname
 end
@@ -135,7 +135,7 @@ local function active()
     local fname = filename()
     if fname ~='' then
       table.insert(statusline, '%#MyStatuslineGit#%{"'..fname..'"}')
-      table.insert(statusline, ' ')
+      table.insert(statusline, ' %m ')
     end
 
     -- right side items

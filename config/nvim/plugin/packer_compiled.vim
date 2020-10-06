@@ -132,8 +132,8 @@ end
 
 -- Pre-load configuration
 -- Post-load configuration
--- Config for: nvim-treesitter
-loadstring("\27LJ\1\2@\0\0\2\0\3\0\0064\0\0\0%\1\1\0>\0\2\0027\0\2\0>\0\1\1G\0\1\0\nsetup\23plugins.treesitter\frequire\0")()
+-- Config for: nvim-lspconfig
+loadstring("\27LJ\1\0028\0\0\2\0\3\0\0064\0\0\0%\1\1\0>\0\2\0027\0\2\0>\0\1\1G\0\1\0\nsetup\15lsp_config\frequire\0")()
 -- Config for: pear-tree
 loadstring("\27LJ\1\2ü\1\0\0\2\0\b\0\0214\0\0\0007\0\1\0'\1\0\0:\1\2\0004\0\0\0007\0\1\0'\1\1\0:\1\3\0004\0\0\0007\0\1\0'\1\1\0:\1\4\0004\0\0\0007\0\1\0'\1\1\0:\1\5\0004\0\0\0007\0\1\0003\1\a\0:\1\6\0G\0\1\0\1\3\0\0\20TelescopePrompt\15fuzzy_menu\26pear_tree_ft_disabled\28pear_tree_smart_openers\28pear_tree_smart_closers\30pear_tree_smart_backspace pear_tree_repeatable_expand\6g\bvim\0")()
 -- Config for: vim-rooter
@@ -144,28 +144,28 @@ loadstring("\27LJ\1\2>\0\0\2\0\3\0\0064\0\0\0%\1\1\0>\0\2\0027\0\2\0>\0\1\1G\0\1
 loadstring("\27LJ\1\2¥\1\0\0\2\0\6\0\r4\0\0\0007\0\1\0'\1\0\0:\1\2\0004\0\0\0007\0\1\0%\1\4\0:\1\3\0004\0\0\0007\0\1\0'\1\1\0:\1\5\0G\0\1\0 matchup_matchparen_deferred\14ivV\\<c-v>\30matchup_matchparen_nomode(matchup_matchparen_status_offscreen\6g\bvim\0")()
 -- Config for: octo.nvim
 loadstring("\27LJ\1\2¬\3\0\0\2\0\t\0\0294\0\0\0007\0\1\0%\1\2\0>\0\2\0014\0\0\0007\0\1\0%\1\3\0>\0\2\0014\0\0\0007\0\1\0%\1\4\0>\0\2\0014\0\0\0007\0\1\0%\1\5\0>\0\2\0014\0\0\0007\0\1\0%\1\6\0>\0\2\0014\0\0\0007\0\1\0%\1\a\0>\0\2\0014\0\0\0007\0\1\0%\1\b\0>\0\2\1G\0\1\0T command! -nargs=1 ListIssues :lua require'plugins.telescope'.issues(<f-args>) \18 augroup END B autocmd FileType octo_issue nested setlocal concealcursor=c A autocmd FileType octo_issue nested setlocal conceallevel=2 : autocmd FileType octo_issue lua statusline.active() \15 autocmd! \19 augroup octo \bcmd\bvim\0")()
--- Config for: mkdx
-loadstring("\27LJ\1\2¯\1\0\0\4\0\n\0\v4\0\0\0007\0\1\0003\1\6\0003\2\3\0003\3\4\0:\3\5\2:\2\a\0013\2\b\0:\2\t\1:\1\2\0G\0\1\0\nenter\1\0\2\nshift\3\1\venable\3\1\14highlight\1\0\1\19gf_on_steroids\3\1\16frontmatter\1\0\3\tjson\3\0\tyaml\3\0\ttoml\3\0\1\0\1\venable\3\1\18mkdx#settings\6g\bvim\0")()
--- Config for: completion-nvim
-loadstring("\27LJ\1\2@\0\0\2\0\3\0\0064\0\0\0%\1\1\0>\0\2\0027\0\2\0>\0\1\1G\0\1\0\nsetup\23plugins.completion\frequire\0")()
--- Config for: nvim-web-devicons
-loadstring("\27LJ\1\2?\0\0\2\0\3\0\0064\0\0\0%\1\1\0>\0\2\0027\0\2\0>\0\1\1G\0\1\0\nsetup\22nvim-web-devicons\frequire\0")()
--- Config for: goyo.vim
-loadstring("\27LJ\1\2V\0\0\2\0\3\0\0054\0\0\0007\0\1\0%\1\2\0>\0\2\1G\0\1\0007autocmd User GoyoEnter nested lua util.goyoEnter()\bcmd\bvim\0")()
--- Config for: nvim-lspconfig
-loadstring("\27LJ\1\0028\0\0\2\0\3\0\0064\0\0\0%\1\1\0>\0\2\0027\0\2\0>\0\1\1G\0\1\0\nsetup\15lsp_config\frequire\0")()
 -- Config for: telescope.nvim
 loadstring("\27LJ\1\2?\0\0\2\0\3\0\0064\0\0\0%\1\1\0>\0\2\0027\0\2\0>\0\1\1G\0\1\0\nsetup\22plugins.telescope\frequire\0")()
+-- Config for: completion-nvim
+loadstring("\27LJ\1\2@\0\0\2\0\3\0\0064\0\0\0%\1\1\0>\0\2\0027\0\2\0>\0\1\1G\0\1\0\nsetup\23plugins.completion\frequire\0")()
+-- Config for: vim-wordmotion
+loadstring("\27LJ\1\2<\0\0\2\0\4\0\0054\0\0\0007\0\1\0%\1\3\0:\1\2\0G\0\1\0\r<Leader>\22wordmotion_prefix\6g\bvim\0")()
+-- Config for: goyo.vim
+loadstring("\27LJ\1\2V\0\0\2\0\3\0\0054\0\0\0007\0\1\0%\1\2\0>\0\2\1G\0\1\0007autocmd User GoyoEnter nested lua util.goyoEnter()\bcmd\bvim\0")()
+-- Config for: mkdx
+loadstring("\27LJ\1\2¯\1\0\0\4\0\n\0\v4\0\0\0007\0\1\0003\1\6\0003\2\3\0003\3\4\0:\3\5\2:\2\a\0013\2\b\0:\2\t\1:\1\2\0G\0\1\0\nenter\1\0\2\nshift\3\1\venable\3\1\14highlight\1\0\1\19gf_on_steroids\3\1\16frontmatter\1\0\3\tjson\3\0\tyaml\3\0\ttoml\3\0\1\0\1\venable\3\1\18mkdx#settings\6g\bvim\0")()
+-- Config for: nvim-treesitter
+loadstring("\27LJ\1\2@\0\0\2\0\3\0\0064\0\0\0%\1\1\0>\0\2\0027\0\2\0>\0\1\1G\0\1\0\nsetup\23plugins.treesitter\frequire\0")()
 -- Config for: nvim-base16.lua
 loadstring("\27LJ\1\0023\0\0\2\0\3\0\0064\0\0\0%\1\1\0>\0\2\0027\0\2\0>\0\1\1G\0\1\0\nsetup\ntheme\frequire\0")()
 -- Config for: codeql.nvim
 loadstring("\27LJ\1\2ž\1\0\0\2\0\6\0\r4\0\0\0007\0\1\0'\1\0}:\1\2\0004\0\0\0007\0\1\0%\1\4\0:\1\3\0004\0\0\0007\0\1\0'\1\1\0:\1\5\0G\0\1\0\22codeql_fmt_onsave-/Users/pwntester/codeql-home/codeql-repo\23codeql_search_path\19codeql_max_ram\6g\bvim\0")()
 -- Config for: vim-smoothie
 loadstring("\27LJ\1\2>\0\0\2\0\3\0\0054\0\0\0007\0\1\0)\1\2\0:\1\2\0G\0\1\0!smoothie_no_default_mappings\6g\bvim\0")()
--- Config for: vim-wordmotion
-loadstring("\27LJ\1\2<\0\0\2\0\4\0\0054\0\0\0007\0\1\0%\1\3\0:\1\2\0G\0\1\0\r<Leader>\22wordmotion_prefix\6g\bvim\0")()
 -- Config for: indentLine
 loadstring("\27LJ\1\2ÿ\1\0\0\4\0\n\0\0234\0\0\0007\0\1\0%\1\3\0:\1\2\0004\0\0\0007\0\1\0004\1\0\0007\1\5\0014\2\0\0007\2\1\0027\2\6\0023\3\a\0>\1\3\2:\1\4\0004\0\0\0007\0\1\0'\1\1\0:\1\b\0004\0\0\0007\0\1\0'\1\2\0:\1\t\0G\0\1\0\28indentLine_conceallevel\22indentLine_faster\1\3\0\0\rmarkdown\15octo_issue\20special_buffers\16list_extend\31indentLine_fileTypeExclude\f#11305f\25indentLine_color_gui\6g\bvim\0")()
+-- Config for: nvim-web-devicons
+loadstring("\27LJ\1\2?\0\0\2\0\3\0\0064\0\0\0%\1\1\0>\0\2\0027\0\2\0>\0\1\1G\0\1\0\nsetup\22nvim-web-devicons\frequire\0")()
 -- Conditional loads
 -- Load plugins in order defined by `after`
 vim._update_package_paths()

@@ -95,6 +95,7 @@ local spec = function(use)
   use {'junegunn/goyo.vim', config = function()
     vim.cmd [[autocmd User GoyoEnter nested lua util.goyoEnter()]]
   end}
+  use {'mkitt/tabline.vim'}
 
   -- PAIRING
   use {'andymass/vim-matchup', config = function()
@@ -118,6 +119,7 @@ local spec = function(use)
 
   -- FILE EXPLORER
   use {'justinmk/vim-dirvish'}
+  use {'kyazdani42/nvim-tree.lua'}
 
   -- LSP
   use {'mfussenegger/nvim-jdtls'}
