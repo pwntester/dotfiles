@@ -61,8 +61,45 @@ set formatoptions+=j    " Auto-remove comments if possible.
 set formatoptions-=2    " I'm not in gradeschool anymore
 set nojoinspaces        " Two spaces and grade school, we're done
 
-lua require'init'
+" AUTOCOMMANDS
+augroup vimrc 
+au! 
 
+  " close additional wins
+  au QuitPre * lua util.closeWin() 
+
+  " onEnter
+  au TermEnter,WinEnter,BufEnter * nested lua util.onEnter() 
+
+  " dim active win
+  au FocusGained,VimEnter,WinEnter,TermEnter,BufEnter,BufNew * lua util.dimWin() 
+  au FocusLost,WinLeave * lua util.undimWin() 
+
+  " hide statusline on non-active windows
+  au FocusGained,VimEnter,WinEnter,BufEnter * lua statusline.active() 
+  au FocusLost,WinLeave,BufLeave * lua statusline.inactive() 
+
+  " check if buffer was changed outside of vim
+  au FocusGained,BufEnter * checktime 
+
+  " highlight yanked text
+  au TextYankPost * silent! lua vim.highlight.on_yank {on_visual=false, higroup="IncSearch", timeout=500} 
+
+  " terminal sane defaults
+  au TermOpen * set ft=terminal 
+  au TermOpen term://* startinsert 
+  au TermLeave term://* stopinsert 
+  au TermClose term://* if (expand('<afile>') !~ "fzf") | call nvim_input('<CR>') | endif 
+
+  " help in vertical split
+  au BufEnter *.txt if &buftype == 'help' | wincmd L | endif 
+
+  " wiki
+  au BufWritePost ~/bitacora/* lua require'markdown'.asyncPush() 
+
+augroup END 
+
+" FUNCTIONS
 function ToggleDirvish(arg) abort
   for w in nvim_list_wins()
     let bufnr = nvim_win_get_buf(w)
@@ -78,4 +115,14 @@ function ToggleDirvish(arg) abort
   execute 'Dirvish '.l:arg
 endfunction
 
+" LUA INIT
+lua require'init'
 
+" MODULES
+lua require'markdown'
+
+" PLUGINS
+lua require'plugins'
+
+" MAPPINGS
+lua require'mappings'
