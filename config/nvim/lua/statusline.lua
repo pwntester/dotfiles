@@ -60,7 +60,7 @@ local function lspStatus()
   return table.concat(sl)
 end
 
-local function path()
+local function truncate_path()
   local fname = vim.fn.expand('%')
   local width = vim.fn.winwidth(0) / 4
   if vim.fn.strlen(fname) > width then
@@ -78,6 +78,12 @@ local function path()
   return fname
 end
 
+local function filename()
+  local ft = api.nvim_buf_get_option(0, 'ft')
+  if vim.tbl_contains(vim.g.special_buffers, ft) then return '' end
+  return truncate_path()
+end
+
 local function padding(ch)
   return (ch):rep(vim.fn.winwidth(0))
 end
@@ -89,11 +95,13 @@ end
 
 local function active()
 
+  -- api.nvim_win_set_option(0, 'statusline', 'adasd')
+  -- if true then return end
+
   -- lazy load colors
   if not colors_loaded then
     local fg = util.getColorFromHighlight('Normal', 'bg')
     local bg = util.getColorFromHighlight('NormalNC', 'bg')
-    vim.cmd [[hi def link MyStatuslineBar Normal]]
     vim.cmd [[hi def link MyStatuslineGit Normal]]
     vim.cmd [[hi def link MyStatuslineFiletype Comment]]
     vim.cmd [[hi def link MyStatuslinePercentage Comment]]
@@ -102,6 +110,7 @@ local function active()
     vim.cmd [[hi def link MyStatuslineLSPWarnings Constant]]
     vim.cmd [[hi def link MyStatuslineLSP Comment]]
     vim.cmd('hi! MyStatuslineBarNC guifg='..fg..' guibg='..bg)
+    vim.cmd('hi! MyStatuslineBar guifg='..bg..' guibg='..fg)
     colors_loaded = true
   end
 
@@ -110,24 +119,24 @@ local function active()
   if vim.tbl_contains(vim.g.special_buffers, ft) then
     local l
     if ft == 'dirvish' then
-      l = '%#MyStatuslineFiletype#%{"'..path()..'"}'
+      l = '%#MyStatuslineFiletype#%{"'..truncate_path()..'"}'
       api.nvim_win_set_option(0, 'statusline', l)
     else
-      l = '%#MyStatuslineBar#%{"'..padding('▃')..'"}'
+      l = '%#MyStatuslineBar#%{"'..padding(' ')..'"}'
       api.nvim_win_set_option(0, 'statusline', l)
     end
   else
 
     local statusline = {'%{"'..redrawModeColors(vim.fn.mode())..'"}'}
 
-    -- " left side items
-    --
-    -- " filename
-    -- " let filename = Filename()
-    -- " if !empty(filename)
-    -- "     let statusline.='%#MyStatuslineGit#%{Filename()}'
-    -- " endif
-    -- " let statusline.=' '
+    -- left side items
+
+    -- filename
+    local fname = filename()
+    if fname ~='' then
+      table.insert(statusline, '%#MyStatuslineGit#%{"'..fname..'"}')
+      table.insert(statusline, ' ')
+    end
 
     -- right side items
     table.insert(statusline, '%=')

@@ -3,6 +3,11 @@ local match = string.match
 local format = string.format
 local loop = vim.loop
 
+-- TODO
+-- vim.cmd [[
+-- inoremap <expr> <c-x><c-f> fzf#vim#complete(fzf#wrap({'source': 'find '.getcwd().' -type f -name "*.md" -not -path "*/\.*"\; \| xargs realpath', 'reducer': function('<sid>make_relative') }))
+-- ]]
+
 local function pasteLink()
   -- TODO: get url from clipboard
   local url = 'foo'
@@ -111,26 +116,7 @@ local function markdownBlocks()
   end
 end
 
-local function setup()
-  vim.cmd [[ augroup markdown]]
-  vim.cmd [[ autocmd! ]]
-  vim.cmd [[ au InsertLeave *.md  lua require'markdown'.markdownBlocks() ]]
-  vim.cmd [[ au BufEnter *.md     lua require'markdown'.markdownBlocks() ]]
-  vim.cmd [[ au BufWritePost *.md lua require'markdown'.markdownBlocks() ]]
-  vim.cmd [[ au CursorMoved *.md  lua require'markdown'.markdownBlocks() ]]
-  vim.cmd [[ au FileType markdown nested if exists('g:mkdx#settings') | let b:pear_tree_map_special_keys = 0 | endif ]]
-  vim.cmd [[ au FileType markdown nested setlocal conceallevel=2 ]]
-  vim.cmd [[ au FileType markdown nested setlocal concealcursor=c ]]
-  vim.cmd [[ au FileType markdown nested setlocal signcolumn=no ]]
-  vim.cmd [[ au FileType markdown nested setlocal spell complete+=kspell ]]
-  vim.cmd [[ au BufWritePost ~/bitacora/* lua require'markdown'.asyncPush() ]]
-  vim.cmd [[ au FileType markdown nnoremap <leader>p lua require'markdown'.pasteImage('images')<CR> ]]
-  vim.cmd [[ au FileType markdown nnoremap <leader>l lua require'markdown'.pasteLink()<CR> ]]
-  vim.cmd [[ augroup END ]]
-end
-
 return {
-  setup = setup;
   markdownBlocks = markdownBlocks;
   asyncPush = asyncPush;
   pasteImage = pasteImage;

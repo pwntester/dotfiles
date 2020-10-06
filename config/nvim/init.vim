@@ -14,13 +14,13 @@ set diffopt+=context:1000000                                      " Don't fold
 set ttimeoutlen=10                                                " Use short timeout after Escape sequence in terminal mode (for keycodes)
 set timeoutlen=1000
 set shortmess=aoOstTWAIcqF
-set shiftwidth=4                                                  " Reduntant with above
-set tabstop=4                                                     " How many spaces on tab
-set softtabstop=4                                                 " One tab = 4 spaces
+set shiftwidth=2                                                  " Reduntant with above
+set tabstop=2                                                     " How many spaces on tab
+set softtabstop=2                                                 " One tab = 2 spaces
 set expandtab                                                     " Tabs are spaces
-set smartindent                                                   " Smart ident
+set smartindent                                                   " Smart indent
 set shiftround                                                    " Round indent to multiple of 'shiftwidth'
-set showtabline=2
+set showtabline=0
 set laststatus=2
 set number
 set norelativenumber
@@ -49,10 +49,33 @@ set undodir=~/.nvim/backups
 set undofile
 set ignorecase                                                 " Disable case-sensitive searches (override with \c or \C)
 set smartcase                                                  " If the search term contains uppercase letters, do case-sensitive search
-" }}}
+set shada=!,%,'1000,<1000,s100,h
+set formatoptions-=a    " Auto formatting is BAD.
+set formatoptions-=t    " Don't auto format my code. I got linters for that.
+set formatoptions+=c    " In general, I like it when comments respect textwidth
+set formatoptions+=q    " Allow formatting comments w/ gq
+set formatoptions-=o    " O and o, don't continue comments
+set formatoptions+=r    " But do continue when pressing enter.
+set formatoptions+=n    " Indent past the formatlistpat, not underneath it.
+set formatoptions+=j    " Auto-remove comments if possible.
+set formatoptions-=2    " I'm not in gradeschool anymore
+set nojoinspaces        " Two spaces and grade school, we're done
 
-" ================ INIT.LUA ======================== {{{
-lua dofile(vim.api.nvim_get_runtime_file("lua/init.lua", 0)[1])
+lua require'init'
 
-" }}}
+function ToggleDirvish(arg) abort
+  for w in nvim_list_wins()
+    let bufnr = nvim_win_get_buf(w)
+    if nvim_buf_get_option(bufnr, 'filetype') == 'dirvish'
+      call nvim_win_close(w, 1)
+      return
+    endif
+  endfor
+  let l:arg = a:arg
+  if l:arg == v:null | let l:arg = '' | endif
+  if l:arg == '%' | let l:arg = getreg('%') | endif
+  leftabove 30 vsplit
+  execute 'Dirvish '.l:arg
+endfunction
+
 

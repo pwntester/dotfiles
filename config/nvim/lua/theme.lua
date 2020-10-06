@@ -31,70 +31,59 @@ function M.setup()
 end
 
 function M.cobange()
-    local cobange = {
-        '#101a20'; '#1b2b34'; '#17252c'; '#0050A4';
-        '#00AAFF'; '#444444'; '#626262'; '#CCCCCC';
-        '#FF0000'; '#FF9A00'; '#FFC600'; '#99c794';
-        '#668799'; '#80FCFF'; '#EB939A'; '#FF628C';
-    }
+	local cobange = {
+		'#101a20'; '#1b2b34'; '#17252c'; '#0050A4';
+		'#00AAFF'; '#444444'; '#626262'; '#CCCCCC';
+		'#FF0000'; '#FF9A00'; '#FFC600'; '#99c794';
+		'#668799'; '#80FCFF'; '#EB939A'; '#FF628C';
+	}
 
 	local colors = vim.tbl_map(function(v) return string.gsub(v, '#', '') end , cobange)
 
 	local theme = base16.theme_from_array(colors)
-    base16(theme, true)
+	base16(theme, true)
 end
 
 function M.norcalli()
 
-    local norcalli = {
-	  --'#111b2b'; '#213554'; '#1d3872'; '#80b2d6';
-        '#0b1f41'; '#11305f'; '#3a5488'; '#80b2d6';
-        '#3aa3e9'; '#abb2bf'; '#b6bdca'; '#c8ccd4';
-        '#f04c75'; '#d19a66'; '#e5c07b'; '#98c379';
-        '#56b6c2'; '#01bfef'; '#c678dd'; '#be5046';
-    }
+	local norcalli = {
+		--'#111b2b'; '#213554'; '#1d3872'; '#80b2d6';
+		'#0b1f41'; '#11305f'; '#3a5488'; '#80b2d6';
+		'#3aa3e9'; '#abb2bf'; '#b6bdca'; '#c8ccd4';
+		'#f04c75'; '#d19a66'; '#e5c07b'; '#98c379';
+		'#56b6c2'; '#01bfef'; '#c678dd'; '#be5046';
+	}
 
 	local colors = vim.tbl_map(function(v) return string.gsub(v, '#', '') end , norcalli)
 
 	local theme = base16.theme_from_array(colors)
-    base16(theme, true)
+	base16(theme, true)
 
-	hl('NormalFloat',				theme.base05, theme.base00)
-	hl('NormalNC',					theme.base05, theme.base01)
+	hl('NormalFloat',			theme.base05, theme.base00)
+	hl('NormalNC',				theme.base05, theme.base01)
 	hl('LineNr',					theme.base02, theme.base00)
-	hl('LineNrNC',					theme.base02, theme.base01)
-	hl('StatusLine',				theme.base02, theme.base00)
-	hl('StatusLineNC',				theme.base02, theme.base00)
-    hl('EndOfBuffer',				theme.base01, theme.base00)
-    hl('EndOfBufferNC',				theme.base01, theme.base01)
-	hl('SignColumn',				theme.base01, theme.base00)
-	hl('VertSplit',					theme.base02, theme.base00)
-	hl('ColorColumn',				theme.base01, theme.base01)
-    hl('TabLineSel',				theme.base03, theme.base01)
-    hl('TabLine'	,				theme.base01, theme.base03)
-    hl('TabLineFill',				theme.base01, theme.base03)
-	hl('MatchParen',                theme.base07, theme.base08)
-    hl('Search',					theme.base00, theme.base04)
-    hl('IncSearch',					theme.base00, theme.base09)
-	-- LspDiagnosticsError                 red         none
-	-- LspDiagnosticsWarning               yellow      none
-	-- LspDiagnosticsInformation           blue        none
-	-- LspDiagnosticsHint                  blue        none
-	-- LspDiagnosticsUnderline             none        none        undercurl       guisp=white
-	-- LspDiagnosticsUnderlineError        none        none        undercurl       guisp=red
-	-- LspDiagnosticsUnderlineWarning      none        none        undercurl       guisp=yellow
-	-- LspDiagnosticsUnderlineInformation  none        none        undercurl       guisp=blue
-	-- LspDiagnosticsUnderlineHint         none        none        undercurl       guisp=blue
-	-- LspReferenceText                    none        darker_grey bold,italic
-	-- LspReferenceRead                    none        darker_grey bold,italic
-	-- LspReferenceWrite                   none        darker_grey bold,italic
+	hl('LineNrNC',				theme.base02, theme.base01)
+	hl('StatusLine',			theme.base02, theme.base00)
+	hl('StatusLineNC',		theme.base02, theme.base00)
+	hl('EndOfBuffer',			theme.base01, theme.base00)
+	hl('EndOfBufferNC',		theme.base01, theme.base01)
+	hl('SignColumn',			theme.base01, theme.base00)
+	hl('VertSplit',				theme.base02, theme.base00)
+	hl('ColorColumn',			theme.base01, theme.base01)
+	hl('TabLineSel',			theme.base03, theme.base01)
+	hl('TabLine'	,				theme.base01, theme.base03)
+	hl('TabLineFill',			theme.base01, theme.base03)
+	hl('MatchParen',      theme.base07, theme.base08)
+	hl('Search',					theme.base00, theme.base04)
+	hl('IncSearch',				theme.base00, theme.base09)
 
 	-- plugins
-	hl('markdownCode',				nil,		  theme.base01)
-	hl('TelescopeBorder',			theme.base01, theme.base00)
-	hl('TelescopeMatching',			theme.base04, theme.base00)
-	hl('TelescopeSelection',		theme.base03, theme.base00)
-	hl('TelescopeNormal',   		theme.base05, theme.base00)
+	hl('markdownCode',						 nil,					 theme.base01)
+	hl('TelescopeBorder',					 theme.base01, theme.base00)
+	hl('TelescopeMatching',				 theme.base04, theme.base00)
+	hl('TelescopeSelection',			 theme.base03, theme.base00)
+	hl('TelescopeSelectionCaret',  theme.base0D, theme.base00)
+	hl('TelescopeNormal',					 theme.base05, theme.base00)
 
 end
 

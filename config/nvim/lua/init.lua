@@ -1,4 +1,3 @@
-local vim = vim
 
 -- GLOBALS
 RELOAD = function(module)
@@ -20,7 +19,9 @@ vim.g.special_buffers = {
   'vista_kind',
   'codeqlpanel',
   'goyo_pad',
-  'terminal'
+  'terminal',
+  'TelescopePrompt',
+  'packer'
 }
 
 util = require'functions'
@@ -28,68 +29,56 @@ statusline = require'statusline'
 
 -- AUTOCOMMANDS
 vim.cmd [[ augroup vimrc ]]
-  vim.cmd [[ autocmd! ]]
+vim.cmd [[ au! ]]
 
-  -- close additional wins
-  vim.cmd [[ autocmd QuitPre * lua util.closeWin() ]]
+-- debug
+--vim.cmd [[ au BufEnter * nested echom 'entered '..expand('<afile>')  ]]
+--vim.cmd [[ au BufLeave * nested echom 'leaving '..expand('<afile>')  ]]
 
-  -- dont show column
-  vim.cmd [[ autocmd BufEnter *.* :set colorcolumn=0 ]]
+-- close additional wins
+vim.cmd [[ au QuitPre * lua util.closeWin() ]]
 
-  -- dim active win
-  vim.cmd [[ autocmd FocusGained,VimEnter,WinEnter,TermEnter,BufEnter,BufNew * lua util.dimWin() ]]
-  vim.cmd [[ autocmd FocusLost,WinLeave * lua util.undimWin() ]]
+-- onEnter
+vim.cmd [[ au TermEnter,WinEnter,BufEnter * nested lua util.onEnter() ]]
 
-  -- hide statusline on non-active windows
-  vim.cmd [[ autocmd FocusGained,VimEnter,WinEnter,BufEnter * lua statusline.active() ]]
-  vim.cmd [[ autocmd FocusLost,WinLeave,BufLeave * lua statusline.inactive() ]]
+-- dim active win
+vim.cmd [[ au FocusGained,VimEnter,WinEnter,TermEnter,BufEnter,BufNew * lua util.dimWin() ]]
+vim.cmd [[ au FocusLost,WinLeave * lua util.undimWin() ]]
 
-  -- check if buffer was changed outside of vim
-  vim.cmd [[ autocmd FocusGained,BufEnter * checktime ]]
+-- hide statusline on non-active windows
+vim.cmd [[ au FocusGained,VimEnter,WinEnter,BufEnter * lua statusline.active() ]]
+vim.cmd [[ au FocusLost,WinLeave,BufLeave * lua statusline.inactive() ]]
 
-  -- mark qf as not listed
-  vim.cmd [[ autocmd FileType qf setlocal nobuflisted ]]
+-- check if buffer was changed outside of vim
+vim.cmd [[ au FocusGained,BufEnter * checktime ]]
 
-  -- force write shada on leaving nvim
-  vim.cmd [[ autocmd VimLeave * wshada! ]]
+-- highlight yanked text
+vim.cmd [[ au TextYankPost * silent! lua vim.highlight.on_yank {on_visual=false, higroup="IncSearch", timeout=500} ]]
 
-  -- highlight yanked text
-  vim.cmd [[ au TextYankPost * silent! lua vim.highlight.on_yank {on_visual=false, higroup="IncSearch", timeout=500} ]]
+-- terminal sane defaults
+vim.cmd [[ au TermOpen * set ft=terminal ]]
+vim.cmd [[ au TermOpen term://* startinsert ]]
+vim.cmd [[ au TermLeave term://* stopinsert ]]
+vim.cmd [[ au TermClose term://* if (expand('<afile>') !~ "fzf") | call nvim_input('<CR>') | endif ]]
 
-  -- pin buffers
-  vim.cmd [[ au WinEnter,BufEnter *  nested lua util.pinBuffer() ]]
-  vim.cmd [[ au WinEnter,BufEnter {} nested lua util.pinBuffer() ]]
+-- help in vertical split
+vim.cmd [[ au BufEnter *.txt if &buftype == 'help' | wincmd L | endif ]]
 
-  -- BufEnter is not triggered for dirvish buffer
-  vim.cmd [[ au FileType dirvish lua util.pinBuffer() ]]
-
-  -- terminal sane defaults
-  vim.cmd [[ au TermOpen * set ft=terminal ]]
-  vim.cmd [[ au TermEnter * lua util.pinBuffer() ]]
-  vim.cmd [[ au TermOpen term://* startinsert ]]
-  vim.cmd [[ au TermLeave term://* stopinsert ]]
-
-  -- ignore various filetypes as those will close terminal automatically
-  -- ignore fzf
-  vim.cmd [[ autocmd TermClose term://* if (expand('<afile>') !~ "fzf") | call nvim_input('<CR>') | endif ]]
-
-  -- help in vertical split
-  vim.cmd [[ autocmd BufEnter *.txt if &buftype == 'help' | wincmd L | endif ]]
+-- wiki
+vim.cmd [[ au BufWritePost ~/bitacora/* lua require'markdown'.asyncPush() ]]
 
 vim.cmd [[ augroup END ]]
 
 -- ALIASES
-util.alias('bd', "bp<bar>sp<bar>bn<bar>lua<space>util.deleteCurrentBuffer()")
+util.alias('bd', "bp<bar>sp<bar>bn<bar>bd")
+--util.alias('bd', "bp<bar>sp<bar>bn<bar>lua<space>util.deleteCurrentBuffer()")
 util.alias('w1', 'w!')
 
 -- MODULES
-require'markdown'.setup()
+require'markdown'
 
 -- PLUGINS
-require'plugins'.setup()
+require'plugins'
 
 -- MAPPINGS
-require'mappings'.setup()
-
--- THEME
-require'theme'.setup()
+require'mappings'
