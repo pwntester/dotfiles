@@ -80,10 +80,11 @@ function M.norcalli()
 	-- plugins
 	hl('markdownCode',						 nil,					 theme.base01)
 	hl('TelescopeBorder',					 theme.base01, theme.base00)
-	hl('TelescopeMatching',				 theme.base04, theme.base00)
-	hl('TelescopeSelection',			 theme.base03, theme.base00)
-	hl('TelescopeSelectionCaret',  theme.base0D, theme.base00)
+	hl('TelescopeMatching',				 theme.base09, theme.base00)
+	hl('TelescopeSelection',			 theme.base0D, theme.base00)
+	hl('TelescopeSelectionCaret',  theme.base09, theme.base00)
 	hl('TelescopeNormal',					 theme.base05, theme.base00)
+	hl('TelescopePromptPrefix',    theme.base09, theme.base00)
 
 end
 

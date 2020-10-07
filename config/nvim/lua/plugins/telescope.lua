@@ -1,6 +1,7 @@
 local uv = vim.loop
 local filter = vim.tbl_filter
 local deepcopy = vim.deepcopy
+local format = string.format
 local make_entry = require('telescope.make_entry')
 local actions = require('telescope.actions')
 local finders = require('telescope.finders')
@@ -42,6 +43,7 @@ end
 -- most recent files
 local function mru()
   local opts = deepcopy(theme)
+  opts.prompt_prefix = 'MRU>'
   pickers.new(opts, {
     prompt = '';
     finder = finders.new_table({
@@ -87,6 +89,7 @@ local function files()
   })
 
   local opts = deepcopy(theme)
+  opts.prompt_prefix = 'Files>'
   pickers.new(opts, {
     prompt = '';
     finder = finders.new_table({
@@ -105,6 +108,7 @@ local function buffers()
   end, vim.api.nvim_list_bufs())
 
   local opts = deepcopy(theme)
+  opts.prompt_prefix = 'Buffers>'
   opts.bufnr_width = #tostring(math.max(unpack(_buffers)))
 
   pickers.new(opts, {
@@ -128,6 +132,7 @@ local function treesitter()
       preview = {'▀', '▐', '▄', '▌', '▛', '▜', '▟', '▙' };
     };
     show_line = false;
+    prompt_prefix = 'Symbols>';
   }
 
   local function prepare_match(entry, kind)
@@ -186,10 +191,38 @@ local function treesitter()
   }):find()
 end
 
+local function reloader()
+  local opts = deepcopy(theme)
+  opts.prompt_prefix = 'Reloader>'
+  pickers.new(opts, {
+    prompt = '',
+    finder = finders.new_table {
+      results = vim.tbl_keys(package.loaded),
+      entry_maker = make_entry.gen_from_string(opts),
+    },
+    sorter = sorters.get_generic_fuzzy_sorter(),
+
+    attach_mappings = function(prompt_bufnr, map)
+      local reload_package = function()
+        local selection = actions.get_selected_entry(prompt_bufnr)
+        actions.close(prompt_bufnr)
+        RELOAD(selection[1])
+        print(format('Reloading %s ...', selection[1]))
+      end
+
+      map('i', '<CR>', reload_package)
+      map('n', '<CR>', reload_package)
+
+      return true
+    end
+  }):find()
+end
+
 return {
   setup = setup;
   mru = mru;
   files = files;
   buffers = buffers;
   treesitter = treesitter;
+  reloader = reloader;
 }

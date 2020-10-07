@@ -9,9 +9,6 @@ local spec = function(use)
   use {'wbthomason/packer.nvim', opt = true}
 
   -- SYNTAX
-  -- use {'sheerun/vim-polyglot', config = function()
-  --   vim.g.no_csv_maps = 1
-  -- end}
   use {'SidOfc/mkdx', config = function()
     vim.g['mkdx#settings'] = {
       highlight = {
@@ -30,12 +27,14 @@ local spec = function(use)
     }
   end}
 
-  -- TELESCOPE.NVIM
   use {'kyazdani42/nvim-web-devicons', config = function()
     require'nvim-web-devicons'.setup()
   end}
+
+  -- TELESCOPE.NVIM
   use {'nvim-lua/popup.nvim'}
   use {'/Users/pwntester/Dev/plenary.nvim'}
+  --use {'nvim-lua/telescope.nvim', config = function()
   use {'/Users/pwntester/Dev/telescope.nvim', config = function()
     require'plugins.telescope'.setup()
   end}
@@ -47,7 +46,7 @@ local spec = function(use)
   use {'steelsojka/completion-buffers'}
 
   -- TREESITTER
-  use {'/Users/pwntester/Dev/nvim-treesitter', config = function()
+  use {'nvim-treesitter/nvim-treesitter', config = function()
     require'plugins.treesitter'.setup()
   end}
   use {'nvim-treesitter/playground'}
@@ -58,18 +57,30 @@ local spec = function(use)
   -- TMUX
   use {'christoomey/vim-tmux-navigator'}
 
-  -- TEXT OBJECTS
+  -- TEXT OBJECTS/MOTIONS/OPERATORS
   use {'machakann/vim-sandwich'}
+    -- add: sa{motion/textobject}{delimiter}
+    -- delete: sd{delimiter}
+    -- replace: sr{old}{new}
+  use {'michaeljsmith/vim-indent-object'}
+    -- ii: inner Indentation level (no line above).
+    -- iI: inner Indentation level (no lines above/below).
+    -- ai: an Indentation level and line above.
+    -- aI: an Indentation level and lines above/below.
+  use {'tommcdo/vim-lion'}
+    -- gl{motion/textobject}{aligning char}: spaces to the left
+    -- gL{motion/textobject}{aligning char}: spaces to the right
   use {'chaoren/vim-wordmotion', config = function()
     vim.g.wordmotion_prefix = '<Leader>'
   end}
 
-  -- SEARCH
-  use {'romainl/vim-cool'}
-
   -- GIT
   use {'tpope/vim-fugitive'}
   use {'jaxbot/github-issues.vim'}
+  use {'rhysd/committia.vim'}
+  use {'rhysd/git-messenger.vim', config = function()
+    vim.g.git_messenger_no_default_mappings = true
+  end}
   use {'~/Dev/octo.nvim', config = function()
     vim.cmd [[ augroup octo ]]
     vim.cmd [[ autocmd! ]]
@@ -77,7 +88,6 @@ local spec = function(use)
     vim.cmd [[ autocmd FileType octo_issue nested setlocal conceallevel=2 ]]
     vim.cmd [[ autocmd FileType octo_issue nested setlocal concealcursor=c ]]
     vim.cmd [[ augroup END ]]
-    vim.cmd [[ command! -nargs=1 ListIssues :lua require'plugins.telescope'.issues(<f-args>) ]]
   end}
 
   -- UI
@@ -96,6 +106,9 @@ local spec = function(use)
     vim.cmd [[autocmd User GoyoEnter nested lua util.goyoEnter()]]
   end}
   use {'mkitt/tabline.vim'}
+  -- use {'pacha/vem-tabline', config = function()
+  --   vim.g.vem_tabline_show = 2
+  -- end}
 
   -- PAIRING
   use {'andymass/vim-matchup', config = function()
@@ -110,12 +123,6 @@ local spec = function(use)
     vim.g.pear_tree_smart_openers = 1
     vim.g.pear_tree_ft_disabled = {'TelescopePrompt', 'fuzzy_menu'}
   end}
-  -- use {'alvan/vim-closetag', config = function()
-  --   vim.g.closetag_filenames = '*.html,*.xhtml,*.phtml,*.xml,*.jsp'
-  --   vim.g.closetag_filetypes = 'html,xhtml,phtml,fortifyrulepack,xml,jsp'
-  --   vim.g.closetag_xhtml_filenames = '*.xml,*.xhtml,*.jsp,*.html'
-  --   vim.g.closetag_xhtml_filetypes = 'xhtml,jsx,fortifyrulepack'
-  -- end}
 
   -- FILE EXPLORER
   use {'justinmk/vim-dirvish'}
@@ -126,12 +133,6 @@ local spec = function(use)
   use {'neovim/nvim-lspconfig', config = function()
     require("lsp_config").setup()
   end}
-  -- use {'liuchengxu/vista.vim', config = function()
-  --   vim.g.vista_default_executive = 'nvim_lsp'
-  --   vim.g.vista_sidebar_position = 'vertical topleft 15'
-  --   vim.g.vista_fzf_preview = {'right:50%'}
-  --   vim.g.vista_keep_fzf_colors = 1
-  -- end}
 
   -- THEMES & COLORS
   use {'norcalli/nvim-base16.lua', config = function()
@@ -142,13 +143,8 @@ local spec = function(use)
   -- COMMENTS
   use {'tomtom/tcomment_vim'}
 
-  -- BUFFER LINE
-  -- use {'pacha/vem-tabline', config = function()
-  --   vim.g.vem_tabline_show = 2
-  -- end}
-
   -- DIFFING
-  -- use {'AndrewRadev/linediff.vim'}
+  use {'AndrewRadev/linediff.vim'}
 
   -- SNIPPETS
   use {'norcalli/snippets.nvim', config = function()
@@ -163,12 +159,6 @@ local spec = function(use)
     vim.g.rooter_change_directory_for_non_project_files = 'current'
   end}
 
-  -- ALIGNING
-  -- use {'tommcdo/vim-lion'}
-
-  -- TERMINAL
-  use {'voldikss/vim-floaterm'}
-
   -- STATIC ANALYSIS
   use {'~/Dev/codeql.nvim', config = function()
     vim.g.codeql_max_ram = 32000
@@ -179,13 +169,16 @@ local spec = function(use)
   --   require'plugins.fortify'.setup()
   -- end}
 
-  -- :Messages <- view messages in quickfix list
-  -- :Verbose  <- view verbose output in preview window.
-  -- :Time     <- measure how long it takes to run some stuff.
-  -- zS        <- Debug syntax under cursor
   use {'tpope/vim-scriptease'}
+    -- :Messages: view messages in quickfix list
+    -- :Verbose: view verbose output in preview window.
+    -- :Time: measure how long it takes to run some stuff.
+    -- zS: Debug syntax under cursor
 
+  -- TESTING
   use {'diepm/vim-rest-console'}
+  use {'mhinz/vim-sayonara'}
+
 end
 
 local config = {

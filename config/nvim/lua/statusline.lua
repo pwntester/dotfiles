@@ -1,4 +1,5 @@
 local api = vim.api
+--local util = require'functions'
 
 local colors_loaded = false
 
@@ -132,11 +133,11 @@ local function active()
     -- left side items
 
     -- filename
-    local fname = filename()
-    if fname ~='' then
-      table.insert(statusline, '%#MyStatuslineGit#%{"'..fname..'"}')
-      table.insert(statusline, ' %m ')
-    end
+    -- local fname = filename()
+    -- if fname ~='' then
+    --   table.insert(statusline, '%#MyStatuslineGit#%{"'..fname..'"}')
+    --   table.insert(statusline, ' %m ')
+    -- end
 
     -- right side items
     table.insert(statusline, '%=')

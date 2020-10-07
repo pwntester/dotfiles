@@ -61,6 +61,30 @@ set formatoptions+=j                                              " Auto-remove 
 set formatoptions-=2                                              " I'm not in gradeschool anymore
 set nojoinspaces
 
+" FUNCTIONS
+function ToggleDirvish(arg) abort
+  for w in nvim_list_wins()
+    let bufnr = nvim_win_get_buf(w)
+    if nvim_buf_get_option(bufnr, 'filetype') == 'dirvish'
+      call nvim_win_close(w, 1)
+      return
+    endif
+  endfor
+  let l:arg = a:arg
+  if l:arg == v:null | let l:arg = '' | endif
+  if l:arg == '%' | let l:arg = getreg('%') | endif
+  leftabove 30 vsplit
+  execute 'Dirvish '.l:arg
+endfunction
+
+function! s:setup_git_messenger_popup() abort
+  call nvim_win_set_option(0, 'winhl', 'Normal:NormalNC')
+
+    " For example, set go back/forward history to <C-o>/<C-i>
+    nmap <buffer><C-o> o
+    nmap <buffer><C-i> O
+endfunction
+
 " AUTOCOMMANDS
 augroup vimrc 
 au! 
@@ -97,23 +121,10 @@ au!
   " wiki
   au BufWritePost ~/bitacora/* lua require'markdown'.asyncPush() 
 
-augroup END 
+  " git-git-messenger
+  autocmd FileType gitmessengerpopup call <SID>setup_git_messenger_popup()
 
-" FUNCTIONS
-function ToggleDirvish(arg) abort
-  for w in nvim_list_wins()
-    let bufnr = nvim_win_get_buf(w)
-    if nvim_buf_get_option(bufnr, 'filetype') == 'dirvish'
-      call nvim_win_close(w, 1)
-      return
-    endif
-  endfor
-  let l:arg = a:arg
-  if l:arg == v:null | let l:arg = '' | endif
-  if l:arg == '%' | let l:arg = getreg('%') | endif
-  leftabove 30 vsplit
-  execute 'Dirvish '.l:arg
-endfunction
+augroup END 
 
 " LUA INIT
 lua require'init'
@@ -126,3 +137,17 @@ lua require'plugins'
 
 " MAPPINGS
 lua require'mappings'
+
+
+" TODO: consider adding the following mappings to the lua file
+nnoremap <silent> [b    :bprevious<cr>
+nnoremap <silent> ]b    :bnext<cr>
+nnoremap <silent> [q    :cprevious<cr>
+nnoremap <silent> ]q    :cnext<cr>
+nnoremap <silent> [l    :lprevious<cr>
+nnoremap <silent> ]l    :lnext<cr>
+nnoremap <silent> [t    :tabprevious<cr>
+nnoremap <silent> ]t    :tabnext<cr>
+" swap lines
+nnoremap [e  :<c-u>execute 'move -1-'. v:count1<cr>
+nnoremap ]e  :<c-u>execute 'move +'. v:count1<cr>
