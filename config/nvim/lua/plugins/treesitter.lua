@@ -40,7 +40,7 @@ local function setup()
         }
       }
     },
-    textobjects = { -- syntax-aware textobjects
+    textobjects = {
       select = {
         enable = true,
         keymaps = {
@@ -71,20 +71,28 @@ local function setup()
       move = {
         enable = true,
         goto_next_start = {
-          ["]m"] = "@function.outer",
-          ["]]"] = "@class.outer",
+          -- ["]m"] = "@function.outer",
+          -- ["]]"] = "@class.outer",
+          ["<Plug>(TsGotoNextFuncStart"] = "@function.outer",
+          ["<Plug>(TsGotoNextClassStart"] = "@class.outer",
         },
         goto_next_end = {
-          ["]M"] = "@function.outer",
-          ["]["] = "@class.outer",
+          -- ["]M"] = "@function.outer",
+          -- ["]["] = "@class.outer",
+          ["<Plug>(TsGotoNextFuncEnd"] = "@function.outer",
+          ["<Plug>(TsGotoNextClassEnd"] = "@class.outer",
         },
         goto_previous_start = {
-          ["[m"] = "@function.outer",
-          ["[["] = "@class.outer",
+          -- ["[m"] = "@function.outer",
+          -- ["[["] = "@class.outer",
+          ["<Plug>(TsGotoPrevFuncStart"] = "@function.outer",
+          ["<Plug>(TsGotoPrevClassStart"] = "@class.outer",
         },
         goto_previous_end = {
-          ["[M"] = "@function.outer",
-          ["[]"] = "@class.outer",
+          -- ["[M"] = "@function.outer",
+          -- ["[]"] = "@class.outer",
+          ["<Plug>(TsGotoPrevFuncEnd"] = "@function.outer",
+          ["<Plug>(TsGotoPrevClassEnd"] = "@class.outer",
         },
       },
     },

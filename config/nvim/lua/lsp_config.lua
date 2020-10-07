@@ -1,7 +1,7 @@
 local vim = vim
 local api = vim.api
 local nvim_lsp = require 'nvim_lsp'
-local configs = require'nvim_lsp/configs'
+-- local configs  = require'nvim_lsp/configs'
 
 
 local function on_attach_callback(_, bufnr)
@@ -59,7 +59,8 @@ local function setup()
 	vim.cmd [[ autocmd User LspDiagnosticsChanged lua statusline.active() ]]
 
 	-- language servers
-	-- Lua
+
+	--- Lua
 	nvim_lsp.sumneko_lua.setup{
 		cmd = {
 			"/Users/pwntester/repos/lua-language-server/bin/macOS/lua-language-server",
@@ -83,19 +84,19 @@ local function setup()
 			}
 		}
 	}
-	vim.cmd [[ autocmd VimLeave * call system('killall lua-language-server') ]]
+	--vim.cmd [[ autocmd VimLeave * call system('killall lua-language-server') ]]
 
-	-- Go
+	--- Go
 	nvim_lsp.gopls.setup{
 		on_attach = on_attach_callback;
 	}
 
-	-- Clangd
+	--- Clangd
 	nvim_lsp.clangd.setup{
 		on_attach = on_attach_callback;
 	}
 
-	-- CodeQL
+	--- CodeQL
 	nvim_lsp.codeqlls.setup{
 		on_attach = on_attach_callback;
 		settings = {
@@ -103,7 +104,7 @@ local function setup()
 		};
 	}
 
-	-- Fortify Language Server
+	--- Fortify Language Server
 	-- if not configs.fortify_lsp then
 	-- 	configs.fortify_lsp = {
 	-- 		default_config = {
@@ -119,7 +120,7 @@ local function setup()
 	-- 	on_attach = on_attach_callback;
 	-- }
 
-	-- Java Eclipse JDT
+	--- Java Eclipse JDT
 	-- local lsp4j_status_callback = function(_, _, result)
 	-- 	api.nvim_command(string.format(':echohl Function | echo "%s" | echohl None', result.message))
 	-- end
@@ -142,7 +143,7 @@ local function setup()
 	-- 	};
 	-- }
 
-	vim.cmd [[ au FileType java lua require('lsp_config').jdtls() ]]
+	--vim.cmd [[ au FileType java lua require('lsp_config').jdtls() ]]
 end
 
 local function jdtls()

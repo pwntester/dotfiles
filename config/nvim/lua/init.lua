@@ -29,6 +29,7 @@ vim.g.special_buffers = {
 
 -- ALIASES
 --util.alias('bd', "bp<bar>sp<bar>bn<bar>lua<space>util.deleteCurrentBuffer()")
-util.alias('bd', "bp<bar>sp<bar>bn<bar>bd")
+--util.alias('bd', "bp<bar>sp<bar>bn<bar>bd")
+util.alias('bd', "Sayonara!<CR>")
 util.alias('w1', 'w!')
 

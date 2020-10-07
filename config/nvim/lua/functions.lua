@@ -66,8 +66,6 @@ end
 
 -- WINDOW DIMMING
 function M.dimWin()
-  -- local bufnr = api.nvim_get_current_buf()
-  -- local ft = api.nvim_buf_get_option(bufnr, 'ft')
   api.nvim_win_set_option(0, 'winhighlight', 'EndOfBuffer:EndOfBuffer,SignColumn:Normal,LineNr:LineNr')
 end
 
@@ -114,9 +112,12 @@ function M.closeWin()
 end
 
 -- ALIASES
-function M.alias(from, to)
+function M.alias(from, to, buffer)
   local cmd = format('cnoreabbrev <expr> %s ((getcmdtype() is# ":" && getcmdline() is# "%s")? ("%s") : ("%s"))', from, from, to, from)
-  api.nvim_command(cmd)
+  if buffer then
+    cmd = format('cnoreabbrev <expr><buffer> %s ((getcmdtype() is# ":" && getcmdline() is# "%s")? ("%s") : ("%s"))', from, from, to, from)
+  end
+  vim.cmd(cmd)
 end
 
 -- MAPPINGS

@@ -51,35 +51,20 @@ local mappings = {
   -- ['n<c-l>'] = { '<C-w><c-l>' };
   -- ['n<c-h>'] = { '<c-w><c-h>' };
 
-  -- navigate faster
-  ['n<leader>j'] = { '12j' };
-  ['n<leader>k'] = { '12k' };
-
   -- paste keeping the default register
   ['v<leader>p'] = { '"_dP' };
 
   -- copy & paste to system clipboard
   ['v<leader>y'] = { '"*y', noremap = false; };
 
-  -- FUZZY MENU
-  -- ['n<leader>f'] = { [[<cmd>lua require'fuzzy'.files()<CR>]] };
-  -- ['n<leader>m'] = { [[<cmd>lua require'fuzzy'.mru()<CR>]] };
-  -- ['n<leader>o'] = { [[<cmd>lua require'fuzzy'.buffers()<CR>]] };
-
   -- TELESCOPE
   ['n<leader>m'] = { [[<cmd>lua require'plugins.telescope'.mru()<CR>]] };
   ['n<leader>f'] = { [[<cmd>lua require'plugins.telescope'.files{}<CR>]] };
   ['n<leader>d'] = { [[<cmd>lua require'telescope.builtin'.find_files{}<CR>]] };
-  ['n<leader>r'] = { [[<cmd>lua require'telescope.builtin'.live_grep{}<CR>]] };
+  ['n<leader>l'] = { [[<cmd>lua require'telescope.builtin'.live_grep{}<CR>]] };
+  ['n<leader>r'] = { [[<cmd>lua require'plugins.telescope'.reloader()<CR>]] };
   ['n<leader>o'] = { [[<cmd>lua require'plugins.telescope'.buffers{}<CR>]] };
   ['n<leader>s'] = { [[<cmd>lua require'plugins.telescope'.treesitter{}<CR>]] };
-
-  -- FZF
-  --['n<leader>d'] = { [[:call fzf#vim#files('.', {'options': '--prompt ""'})<Return>]] };
-
-  -- VISTA
-  -- ['n<leader>v'] = { ':Vista<CR>' };
-  -- ['n<leader>vf'] = { ':Vista finder<CR>' };
 
   -- VIM-SMOOTHIE
   ['n<c-d>'] = { '<Plug>(SmoothieDownwards)', noremap = false; };
@@ -108,49 +93,66 @@ local mappings = {
   ['_*'] = { [[:let @/ = '\<'.expand('<cword>').'\>'<bar>set hlsearch<C-M>]] };
   ['_g*'] = { [[:let @/ = expand('<cword>')<bar>set hlsearch<C-M>]] };
 
-  -- move around command line wildmenu
+  -- GIT-MESSANGER
+  ['n<leader>gm'] = { [[<Plug>(git-messenger)]], noremap = false };
+
+  -- WILDMENU 
   ['c<c-j>'] = { '<right>' };
   ['c<c-k>'] = { '<left>' };
   ['c<c-h>'] = { '<space><bs><left>' };
   ['c<c-l>'] = { '<space><bs><right>' };
 
   -- Treesitter
-  -- ['ngnn'] = { [[<Plug>(TsSelInit)]] };
-  -- ['xgrn'] = { [[<Plug>(TsSelNodeIncr)]] };
-  -- ['xgrm'] = { [[<Plug>(TsSelNodeDecr)]] };
-  -- ['xgrc'] = { [[<Plug>(TsSelScopeIncr)]] };
-  -- ['xgrd'] = { [[<Plug>(TsSelScopeDecr)]] };
-  -- ['ngrr'] = { [[<Plug>(TsRename)]] };
-  -- ['ngtd'] = { [[<Plug>(TsGotoDef)]] };
-  -- ['ngnu'] = { [[<Plug>(TsGotoNextUse)]] };
-  -- ['ngpu'] = { [[<Plug>(TsGotoPrevUse)]] };
-  -- ['ngnD'] = { [[<Plug>(TsListDefs)]] };
+  -- ['ngnn'] = { [[<Plug>(TsSelInit)]]     , noremap = false};
+  -- ['xgrn'] = { [[<Plug>(TsSelNodeIncr)]] , noremap = false};
+  -- ['xgrm'] = { [[<Plug>(TsSelNodeDecr)]] , noremap = false};
+  -- ['xgrc'] = { [[<Plug>(TsSelScopeIncr)]], noremap = false};
+  -- ['xgrd'] = { [[<Plug>(TsSelScopeDecr)]], noremap = false};
+  -- ['ngrr'] = { [[<Plug>(TsRename)]]      , noremap = false};
+  -- ['ngtd'] = { [[<Plug>(TsGotoDef)]]     , noremap = false};
+  -- ['ngnu'] = { [[<Plug>(TsGotoNextUse)]] , noremap = false};
+  -- ['ngpu'] = { [[<Plug>(TsGotoPrevUse)]] , noremap = false};
+  -- ['ngnD'] = { [[<Plug>(TsListDefs)]]    , noremap = false};
+  ['n]fs'] = { [[<Plug>(TsGotoNextFuncStart]],   noremap = false};
+  ['n]cs'] = { [[<Plug>(TsGotoNextClassStart)]], noremap = false};
+  ['n]fe'] = { [[<Plug>(TsGotoNextFuncEnd)]],    noremap = false};
+  ['n]ce'] = { [[<Plug>(TsGotoNextClassEnd)]],   noremap = false};
+  ['n[fs'] = { [[<Plug>(TsGotoPrevFuncStart)]],  noremap = false};
+  ['n[cs'] = { [[<Plug>(TsGotoPrevClassStart)]], noremap = false};
+  ['n[fe'] = { [[<Plug>(TsGotoPrevFuncEnd)]],    noremap = false};
+  ['n[ce'] = { [[<Plug>(TsGotoPrevClassEnd)]],   noremap = false};
+
+-- nmap <leader>jd <plug>(ls-definition)
+-- nmap <leader>jh <plug>(ls-hover)
+-- nmap <leader>jr <plug>(ls-references)
+-- nmap <leader>js <plug>(ls-signature-help)
+-- nmap <leader>jf <plug>(ls-formatting)
 
   -- LSP
-  -- ['ngtd'] = { [[<Plug>(LspGotoDef)]] };
-  -- ['grr'] = { [[<Plug>(LspRename)]] };
-  -- ['ngtD'] = { [[<Plug>(LspGotoDecl)]] };
-  -- ['ngS'] = { [[<Plug>(LspShowDiagnostics)]] };
-  -- ['ngh'] = { [[<Plug>(LspHover)]] };
-  -- ['ngr'] = { [[<Plug>(LspShowReferences)]] };
-  -- ['ngH'] = { [[<Plug>(LspShowSignatureHelp)]] };
-  -- ['ngi'] = { [[<Plug>(LspGotoImpl)]] };
-  -- ['ngtt'] = { [[<Plug>(LspGotoTypeDef)]] };
-  -- ['ngds'] = { [[<Plug><LspDocumentSymbol)]] };
-  -- ['ngws'] = { [[<Plug><LspWorkspaceSymbol)]] };
-  -- ['ngfd'] = { [[<Plug>(LspFormat)']] };
-  -- ['ngic'] = { [[<Plug>(LspIncomingCalls)]] };
-  -- ['ngoc'] = { [[<Plug>(LspOutgoingCalls)]] };
-  -- ['ngca'] = { [[<Plug>(LspCodeActions)]] };
-  -- ['vgva'] = { [[<Plug>(LspVisualCodeActions)]] };
+  ['ngs']  = { [[<Plug>(LspShowDiagnostics)]]  , noremap = false};
+  -- ['ngtd'] = { [[<Plug>(LspGotoDef)]]          , noremap = false};
+  -- ['grr']  = { [[<Plug>(LspRename)]]           , noremap = false};
+  -- ['ngtD'] = { [[<Plug>(LspGotoDecl)]]         , noremap = false};
+  -- ['ngh']  = { [[<Plug>(LspHover)]]            , noremap = false};
+  -- ['ngr']  = { [[<Plug>(LspShowReferences)]]   , noremap = false};
+  -- ['ngH']  = { [[<Plug>(LspShowSignatureHelp)]], noremap = false};
+  -- ['ngi']  = { [[<Plug>(LspGotoImpl)]]         , noremap = false};
+  -- ['ngtt'] = { [[<Plug>(LspGotoTypeDef)]]      , noremap = false};
+  -- ['ngds'] = { [[<Plug><LspDocumentSymbol)]]   , noremap = false};
+  -- ['ngws'] = { [[<Plug><LspWorkspaceSymbol)]]  , noremap = false};
+  -- ['ngfd'] = { [[<Plug>(LspFormat)']]          , noremap = false};
+  -- ['ngic'] = { [[<Plug>(LspIncomingCalls)]]    , noremap = false};
+  -- ['ngoc'] = { [[<Plug>(LspOutgoingCalls)]]    , noremap = false};
+  -- ['ngca'] = { [[<Plug>(LspCodeActions)]]      , noremap = false};
+  -- ['vgva'] = { [[<Plug>(LspVisualCodeActions)]], noremap = false};
 
   -- JDTLS
-  -- ['ngR'] = { [[<Plug>(LspRefactor)]] };
-  -- ['ngoi'] = { [[<Plug>(LspOrganizeImports)]] };
-  -- ['ngev'] = { [[<Plug>(LspExtractVar)]] };
-  -- ['ngem'] = { [[<Plug>(LspExtractMethod)]] };
-  -- ['vgev'] = { [[<Plug>(VisualLspExtractVar)]] };
-  -- ['vgem'] = { [[<Plug>(VisualLspExtractMethod)]] };
+  -- ['ngR']  = { [[<Plug>(LspRefactor)]],            noremap = false};
+  -- ['ngoi'] = { [[<Plug>(LspOrganizeImports)]],     noremap = false};
+  -- ['ngev'] = { [[<Plug>(LspExtractVar)]],          noremap = false};
+  -- ['ngem'] = { [[<Plug>(LspExtractMethod)]],       noremap = false};
+  -- ['vgev'] = { [[<Plug>(VisualLspExtractVar)]],    noremap = false};
+  -- ['vgem'] = { [[<Plug>(VisualLspExtractMethod)]], noremap = false};
 
   -- quickly select text you pasted
   ['ngp'] = { [['`[' . strpart(getregtype(), 0, 1) . '`]']], expr = true; };
@@ -169,5 +171,5 @@ local mappings = {
 }
 
 vim.cmd [[ let mapleader = "\<Space>" ]]
-util.map(mappings, { silent = true; noremap = true; })
+require'functions'.map(mappings, { silent = true; noremap = true; })
 
