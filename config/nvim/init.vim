@@ -23,7 +23,7 @@ set shiftround                                                    " Round indent
 set showtabline=2
 set laststatus=2
 set number
-set norelativenumber
+set relativenumber
 set keywordprg=:help                                              " Press K to show help for word under cursor
 set conceallevel=2
 set concealcursor=nc
@@ -123,6 +123,9 @@ au!
 
   " git-git-messenger
   autocmd FileType gitmessengerpopup call <SID>setup_git_messenger_popup()
+
+  " clear the command line 3 secs after running any command
+  autocmd CmdlineLeave : lua vim.defer_fn(function() vim.cmd('echo ""') end, 3000)
 
 augroup END 
 

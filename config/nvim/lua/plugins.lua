@@ -33,7 +33,7 @@ local spec = function(use)
 
   -- TELESCOPE.NVIM
   use {'nvim-lua/popup.nvim'}
-  use {'/Users/pwntester/Dev/plenary.nvim'}
+  use {'nvim-lua/plenary.nvim'}
   --use {'nvim-lua/telescope.nvim', config = function()
   use {'/Users/pwntester/Dev/telescope.nvim', config = function()
     require'plugins.telescope'.setup()
@@ -126,7 +126,6 @@ local spec = function(use)
 
   -- FILE EXPLORER
   use {'justinmk/vim-dirvish'}
-  use {'kyazdani42/nvim-tree.lua'}
 
   -- LSP
   use {'mfussenegger/nvim-jdtls'}

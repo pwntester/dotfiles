@@ -1,7 +1,6 @@
 local uv = vim.loop
 local filter = vim.tbl_filter
 local deepcopy = vim.deepcopy
-local format = string.format
 local make_entry = require('telescope.make_entry')
 local actions = require('telescope.actions')
 local finders = require('telescope.finders')
@@ -9,13 +8,36 @@ local pickers = require('telescope.pickers')
 local sorters = require('telescope.sorters')
 local previewers = require('telescope.previewers')
 
-local mappings
 local theme
 
 local function setup()
   require('telescope').setup{
     defaults = {
       winblend = 30;
+      default_mappings = {
+        i = {
+          ["<C-j>"] = actions.move_selection_next,
+          ["<C-k>"] = actions.move_selection_previous,
+          ["<esc>"] = actions.close,
+          ["<C-u>"] = actions.preview_scrolling_up,
+          ["<C-d>"] = actions.preview_scrolling_down,
+          ["<CR>"]  = actions.goto_file_selection_edit,
+          ["<C-x>"] = actions.goto_file_selection_split,
+          ["<C-v>"] = actions.goto_file_selection_vsplit,
+          ["<C-t>"] = actions.goto_file_selection_tabedit,
+        };
+        n = {
+          ["<C-j>"] = actions.move_selection_next,
+          ["<C-k>"] = actions.move_selection_previous,
+          ["<esc>"] = actions.close,
+          ["<CR>"]  = actions.goto_file_selection_edit,
+          ["<C-x>"] = actions.goto_file_selection_split,
+          ["<C-v>"] = actions.goto_file_selection_vsplit,
+          ["<C-t>"] = actions.goto_file_selection_tabedit,
+          ["<C-u>"] = actions.preview_scrolling_up,
+          ["<C-d>"] = actions.preview_scrolling_down,
+        };
+      }
     }
   }
 
@@ -27,7 +49,7 @@ local function setup()
       prompt = {'▀', '▐', '▄', '▌', '▛', '▜', '▟', '▙' };
       results = {' ', '▐', '▄', '▌', '▌', '▐', '▟', '▙' };
       preview = {'▀', '▐', '▄', '▌', '▛', '▜', '▟', '▙' };
-    }
+    };
   })
 
   -- custom mappings
@@ -53,7 +75,6 @@ local function mru()
       entry_maker = make_entry.gen_from_file(opts)
     });
     sorter = sorters.get_fuzzy_file();
-    attach_mappings = mappings;
   }):find()
 end
 
@@ -97,7 +118,6 @@ local function files()
       entry_maker = make_entry.gen_from_file(opts)
     });
     sorter = sorters.get_fuzzy_file();
-    attach_mappings = mappings;
   }):find()
 end
 
@@ -118,7 +138,6 @@ local function buffers()
       entry_maker = make_entry.gen_from_buffer(opts);
     };
     sorter = sorters.get_generic_fuzzy_sorter();
-    attach_mappings = mappings;
   }):find()
 end
 
@@ -187,13 +206,12 @@ local function treesitter()
     preview_title = false;
     previewer = previewers.vim_buffer.new(opts),
     sorter = sorters.get_generic_fuzzy_sorter(),
-    attach_mappings = mappings;
   }):find()
 end
 
 local function reloader()
   local opts = deepcopy(theme)
-  opts.prompt_prefix = 'Reloader>'
+  opts.prompt_prefix = 'Packages>'
   pickers.new(opts, {
     prompt = '',
     finder = finders.new_table {
@@ -206,8 +224,8 @@ local function reloader()
       local reload_package = function()
         local selection = actions.get_selected_entry(prompt_bufnr)
         actions.close(prompt_bufnr)
-        RELOAD(selection[1])
-        print(format('Reloading %s ...', selection[1]))
+        require('plenary.reload').reload_module(selection.value)
+        print(string.format("[%s] - module reloaded", selection.value))
       end
 
       map('i', '<CR>', reload_package)

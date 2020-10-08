@@ -24,6 +24,7 @@ lua statusline.active()
 " win options
 call nvim_win_set_option(0, 'winfixwidth', v:true) 
 call nvim_win_set_option(0, 'number', v:false) 
+call nvim_win_set_option(0, 'relativenumber', v:false) 
 call nvim_win_set_option(0, 'conceallevel', 2) 
 call nvim_win_set_option(0, 'concealcursor', 'n') 
 call nvim_win_set_option(0, 'signcolumn', 'yes') 

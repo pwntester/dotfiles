@@ -66,11 +66,11 @@ end
 
 -- WINDOW DIMMING
 function M.dimWin()
-  api.nvim_win_set_option(0, 'winhighlight', 'EndOfBuffer:EndOfBuffer,SignColumn:Normal,LineNr:LineNr')
+  api.nvim_win_set_option(0, 'winhighlight', 'EndOfBuffer:EndOfBuffer,SignColumn:Normal,LineNr:LineNr,CursorLineNr:CursorLineNr')
 end
 
 function M.undimWin()
-  api.nvim_win_set_option(0, 'winhighlight', 'EndOfBuffer:EndOfBufferNC,SignColumn:NormalNC,LineNr:LineNrNC')
+  api.nvim_win_set_option(0, 'winhighlight', 'EndOfBuffer:EndOfBufferNC,SignColumn:NormalNC,LineNr:LineNrNC,CursorLineNr:CursorLineNrNC')
 end
 
 -- STATUSLINE
