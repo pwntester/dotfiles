@@ -59,19 +59,16 @@ local mappings = {
 
   -- TELESCOPE
   ['n<leader>m'] = { [[<cmd>lua require'plugins.telescope'.mru()<CR>]] };
-  ['n<leader>f'] = { [[<cmd>lua require'plugins.telescope'.files{}<CR>]] };
-  ['n<leader>d'] = { [[<cmd>lua require'telescope.builtin'.find_files{}<CR>]] };
-  ['n<leader>l'] = { [[<cmd>lua require'telescope.builtin'.live_grep{}<CR>]] };
+  ['n<leader>f'] = { [[<cmd>lua require'plugins.telescope'.files()<CR>]] };
+  ['n<leader>d'] = { [[<cmd>lua require'plugins.telescope'.fd()<CR>]] };
   ['n<leader>r'] = { [[<cmd>lua require'plugins.telescope'.reloader()<CR>]] };
-  ['n<leader>o'] = { [[<cmd>lua require'plugins.telescope'.buffers{}<CR>]] };
-  ['n<leader>s'] = { [[<cmd>lua require'plugins.telescope'.treesitter{}<CR>]] };
+  ['n<leader>o'] = { [[<cmd>lua require'plugins.telescope'.buffers()<CR>]] };
+  ['n<leader>s'] = { [[<cmd>lua require'plugins.telescope'.treesitter()<CR>]] };
+  ['n<leader>l'] = { [[<cmd>lua require'plugins.telescope'.live_grep()<CR>]] };
 
   -- VIM-SMOOTHIE
   ['n<c-d>'] = { '<Plug>(SmoothieDownwards)', noremap = false; };
   ['n<c-e>'] = { '<Plug>(SmoothieUpwards)', noremap = false; };
-
-  -- VIM-FLOATERM
-  ['n<leader>t'] = { ':FloatermNew --height=0.8 --width=0.8<CR>' };
 
   -- GOYO
   ['n<leader>y'] = { ':Goyo<CR>' };

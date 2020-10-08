@@ -6,14 +6,37 @@ local actions = require('telescope.actions')
 local finders = require('telescope.finders')
 local pickers = require('telescope.pickers')
 local sorters = require('telescope.sorters')
-local previewers = require('telescope.previewers')
 
-local theme
+local dropdown_theme = require('telescope.themes').get_dropdown({
+    results_height = 20;
+    winblend = 20;
+    width = 0.8;
+    prompt = '';
+    previewer = false;
+    borderchars = {
+      prompt = {'▀', '▐', '▄', '▌', '▛', '▜', '▟', '▙' };
+      results = {' ', '▐', '▄', '▌', '▌', '▐', '▟', '▙' };
+      preview = {'▀', '▐', '▄', '▌', '▛', '▜', '▟', '▙' };
+    };
+  })
+
+local full_theme = {
+  winblend = 20;
+  width = 0.8;
+  prompt = '';
+  show_line = false;
+  results_title = '';
+  preview_title = '';
+  borderchars = {
+    prompt = {'▀', '▐', '▄', '▌', '▛', '▜', '▟', '▙' };
+    results = {'▀', '▐', '▄', '▌', '▛', '▜', '▟', '▙' };
+    preview = {'▀', '▐', '▄', '▌', '▛', '▜', '▟', '▙' };
+  };
+}
 
 local function setup()
   require('telescope').setup{
     defaults = {
-      winblend = 30;
       default_mappings = {
         i = {
           ["<C-j>"] = actions.move_selection_next,
@@ -41,41 +64,6 @@ local function setup()
     }
   }
 
-  -- custom theme
-  theme = require('telescope.themes').get_dropdown({
-    results_height = 25;
-    results_width = 120;
-    borderchars = {
-      prompt = {'▀', '▐', '▄', '▌', '▛', '▜', '▟', '▙' };
-      results = {' ', '▐', '▄', '▌', '▌', '▐', '▟', '▙' };
-      preview = {'▀', '▐', '▄', '▌', '▛', '▜', '▟', '▙' };
-    };
-  })
-
-  -- custom mappings
-  mappings = function(prompt_bufnr, map)
-    map('i', '<C-j>', function() actions.move_selection_next(prompt_bufnr) end)
-    map('i', '<C-k>', function() actions.move_selection_previous(prompt_bufnr) end)
-
-    return true
-  end
-
-end
-
--- most recent files
-local function mru()
-  local opts = deepcopy(theme)
-  opts.prompt_prefix = 'MRU>'
-  pickers.new(opts, {
-    prompt = '';
-    finder = finders.new_table({
-      results = vim.tbl_filter(function(val)
-        return 0 ~= vim.fn.filereadable(val)
-      end, vim.v.oldfiles);
-      entry_maker = make_entry.gen_from_file(opts)
-    });
-    sorter = sorters.get_fuzzy_file();
-  }):find()
 end
 
 -- cwd files
@@ -109,7 +97,7 @@ local function files()
     dirs = {'.git'};
   })
 
-  local opts = deepcopy(theme)
+  local opts = deepcopy(dropdown_theme)
   opts.prompt_prefix = 'Files>'
   pickers.new(opts, {
     prompt = '';
@@ -121,126 +109,55 @@ local function files()
   }):find()
 end
 
+-- most recent files
+local function fd()
+  local opts = deepcopy(dropdown_theme)
+  opts.prompt_prefix = 'Files>'
+  require'telescope.builtin'.find_files(opts)
+end
+
+-- most recent files
+local function mru()
+  local opts = deepcopy(dropdown_theme)
+  opts.prompt_prefix = 'MRU>'
+  require'telescope.builtin'.oldfiles(opts)
+end
+
 -- buffers
 local function buffers()
-  local _buffers = filter(function(b)
-    return vim.api.nvim_buf_is_loaded(b) and 1 == vim.fn.buflisted(b)
-  end, vim.api.nvim_list_bufs())
-
-  local opts = deepcopy(theme)
+  local opts = deepcopy(dropdown_theme)
   opts.prompt_prefix = 'Buffers>'
-  opts.bufnr_width = #tostring(math.max(unpack(_buffers)))
-
-  pickers.new(opts, {
-    prompt = '';
-    finder = finders.new_table {
-      results = _buffers;
-      entry_maker = make_entry.gen_from_buffer(opts);
-    };
-    sorter = sorters.get_generic_fuzzy_sorter();
-  }):find()
+  require'telescope.builtin'.buffers(opts)
 end
 
-local function treesitter()
-  local opts = {
-    width = 90;
-    winblend = 10;
-    borderchars = {
-      prompt = {'▀', '▐', '▄', '▌', '▛', '▜', '▟', '▙' };
-      results = {'▀', '▐', '▄', '▌', '▛', '▜', '▟', '▙' };
-      preview = {'▀', '▐', '▄', '▌', '▛', '▜', '▟', '▙' };
-    };
-    show_line = false;
-    prompt_prefix = 'Symbols>';
-  }
-
-  local function prepare_match(entry, kind)
-    local entries = {}
-
-    if entry.node then
-        entry["kind"] = kind
-        table.insert(entries, entry)
-    else
-      for name, item in pairs(entry) do
-          vim.list_extend(entries, prepare_match(item, name))
-      end
-    end
-
-    return entries
-  end
-
-  local has_nvim_treesitter, _ = pcall(require, 'nvim-treesitter')
-  if not has_nvim_treesitter then
-    print('You need to install nvim-treesitter')
-    return
-  end
-
-  local parsers = require('nvim-treesitter.parsers')
-  if not parsers.has_parser() then
-    print('No parser for the current buffer')
-    return
-  end
-
-  local ts_locals = require('nvim-treesitter.locals')
-  local bufnr = opts.bufnr or vim.api.nvim_get_current_buf()
-
-  local results = {}
-  for _, definitions in ipairs(ts_locals.get_definitions(bufnr)) do
-    local entries = prepare_match(definitions)
-    for _, entry in ipairs(entries) do
-      table.insert(results, entry)
-    end
-  end
-
-  if vim.tbl_isempty(results) then
-    return
-  end
-
-  pickers.new(opts, {
-    prompt = '',
-    finder = finders.new_table {
-      results = results,
-      entry_maker = make_entry.gen_from_treesitter(opts)
-    },
-    results_title = false;
-    preview_title = false;
-    previewer = previewers.vim_buffer.new(opts),
-    sorter = sorters.get_generic_fuzzy_sorter(),
-  }):find()
-end
-
+-- module reloader
 local function reloader()
-  local opts = deepcopy(theme)
-  opts.prompt_prefix = 'Packages>'
-  pickers.new(opts, {
-    prompt = '',
-    finder = finders.new_table {
-      results = vim.tbl_keys(package.loaded),
-      entry_maker = make_entry.gen_from_string(opts),
-    },
-    sorter = sorters.get_generic_fuzzy_sorter(),
+  local opts = deepcopy(dropdown_theme)
+  opts.prompt_prefix = 'Modules>'
+  require'telescope.builtin'.reloader(opts)
+end
 
-    attach_mappings = function(prompt_bufnr, map)
-      local reload_package = function()
-        local selection = actions.get_selected_entry(prompt_bufnr)
-        actions.close(prompt_bufnr)
-        require('plenary.reload').reload_module(selection.value)
-        print(string.format("[%s] - module reloaded", selection.value))
-      end
+-- treesitter symbols
+local function treesitter()
+  local opts = deepcopy(full_theme)
+  opts.prompt_prefix = 'TS Symbols>'
+  require'telescope.builtin'.treesitter(opts)
+end
 
-      map('i', '<CR>', reload_package)
-      map('n', '<CR>', reload_package)
-
-      return true
-    end
-  }):find()
+-- live grep
+local function live_grep()
+  local opts = deepcopy(full_theme)
+  opts.prompt_prefix = 'RG>'
+  require'telescope.builtin'.live_grep(opts)
 end
 
 return {
   setup = setup;
   mru = mru;
   files = files;
+  fd = fd;
   buffers = buffers;
   treesitter = treesitter;
   reloader = reloader;
+  live_grep = live_grep;
 }
