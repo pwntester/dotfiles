@@ -2,7 +2,9 @@ local function setup()
   require'nvim-treesitter.configs'.setup {
     highlight = {
       enable = true,                    -- false will disable the whole extension
-      disable = {},
+      disable = {
+        "xml"
+      },
       custom_captures = {               -- mapping of user defined captures to highlight groups
         -- ["foo.bar"] = "Identifier"     -- highlight own capture @foo.bar with highlight group "Identifier", see :h nvim-treesitter-query-extensions
       },
@@ -19,10 +21,10 @@ local function setup()
     },
     refactor = {
       highlight_definitions = {
-        enable = true
+        enable = true 
       },
       highlight_current_scope = {
-        enable = false
+        enable = false 
       },
       smart_rename = {
         enable = true,
@@ -98,7 +100,6 @@ local function setup()
     },
     playground = {
       enable = true,
-      disable = {},
       updatetime = 25, -- Debounced time for highlighting nodes in the playground from source code
       persist_queries = false -- Whether the query persists across vim sessions
     },

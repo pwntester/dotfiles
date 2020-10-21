@@ -24,3 +24,5 @@ alias tree='exa --tree'
 
 alias d='dirs -v'
 for index ({1..9}) alias "$index"="cd +${index}"; unset index
+
+alias layout='tmux select-layout b0a6,301x59,0,0\{90x59,0,0\[90x29,0,0,1,90x29,0,30,6\],210x59,91,0,5\}'
