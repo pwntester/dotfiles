@@ -244,14 +244,14 @@ local function window_decoration_columns()
 		return str:sub(1, #start) == start
 	end
 
-    local decoration_width = 0 
+    local decoration_width = 0
 
     -- number width
     -- Note: 'numberwidth' is only the minimal width, can be more if...
     local max_number = 0
     if vim.api.nvim_win_get_option(0,"number") then
         -- ...the buffer has many lines.
-        max_number = vim.api.nvim_buf_line_count(bufnr) 
+        max_number = vim.api.nvim_buf_line_count(0)
     elseif vim.api.nvim_win_get_option(0,"relativenumber") then
         -- ...the window width has more digits.
         max_number = vim.fn.winheight(0)
@@ -265,7 +265,7 @@ local function window_decoration_columns()
     -- signs
     if vim.fn.has('signs') then
         local signcolumn = vim.api.nvim_win_get_option(0,"signcolumn")
-        local signcolumn_width = 2 
+        local signcolumn_width = 2
         if starts_with(signcolumn, 'yes') or starts_with(signcolumn, 'auto') then
             decoration_width = decoration_width + signcolumn_width
         end

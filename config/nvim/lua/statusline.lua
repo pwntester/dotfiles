@@ -1,36 +1,35 @@
 local api = vim.api
---local util = require'functions'
 
 local colors_loaded = false
 
 local function redrawModeColors(mode)
 
   local bg_color = util.getColorFromHighlight('Normal', 'bg')
-  local blue = util.getColorFromHighlight('SpecialKey', 'fg')
+  local blue = util.getColorFromHighlight('Directory', 'fg')
   local green = util.getColorFromHighlight('Title', 'fg')
   local orange = util.getColorFromHighlight('Identifier', 'fg')
   local grey = util.getColorFromHighlight('PMenu', 'fg')
   local grey2 = util.getColorFromHighlight('Directory', 'fg')
-  local yellow = util.getColorFromHighlight('Function', 'fg')
+  local yellow = util.getColorFromHighlight('Type', 'fg')
 
   -- Normal mode
   if mode == 'n' then
-      vim.cmd("hi MyStatuslineFilename guifg="..yellow.." guibg="..bg_color)
-  -- Insert mode
+    vim.cmd("hi MyStatuslineFilename guifg="..blue.." guibg="..bg_color)
+    -- Insert mode
   elseif mode == 'i' then
-      vim.cmd("hi MyStatuslineFilename guifg="..blue.." guibg="..bg_color)
-  -- Replace mode
+    vim.cmd("hi MyStatuslineFilename guifg="..yellow.." guibg="..bg_color)
+    -- Replace mode
   elseif mode == 'R' then
-      vim.cmd("hi MyStatuslineFilename guifg="..green.." guibg="..bg_color)
-  -- Visual mode
+    vim.cmd("hi MyStatuslineFilename guifg="..green.." guibg="..bg_color)
+    -- Visual mode
   elseif mode == 'v' or mode == 'V' or mode == '^V' then
-      vim.cmd("hi MyStatuslineFilename guifg="..orange.." guibg="..bg_color)
-  -- Command mode
+    vim.cmd("hi MyStatuslineFilename guifg="..orange.." guibg="..bg_color)
+    -- Command mode
   elseif mode == 'c' then
-      vim.cmd("hi MyStatuslineFilename guifg="..grey2.." guibg="..bg_color)
-  -- Terminal mode
+    vim.cmd("hi MyStatuslineFilename guifg="..grey2.." guibg="..bg_color)
+    -- Terminal mode
   elseif mode == 't' then
-      vim.cmd("hi MyStatuslineFilename guifg="..grey.." guibg="..bg_color)
+    vim.cmd("hi MyStatuslineFilename guifg="..grey.." guibg="..bg_color)
   end
   -- return empty string so as not to display anything in the statusline
   return ''
@@ -53,9 +52,9 @@ end
 local function lspStatus()
   local sl = {}
   if vim.lsp.buf.server_ready() then
-    table.insert(sl, [[%#MyStatuslineLSP#E:]])
+    table.insert(sl, [[%#MyStatuslineLSP#⍉:]])
     table.insert(sl, [[%#MyStatuslineLSPErrors#%{luaeval("vim.lsp.util.buf_diagnostics_count('Error')")}]])
-    table.insert(sl, [[%#MyStatuslineLSP# W:]])
+    table.insert(sl, [[%#MyStatuslineLSP# ⚠:]])
     table.insert(sl, [[%#MyStatuslineLSPWarnings#%{luaeval("vim.lsp.util.buf_diagnostics_count('Warning')")}]])
   end
   return table.concat(sl)
@@ -92,6 +91,23 @@ end
 local function inactive()
   local l = '%#MyStatuslineBarNC#%{"'..padding('▁')..'"}'
   api.nvim_win_set_option(0, 'statusline', l)
+end
+
+local function treesitter()
+  local context = require'nvim-treesitter'.statusline({
+    indicator_size = 90;
+    type_patterns = {'class', 'function', 'method'};
+    separator = ' >> ';
+    transform_fn = function(line)
+      line = line:gsub('local%s', '')
+      line = line:gsub('function%s', '')
+      line = line:gsub('%[[^%]]%]', '')
+      line = line:gsub('%(.*%)', '')
+      line = line:gsub('%s*[%[%(%{]*%s*$', '')
+      return line
+    end
+  })
+  return context or ''
 end
 
 local function active()
@@ -142,6 +158,10 @@ local function active()
     -- right side items
     table.insert(statusline, '%=')
 
+    -- treesitter
+    -- table.insert(statusline, [[%#MyStatuslineGit#%{luaeval("require'statusline'.treesitter()")}]])
+    -- table.insert(statusline, ' ')
+
     -- cwd
     local cwd = vim.fn.getcwd()
     if cwd and '' ~= cwd then
@@ -179,4 +199,5 @@ end
 return {
   active = active;
   inactive = inactive;
+  treesitter = treesitter;
 }

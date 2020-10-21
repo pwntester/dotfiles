@@ -45,11 +45,9 @@ local mappings = {
   ['n+'] = { ':execute "resize +5"<CR>' };
   ['n-'] = { ':execute "resize -5"<CR>' };
 
-  -- window navigation
-  -- ['n<c-j>'] = { '<c-w><c-j>' };
-  -- ['n<c-k>'] = { '<c-w><c-k>' };
-  -- ['n<c-l>'] = { '<C-w><c-l>' };
-  -- ['n<c-h>'] = { '<c-w><c-h>' };
+  -- swap lines
+  ['n[e'] = { [[:<c-u>execute 'move -1-'. v:count1<cr>]] };
+  ['n]e'] = { [[:<c-u>execute 'move +'. v:count1<cr>]] };
 
   -- paste keeping the default register
   ['v<leader>p'] = { '"_dP' };
@@ -59,8 +57,7 @@ local mappings = {
 
   -- TELESCOPE
   ['n<leader>m'] = { [[<cmd>lua require'plugins.telescope'.mru()<CR>]] };
-  ['n<leader>f'] = { [[<cmd>lua require'plugins.telescope'.files()<CR>]] };
-  ['n<leader>d'] = { [[<cmd>lua require'plugins.telescope'.fd()<CR>]] };
+  ['n<leader>f'] = { [[<cmd>lua require'plugins.telescope'.fd()<CR>]] };
   ['n<leader>r'] = { [[<cmd>lua require'plugins.telescope'.reloader()<CR>]] };
   ['n<leader>o'] = { [[<cmd>lua require'plugins.telescope'.buffers()<CR>]] };
   ['n<leader>s'] = { [[<cmd>lua require'plugins.telescope'.treesitter()<CR>]] };
@@ -83,7 +80,7 @@ local mappings = {
   -- ['n<leader>]'] = { '<Plug>vem_move_buffer_right-', noremap = false; };
 
   -- DIRVISH
-  ['ngE'] = { [[:call ToggleDirvish()<CR>]] };
+  ['ngE'] = { [[:call ToggleDirvish('')<CR>]] };
   ['nge'] = { [[:call ToggleDirvish('%')<CR>]] };
 
   -- these work like * and g*, but do not move the cursor and always set hls.
@@ -93,7 +90,7 @@ local mappings = {
   -- GIT-MESSANGER
   ['n<leader>gm'] = { [[<Plug>(git-messenger)]], noremap = false };
 
-  -- WILDMENU 
+  -- WILDMENU
   ['c<c-j>'] = { '<right>' };
   ['c<c-k>'] = { '<left>' };
   ['c<c-h>'] = { '<space><bs><left>' };
@@ -126,11 +123,11 @@ local mappings = {
 -- nmap <leader>jf <plug>(ls-formatting)
 
   -- LSP
-  ['ngs']  = { [[<Plug>(LspShowDiagnostics)]]  , noremap = false};
+  ['n<leader>lsd']  = { [[<Plug>(LspShowDiagnostics)]]  , noremap = false};
   -- ['ngtd'] = { [[<Plug>(LspGotoDef)]]          , noremap = false};
   -- ['grr']  = { [[<Plug>(LspRename)]]           , noremap = false};
   -- ['ngtD'] = { [[<Plug>(LspGotoDecl)]]         , noremap = false};
-  -- ['ngh']  = { [[<Plug>(LspHover)]]            , noremap = false};
+  ['n<leader>lh']  = { [[<Plug>(LspHover)]]            , noremap = false};
   -- ['ngr']  = { [[<Plug>(LspShowReferences)]]   , noremap = false};
   -- ['ngH']  = { [[<Plug>(LspShowSignatureHelp)]], noremap = false};
   -- ['ngi']  = { [[<Plug>(LspGotoImpl)]]         , noremap = false};

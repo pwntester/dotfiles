@@ -92,15 +92,15 @@ local function setup()
 	}
 
 	--- Clangd
-	nvim_lsp.clangd.setup{
-		on_attach = on_attach_callback;
-	}
+	-- nvim_lsp.clangd.setup{
+	-- 	on_attach = on_attach_callback;
+	-- }
 
 	--- CodeQL
 	nvim_lsp.codeqlls.setup{
 		on_attach = on_attach_callback;
 		settings = {
-			search_path = {'~/codeql-home/codeql-repo', '~/codeql-home/pwntester-repo', '~/codeql-home/codeql-go-repo'};
+			search_path = vim.g.codeql_search_path;
 		};
 	}
 

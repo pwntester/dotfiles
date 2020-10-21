@@ -11,7 +11,7 @@ local dropdown_theme = require('telescope.themes').get_dropdown({
   results_height = 20;
   winblend = 20;
   width = 0.8;
-  prompt = '';
+  prompt_title = '';
   previewer = false;
   borderchars = {
     prompt = {'▀', '▐', '▄', '▌', '▛', '▜', '▟', '▙' };
@@ -23,7 +23,7 @@ local dropdown_theme = require('telescope.themes').get_dropdown({
 local full_theme = {
   winblend = 20;
   width = 0.8;
-  prompt = '';
+  prompt_title = '';
   show_line = false;
   results_title = '';
   preview_title = '';
@@ -37,33 +37,20 @@ local full_theme = {
 local function setup()
   require('telescope').setup{
     defaults = {
-      default_mappings = {
+      mappings = {
         i = {
           ["<C-j>"] = actions.move_selection_next,
           ["<C-k>"] = actions.move_selection_previous,
           ["<esc>"] = actions.close,
-          ["<C-u>"] = actions.preview_scrolling_up,
-          ["<C-d>"] = actions.preview_scrolling_down,
-          ["<CR>"]  = actions.goto_file_selection_edit,
-          ["<C-x>"] = actions.goto_file_selection_split,
-          ["<C-v>"] = actions.goto_file_selection_vsplit,
-          ["<C-t>"] = actions.goto_file_selection_tabedit,
         };
         n = {
           ["<C-j>"] = actions.move_selection_next,
           ["<C-k>"] = actions.move_selection_previous,
           ["<esc>"] = actions.close,
-          ["<CR>"]  = actions.goto_file_selection_edit,
-          ["<C-x>"] = actions.goto_file_selection_split,
-          ["<C-v>"] = actions.goto_file_selection_vsplit,
-          ["<C-t>"] = actions.goto_file_selection_tabedit,
-          ["<C-u>"] = actions.preview_scrolling_up,
-          ["<C-d>"] = actions.preview_scrolling_down,
         };
       }
     }
   }
-
 end
 
 -- cwd files
@@ -100,7 +87,7 @@ local function files()
   local opts = deepcopy(dropdown_theme)
   opts.prompt_prefix = 'Files>'
   pickers.new(opts, {
-    prompt = '';
+    prompt_title = '';
     finder = finders.new_table({
       results = _files;
       entry_maker = make_entry.gen_from_file(opts)

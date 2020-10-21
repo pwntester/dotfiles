@@ -1,5 +1,3 @@
-vim.g.loaded_netrwPlugin = 1
-
 vim.cmd [[packadd! packer.nvim]]
 
 local packer = require'packer'
@@ -9,23 +7,26 @@ local spec = function(use)
   use {'wbthomason/packer.nvim', opt = true}
 
   -- SYNTAX
-  use {'SidOfc/mkdx', config = function()
-    vim.g['mkdx#settings'] = {
-      highlight = {
-        enable = 1;
-        frontmatter = {
-          yaml = 0;
-          toml = 0;
-          json = 0;
-        };
-      };
-      gf_on_steroids = 1;
-      enter = {
-        enable = 1;
-        shift = 1;
-      };
-    }
-  end}
+  -- use {'SidOfc/mkdx', config = function()
+  --   vim.g['mkdx#settings'] = {
+  --     highlight = {
+  --       enable = 1;
+  --       frontmatter = {
+  --         yaml = 0;
+  --         toml = 0;
+  --         json = 0;
+  --       };
+  --     };
+  --     tokens = {
+  --       fence = ''
+  --     };
+  --     gf_on_steroids = 0;
+  --     enter = {
+  --       enable = 1;
+  --       shift = 1;
+  --     };
+  --   }
+  -- end}
 
   use {'kyazdani42/nvim-web-devicons', config = function()
     require'nvim-web-devicons'.setup()
@@ -34,8 +35,7 @@ local spec = function(use)
   -- TELESCOPE.NVIM
   use {'nvim-lua/popup.nvim'}
   use {'nvim-lua/plenary.nvim'}
-  --use {'nvim-lua/telescope.nvim', config = function()
-  use {'/Users/pwntester/Dev/telescope.nvim', config = function()
+  use {'nvim-lua/telescope.nvim', config = function()
     require'plugins.telescope'.setup()
   end}
 
@@ -43,7 +43,7 @@ local spec = function(use)
   use {'nvim-lua/completion-nvim', config = function()
     require'plugins.completion'.setup()
   end}
-  use {'steelsojka/completion-buffers'}
+  --use {'steelsojka/completion-buffers'}
 
   -- TREESITTER
   use {'nvim-treesitter/nvim-treesitter', config = function()
@@ -53,6 +53,7 @@ local spec = function(use)
   use {'nvim-treesitter/completion-treesitter'}
   use {'nvim-treesitter/nvim-treesitter-refactor'}
   use {'nvim-treesitter/nvim-treesitter-textobjects'}
+  use {'romgrk/nvim-treesitter-context'}
 
   -- TMUX
   use {'christoomey/vim-tmux-navigator'}
@@ -76,7 +77,6 @@ local spec = function(use)
 
   -- GIT
   use {'tpope/vim-fugitive'}
-  use {'jaxbot/github-issues.vim'}
   use {'rhysd/committia.vim'}
   use {'rhysd/git-messenger.vim', config = function()
     vim.g.git_messenger_no_default_mappings = true
@@ -116,26 +116,21 @@ local spec = function(use)
     vim.g.matchup_matchparen_nomode = [[ivV\<c-v>]]
     vim.g.matchup_matchparen_deferred = 1
   end}
-  use {'tmsvg/pear-tree', config = function()
-    vim.g.pear_tree_repeatable_expand = 0
-    vim.g.pear_tree_smart_backspace = 1
-    vim.g.pear_tree_smart_closers = 1
-    vim.g.pear_tree_smart_openers = 1
-    vim.g.pear_tree_ft_disabled = {'TelescopePrompt', 'fuzzy_menu'}
-  end}
+  -- use {'tmsvg/pear-tree', config = function()
+  --   vim.g.pear_tree_repeatable_expand = 0
+  --   vim.g.pear_tree_smart_backspace = 1
+  --   vim.g.pear_tree_smart_closers = 1
+  --   vim.g.pear_tree_smart_openers = 1
+  --   vim.g.pear_tree_ft_disabled = {'TelescopePrompt', 'fuzzy_menu'}
+  -- end}
 
   -- FILE EXPLORER
   use {'justinmk/vim-dirvish'}
 
-  -- LSP
-  use {'mfussenegger/nvim-jdtls'}
-  use {'neovim/nvim-lspconfig', config = function()
-    require("lsp_config").setup()
-  end}
-
   -- THEMES & COLORS
   use {'norcalli/nvim-base16.lua', config = function()
-    require'theme'.setup()
+    require'theme'.setup('norcalli')
+    --vim.cmd [[ colorscheme cobange ]]
   end}
   use {'norcalli/nvim-colorizer.lua', branch = 'color-editor'}
 
@@ -160,13 +155,20 @@ local spec = function(use)
 
   -- STATIC ANALYSIS
   use {'~/Dev/codeql.nvim', config = function()
+    vim.g.codeql_group_by_sink = true
     vim.g.codeql_max_ram = 32000
-    vim.g.codeql_search_path = '/Users/pwntester/codeql-home/codeql-repo'
+    vim.g.codeql_search_path = {'/Users/pwntester/codeql-home/codeql-repo', '/Users/pwntester/codeql-home/codeql-go-repo', '/Users/pwntester/codeql-home/pwntester-repo'}
     vim.g.codeql_fmt_onsave = 1
   end}
   -- use {'~/Dev/fortify.nvim', config = function()
   --   require'plugins.fortify'.setup()
   -- end}
+
+  -- LSP
+  use {'mfussenegger/nvim-jdtls'}
+  use {'neovim/nvim-lspconfig', config = function()
+    require("lsp_config").setup()
+  end}
 
   use {'tpope/vim-scriptease'}
     -- :Messages: view messages in quickfix list
@@ -177,6 +179,8 @@ local spec = function(use)
   -- TESTING
   use {'diepm/vim-rest-console'}
   use {'mhinz/vim-sayonara'}
+  use {'andreshazard/vim-freemarker'}
+  use {'wfxr/minimap.vim'}
 
 end
 
