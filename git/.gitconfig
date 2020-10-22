@@ -7,6 +7,7 @@
 	helper = osxkeychain
 [core]
 	editor = nvim
+	pager = delta --line-numbers --dark
 [color]
     ui = true
 [alias]
@@ -24,7 +25,15 @@
     wipe = !git add -A && git commit -qm 'WIPE SAVEPOINT' && git reset HEAD~1 --hard
     bclean = "!f() { git branch --merged ${1-master} | grep -v " ${1-master}$" | xargs -r git branch -d; }; f"
     bdone = "!f() { git checkout ${1-master} && git up && git bclean ${1-master}; }; f"
+    lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
 [diff]
 	algorithm = histogram
 [push]
-	default = simple
+  default = current
+[delta]
+  decorations = true
+  syntax-theme = Solarized (light) 
+  line-numbers = true
+  file-modified-label = modified:
+[interactive]
+  diffFilter = delta --color-only
