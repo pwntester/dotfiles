@@ -1,5 +1,4 @@
 local uv = vim.loop
-local filter = vim.tbl_filter
 local deepcopy = vim.deepcopy
 local make_entry = require('telescope.make_entry')
 local actions = require('telescope.actions')
@@ -37,6 +36,7 @@ local full_theme = {
 local function setup()
   require('telescope').setup{
     defaults = {
+      color_devicons = false;
       mappings = {
         i = {
           ["<C-j>"] = actions.move_selection_next,

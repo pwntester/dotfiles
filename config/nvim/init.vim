@@ -69,7 +69,12 @@ set complete+=i
 set complete+=d
 set complete+=t
 
-set shada=!,%,'1000,<1000,s100,h
+set shada='1000                  " previously edited files
+set shada+=/1000                 " search history items
+set shada+=:1000                 " command-line history items
+set shada+=<1000                 " lines for each saved registry
+set shada+=s100                  " max size of item in KiB
+set shada+=h                     " no hlsearch when loading shada
 
 set diffopt+=vertical            " Show vimdiff in vertical splits
 set diffopt+=algorithm:patience  " Use git diffing algorithm
@@ -146,10 +151,6 @@ au!
   "au FocusGained,VimEnter,WinEnter,TermEnter,BufEnter,BufNew * lua util.dimWin() 
   "au FocusLost,WinLeave * lua util.undimWin() 
 
-  " hide statusline on non-active windows
-  au FocusGained,VimEnter,WinEnter,BufEnter * lua statusline.active() 
-  au FocusLost,WinLeave,BufLeave * lua statusline.inactive() 
-
   " check if buffer was changed outside of vim
   au FocusGained,BufEnter * checktime 
 
@@ -201,3 +202,7 @@ nnoremap <silent> ]t    :tabnext<cr>
 nnoremap gx :call OpenURL()<CR>
 tnoremap <Esc> <C-\><C-n>
 
+
+" Move to previous/next
+nnoremap <silent>    <S-h> :BufferPrevious<CR>
+nnoremap <silent>    <S-l> :BufferNext<CR>

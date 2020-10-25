@@ -1,10 +1,10 @@
 local vim = vim
 local api = vim.api
-local nvim_lsp = require 'nvim_lsp'
+local nvim_lsp = require'nvim_lsp'
 -- local configs  = require'nvim_lsp/configs'
 
 
-local function on_attach_callback(_, bufnr)
+local function on_attach_callback(client, bufnr)
 
 	bufnr = bufnr or api.nvim_get_current_buf()
 
@@ -54,9 +54,6 @@ local function setup()
 	-- custom callbacks
 	vim.lsp.callbacks["textDocument/publishDiagnostics"] = require'lsp_callbacks'.diagnostics_callback
 	vim.lsp.callbacks["textDocument/hover"] = require'lsp_callbacks'.hover_callback
-
-	-- statusline
-	vim.cmd [[ autocmd User LspDiagnosticsChanged lua statusline.active() ]]
 
 	-- language servers
 
@@ -149,7 +146,7 @@ end
 local function jdtls()
 	local root_pattern = nvim_lsp.util.root_pattern('.project', 'pom.xml', 'project.xml', 'build.gradle', '.git');
 	require('jdtls').start_or_attach({
-			cmd={'jdtls'};
+			cmd = {'jdtls'};
 			filetypes = {'java'};
 			root_dir = function(fname)
 				return root_pattern(fname) or vim.loop.os_homedir()

@@ -50,7 +50,7 @@ local function setup()
 
   vim.g.fortify_ruleweb_user = 'amunoz'
   vim.g.fortify_ruleweb_password = '*********'
-  vim.g.fortify_SCAPath = '/Applications/HP_Fortify/sca'
+  vim.g.fortify_SCAPath = '/Applications/Fortify/Fortify_SCA_and_Apps_19.2.0'
   vim.g.fortify_PythonPath = '/Users/alvaro/.pyenv/versions/2.7/lib/python2.7/site-packages'
   vim.g.fortify_AndroidJarPath = '/Users/alvaro/Library/Android/sdk/platforms/android-26/android.jar'
   vim.g.fortify_DefaultJarPath = '/Applications/HP_Fortify/default_jars'
@@ -72,15 +72,15 @@ local function setup()
   -- -Dcom.fortify.sca.Phase0HigherOrder.Languages=python,ruby,swift,javascript,typescript,java,scala
 
   vim.g.fortify_ScanOpts = {'-verbose'}
-  vim.tbl_extend(vim.g.fortify_ScanOpts, '-Dcom.fortify.sca.limiters.MaxChainDepth=32')
-  vim.tbl_extend(vim.g.fortify_ScanOpts, '-Dcom.fortify.sca.limiters.MaxPassthroughChainDepth=32')
-  vim.tbl_extend(vim.g.fortify_ScanOpts, '-Dcom.fortify.sca.ReportTrippedDepthLimiters=true')
-  vim.tbl_extend(vim.g.fortify_ScanOpts, '-Dcom.fortify.sca.ReportTrippedNodeLimiters=true')
-  vim.tbl_extend(vim.g.fortify_ScanOpts, '-Dcom.fortify.sca.ReportTightenedLimits=true')
-  vim.tbl_extend(vim.g.fortify_ScanOpts, '-Dcom.fortify.sca.ReportUnresolvedCalls=true')
-  vim.tbl_extend(vim.g.fortify_ScanOpts, '-Dcom.fortify.sca.ReportTightenedLimits')
-  vim.tbl_extend(vim.g.fortify_ScanOpts, '-Dcom.fortify.sca.EnableDOMModeling=true')
-  vim.tbl_extend(vim.g.fortify_ScanOpts, '-Dcom.fortify.sca.DOMModeling.tags=div ')
+  table.insert(vim.g.fortify_ScanOpts, '-Dcom.fortify.sca.limiters.MaxChainDepth=32')
+  table.insert(vim.g.fortify_ScanOpts, '-Dcom.fortify.sca.limiters.MaxPassthroughChainDepth=32')
+  table.insert(vim.g.fortify_ScanOpts, '-Dcom.fortify.sca.ReportTrippedDepthLimiters=true')
+  table.insert(vim.g.fortify_ScanOpts, '-Dcom.fortify.sca.ReportTrippedNodeLimiters=true')
+  table.insert(vim.g.fortify_ScanOpts, '-Dcom.fortify.sca.ReportTightenedLimits=true')
+  table.insert(vim.g.fortify_ScanOpts, '-Dcom.fortify.sca.ReportUnresolvedCalls=true')
+  table.insert(vim.g.fortify_ScanOpts, '-Dcom.fortify.sca.ReportTightenedLimits')
+  table.insert(vim.g.fortify_ScanOpts, '-Dcom.fortify.sca.EnableDOMModeling=true')
+  table.insert(vim.g.fortify_ScanOpts, '-Dcom.fortify.sca.DOMModeling.tags=div ')
   --vim.g.fortify_ScanOpts += ['-Dcom.fortify.sca.limiters.MaxIndirectResolutionsForCall=512']
   -- vim.g.fortify_ScanOpts += ['-Dcom.fortify.sca.DebugNumericTaint=true']
   -- vim.g.fortify_ScanOpts += ['-debug', '-debug-verbose', '-logfile', 'scan.log']            " Generate scan logs
@@ -98,18 +98,6 @@ local function setup()
   -- vim.g.fortify_ScanOpts += ['-Dcom.fortify.sca.ThreadCount=1']                             " Disable multi-threading
   -- vim.g.fortify_ScanOpts += ['-project-root', 'sca_build']
 
-
-  local default_options = { silent = true; }
-
-  local mappings = {
-    ['n<leader>n'] = { ':call <SID>fzf_nst_files()<Return>', noremap = true; };
-    ['n<leader>r'] = { ':call <SID>fzf_rulepack_files()<Return>', noremap = true; };
-    ['n<leader>d'] = { ':call <SID>fzf_rulepack_descriptions()<Return>', noremap = true; };
-    ['n<leader>i'] = { ':NewRuleID<Return>', noremap = true; };
-  }
-
-  require'nvim_utils'
-  nvim_apply_mappings(mappings, default_options)
 
 end
 
