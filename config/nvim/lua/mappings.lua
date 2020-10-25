@@ -20,8 +20,8 @@ local mappings = {
   ['np'] = { 'p`' };
 
   -- go up/down on visual line
-  ['nj'] = { 'gj', noremap = false; };
-  ['nk'] = { 'gk', noremap = false; };
+  ['vj'] = { 'gj', noremap = false; };
+  ['vk'] = { 'gk', noremap = false; };
 
   -- go to begining or end of line
   ['nB'] = { '^' };
@@ -55,6 +55,17 @@ local mappings = {
   -- copy & paste to system clipboard
   ['v<leader>y'] = { '"*y', noremap = false; };
 
+  -- quickly select text you pasted
+  ['ngp'] = { [['`[' . strpart(getregtype(), 0, 1) . '`]']], expr = true; };
+
+  -- jump to next/previous search match on search mode
+  ['c<C-j>'] = { [[getcmdtype() == '/' <bar><bar> getcmdtype() == '?' ? '<C-g>' : '<C-j>']], expr = true; };
+  ['c<C-k>'] = { [[getcmdtype() == '/' <bar><bar> getcmdtype() == '?' ? '<C-t>' : '<C-k>']], expr = true; };
+
+  -- these work like * and g*, but do not move the cursor and always set hls.
+  ['_*'] = { [[:let @/ = '\<'.expand('<cword>').'\>'<bar>set hlsearch<C-M>]] };
+  ['_g*'] = { [[:let @/ = expand('<cword>')<bar>set hlsearch<C-M>]] };
+
   -- TELESCOPE
   ['n<leader>m'] = { [[<cmd>lua require'plugins.telescope'.mru()<CR>]] };
   ['n<leader>f'] = { [[<cmd>lua require'plugins.telescope'.fd()<CR>]] };
@@ -82,10 +93,6 @@ local mappings = {
   -- DIRVISH
   ['ngE'] = { [[:call ToggleDirvish('')<CR>]] };
   ['nge'] = { [[:call ToggleDirvish('%')<CR>]] };
-
-  -- these work like * and g*, but do not move the cursor and always set hls.
-  ['_*'] = { [[:let @/ = '\<'.expand('<cword>').'\>'<bar>set hlsearch<C-M>]] };
-  ['_g*'] = { [[:let @/ = expand('<cword>')<bar>set hlsearch<C-M>]] };
 
   -- GIT-MESSANGER
   ['n<leader>gm'] = { [[<Plug>(git-messenger)]], noremap = false };
@@ -147,13 +154,6 @@ local mappings = {
   -- ['ngem'] = { [[<Plug>(LspExtractMethod)]],       noremap = false};
   -- ['vgev'] = { [[<Plug>(VisualLspExtractVar)]],    noremap = false};
   -- ['vgem'] = { [[<Plug>(VisualLspExtractMethod)]], noremap = false};
-
-  -- quickly select text you pasted
-  ['ngp'] = { [['`[' . strpart(getregtype(), 0, 1) . '`]']], expr = true; };
-
-  -- jump to next/previous search match on search mode
-  ['c<C-j>'] = { [[getcmdtype() == '/' <bar><bar> getcmdtype() == '?' ? '<C-g>' : '<C-j>']], expr = true; };
-  ['c<C-k>'] = { [[getcmdtype() == '/' <bar><bar> getcmdtype() == '?' ? '<C-t>' : '<C-k>']], expr = true; };
 
   -- COMPLETION.NVIM + SNIPPETS.NVIM
   ['i<CR>']  = { [[pumvisible() ? "\<c-y>\<cr>" : "\<CR>"]], expr = true; };

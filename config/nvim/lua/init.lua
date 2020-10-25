@@ -1,6 +1,5 @@
 -- GLOBALS
 util = require'functions'
-statusline = require'statusline'
 
 RELOAD = function(module)
   package.loaded[module] = nil
@@ -23,7 +22,8 @@ vim.g.special_buffers = {
   'goyo_pad',
   'terminal',
   'TelescopePrompt',
-  'packer'
+  'packer',
+  'LuaTree'
 }
 
 

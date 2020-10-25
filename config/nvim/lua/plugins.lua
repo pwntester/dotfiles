@@ -28,9 +28,8 @@ local spec = function(use)
   --   }
   -- end}
 
-  use {'kyazdani42/nvim-web-devicons', config = function()
-    require'nvim-web-devicons'.setup()
-  end}
+  -- BASICS
+  use {'mhinz/vim-sayonara'}
 
   -- TELESCOPE.NVIM
   use {'nvim-lua/popup.nvim'}
@@ -84,13 +83,22 @@ local spec = function(use)
   use {'~/Dev/octo.nvim', config = function()
     vim.cmd [[ augroup octo ]]
     vim.cmd [[ autocmd! ]]
-    vim.cmd [[ autocmd FileType octo_issue lua statusline.active() ]]
     vim.cmd [[ autocmd FileType octo_issue nested setlocal conceallevel=2 ]]
     vim.cmd [[ autocmd FileType octo_issue nested setlocal concealcursor=c ]]
     vim.cmd [[ augroup END ]]
   end}
 
+  -- THEMES & COLORS
+  use {'norcalli/nvim-base16.lua', config = function()
+    require'theme'.setup('norcalli')
+    --vim.cmd [[ colorscheme cobange ]]
+  end}
+  use {'norcalli/nvim-colorizer.lua', branch = 'color-editor'}
+
   -- UI
+  use {'kyazdani42/nvim-web-devicons', config = function()
+    require'nvim-web-devicons'.setup()
+  end}
   use {'Yggdroot/indentLine', config = function()
     vim.g.indentLine_color_gui = '#11305f'
     vim.g.indentLine_fileTypeExclude = vim.list_extend(vim.g.special_buffers, {'markdown','octo_issue'})
@@ -105,7 +113,15 @@ local spec = function(use)
   use {'junegunn/goyo.vim', config = function()
     vim.cmd [[autocmd User GoyoEnter nested lua util.goyoEnter()]]
   end}
-  use {'mkitt/tabline.vim'}
+  use {'romgrk/lib.kom'}
+  use {'romgrk/barbar.nvim', config = function ()
+    vim.cmd [[ let g:bufferline = {} ]]
+    vim.cmd [[ let g:bufferline.icons = v:true]]
+  end}
+  use {'tjdevries/express_line.nvim', config = function()
+    require'plugins.expressline'
+  end}
+  -- use {'mkitt/tabline.vim'}
   -- use {'pacha/vem-tabline', config = function()
   --   vim.g.vem_tabline_show = 2
   -- end}
@@ -116,23 +132,9 @@ local spec = function(use)
     vim.g.matchup_matchparen_nomode = [[ivV\<c-v>]]
     vim.g.matchup_matchparen_deferred = 1
   end}
-  -- use {'tmsvg/pear-tree', config = function()
-  --   vim.g.pear_tree_repeatable_expand = 0
-  --   vim.g.pear_tree_smart_backspace = 1
-  --   vim.g.pear_tree_smart_closers = 1
-  --   vim.g.pear_tree_smart_openers = 1
-  --   vim.g.pear_tree_ft_disabled = {'TelescopePrompt', 'fuzzy_menu'}
-  -- end}
 
   -- FILE EXPLORER
   use {'justinmk/vim-dirvish'}
-
-  -- THEMES & COLORS
-  use {'norcalli/nvim-base16.lua', config = function()
-    require'theme'.setup('norcalli')
-    --vim.cmd [[ colorscheme cobange ]]
-  end}
-  use {'norcalli/nvim-colorizer.lua', branch = 'color-editor'}
 
   -- COMMENTS
   use {'tomtom/tcomment_vim'}
@@ -160,9 +162,9 @@ local spec = function(use)
     vim.g.codeql_search_path = {'/Users/pwntester/codeql-home/codeql-repo', '/Users/pwntester/codeql-home/codeql-go-repo', '/Users/pwntester/codeql-home/pwntester-repo'}
     vim.g.codeql_fmt_onsave = 1
   end}
-  -- use {'~/Dev/fortify.nvim', config = function()
-  --   require'plugins.fortify'.setup()
-  -- end}
+  use {'~/Dev/fortify.nvim', config = function()
+    require'plugins.fortify'.setup()
+  end}
 
   -- LSP
   use {'mfussenegger/nvim-jdtls'}
@@ -177,8 +179,6 @@ local spec = function(use)
     -- zS: Debug syntax under cursor
 
   -- TESTING
-  use {'diepm/vim-rest-console'}
-  use {'mhinz/vim-sayonara'}
   use {'andreshazard/vim-freemarker'}
   use {'wfxr/minimap.vim'}
 

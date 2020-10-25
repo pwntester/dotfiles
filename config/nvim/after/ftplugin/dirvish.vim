@@ -18,9 +18,6 @@ nnoremap <buffer> t :silent !touch %
 nnoremap <buffer> r :silent !rm %
 nnoremap <buffer> m :silent !mv %
 
-" status line
-lua statusline.active() 
-
 " win options
 call nvim_win_set_option(0, 'winfixwidth', v:true) 
 call nvim_win_set_option(0, 'number', v:false) 

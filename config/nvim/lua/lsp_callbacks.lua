@@ -89,7 +89,7 @@ local function diagnostics_callback(_, _, result)
 
   -- prevent creating/loading bufers for empty diagnostics
   if not result or not result.diagnostics or vim.tbl_isempty(result.diagnostics) then
-    -- api.nvim_command("doautocmd User LspDiagnosticsChanged")
+    api.nvim_command("doautocmd User LspDiagnosticsChanged")
     return
   end
 
@@ -102,7 +102,7 @@ local function diagnostics_callback(_, _, result)
 
   if not api.nvim_buf_is_loaded(bufnr) then
     pcall(vim.cmd, string.format('%dbdelete!', bufnr))
-    -- api.nvim_command("doautocmd User LspDiagnosticsChanged")
+    api.nvim_command("doautocmd User LspDiagnosticsChanged")
     return
   end
 

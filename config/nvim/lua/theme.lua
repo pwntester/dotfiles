@@ -49,6 +49,8 @@ end
     base0F - Deprecated, Opening/Closing Embedded Language Tags, e.g. <?php ?>
 ]]--
 
+M.palette = {}
+
 function M.colorscheme(scheme)
 
   local palette = {
@@ -78,6 +80,8 @@ function M.colorscheme(scheme)
       '#56b6c2'; '#01bfef'; '#c678dd'; '#be5046';
     }
   }
+
+  M.palette = palette[scheme]
 
 	local colors = vim.tbl_map(function(v) return string.gsub(v, '#', '') end , palette[scheme])
 
@@ -115,6 +119,15 @@ function M.colorscheme(scheme)
 	hl('TelescopePromptPrefix',    theme.base09, theme.base00)
 
 	hl('CodeqlRange',              theme.base09, theme.base00, nil, nil, 'bold')
+
+  hl('LspDiagnosticsError',           theme.base08, nil)
+  hl('LspDiagnosticsErrorSign',       theme.base08, nil)
+  hl('LspDiagnosticsWarning',         theme.base09, nil)
+  hl('LspDiagnosticsWarningSign',     theme.base09, nil)
+  hl('LspDiagnosticsHint',            theme.base0A, nil)
+  hl('LspDiagnosticsHintSign',        theme.base0A, nil)
+  hl('LspDiagnosticsInformation',     theme.base0B, nil)
+  hl('LspDiagnosticsInformationSign', theme.base0B, nil)
 
   -- links
 	vim.cmd [[hi link xmlEndTag xmlTagName]]
