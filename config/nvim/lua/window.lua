@@ -3,9 +3,13 @@ local api = vim.api
 local validate = vim.validate
 local floor = math.floor
 
+local function getColorFromHighlight(hl, element)
+  return vim.fn.synIDattr(vim.fn.synIDtrans(vim.fn.hlID(hl)), element..'#')
+end
+
 -- define border colors based on Normal and NormalNC bg colors
-local bg = util.getColorFromHighlight('Normal', 'bg')
-local fg = util.getColorFromHighlight('NormalNC', 'bg')
+local fg = getColorFromHighlight('Normal', 'bg')
+local bg = getColorFromHighlight('NormalFloat', 'bg')
 vim.cmd("hi PopupWindowBorder guifg="..fg.." guibg="..bg)
 vim.cmd("hi InvertedPopupWindowBorder guifg="..bg.." guibg="..fg)
 
@@ -136,7 +140,7 @@ local function floating_window(opts)
   api.nvim_win_set_option(content_win, 'relativenumber', false)
   api.nvim_win_set_option(content_win, 'cursorline', false)
   api.nvim_win_set_option(content_win, 'signcolumn', 'no')
-  api.nvim_win_set_option(content_win, "winhighlight", "NormalFloat:Normal")
+  --api.nvim_win_set_option(content_win, "winhighlight", "NormalFloat:Normal")
 
   -- map 'q' to close window
   --api.nvim_buf_set_keymap(content_buf, 'n', 'q', ':lua pcall(vim.api.nvim_win_close, '..content_win..', true)<CR>', {["silent"]=true})
@@ -202,7 +206,7 @@ local function popup_window(contents, filetype, opts, border)
   if filetype == 'markdown' then
     api.nvim_win_set_option(content_win, 'conceallevel', 2)
   end
-  api.nvim_win_set_option(content_win, "winhighlight", "Normal:NormalNC")
+  --api.nvim_win_set_option(content_win, "winhighlight", "Normal:NormalNC")
   api.nvim_win_set_option(content_win, 'cursorline', false)
 
   -- border window
@@ -228,7 +232,7 @@ local function popup_window(contents, filetype, opts, border)
     api.nvim_command("autocmd BufWipeout <buffer> exe 'bw '"..border_buf)
     local border_opts = make_popup_options(border_width, border_height, opts)
     border_win = api.nvim_open_win(border_buf, false, border_opts)
-    api.nvim_win_set_option(border_win, "winhighlight", "Normal:NormalNC")
+    --api.nvim_win_set_option(border_win, "winhighlight", "Normal:NormalNC")
     api.nvim_win_set_option(border_win, 'cursorline', false)
 
     vim.lsp.util.close_preview_autocmd({"CursorMoved", "BufHidden", "InsertCharPre", "WinLeave", "FocusLost"}, border_win)
