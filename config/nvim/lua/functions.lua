@@ -4,6 +4,26 @@ local format = string.format
 
 local M = {}
 
+function M.relpath(P, start)
+  local split,min,append = vim.split, math.min, table.insert
+  local compare = function(v) return v end
+  local startl, Pl = split(start,'/'), split(P,'/')
+  local n = min(#startl,#Pl)
+  local k = n+1 -- default value if this loop doesn't bail out!
+  for i = 1,n do
+    if compare(startl[i]) ~= compare(Pl[i]) then
+      k = i
+      break
+    end
+  end
+  local rell = {}
+  for i = 1, #startl-k+1 do rell[i] = '..' end
+  if k <= #Pl then
+      for i = k,#Pl do append(rell,Pl[i]) end
+  end
+  return table.concat(rell,'/')
+end
+
 -- RAINBOW-PARENTHESES
 function M.onEnter()
 
@@ -46,36 +66,32 @@ function M.goyoEnter()
 end
 
 -- VEM-TABLINE
--- function M.deleteCurrentBuffer()
---   local current_buffer = api.nvim_get_current_buf()
---
---   local next_buffer = api.nvim_eval('g:vem_tabline#tabline.get_replacement_buffer()')
---   pcall(api.nvim_command, format('confirm %d bdelete', current_buffer))
---   if next_buffer ~= 0 then
---     pcall(api.nvim_command, format('%d buffer', next_buffer))
---   end
--- end
+function M.deleteCurrentBuffer()
+  local current_buffer = api.nvim_get_current_buf()
+
+  local next_buffer = api.nvim_eval('g:vem_tabline#tabline.get_replacement_buffer()')
+  pcall(api.nvim_command, format('confirm %d bdelete', current_buffer))
+  if next_buffer ~= 0 then
+    pcall(api.nvim_command, format('%d buffer', next_buffer))
+  end
+end
 
 -- FZF/MARKDOWN/WIKI
-function M.makeRelative(lines)
-  local root = vim.fn.expand('%:p:h')
-  local cmd = format('realpath --relative-to=%s %s', root, lines[1])
+function M.makeRelative(full, root)
+  local cmd = format('realpath --relative-to=%s %s', root, full)
   local relative = vim.fn.trim(vim.fn.system(cmd))
   return vim.fn.substitute(relative, '\n+$', '', '')
 end
 
 -- WINDOW DIMMING
 function M.dimWin()
-  api.nvim_win_set_option(0, 'winhighlight', 'EndOfBuffer:EndOfBuffer,SignColumn:Normal,LineNr:LineNr,CursorLineNr:CursorLineNr,Normal:Normal')
+  --api.nvim_win_set_option(0, 'winhighlight', 'EndOfBuffer:EndOfBuffer,SignColumn:Normal,LineNr:LineNr,CursorLineNr:CursorLineNr,Normal:Normal')
+  vim.cmd [[setlocal cursorline]]
 end
 
 function M.undimWin()
-  api.nvim_win_set_option(0, 'winhighlight', 'EndOfBuffer:EndOfBufferNC,SignColumn:NormalNC,LineNr:LineNrNC,CursorLineNr:CursorLineNrNC,Normal:NormalNC')
-end
-
--- STATUSLINE
-function M.getColorFromHighlight(hl, element)
-  return vim.fn.synIDattr(vim.fn.synIDtrans(vim.fn.hlID(hl)), element..'#')
+  --api.nvim_win_set_option(0, 'winhighlight', 'EndOfBuffer:EndOfBufferNC,SignColumn:NormalNC,LineNr:LineNrNC,CursorLineNr:CursorLineNrNC,Normal:NormalNC')
+  vim.cmd [[setlocal nocursorline]]
 end
 
 -- WINDOW CLOSING

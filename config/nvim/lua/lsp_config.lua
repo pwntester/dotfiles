@@ -1,7 +1,7 @@
 local vim = vim
 local api = vim.api
 local nvim_lsp = require'nvim_lsp'
--- local configs  = require'nvim_lsp/configs'
+local configs  = require'nvim_lsp/configs'
 
 
 local function on_attach_callback(client, bufnr)
@@ -52,7 +52,7 @@ local function setup()
 	vim.g.LspDiagnosticsHintSign = 'h'
 
 	-- custom callbacks
-	vim.lsp.callbacks["textDocument/publishDiagnostics"] = require'lsp_callbacks'.diagnostics_callback
+	--vim.lsp.callbacks["textDocument/publishDiagnostics"] = require'lsp_callbacks'.diagnostics_callback
 	vim.lsp.callbacks["textDocument/hover"] = require'lsp_callbacks'.hover_callback
 
 	-- language servers
@@ -102,20 +102,20 @@ local function setup()
 	}
 
 	--- Fortify Language Server
-	-- if not configs.fortify_lsp then
-	-- 	configs.fortify_lsp = {
-	-- 		default_config = {
-	-- 			cmd = {'fls'};
-	-- 			filetypes = {'fortifyrulepack'};
-	-- 			root_dir = function(fname)
-	-- 				return nvim_lsp.util.path.dirname(fname)
-	-- 			end;
-	-- 		};
-	-- 	}
-	-- end
-	-- nvim_lsp.fortify_lsp.setup{
-	-- 	on_attach = on_attach_callback;
-	-- }
+	if not configs.fortify_lsp then
+		configs.fortify_lsp = {
+			default_config = {
+				cmd = {'fls'};
+				filetypes = {'fortifyrulepack'};
+				root_dir = function(fname)
+					return nvim_lsp.util.path.dirname(fname)
+				end;
+			};
+		}
+	end
+	nvim_lsp.fortify_lsp.setup{
+		on_attach = on_attach_callback;
+	}
 
 	--- Java Eclipse JDT
 	-- local lsp4j_status_callback = function(_, _, result)
