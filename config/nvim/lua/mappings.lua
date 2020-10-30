@@ -22,6 +22,8 @@ local mappings = {
   -- go up/down on visual line
   ['vj'] = { 'gj', noremap = false; };
   ['vk'] = { 'gk', noremap = false; };
+  ['nj'] = { 'gj', noremap = false; };
+  ['nk'] = { 'gk', noremap = false; };
 
   -- go to begining or end of line
   ['nB'] = { '^' };
@@ -39,11 +41,14 @@ local mappings = {
   ['n<space>'] = { '<nop>' };
   ['n<esc>'] = { '<nop>' };
 
+  -- terminal
+  ['tjk'] = { [[<C-\><C-n>]] };
+
   -- resize splits
-  ['n>'] = { ':execute "vertical resize +5"<CR>' };
-  ['n<'] = { ':execute "vertical resize -5"<CR>' };
-  ['n+'] = { ':execute "resize +5"<CR>' };
-  ['n-'] = { ':execute "resize -5"<CR>' };
+  -- ['n>'] = { ':execute "vertical resize +5"<CR>' };
+  -- ['n<'] = { ':execute "vertical resize -5"<CR>' };
+  -- ['n+'] = { ':execute "resize +5"<CR>' };
+  -- ['n-'] = { ':execute "resize -5"<CR>' };
 
   -- swap lines
   ['n[e'] = { [[:<c-u>execute 'move -1-'. v:count1<cr>]] };
@@ -131,7 +136,7 @@ local mappings = {
 
   -- LSP
   ['n<leader>lsd']  = { [[<Plug>(LspShowDiagnostics)]]  , noremap = false};
-  -- ['ngtd'] = { [[<Plug>(LspGotoDef)]]          , noremap = false};
+  ['n<leader>jd'] = { [[<Plug>(LspGotoDef)]]          , noremap = false};
   -- ['grr']  = { [[<Plug>(LspRename)]]           , noremap = false};
   -- ['ngtD'] = { [[<Plug>(LspGotoDecl)]]         , noremap = false};
   ['n<leader>lh']  = { [[<Plug>(LspHover)]]            , noremap = false};
@@ -141,7 +146,7 @@ local mappings = {
   -- ['ngtt'] = { [[<Plug>(LspGotoTypeDef)]]      , noremap = false};
   -- ['ngds'] = { [[<Plug><LspDocumentSymbol)]]   , noremap = false};
   -- ['ngws'] = { [[<Plug><LspWorkspaceSymbol)]]  , noremap = false};
-  -- ['ngfd'] = { [[<Plug>(LspFormat)']]          , noremap = false};
+  ['n<leader>lf'] = { [[<Plug>(LspFormat)']]          , noremap = false};
   -- ['ngic'] = { [[<Plug>(LspIncomingCalls)]]    , noremap = false};
   -- ['ngoc'] = { [[<Plug>(LspOutgoingCalls)]]    , noremap = false};
   -- ['ngca'] = { [[<Plug>(LspCodeActions)]]      , noremap = false};

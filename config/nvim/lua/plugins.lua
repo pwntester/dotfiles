@@ -28,8 +28,26 @@ local spec = function(use)
   --   }
   -- end}
 
-  -- BASICS
-  use {'mhinz/vim-sayonara'}
+  -- SESSIONS
+  use {'mhinz/vim-startify', config = function()
+    vim.g.startify_bookmarks = {
+      '~/.zshrc',
+      '~/.config/nvim/init.vim',
+      '~/.config/nvim/lua/plugins.lua',
+    }
+    vim.g.startify_update_oldfiles = true
+    local banner = {
+[[ ____  __    __  ____   ______    ___  _____ ______    ___  ____  ]],
+[[|    \|  |__|  ||    \ |      |  /  _]/ ___/|      |  /  _]|    \ ]],
+[[|  o  )  |  |  ||  _  ||      | /  [_(   \_ |      | /  [_ |  D  )]],
+[[|   _/|  |  |  ||  |  ||_|  |_||    _]\__  ||_|  |_||    _]|    / ]],
+[[|  |  |  `  '  ||  |  |  |  |  |   [_ /  \ |  |  |  |   [_ |    \ ]],
+[[|  |   \      / |  |  |  |  |  |     |\    |  |  |  |     ||  .  \]],
+[[|__|    \_/\_/  |__|__|  |__|  |_____| \___|  |__|  |_____||__|\_|]],
+}
+    vim.g.startify_custom_header = vim.fn['startify#pad'](banner)
+    --..vim.fn['startify#fortune#boxed']()
+  end}
 
   -- TELESCOPE.NVIM
   use {'nvim-lua/popup.nvim'}
@@ -42,7 +60,7 @@ local spec = function(use)
   use {'nvim-lua/completion-nvim', config = function()
     require'plugins.completion'.setup()
   end}
-  --use {'steelsojka/completion-buffers'}
+  -- use {'steelsojka/completion-buffers'}
 
   -- TREESITTER
   use {'nvim-treesitter/nvim-treesitter', config = function()
@@ -52,7 +70,6 @@ local spec = function(use)
   use {'nvim-treesitter/completion-treesitter'}
   use {'nvim-treesitter/nvim-treesitter-refactor'}
   use {'nvim-treesitter/nvim-treesitter-textobjects'}
-  use {'romgrk/nvim-treesitter-context'}
 
   -- TMUX
   use {'christoomey/vim-tmux-navigator'}
@@ -91,11 +108,19 @@ local spec = function(use)
   -- THEMES & COLORS
   use {'norcalli/nvim-base16.lua', config = function()
     require'theme'.setup('norcalli')
+    --require'theme'.setup('halcyon')
     --vim.cmd [[ colorscheme cobange ]]
   end}
   use {'norcalli/nvim-colorizer.lua', branch = 'color-editor'}
 
   -- UI
+  use {'mhinz/vim-signify', config = function()
+    vim.g.signify_sign_change = "~"
+  end}
+  -- use {'airblade/vim-gitgutter.git', config = function()
+  --   vim.g.gitgutter_set_sign_backgrounds = 1
+  -- end}
+  use {'ryanoasis/vim-devicons'}
   use {'kyazdani42/nvim-web-devicons', config = function()
     require'nvim-web-devicons'.setup()
   end}
@@ -113,18 +138,18 @@ local spec = function(use)
   use {'junegunn/goyo.vim', config = function()
     vim.cmd [[autocmd User GoyoEnter nested lua util.goyoEnter()]]
   end}
-  use {'romgrk/lib.kom'}
-  use {'romgrk/barbar.nvim', config = function ()
-    vim.cmd [[ let g:bufferline = {} ]]
-    vim.cmd [[ let g:bufferline.icons = v:true]]
-  end}
+  -- use {'romgrk/lib.kom'}
+  -- use {'romgrk/barbar.nvim', config = function ()
+  --   vim.cmd [[ let g:bufferline = {} ]]
+  --   vim.cmd [[ let g:bufferline.icons = v:true]]
+  -- end}
   use {'tjdevries/express_line.nvim', config = function()
     require'plugins.expressline'
   end}
   -- use {'mkitt/tabline.vim'}
-  -- use {'pacha/vem-tabline', config = function()
-  --   vim.g.vem_tabline_show = 2
-  -- end}
+  use {'pacha/vem-tabline', config = function()
+    vim.g.vem_tabline_show = 2
+  end}
 
   -- PAIRING
   use {'andymass/vim-matchup', config = function()
@@ -160,7 +185,6 @@ local spec = function(use)
     vim.g.codeql_group_by_sink = true
     vim.g.codeql_max_ram = 32000
     vim.g.codeql_search_path = {'/Users/pwntester/codeql-home/codeql-repo', '/Users/pwntester/codeql-home/codeql-go-repo', '/Users/pwntester/codeql-home/pwntester-repo'}
-    vim.g.codeql_fmt_onsave = 1
   end}
   use {'~/Dev/fortify.nvim', config = function()
     require'plugins.fortify'.setup()

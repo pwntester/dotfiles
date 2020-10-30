@@ -146,10 +146,10 @@ au!
   au TermEnter,WinEnter,BufEnter * nested lua util.onEnter() 
 
   " dim active win
-  au VimEnter,WinEnter,TermEnter,BufEnter,BufNew * lua util.dimWin() 
-  au WinLeave * lua util.undimWin() 
-  "au FocusGained,VimEnter,WinEnter,TermEnter,BufEnter,BufNew * lua util.dimWin() 
-  "au FocusLost,WinLeave * lua util.undimWin() 
+  "au VimEnter,WinEnter,TermEnter,BufEnter,BufNew * lua util.dimWin() 
+  "au WinLeave * lua util.undimWin() 
+  au FocusGained,VimEnter,WinEnter,TermEnter,BufEnter,BufNew * lua util.dimWin() 
+  au FocusLost,WinLeave * lua util.undimWin() 
 
   " check if buffer was changed outside of vim
   au FocusGained,BufEnter * checktime 
@@ -197,12 +197,18 @@ nnoremap <silent> [q    :cprevious<cr>
 nnoremap <silent> ]q    :cnext<cr>
 nnoremap <silent> [l    :lprevious<cr>
 nnoremap <silent> ]l    :lnext<cr>
-nnoremap <silent> [t    :tabprevious<cr>
-nnoremap <silent> ]t    :tabnext<cr>
+" nnoremap <silent> [t    :tabprevious<cr>
+" nnoremap <silent> ]t    :tabnext<cr>
 nnoremap gx :call OpenURL()<CR>
 tnoremap <Esc> <C-\><C-n>
 
-
 " Move to previous/next
-nnoremap <silent>    <S-h> :BufferPrevious<CR>
-nnoremap <silent>    <S-l> :BufferNext<CR>
+nmap <silent> <S-h> <Plug>vem_prev_buffer-
+nmap <silent> <S-l> <Plug>vem_next_buffer-
+nmap <silent> [t <Plug>vem_move_buffer_left-
+nmap <silent> ]t <Plug>vem_move_buffer_right-
+
+nmap ]h <Plug>(GitGutterNextHunk)
+nmap [h <Plug>(GitGutterPrevHunk)
+
+nmap gw :InteractiveWindow<CR>

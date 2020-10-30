@@ -8,10 +8,11 @@ local sorters = require('telescope.sorters')
 
 local dropdown_theme = require('telescope.themes').get_dropdown({
   results_height = 20;
-  winblend = 20;
+  --winblend = 10;
   width = 0.8;
   prompt_title = '';
   previewer = false;
+  file_sorter = sorters.get_fzy_sorter;
   borderchars = {
     prompt = {'▀', '▐', '▄', '▌', '▛', '▜', '▟', '▙' };
     results = {' ', '▐', '▄', '▌', '▌', '▐', '▟', '▙' };
@@ -20,7 +21,7 @@ local dropdown_theme = require('telescope.themes').get_dropdown({
 })
 
 local full_theme = {
-  winblend = 20;
+  --winblend = 10;
   width = 0.8;
   prompt_title = '';
   show_line = false;
@@ -92,7 +93,8 @@ local function files()
       results = _files;
       entry_maker = make_entry.gen_from_file(opts)
     });
-    sorter = sorters.get_fuzzy_file();
+    --sorter = sorters.get_fuzzy_file();
+    sorter = sorters.get_fzy_sorter();
   }):find()
 end
 

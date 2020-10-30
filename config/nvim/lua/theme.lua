@@ -66,17 +66,24 @@ function M.colorscheme(scheme)
       '#ffc600'; '#668799'; '#ffc600'; '#88FF88';
       '#99c794'; '#ffc600'; '#ff9a00'; '#626262';
 	  };
-    halcyon = {
+    halcyon_orig = {
       '#1d2433'; '#171c28'; '#2f3b54'; '#6679a4';
       '#8695b7'; '#d7dce2'; '#ffcc66'; '#bae67e';
       '#ef6b73'; '#5ccfe6'; '#c3a6ff'; '#ffd580';
       '#ffae57'; '#bae67e'; '#5ccfe6'; '#a2aabc';
     };
+    halcyon = {
+      '#1d2433'; '#171c28'; '#2f3b54'; '#6679a4';
+      '#8695b7'; '#d7dce2'; '#ffcc66'; '#bae67e';
+      '#ef6b73'; '#5ccfe6'; '#ffd580'; '#bae67e';
+      '#ffae57'; '#ffd580'; '#c3a6ff'; '#a2aabc';
+    };
     norcalli = {
       --'#111b2b'; '#213554'; '#1d3872'; '#80b2d6';
       '#0b1f41'; '#11305f'; '#3a5488'; '#80b2d6';
       '#3aa3e9'; '#abb2bf'; '#b6bdca'; '#c8ccd4';
-      '#f04c75'; '#d19a66'; '#e5c07b'; '#98c379';
+      '#f04c75'; '#ffae57'; '#ffcc66'; '#98c379';
+      --'#f04c75'; '#d19a66'; '#e5c07b'; '#98c379';
       '#56b6c2'; '#01bfef'; '#c678dd'; '#be5046';
     }
   }
@@ -88,35 +95,39 @@ function M.colorscheme(scheme)
 	local theme = base16.theme_from_array(colors)
 	base16(theme, true)
 
-	hl('NormalFloat',			theme.base05, theme.base00)
-	hl('NormalNC',				theme.base05, theme.base01)
+	--hl('NormalFloat',			theme.base05, theme.base00)
+	hl('NormalFloat',			theme.base05, theme.base01)
+	--hl('NormalNC',				theme.base05, theme.base01)
 	hl('LineNr',					theme.base02, theme.base00)
 	hl('LineNrNC',				theme.base02, theme.base01)
-	hl('StatusLine',			theme.base02, theme.base00)
-	hl('StatusLineNC',		theme.base02, theme.base00)
+	hl('StatusLine',			theme.base02, theme.base01)
+	hl('StatusLineNC',		theme.base02, theme.base01)
+	--hl('StatusLineNC',		theme.base02, theme.base01)
 	hl('EndOfBuffer',			theme.base01, theme.base00)
-	hl('EndOfBufferNC',		theme.base01, theme.base01)
-	hl('CursorLineNr',	  theme.base08, theme.base00)
-	hl('CursorLineNrNC',	theme.base08, theme.base01)
+	--hl('EndOfBufferNC',		theme.base01, theme.base01)
+	hl('CursorLineNr',	  theme.base0A, theme.base00)
+	--hl('CursorLineNrNC',	theme.base08, theme.base01)
 	hl('SignColumn',			theme.base01, theme.base00)
 	hl('VertSplit',				theme.base02, theme.base00)
 	hl('ColorColumn',			theme.base01, theme.base01)
-	hl('TabLineSel',			theme.base03, theme.base01)
-	hl('TabLine'	,				theme.base01, theme.base03)
-	hl('TabLineFill',			theme.base01, theme.base03)
+	hl('TabLineSel',			theme.base00, theme.base0A)
+	hl('TabLine'	,				theme.base03, theme.base00)
+	hl('TabLineFill',			theme.base03, theme.base00)
 	hl('MatchParen',      theme.base07, theme.base08)
 	hl('Search',					theme.base00, theme.base04)
 	hl('IncSearch',				theme.base00, theme.base09)
 	hl('Operator',				theme.base03, nil)
 
 	-- plugins
-	hl('markdownCode',						 nil,					 theme.base01)
-	hl('TelescopeBorder',					 theme.base01, theme.base00)
-	hl('TelescopeMatching',				 theme.base09, theme.base00)
-	hl('TelescopeSelection',			 theme.base0D, theme.base00)
-	hl('TelescopeSelectionCaret',  theme.base09, theme.base00)
-	hl('TelescopeNormal',					 theme.base05, theme.base00)
-	hl('TelescopePromptPrefix',    theme.base09, theme.base00)
+	--hl('markdownCode',						 nil,					 theme.base05)
+  vim.cmd [[ hi! markdowncode guibg=#213554 guifg=#c8ccd4 ]]
+
+	hl('TelescopeNormal',					 theme.base05, theme.base01)
+	hl('TelescopeBorder',					 theme.base00, theme.base01)
+	hl('TelescopePromptPrefix',    theme.base0A, theme.base01)
+	hl('TelescopeMatching',				 theme.base0A, theme.base01)
+	hl('TelescopeSelection',			 theme.base03, theme.base01)
+	hl('TelescopeSelectionCaret',  theme.base0A, theme.base01)
 
 	hl('CodeqlRange',              theme.base09, theme.base00, nil, nil, 'bold')
 
@@ -128,6 +139,10 @@ function M.colorscheme(scheme)
   hl('LspDiagnosticsHintSign',        theme.base0A, nil)
   hl('LspDiagnosticsInformation',     theme.base0B, nil)
   hl('LspDiagnosticsInformationSign', theme.base0B, nil)
+
+  hl('SignifySignAdd', theme.base0B, theme.base00)
+  hl('SignifySignChange', theme.base03, theme.base00)
+  hl('SignifySignDelete', theme.base08, theme.base00)
 
   -- links
 	vim.cmd [[hi link xmlEndTag xmlTagName]]
