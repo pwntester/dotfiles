@@ -142,8 +142,8 @@ loadstring("\27LJ\1\2=\0\0\2\0\3\0\0064\0\0\0%\1\1\0>\0\2\0027\0\2\0>\0\1\1G\0\1
 loadstring("\27LJ\1\2V\0\0\2\0\3\0\0054\0\0\0007\0\1\0%\1\2\0>\0\2\1G\0\1\0007autocmd User GoyoEnter nested lua util.goyoEnter()\bcmd\bvim\0")()
 -- Config for: vim-rooter
 loadstring("\27LJ\1\2Ç\1\0\0\2\0\t\0\0174\0\0\0007\0\1\0%\1\3\0:\1\2\0004\0\0\0007\0\1\0003\1\5\0:\1\4\0004\0\0\0007\0\1\0'\1\1\0:\1\6\0004\0\0\0007\0\1\0%\1\b\0:\1\a\0G\0\1\0\fcurrent2rooter_change_directory_for_non_project_files\24rooter_silent_chdir\1\2\0\0\n.git/\20rooter_patterns\blcd\18rooter_cd_cmd\6g\bvim\0")()
--- Config for: snippets.nvim
-loadstring("\27LJ\1\2>\0\0\2\0\3\0\0064\0\0\0%\1\1\0>\0\2\0027\0\2\0>\0\1\1G\0\1\0\nsetup\21plugins.snippets\frequire\0")()
+-- Config for: vem-tabline
+loadstring("\27LJ\1\0022\0\0\2\0\3\0\0054\0\0\0007\0\1\0'\1\2\0:\1\2\0G\0\1\0\21vem_tabline_show\6g\bvim\0")()
 -- Config for: git-messenger.vim
 loadstring("\27LJ\1\2C\0\0\2\0\3\0\0054\0\0\0007\0\1\0)\1\2\0:\1\2\0G\0\1\0&git_messenger_no_default_mappings\6g\bvim\0")()
 -- Config for: vim-matchup
@@ -158,22 +158,26 @@ loadstring("\27LJ\1\2@\0\0\2\0\3\0\0064\0\0\0%\1\1\0>\0\2\0027\0\2\0>\0\1\1G\0\1
 loadstring("\27LJ\1\2?\0\0\2\0\3\0\0064\0\0\0%\1\1\0>\0\2\0027\0\2\0>\0\1\1G\0\1\0\nsetup\22nvim-web-devicons\frequire\0")()
 -- Config for: express_line.nvim
 loadstring("\27LJ\1\0023\0\0\2\0\2\0\0044\0\0\0%\1\1\0>\0\2\1G\0\1\0\24plugins.expressline\frequire\0")()
--- Config for: barbar.nvim
-loadstring("\27LJ\1\2l\0\0\2\0\4\0\t4\0\0\0007\0\1\0%\1\2\0>\0\2\0014\0\0\0007\0\1\0%\1\3\0>\0\2\1G\0\1\0% let g:bufferline.icons = v:true\28 let g:bufferline = {} \bcmd\bvim\0")()
--- Config for: vim-wordmotion
-loadstring("\27LJ\1\2<\0\0\2\0\4\0\0054\0\0\0007\0\1\0%\1\3\0:\1\2\0G\0\1\0\r<Leader>\22wordmotion_prefix\6g\bvim\0")()
+-- Config for: vim-smoothie
+loadstring("\27LJ\1\2>\0\0\2\0\3\0\0054\0\0\0007\0\1\0)\1\2\0:\1\2\0G\0\1\0!smoothie_no_default_mappings\6g\bvim\0")()
+-- Config for: vim-signify
+loadstring("\27LJ\1\0027\0\0\2\0\4\0\0054\0\0\0007\0\1\0%\1\3\0:\1\2\0G\0\1\0\6~\24signify_sign_change\6g\bvim\0")()
 -- Config for: nvim-treesitter
 loadstring("\27LJ\1\2@\0\0\2\0\3\0\0064\0\0\0%\1\1\0>\0\2\0027\0\2\0>\0\1\1G\0\1\0\nsetup\23plugins.treesitter\frequire\0")()
+-- Config for: vim-wordmotion
+loadstring("\27LJ\1\2<\0\0\2\0\4\0\0054\0\0\0007\0\1\0%\1\3\0:\1\2\0G\0\1\0\r<Leader>\22wordmotion_prefix\6g\bvim\0")()
+-- Config for: indentLine
+loadstring("\27LJ\1\2ÿ\1\0\0\4\0\n\0\0234\0\0\0007\0\1\0%\1\3\0:\1\2\0004\0\0\0007\0\1\0004\1\0\0007\1\5\0014\2\0\0007\2\1\0027\2\6\0023\3\a\0>\1\3\2:\1\4\0004\0\0\0007\0\1\0'\1\1\0:\1\b\0004\0\0\0007\0\1\0'\1\2\0:\1\t\0G\0\1\0\28indentLine_conceallevel\22indentLine_faster\1\3\0\0\rmarkdown\15octo_issue\20special_buffers\16list_extend\31indentLine_fileTypeExclude\f#11305f\25indentLine_color_gui\6g\bvim\0")()
 -- Config for: nvim-base16.lua
 loadstring("\27LJ\1\2@\0\0\2\0\4\0\a4\0\0\0%\1\1\0>\0\2\0027\0\2\0%\1\3\0>\0\2\1G\0\1\0\rnorcalli\nsetup\ntheme\frequire\0")()
 -- Config for: codeql.nvim
-loadstring("\27LJ\1\2Ÿ\2\0\0\2\0\a\0\0174\0\0\0007\0\1\0)\1\2\0:\1\2\0004\0\0\0007\0\1\0'\1\0}:\1\3\0004\0\0\0007\0\1\0003\1\5\0:\1\4\0004\0\0\0007\0\1\0'\1\1\0:\1\6\0G\0\1\0\22codeql_fmt_onsave\1\4\0\0-/Users/pwntester/codeql-home/codeql-repo0/Users/pwntester/codeql-home/codeql-go-repo0/Users/pwntester/codeql-home/pwntester-repo\23codeql_search_path\19codeql_max_ram\25codeql_group_by_sink\6g\bvim\0")()
--- Config for: indentLine
-loadstring("\27LJ\1\2ÿ\1\0\0\4\0\n\0\0234\0\0\0007\0\1\0%\1\3\0:\1\2\0004\0\0\0007\0\1\0004\1\0\0007\1\5\0014\2\0\0007\2\1\0027\2\6\0023\3\a\0>\1\3\2:\1\4\0004\0\0\0007\0\1\0'\1\1\0:\1\b\0004\0\0\0007\0\1\0'\1\2\0:\1\t\0G\0\1\0\28indentLine_conceallevel\22indentLine_faster\1\3\0\0\rmarkdown\15octo_issue\20special_buffers\16list_extend\31indentLine_fileTypeExclude\f#11305f\25indentLine_color_gui\6g\bvim\0")()
--- Config for: vim-smoothie
-loadstring("\27LJ\1\2>\0\0\2\0\3\0\0054\0\0\0007\0\1\0)\1\2\0:\1\2\0G\0\1\0!smoothie_no_default_mappings\6g\bvim\0")()
+loadstring("\27LJ\1\2ý\1\0\0\2\0\6\0\r4\0\0\0007\0\1\0)\1\2\0:\1\2\0004\0\0\0007\0\1\0'\1\0}:\1\3\0004\0\0\0007\0\1\0003\1\5\0:\1\4\0G\0\1\0\1\4\0\0-/Users/pwntester/codeql-home/codeql-repo0/Users/pwntester/codeql-home/codeql-go-repo0/Users/pwntester/codeql-home/pwntester-repo\23codeql_search_path\19codeql_max_ram\25codeql_group_by_sink\6g\bvim\0")()
 -- Config for: nvim-lspconfig
 loadstring("\27LJ\1\0028\0\0\2\0\3\0\0064\0\0\0%\1\1\0>\0\2\0027\0\2\0>\0\1\1G\0\1\0\nsetup\15lsp_config\frequire\0")()
+-- Config for: snippets.nvim
+loadstring("\27LJ\1\2>\0\0\2\0\3\0\0064\0\0\0%\1\1\0>\0\2\0027\0\2\0>\0\1\1G\0\1\0\nsetup\21plugins.snippets\frequire\0")()
+-- Config for: vim-startify
+loadstring("\27LJ\1\2Å\5\0\0\4\0\t\0\0184\0\0\0007\0\1\0003\1\3\0:\1\2\0004\0\0\0007\0\1\0)\1\2\0:\1\4\0003\0\5\0004\1\0\0007\1\1\0014\2\0\0007\2\a\0027\2\b\2\16\3\0\0>\2\2\2:\2\6\1G\0\1\0\17startify#pad\afn\27startify_custom_header\1\b\0\0G ____  __    __  ____   ______    ___  _____ ______    ___  ____  G|    \\|  |__|  ||    \\ |      |  /  _]/ ___/|      |  /  _]|    \\ G|  o  )  |  |  ||  _  ||      | /  [_(   \\_ |      | /  [_ |  D  )G|   _/|  |  |  ||  |  ||_|  |_||    _]\\__  ||_|  |_||    _]|    / G|  |  |  `  '  ||  |  |  |  |  |   [_ /  \\ |  |  |  |   [_ |    \\ G|  |   \\      / |  |  |  |  |  |     |\\    |  |  |  |     ||  .  \\G|__|    \\_/\\_/  |__|__|  |__|  |_____| \\___|  |__|  |_____||__|\\_|\29startify_update_oldfiles\1\4\0\0\r~/.zshrc\28~/.config/nvim/init.vim#~/.config/nvim/lua/plugins.lua\23startify_bookmarks\6g\bvim\0")()
 -- Conditional loads
 -- Load plugins in order defined by `after`
 vim._update_package_paths()
