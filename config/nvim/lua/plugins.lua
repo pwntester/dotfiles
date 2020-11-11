@@ -46,7 +46,6 @@ local spec = function(use)
 [[|__|    \_/\_/  |__|__|  |__|  |_____| \___|  |__|  |_____||__|\_|]],
 }
     vim.g.startify_custom_header = vim.fn['startify#pad'](banner)
-    --..vim.fn['startify#fortune#boxed']()
   end}
 
   -- TELESCOPE.NVIM
@@ -63,7 +62,8 @@ local spec = function(use)
   -- use {'steelsojka/completion-buffers'}
 
   -- TREESITTER
-  use {'nvim-treesitter/nvim-treesitter', config = function()
+  use {'~/Dev/nvim-treesitter', config = function()
+  --use {'nvim-treesitter/nvim-treesitter', config = function()
     require'plugins.treesitter'.setup()
   end}
   use {'nvim-treesitter/playground'}
@@ -106,10 +106,13 @@ local spec = function(use)
   end}
 
   -- THEMES & COLORS
-  use {'norcalli/nvim-base16.lua', config = function()
-    require'theme'.setup('norcalli')
-    --require'theme'.setup('halcyon')
+  use {'tjdevries/colorbuddy.nvim'}
+  use {'~/Dev/nautilus', config = function()
+    vim.cmd [[ colorscheme nautilus ]]
     --vim.cmd [[ colorscheme cobange ]]
+  end}
+  use {'norcalli/nvim-base16.lua', config = function()
+    --require'theme'.setup('norcalli')
   end}
   use {'norcalli/nvim-colorizer.lua', branch = 'color-editor'}
 
@@ -125,7 +128,8 @@ local spec = function(use)
     require'nvim-web-devicons'.setup()
   end}
   use {'Yggdroot/indentLine', config = function()
-    vim.g.indentLine_color_gui = '#11305f'
+    local c = require('colorbuddy.color').colors
+    vim.g.indentLine_color_gui = c.base01:to_rgb()
     vim.g.indentLine_fileTypeExclude = vim.list_extend(vim.g.special_buffers, {'markdown','octo_issue'})
     vim.g.indentLine_faster = 1
     vim.g.indentLine_conceallevel = 2
@@ -191,10 +195,10 @@ local spec = function(use)
   end}
 
   -- LSP
-  use {'mfussenegger/nvim-jdtls'}
   use {'neovim/nvim-lspconfig', config = function()
     require("lsp_config").setup()
   end}
+  use {'liuchengxu/vista.vim'}
 
   use {'tpope/vim-scriptease'}
     -- :Messages: view messages in quickfix list

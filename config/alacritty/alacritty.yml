@@ -5,6 +5,9 @@ colors:
   primary:
     background: '#0b1f41'
     foreground: '#B3B1AD'
+  cursor:
+    cursor: '#ffcc66'
+    text: '#0b1f41'
 
   normal:
     black: '#01060E'
