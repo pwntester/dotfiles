@@ -1,8 +1,8 @@
 #!/bin/bash
-export LOGFILE=/tmp/codeql
+export LOGFILE=/tmp/codeql-cli-server
 echo `env` > $LOGFILE-env
 echo "$@" >> $LOGFILE-arguments
-if [ "$2" == "query-server" ]; then
+if [ "$2" == "cli-server" ]; then
     cat - | tee $LOGFILE-stdin | ~/codeql-home/codeql-cli/codeql $@ | tee $LOGFILE-stdout
 else
     ~/codeql-home/codeql-cli/codeql $@

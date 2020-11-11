@@ -37,3 +37,5 @@
   file-modified-label = modified:
 [interactive]
   diffFilter = delta --color-only
+[pull]
+	rebase = false
