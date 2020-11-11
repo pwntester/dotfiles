@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Latest version can be found here:
-# https://download.eclipse.org/jdtls/snapshots/
+# https://download.eclipse.org/jdtls/snapshots/jdt-language-server-latest.tar.gz
 
 export JAVA_HOME=~/.sdkman/candidates/java/current
 WORKSPACE_DIR=~/jdt_ws
@@ -15,12 +15,19 @@ java \
     -Declipse.application=org.eclipse.jdt.ls.core.id1 \
     -Dosgi.bundles.defaultStartLevel=4 \
     -Declipse.product=org.eclipse.jdt.ls.core.product \
-    -Dfile.encoding=utf8 \
-    -noverify \
-    -Xmx1G \
+    -Dlog.protocol=true \
+    -Dlog.level=ALL \
+    -Xms1g \
+    -Xmx2G \
     -XX:+UseG1GC \
     -XX:+UseStringDeduplication \
     -jar ${LAUNCHER} \
     -configuration ./config_mac \
-    -data ${WORKSPACE_DIR}
+    -data ${WORKSPACE_DIR} \
+    --add-modules=ALL-SYSTEM \
+    --add-opens java.base/java.util=ALL-UNNAMED \
+    --add-opens java.base/java.lang=ALL-UNNAMED
 # | tee /tmp/out.log
+
+
+
