@@ -2,8 +2,8 @@ local builtin = require('el.builtin')
 local extensions = require('el.extensions')
 local sections = require('el.sections')
 local subscribe = require('el.subscribe')
---local relpath = require('pl.path').relpath
 local format = string.format
+local c = require('colorbuddy.color').colors
 
 local function should_print(module, window, buffer)
   if window and window.win_id ~= vim.api.nvim_get_current_win() then
@@ -23,32 +23,32 @@ local segments = {
   --- set dynamic color based on current mode
   function(_, _)
     local mode = vim.fn.mode()
-    local bg = require'theme'.palette[2]
+    local bg = c.base01:to_rgb()
     if mode == 'n' then
-      -- StatuslineColor2 mode
-      vim.cmd(format('hi! StatuslineDynamicMode guifg=%s guibg=%s', require'theme'.palette[11], bg))
+      -- Normal mode
+      vim.cmd(format('hi! StatuslineDynamicMode guifg=%s guibg=%s', c.base0A:to_rgb(), bg))
     elseif mode == 'i' then
       -- Insert mode
-      vim.cmd(format('hi! StatuslineDynamicMode guifg=%s guibg=%s', require'theme'.palette[14], bg))
+      vim.cmd(format('hi! StatuslineDynamicMode guifg=%s guibg=%s', c.base0C:to_rgb(), bg))
     elseif mode == 'R' then
       -- Replace mode
-      vim.cmd(format('hi! StatuslineDynamicMode guifg=%s guibg=%s', require'theme'.palette[12], bg))
+      vim.cmd(format('hi! StatuslineDynamicMode guifg=%s guibg=%s', c.base0B:to_rgb(), bg))
     elseif mode == 'v' or mode == 'V' or mode == '^V' then
       -- Visual mode
-      vim.cmd(format('hi! StatuslineDynamicMode guifg=%s guibg=%s', require'theme'.palette[9], bg))
+      vim.cmd(format('hi! StatuslineDynamicMode guifg=%s guibg=%s', c.base08:to_rgb(), bg))
     elseif mode == 'c' then
       -- Command mode
-      vim.cmd(format('hi! StatuslineDynamicMode guifg=%s guibg=%s', require'theme'.palette[6], bg))
+      vim.cmd(format('hi! StatuslineDynamicMode guifg=%s guibg=%s', c.base05:to_rgb(), bg))
     elseif mode == 't' then
       -- Terminal mode
-      vim.cmd(format('hi! StatuslineDynamicMode guifg=%s guibg=%s', require'theme'.palette[11], bg))
+      vim.cmd(format('hi! StatuslineDynamicMode guifg=%s guibg=%s', c.base0A:to_rgb(), bg))
     end
-    vim.cmd(format('hi! StatuslineColor1 guifg=%s guibg=%s', require'theme'.palette[4], bg))
-    vim.cmd(format('hi! StatuslineColor2 guifg=%s guibg=%s', require'theme'.palette[6], bg))
-    vim.cmd(format('hi! StatuslineColor3 guifg=%s guibg=%s', require'theme'.palette[9], bg))
-    vim.cmd(format('hi! StatuslineColor4 guifg=%s guibg=%s', require'theme'.palette[1], require'theme'.palette[11]))
-    vim.cmd(format('hi! StatuslineLspError guifg=%s guibg=%s', require'theme'.palette[9], bg))
-    vim.cmd(format('hi! StatuslineLspWarning guifg=%s guibg=%s', require'theme'.palette[10], bg))
+    vim.cmd(format('hi! StatuslineColor1 guifg=%s guibg=%s', c.base03:to_rgb(), bg))
+    vim.cmd(format('hi! StatuslineColor2 guifg=%s guibg=%s', c.base05:to_rgb(), bg))
+    vim.cmd(format('hi! StatuslineColor3 guifg=%s guibg=%s', c.base08:to_rgb(), bg))
+    vim.cmd(format('hi! StatuslineColor4 guifg=%s guibg=%s', c.base00:to_rgb(), c.base0A:to_rgb()))
+    vim.cmd(format('hi! StatuslineLspError guifg=%s guibg=%s', c.base08:to_rgb(), bg))
+    vim.cmd(format('hi! StatuslineLspWarning guifg=%s guibg=%s', c.base09:to_rgb(), bg))
     return ''
   end,
 
@@ -138,7 +138,7 @@ local segments = {
     'LspDiagnosticsChanged',
     function(window, buffer)
       if not should_print('lsp', window, buffer) then return '' end
-      local count = vim.lsp.util.buf_diagnostics_count('Error')
+      local count = vim.lsp.diagnostic.get_count(buffer.bufnr, 'Error')
       local icon = ''
       return string.format('%s %d ', icon, count)
     end
@@ -148,7 +148,7 @@ local segments = {
     'LspDiagnosticsChanged',
     function(window, buffer)
       if not should_print('lsp', window, buffer) then return '' end
-      local count = vim.lsp.util.buf_diagnostics_count('Warning')
+      local count = vim.lsp.diagnostic.get_count(buffer.bufnr, 'Warning')
       local icon = ''
       return string.format('%s %d ', icon, count)
     end

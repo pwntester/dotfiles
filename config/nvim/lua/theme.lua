@@ -83,7 +83,6 @@ function M.colorscheme(scheme)
       '#0b1f41'; '#11305f'; '#3a5488'; '#80b2d6';
       '#3aa3e9'; '#abb2bf'; '#b6bdca'; '#c8ccd4';
       '#f04c75'; '#ffae57'; '#ffcc66'; '#98c379';
-      --'#f04c75'; '#d19a66'; '#e5c07b'; '#98c379';
       '#56b6c2'; '#01bfef'; '#c678dd'; '#be5046';
     }
   }
@@ -150,3 +149,4 @@ function M.colorscheme(scheme)
 end
 
 return M
+

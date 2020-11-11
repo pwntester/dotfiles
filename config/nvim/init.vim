@@ -35,6 +35,8 @@ set ignorecase
 set smartcase
 set nojoinspaces
 
+set jumpoptions=stack
+
 set shortmess=a     " abbreviate messages
 set shortmess+=s    " no 'search hit BOTTOM'
 set shortmess+=W    " don't give "written" or "[w]" when writing a file
@@ -172,6 +174,8 @@ au!
   " git-git-messenger
   autocmd FileType gitmessengerpopup call <SID>setup_git_messenger_popup()
 
+  " list startify buffer
+  autocmd FileType startify nested setlocal buflisted
 augroup END 
 
 " COMMANDS

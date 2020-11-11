@@ -22,8 +22,8 @@ local mappings = {
   -- go up/down on visual line
   ['vj'] = { 'gj', noremap = false; };
   ['vk'] = { 'gk', noremap = false; };
-  ['nj'] = { 'gj', noremap = false; };
-  ['nk'] = { 'gk', noremap = false; };
+  ['nj'] = { [[ (v:count? 'j' : 'gj') ]], expr = true; };
+  ['nk'] = { [[ (v:count? 'k' : 'gk') ]], expr = true; };
 
   -- go to begining or end of line
   ['nB'] = { '^' };
@@ -45,10 +45,10 @@ local mappings = {
   ['tjk'] = { [[<C-\><C-n>]] };
 
   -- resize splits
-  -- ['n>'] = { ':execute "vertical resize +5"<CR>' };
-  -- ['n<'] = { ':execute "vertical resize -5"<CR>' };
-  -- ['n+'] = { ':execute "resize +5"<CR>' };
-  -- ['n-'] = { ':execute "resize -5"<CR>' };
+  ['n>'] = { ':execute "vertical resize +5"<CR>' };
+  ['n<'] = { ':execute "vertical resize -5"<CR>' };
+  ['n+'] = { ':execute "resize +5"<CR>' };
+  ['n-'] = { ':execute "resize -5"<CR>' };
 
   -- swap lines
   ['n[e'] = { [[:<c-u>execute 'move -1-'. v:count1<cr>]] };
@@ -135,22 +135,22 @@ local mappings = {
 -- nmap <leader>jf <plug>(ls-formatting)
 
   -- LSP
-  ['n<leader>lsd']  = { [[<Plug>(LspShowDiagnostics)]]  , noremap = false};
-  ['n<leader>jd'] = { [[<Plug>(LspGotoDef)]]          , noremap = false};
-  -- ['grr']  = { [[<Plug>(LspRename)]]           , noremap = false};
-  -- ['ngtD'] = { [[<Plug>(LspGotoDecl)]]         , noremap = false};
-  ['n<leader>lh']  = { [[<Plug>(LspHover)]]            , noremap = false};
-  -- ['ngr']  = { [[<Plug>(LspShowReferences)]]   , noremap = false};
-  -- ['ngH']  = { [[<Plug>(LspShowSignatureHelp)]], noremap = false};
-  -- ['ngi']  = { [[<Plug>(LspGotoImpl)]]         , noremap = false};
+  ['ngl']     = { [[<Plug>(LspShowDiagnostics)]]  , noremap = false};
+  ['ngd']     = { [[<Plug>(LspGotoDef)]]          , noremap = false};
+  ['ngdp']    = { [[<Plug>(LspPreviewDef)]]       , noremap = false};
+  ['ngi']     = { [[<Plug>(LspGotoImpl)]]         , noremap = false};
+  ['ngD']     = { [[<Plug>(LspGotoDecl)]]         , noremap = false};
+  ['ngr']     = { [[<Plug>(LspShowReferences)]]   , noremap = false};
+  ['ng=']     = { [[<Plug>(LspFormat)']]          , noremap = false};
+  ['ngK']     = { [[<Plug>(LspHover)]]            , noremap = false};
+  ['ngca']    = { [[<Plug>(LspCodeActions)]]      , noremap = false};
+  ['ngcr']    = { [[<Plug>(LspRename)]]           , noremap = false};
+  ['i<c-s>']  = { [[<Plug>(LspShowSignatureHelp)]], noremap = false};
   -- ['ngtt'] = { [[<Plug>(LspGotoTypeDef)]]      , noremap = false};
   -- ['ngds'] = { [[<Plug><LspDocumentSymbol)]]   , noremap = false};
   -- ['ngws'] = { [[<Plug><LspWorkspaceSymbol)]]  , noremap = false};
-  ['n<leader>lf'] = { [[<Plug>(LspFormat)']]          , noremap = false};
   -- ['ngic'] = { [[<Plug>(LspIncomingCalls)]]    , noremap = false};
   -- ['ngoc'] = { [[<Plug>(LspOutgoingCalls)]]    , noremap = false};
-  -- ['ngca'] = { [[<Plug>(LspCodeActions)]]      , noremap = false};
-  -- ['vgva'] = { [[<Plug>(LspVisualCodeActions)]], noremap = false};
 
   -- JDTLS
   -- ['ngR']  = { [[<Plug>(LspRefactor)]],            noremap = false};
