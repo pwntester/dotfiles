@@ -137,7 +137,7 @@ local mappings = {
   -- LSP
   ['ngl']     = { [[<Plug>(LspShowDiagnostics)]]  , noremap = false};
   ['ngd']     = { [[<Plug>(LspGotoDef)]]          , noremap = false};
-  ['ngdp']    = { [[<Plug>(LspPreviewDef)]]       , noremap = false};
+  ['ngpd']    = { [[<Plug>(LspPeekDef)]]          , noremap = false};
   ['ngi']     = { [[<Plug>(LspGotoImpl)]]         , noremap = false};
   ['ngD']     = { [[<Plug>(LspGotoDecl)]]         , noremap = false};
   ['ngr']     = { [[<Plug>(LspShowReferences)]]   , noremap = false};
@@ -146,6 +146,10 @@ local mappings = {
   ['ngca']    = { [[<Plug>(LspCodeActions)]]      , noremap = false};
   ['ngcr']    = { [[<Plug>(LspRename)]]           , noremap = false};
   ['i<c-s>']  = { [[<Plug>(LspShowSignatureHelp)]], noremap = false};
+
+  ['n<leader>dn']  = { [[<Plug>(LspNextDiagnostic)]], noremap = false};
+  ['n<leader>dp']  = { [[<Plug>(LspPrevDiagnostic)]], noremap = false};
+
   -- ['ngtt'] = { [[<Plug>(LspGotoTypeDef)]]      , noremap = false};
   -- ['ngds'] = { [[<Plug><LspDocumentSymbol)]]   , noremap = false};
   -- ['ngws'] = { [[<Plug><LspWorkspaceSymbol)]]  , noremap = false};

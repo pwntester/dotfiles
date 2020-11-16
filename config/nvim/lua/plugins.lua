@@ -62,8 +62,8 @@ local spec = function(use)
   -- use {'steelsojka/completion-buffers'}
 
   -- TREESITTER
-  use {'~/Dev/nvim-treesitter', config = function()
-  --use {'nvim-treesitter/nvim-treesitter', config = function()
+  --use {'~/Dev/nvim-treesitter', config = function()
+  use {'nvim-treesitter/nvim-treesitter', config = function()
     require'plugins.treesitter'.setup()
   end}
   use {'nvim-treesitter/playground'}

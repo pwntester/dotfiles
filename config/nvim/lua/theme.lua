@@ -128,7 +128,7 @@ function M.colorscheme(scheme)
 	hl('TelescopeSelection',			 theme.base03, theme.base01)
 	hl('TelescopeSelectionCaret',  theme.base0A, theme.base01)
 
-	hl('CodeqlRange',              theme.base09, theme.base00, nil, nil, 'bold')
+	--hl('CodeqlRange',              theme.base09, theme.base00, nil, nil, 'bold')
 
   hl('LspDiagnosticsError',           theme.base08, nil)
   hl('LspDiagnosticsErrorSign',       theme.base08, nil)

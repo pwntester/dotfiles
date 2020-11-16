@@ -1,9 +1,8 @@
 local vim = vim
 local api = vim.api
-local nvim_lsp = require'nvim_lsp'
-local configs = require'nvim_lsp/configs'
+local nvim_lsp = require'lspconfig'
+local configs = require'lspconfig/configs'
 local util = require 'vim.lsp.util'
-
 
 local function on_attach_callback(_, bufnr)
 
@@ -11,37 +10,47 @@ local function on_attach_callback(_, bufnr)
 
 	-- mappings
 	local map = function(type, key, value)
-		vim.fn.nvim_buf_set_keymap(bufnr,type,key,value,{noremap = true, silent = true});
+		vim.fn.nvim_buf_set_keymap(bufnr, type, key, value,{noremap = true, silent = true});
 	end
 
-	map('n','<Plug>(LspGotoDecl)','<cmd>lua vim.lsp.buf.declaration()<CR>')
-	map('n','<Plug>(LspShowDiagnostics)','<cmd>lua require"lsp_config".show_line_diagnostics()<CR>')
-	map('n','<Plug>(LspGotoDef)','<cmd>lua vim.lsp.buf.definition()<CR>')
-	map('n','<Plug>(LspHover)','<cmd>lua vim.lsp.buf.hover()<CR>')
-	map('n','<Plug>(LspShowReferences)','<cmd>lua vim.lsp.buf.references()<CR>')
-	map('n','<Plug>(LspShowSignatureHelp)','<cmd>lua vim.lsp.buf.signature_help()<CR>')
-	map('n','<Plug>(LspGotoImpl)','<cmd>lua vim.lsp.buf.implementation()<CR>')
-	map('n','<Plug>(LspGotoTypeDef)','<cmd>lua vim.lsp.buf.type_definition()<CR>')
-	map('n','<Plug><LspDocumentSymbol)','<cmd>lua vim.lsp.buf.document_symbol()<CR>')
-	map('n','<Plug><LspWorkspaceSymbol)','<cmd>lua vim.lsp.buf.workspace_symbol()<CR>')
-	map('n','<Plug>(LspRename)','<cmd>lua vim.lsp.buf.rename()<CR>')
-	map('n','<Plug>(LspFormat)', '<cmd>lua vim.lsp.buf.formatting()<CR>')
-	map('n','<Plug>(LspIncomingCalls)','<cmd>lua vim.lsp.buf.incoming_calls()<CR>')
-	map('n','<Plug>(LspOutgoingCalls)','<cmd>lua vim.lsp.buf.outgoing_calls()<CR>')
-	map('n','<Plug>(LspCodeActions)','<cmd>lua vim.lsp.buf.code_action()<CR>')
+  map('n', '<Plug>(LspNextDiagnostic)',    '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>')
+  map('n', '<Plug>(LspPrevDiagnostic)',    '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>')
+	map('n', '<Plug>(LspGotoDef)',           '<cmd>lua vim.lsp.buf.definition()<CR>')
+  map('n', '<Plug>(LspPeekDef)',           '<cmd>lua require"lsp_config".peek_definition()<CR>')
+	map('n', '<Plug>(LspGotoDecl)',          '<cmd>lua vim.lsp.buf.declaration()<CR>')
+	map('n', '<Plug>(LspShowDiagnostics)',   '<cmd>lua require"lsp_config".show_line_diagnostics()<CR>')
+	map('n', '<Plug>(LspHover)',             '<cmd>lua vim.lsp.buf.hover()<CR>')
+	map('n', '<Plug>(LspShowReferences)',    '<cmd>lua vim.lsp.buf.references()<CR>')
+	map('n', '<Plug>(LspShowSignatureHelp)', '<cmd>lua vim.lsp.buf.signature_help()<CR>')
+	map('n', '<Plug>(LspGotoImpl)',          '<cmd>lua vim.lsp.buf.implementation()<CR>')
+	map('n', '<Plug>(LspGotoTypeDef)',       '<cmd>lua vim.lsp.buf.type_definition()<CR>')
+	map('n', '<Plug><LspDocumentSymbol)',    '<cmd>lua vim.lsp.buf.document_symbol()<CR>')
+	map('n', '<Plug><LspWorkspaceSymbol)',   '<cmd>lua vim.lsp.buf.workspace_symbol()<CR>')
+	map('n', '<Plug>(LspRename)',            '<cmd>lua vim.lsp.buf.rename()<CR>')
+	map('n', '<Plug>(LspFormat)',            '<cmd>lua vim.lsp.buf.formatting()<CR>')
+	map('n', '<Plug>(LspIncomingCalls)',     '<cmd>lua vim.lsp.buf.incoming_calls()<CR>')
+	map('n', '<Plug>(LspOutgoingCalls)',     '<cmd>lua vim.lsp.buf.outgoing_calls()<CR>')
+	map('n', '<Plug>(LspCodeActions)',       '<cmd>lua vim.lsp.buf.code_action()<CR>')
 end
 
 local function setup()
-
 	-- diagnostics signs
-	vim.g.LspDiagnosticsErrorSign = 'x'
-	vim.g.LspDiagnosticsWarningSign = 'w'
-	vim.g.LspDiagnosticsInformationSign = 'i'
-	vim.g.LspDiagnosticsHintSign = 'h'
+  vim.fn.sign_define('LspDiagnosticsSignError', {
+    text = ''; texthl = 'LspDiagnosticsSignError';
+  })
+  vim.fn.sign_define('LspDiagnosticsSignWarning', {
+    text = ''; texthl = 'LspDiagnosticsSignWarning';
+  })
+  vim.fn.sign_define('LspDiagnosticsSignInformation', {
+    text = 'i'; texthl = 'LspDiagnosticsSignInformation';
+  })
+  vim.fn.sign_define('LspDiagnosticsSignHint', {
+    text = 'h'; texthl = 'LspDiagnosticsSignHint';
+  })
 
   vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
     vim.lsp.diagnostic.on_publish_diagnostics, {
-      signs = false,
+      signs = true,
       update_in_insert = false,
       underline = true,
       --virtual_text = true,
@@ -170,7 +179,25 @@ local function show_line_diagnostics()
   return popup_bufnr, winnr
 end
 
+local function preview_location_callback(_, method, result)
+  if result == nil or vim.tbl_isempty(result) then
+    vim.lsp.log.info(method, 'No location found')
+    return nil
+  end
+  if vim.tbl_islist(result) then
+    vim.lsp.util.preview_location(result[1])
+  else
+    vim.lsp.util.preview_location(result)
+  end
+end
+
+local function peek_definition()
+  local params = vim.lsp.util.make_position_params()
+  return vim.lsp.buf_request(0, 'textDocument/definition', params, preview_location_callback)
+end
+
 return {
 	setup = setup;
   show_line_diagnostics = show_line_diagnostics;
+  peek_definition = peek_definition;
 }

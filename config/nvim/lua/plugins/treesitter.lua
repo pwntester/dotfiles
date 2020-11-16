@@ -21,10 +21,10 @@ local function setup()
     },
     refactor = {
       highlight_definitions = {
-        enable = true 
+        enable = true
       },
       highlight_current_scope = {
-        enable = false 
+        enable = false
       },
       smart_rename = {
         enable = true,

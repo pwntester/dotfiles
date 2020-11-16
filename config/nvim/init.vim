@@ -45,6 +45,7 @@ set shortmess+=I    " don't give the intro message when starting :intro
 set shortmess+=c    " don't give ins-completion-menu messages. eg: "match 1 of 2"
 set shortmess+=o    " don't show "Press ENTER" when editing a file
 set shortmess+=O    " don't show "Press ENTER" when editing a file
+set shortmess+=t    " truncate file messages to fit on the command-line
 
 set wildmode=longest
 set wildmode+=full
