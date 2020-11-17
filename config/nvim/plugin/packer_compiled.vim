@@ -141,8 +141,8 @@ loadstring("\27LJ\2\2=\0\0\2\0\3\0\0066\0\0\0'\1\1\0B\0\2\0029\0\2\0B\0\1\1K\0\1
 loadstring("\27LJ\2\2V\0\0\2\0\3\0\0056\0\0\0009\0\1\0'\1\2\0B\0\2\1K\0\1\0007autocmd User GoyoEnter nested lua util.goyoEnter()\bcmd\bvim\0")()
 -- Config for: nautilus
 loadstring("\27LJ\2\2:\0\0\2\0\3\0\0056\0\0\0009\0\1\0'\1\2\0B\0\2\1K\0\1\0\27 colorscheme nautilus \bcmd\bvim\0")()
--- Config for: vem-tabline
-loadstring("\27LJ\2\0022\0\0\2\0\3\0\0056\0\0\0009\0\1\0)\1\2\0=\1\2\0K\0\1\0\21vem_tabline_show\6g\bvim\0")()
+-- Config for: snippets.nvim
+loadstring("\27LJ\2\2>\0\0\2\0\3\0\0066\0\0\0'\1\1\0B\0\2\0029\0\2\0B\0\1\1K\0\1\0\nsetup\21plugins.snippets\frequire\0")()
 -- Config for: git-messenger.vim
 loadstring("\27LJ\2\2C\0\0\2\0\3\0\0056\0\0\0009\0\1\0+\1\2\0=\1\2\0K\0\1\0&git_messenger_no_default_mappings\6g\bvim\0")()
 -- Config for: vim-matchup
@@ -157,28 +157,28 @@ loadstring("\27LJ\2\2@\0\0\2\0\3\0\0066\0\0\0'\1\1\0B\0\2\0029\0\2\0B\0\1\1K\0\1
 loadstring("\27LJ\2\2?\0\0\2\0\3\0\0066\0\0\0'\1\1\0B\0\2\0029\0\2\0B\0\1\1K\0\1\0\nsetup\22nvim-web-devicons\frequire\0")()
 -- Config for: express_line.nvim
 loadstring("\27LJ\2\0023\0\0\2\0\2\0\0046\0\0\0'\1\1\0B\0\2\1K\0\1\0\24plugins.expressline\frequire\0")()
--- Config for: vim-wordmotion
-loadstring("\27LJ\2\2<\0\0\2\0\4\0\0056\0\0\0009\0\1\0'\1\3\0=\1\2\0K\0\1\0\r<Leader>\22wordmotion_prefix\6g\bvim\0")()
--- Config for: vim-signify
-loadstring("\27LJ\2\0027\0\0\2\0\4\0\0056\0\0\0009\0\1\0'\1\3\0=\1\2\0K\0\1\0\6~\24signify_sign_change\6g\bvim\0")()
+-- Config for: nvim-lspconfig
+loadstring("\27LJ\2\0028\0\0\2\0\3\0\0066\0\0\0'\1\1\0B\0\2\0029\0\2\0B\0\1\1K\0\1\0\nsetup\15lsp_config\frequire\0")()
+-- Config for: nvim-treesitter
+loadstring("\27LJ\2\2@\0\0\2\0\3\0\0066\0\0\0'\1\1\0B\0\2\0029\0\2\0B\0\1\1K\0\1\0\nsetup\23plugins.treesitter\frequire\0")()
 -- Config for: vim-startify
 loadstring("\27LJ\2\2Å\5\0\0\4\0\t\0\0186\0\0\0009\0\1\0005\1\3\0=\1\2\0006\0\0\0009\0\1\0+\1\2\0=\1\4\0005\0\5\0006\1\0\0009\1\1\0016\2\0\0009\2\a\0029\2\b\2\18\3\0\0B\2\2\2=\2\6\1K\0\1\0\17startify#pad\afn\27startify_custom_header\1\b\0\0G ____  __    __  ____   ______    ___  _____ ______    ___  ____  G|    \\|  |__|  ||    \\ |      |  /  _]/ ___/|      |  /  _]|    \\ G|  o  )  |  |  ||  _  ||      | /  [_(   \\_ |      | /  [_ |  D  )G|   _/|  |  |  ||  |  ||_|  |_||    _]\\__  ||_|  |_||    _]|    / G|  |  |  `  '  ||  |  |  |  |  |   [_ /  \\ |  |  |  |   [_ |    \\ G|  |   \\      / |  |  |  |  |  |     |\\    |  |  |  |     ||  .  \\G|__|    \\_/\\_/  |__|__|  |__|  |_____| \\___|  |__|  |_____||__|\\_|\29startify_update_oldfiles\1\4\0\0\r~/.zshrc\28~/.config/nvim/init.vim#~/.config/nvim/lua/plugins.lua\23startify_bookmarks\6g\bvim\0")()
 -- Config for: indentLine
 loadstring("\27LJ\2\2Á\2\0\0\5\0\14\0\0306\0\0\0'\1\1\0B\0\2\0029\0\2\0006\1\3\0009\1\4\0019\2\6\0\18\3\2\0009\2\a\2B\2\2\2=\2\5\0016\1\3\0009\1\4\0016\2\3\0009\2\t\0026\3\3\0009\3\4\0039\3\n\0035\4\v\0B\2\3\2=\2\b\0016\1\3\0009\1\4\1)\2\1\0=\2\f\0016\1\3\0009\1\4\1)\2\2\0=\2\r\1K\0\1\0\28indentLine_conceallevel\22indentLine_faster\1\3\0\0\rmarkdown\15octo_issue\20special_buffers\16list_extend\31indentLine_fileTypeExclude\vto_rgb\vbase01\25indentLine_color_gui\6g\bvim\vcolors\21colorbuddy.color\frequire\0")()
 -- Config for: vim-smoothie
 loadstring("\27LJ\2\2>\0\0\2\0\3\0\0056\0\0\0009\0\1\0+\1\2\0=\1\2\0K\0\1\0!smoothie_no_default_mappings\6g\bvim\0")()
--- Config for: nvim-lspconfig
-loadstring("\27LJ\2\0028\0\0\2\0\3\0\0066\0\0\0'\1\1\0B\0\2\0029\0\2\0B\0\1\1K\0\1\0\nsetup\15lsp_config\frequire\0")()
+-- Config for: gitsigns.nvim
+loadstring("\27LJ\2\2’\6\0\0\4\0\24\0 6\0\0\0'\1\1\0B\0\2\0029\0\2\0B\0\1\0016\0\0\0'\1\1\0B\0\2\0029\0\2\0005\1\14\0005\2\4\0005\3\3\0=\3\5\0025\3\6\0=\3\a\0025\3\b\0=\3\t\0025\3\n\0=\3\v\0025\3\f\0=\3\r\2=\2\15\0015\2\16\0005\3\17\0=\3\18\0025\3\19\0=\3\20\2=\2\21\0015\2\22\0=\2\23\1B\0\2\1K\0\1\0\16watch_index\1\0\1\rinterval\3è\a\fkeymaps\tn [h\1\2\1\0@&diff ? '[c' : '<cmd>lua require\"gitsigns\".prev_hunk()<CR>'\texpr\2\tn ]h\1\2\1\0@&diff ? ']c' : '<cmd>lua require\"gitsigns\".next_hunk()<CR>'\texpr\2\1\0\6\vbuffer\2\17n <leader>hr0<cmd>lua require\"gitsigns\".reset_hunk()<CR>\17n <leader>hu5<cmd>lua require\"gitsigns\".undo_stage_hunk()<CR>\fnoremap\2\17n <leader>hs0<cmd>lua require\"gitsigns\".stage_hunk()<CR>\17n <leader>hp2<cmd>lua require\"gitsigns\".preview_hunk()<CR>\nsigns\1\0\1\18sign_priority\3\6\17changedelete\1\0\2\ttext\6~\ahl\15DiffChange\14topdelete\1\0\2\ttext\bâ€¾\ahl\15DiffDelete\vdelete\1\0\2\ttext\6_\ahl\15DiffDelete\vchange\1\0\2\ttext\6~\ahl\15DiffChange\badd\1\0\0\1\0\2\ttext\6+\ahl\fDiffAdd\nsetup\rgitsigns\frequire\0")()
 -- Config for: nvim-base16.lua
 loadstring("\27LJ\2\2\v\0\0\1\0\0\0\1K\0\1\0\0")()
 -- Config for: codeql.nvim
 loadstring("\27LJ\2\2ý\1\0\0\2\0\6\0\r6\0\0\0009\0\1\0+\1\2\0=\1\2\0006\0\0\0009\0\1\0)\1\0}=\1\3\0006\0\0\0009\0\1\0005\1\5\0=\1\4\0K\0\1\0\1\4\0\0-/Users/pwntester/codeql-home/codeql-repo0/Users/pwntester/codeql-home/codeql-go-repo0/Users/pwntester/codeql-home/pwntester-repo\23codeql_search_path\19codeql_max_ram\25codeql_group_by_sink\6g\bvim\0")()
+-- Config for: vim-wordmotion
+loadstring("\27LJ\2\2<\0\0\2\0\4\0\0056\0\0\0009\0\1\0'\1\3\0=\1\2\0K\0\1\0\r<Leader>\22wordmotion_prefix\6g\bvim\0")()
 -- Config for: vim-rooter
 loadstring("\27LJ\2\2Ç\1\0\0\2\0\t\0\0176\0\0\0009\0\1\0'\1\3\0=\1\2\0006\0\0\0009\0\1\0005\1\5\0=\1\4\0006\0\0\0009\0\1\0)\1\1\0=\1\6\0006\0\0\0009\0\1\0'\1\b\0=\1\a\0K\0\1\0\fcurrent2rooter_change_directory_for_non_project_files\24rooter_silent_chdir\1\2\0\0\n.git/\20rooter_patterns\blcd\18rooter_cd_cmd\6g\bvim\0")()
--- Config for: snippets.nvim
-loadstring("\27LJ\2\2>\0\0\2\0\3\0\0066\0\0\0'\1\1\0B\0\2\0029\0\2\0B\0\1\1K\0\1\0\nsetup\21plugins.snippets\frequire\0")()
--- Config for: nvim-treesitter
-loadstring("\27LJ\2\2@\0\0\2\0\3\0\0066\0\0\0'\1\1\0B\0\2\0029\0\2\0B\0\1\1K\0\1\0\nsetup\23plugins.treesitter\frequire\0")()
+-- Config for: vem-tabline
+loadstring("\27LJ\2\0022\0\0\2\0\3\0\0056\0\0\0009\0\1\0)\1\2\0=\1\2\0K\0\1\0\21vem_tabline_show\6g\bvim\0")()
 -- Conditional loads
 -- Load plugins in order defined by `after`
 END

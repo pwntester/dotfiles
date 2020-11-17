@@ -151,8 +151,8 @@ local function setup()
 	end
 	nvim_lsp.java_lsp.setup{
 		on_attach = on_attach_callback;
-		callbacks = {
-			["language/status"] = lsp4j_status_callback,
+		handlers = {
+		  ["language/status"] = lsp4j_status_callback,
 		};
 	}
 

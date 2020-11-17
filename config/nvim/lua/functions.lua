@@ -30,9 +30,9 @@ function M.onEnter()
   if not vim.tbl_contains(vim.g.special_buffers, vim.bo.filetype) then
 
     -- activate rainbow parentheses
-    if vim.fn.exists':RainbowParentheses' then
-      vim.cmd [[ RainbowParentheses ]]
-    end
+    -- if vim.fn.exists':RainbowParentheses' then
+    --   vim.cmd [[ RainbowParentheses ]]
+    -- end
 
     -- show cursorline
     vim.wo.cursorline = true
@@ -40,9 +40,9 @@ function M.onEnter()
   else
 
     -- disable rainbow parentheses
-    if vim.fn.exists':RainbowParentheses' then
-      vim.cmd [[ RainbowParentheses! ]]
-    end
+    -- if vim.fn.exists':RainbowParentheses' then
+    --   vim.cmd [[ RainbowParentheses! ]]
+    -- end
 
     -- hide cursorline
     vim.wo.cursorline = false
