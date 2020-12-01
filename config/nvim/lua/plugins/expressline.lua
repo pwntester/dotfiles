@@ -3,7 +3,7 @@ local extensions = require('el.extensions')
 local sections = require('el.sections')
 local subscribe = require('el.subscribe')
 local format = string.format
-local c = require('colorbuddy.color').colors
+--local c = require('colorbuddy.color').colors
 
 local function should_print(module, window, buffer)
   if window and window.win_id ~= vim.api.nvim_get_current_win() then
@@ -23,32 +23,41 @@ local segments = {
   --- set dynamic color based on current mode
   function(_, _)
     local mode = vim.fn.mode()
-    local bg = c.base01:to_rgb()
+    local base00 = tostring(require'nautilus'.Normal.bg)
+    local base01 = tostring(require'nautilus'.CursorLine.bg)
+    local base03 = tostring(require'nautilus'.NonText.fg)
+    local base04 = tostring(require'nautilus'.Search.bg)
+    local base05 = tostring(require'nautilus'.Normal.fg)
+    local base08 = tostring(require'nautilus'.ErrorMsg.fg)
+    local base09 = tostring(require'nautilus'.Constant.fg)
+    local base0A = tostring(require'nautilus'.Identifier.fg)
+    local base0B = tostring(require'nautilus'.String.fg)
+    local base0C = tostring(require'nautilus'.Special.fg)
     if mode == 'n' then
       -- Normal mode
-      vim.cmd(format('hi! StatuslineDynamicMode guifg=%s guibg=%s', c.base0A:to_rgb(), bg))
+      vim.cmd(format('hi! StatuslineDynamicMode guifg=%s guibg=%s', base0A, base01))
     elseif mode == 'i' then
       -- Insert mode
-      vim.cmd(format('hi! StatuslineDynamicMode guifg=%s guibg=%s', c.base0C:to_rgb(), bg))
+      vim.cmd(format('hi! StatuslineDynamicMode guifg=%s guibg=%s', base0C, base01))
     elseif mode == 'R' then
       -- Replace mode
-      vim.cmd(format('hi! StatuslineDynamicMode guifg=%s guibg=%s', c.base0B:to_rgb(), bg))
+      vim.cmd(format('hi! StatuslineDynamicMode guifg=%s guibg=%s', base0B, base01))
     elseif mode == 'v' or mode == 'V' or mode == '^V' then
       -- Visual mode
-      vim.cmd(format('hi! StatuslineDynamicMode guifg=%s guibg=%s', c.base08:to_rgb(), bg))
+      vim.cmd(format('hi! StatuslineDynamicMode guifg=%s guibg=%s', base08, base01))
     elseif mode == 'c' then
       -- Command mode
-      vim.cmd(format('hi! StatuslineDynamicMode guifg=%s guibg=%s', c.base05:to_rgb(), bg))
+      vim.cmd(format('hi! StatuslineDynamicMode guifg=%s guibg=%s', base05, base01))
     elseif mode == 't' then
       -- Terminal mode
-      vim.cmd(format('hi! StatuslineDynamicMode guifg=%s guibg=%s', c.base0A:to_rgb(), bg))
+      vim.cmd(format('hi! StatuslineDynamicMode guifg=%s guibg=%s', base0A, base01))
     end
-    vim.cmd(format('hi! StatuslineColor1 guifg=%s guibg=%s', c.base03:to_rgb(), bg))
-    vim.cmd(format('hi! StatuslineColor2 guifg=%s guibg=%s', c.base05:to_rgb(), bg))
-    vim.cmd(format('hi! StatuslineColor3 guifg=%s guibg=%s', c.base08:to_rgb(), bg))
-    vim.cmd(format('hi! StatuslineColor4 guifg=%s guibg=%s', c.base00:to_rgb(), c.base0A:to_rgb()))
-    vim.cmd(format('hi! StatuslineLspError guifg=%s guibg=%s', c.base08:to_rgb(), bg))
-    vim.cmd(format('hi! StatuslineLspWarning guifg=%s guibg=%s', c.base09:to_rgb(), bg))
+    vim.cmd(format('hi! StatuslineColor1 guifg=%s guibg=%s', base03, base01))
+    vim.cmd(format('hi! StatuslineColor2 guifg=%s guibg=%s', base05, base01))
+    vim.cmd(format('hi! StatuslineColor3 guifg=%s guibg=%s', base04, base01))
+    vim.cmd(format('hi! StatuslineColor4 guifg=%s guibg=%s', base00, base0A))
+    vim.cmd(format('hi! StatuslineLspError guifg=%s guibg=%s', base08, base01))
+    vim.cmd(format('hi! StatuslineLspWarning guifg=%s guibg=%s', base09, base01))
     return ''
   end,
 
@@ -85,14 +94,23 @@ local segments = {
   end),
 
   --- git
+  sections.highlight('StatuslineColor1', subscribe.buf_autocmd(
+    'el_git_hunks',
+    'BufEnter',
+    function(_, buffer)
+      if buffer and vim.b.gitsigns_status then
+        if not should_print('git_hunks', _, buffer) then return '' end
+        return vim.b.gitsigns_status..' '
+      end
+    end
+  )),
   sections.highlight('StatuslineColor2', subscribe.buf_autocmd(
     'el_git_branch',
     'BufEnter',
-    function(window, buffer)
-      if window and buffer then
-        local branch = extensions.git_branch(window, buffer)
-        if not should_print('git_branch', window, buffer) then return '' end
-        return ' '..extensions.git_branch(window, buffer)..' '
+    function(_, buffer)
+      if buffer and extensions.git_branch(_, buffer) then
+        if not should_print('git_branch', _, buffer) then return '' end
+        return ' '..extensions.git_branch(_, buffer)..' '
       end
     end
   )),

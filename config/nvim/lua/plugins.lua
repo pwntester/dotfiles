@@ -72,7 +72,9 @@ local spec = function(use)
   use {'nvim-treesitter/nvim-treesitter-textobjects'}
 
   -- TMUX
-  use {'christoomey/vim-tmux-navigator'}
+  use {'christoomey/vim-tmux-navigator', config = function()
+    vim.g.tmux_navigator_no_mappings = true
+  end}
 
   -- TEXT OBJECTS/MOTIONS/OPERATORS
   use {'machakann/vim-sandwich'}
@@ -97,31 +99,7 @@ local spec = function(use)
   use {'rhysd/git-messenger.vim', config = function()
     vim.g.git_messenger_no_default_mappings = true
   end}
-  use {'~/Dev/octo.nvim', config = function()
-    vim.cmd [[ augroup octo ]]
-    vim.cmd [[ autocmd! ]]
-    vim.cmd [[ autocmd FileType octo_issue nested setlocal conceallevel=2 ]]
-    vim.cmd [[ autocmd FileType octo_issue nested setlocal concealcursor=c ]]
-    vim.cmd [[ augroup END ]]
-  end}
-
-  -- THEMES & COLORS
-  use {'tjdevries/colorbuddy.nvim'}
-  use {'~/Dev/nautilus', config = function()
-    vim.cmd [[ colorscheme nautilus ]]
-    --vim.cmd [[ colorscheme cobange ]]
-  end}
-  use {'norcalli/nvim-base16.lua', config = function()
-    --require'theme'.setup('norcalli')
-  end}
-  use {'norcalli/nvim-colorizer.lua', branch = 'color-editor'}
-
-  -- UI
-  -- use {'mhinz/vim-signify', config = function()
-  --   vim.g.signify_sign_change = "~"
-  -- end}
   use {'lewis6991/gitsigns.nvim', config = function()
-    require('gitsigns').setup()
     require('gitsigns').setup {
       signs = {
         add          = {hl = 'DiffAdd'   , text = '+'},
@@ -131,13 +109,10 @@ local spec = function(use)
         changedelete = {hl = 'DiffChange', text = '~'},
       },
       keymaps = {
-        -- Default keymap options
         noremap = true,
         buffer = true,
-
         ['n ]h'] = { expr = true, "&diff ? ']c' : '<cmd>lua require\"gitsigns\".next_hunk()<CR>'"},
         ['n [h'] = { expr = true, "&diff ? '[c' : '<cmd>lua require\"gitsigns\".prev_hunk()<CR>'"},
-
         ['n <leader>hs'] = '<cmd>lua require"gitsigns".stage_hunk()<CR>',
         ['n <leader>hu'] = '<cmd>lua require"gitsigns".undo_stage_hunk()<CR>',
         ['n <leader>hr'] = '<cmd>lua require"gitsigns".reset_hunk()<CR>',
@@ -147,24 +122,36 @@ local spec = function(use)
         interval = 1000
       },
       sign_priority = 6,
-      status_formatter = nil, -- Use default
+      status_formatter = nil,
     }
   end}
-  -- use {'airblade/vim-gitgutter.git', config = function()
-  --   vim.g.gitgutter_set_sign_backgrounds = 1
-  -- end}
+  use {'~/Dev/octo.nvim', config = function()
+    vim.cmd [[ augroup octo ]]
+    vim.cmd [[ autocmd! ]]
+    vim.cmd [[ autocmd FileType octo_issue nested setlocal conceallevel=2 ]]
+    vim.cmd [[ autocmd FileType octo_issue nested setlocal concealcursor=c ]]
+    vim.cmd [[ augroup END ]]
+  end}
+
+  -- THEMES & COLORS
+  use {'rktjmp/lush.nvim'}
+  use {'~/Dev/nautilus', config = function()
+    vim.cmd [[ colorscheme nautilus ]]
+  end}
+  use {'norcalli/nvim-colorizer.lua', branch = 'color-editor'}
+
+  -- UI
   use {'ryanoasis/vim-devicons'}
   use {'kyazdani42/nvim-web-devicons', config = function()
     require'nvim-web-devicons'.setup()
   end}
   use {'Yggdroot/indentLine', config = function()
-    local c = require('colorbuddy.color').colors
-    vim.g.indentLine_color_gui = c.base01:to_rgb()
+    vim.g.indentLine_color_gui = tostring(require('nautilus').CursorLine.bg)
     vim.g.indentLine_fileTypeExclude = vim.list_extend(vim.g.special_buffers, {'markdown','octo_issue'})
     vim.g.indentLine_faster = 1
     vim.g.indentLine_conceallevel = 2
   end}
-  use {'lukas-reineke/indent-blankline.nvim'}
+  use {'lukas-reineke/indent-blankline.nvim', branch = 'lua'}
   use {'psliwka/vim-smoothie', config = function()
     vim.g.smoothie_no_default_mappings = true
   end}

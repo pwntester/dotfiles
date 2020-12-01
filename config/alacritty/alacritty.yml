@@ -39,7 +39,7 @@ font:
   italic:
     family: 'FiraCode Nerd Font'
     style: Italic
-  size: 14.0
+  size: 15.0
 
 key_bindings:
   - {key: Key6, mods: Control, chars: "\x1e"}

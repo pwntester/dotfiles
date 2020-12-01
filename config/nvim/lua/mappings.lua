@@ -7,8 +7,10 @@ local mappings = {
   ['nn'] = { '/<CR>' };
   ['nN'] = { '?<CR>' };
 
-  -- escape to normal mode in insert mode
+  -- escape to normal mode
   ['ijk'] = { '<ESC>' };
+  ['vjk'] = { '<ESC>' };
+  ['tjk'] = { [[<C-\><C-n>]] };
 
   -- shifting visual block should keep it selected
   ['v<'] = { '<gv' };
@@ -29,6 +31,17 @@ local mappings = {
   ['nB'] = { '^' };
   ['nE'] = { '$' };
 
+  -- move between windows
+  ['n<c-k>'] = { ':TmuxNavigateUp<CR>' };
+  ['n<c-j>'] = { ':TmuxNavigateDown<CR>' };
+  ['n<c-h>'] = { ':TmuxNavigateLeft<CR>' };
+  ['n<c-l>'] = { ':TmuxNavigateRight<CR>' };
+
+  -- ['n<c-k>'] = { ':wincmd k<CR>' };
+  -- ['n<c-j>'] = { ':wincmd j<CR>' };
+  -- ['n<c-h>'] = { ':wincmd h<CR>' };
+  -- ['n<c-l>'] = { ':wincmd l<CR>' };
+
   -- disable keys
   ['n<up>'] = { '<nop>' };
   ['n<down>'] = { '<nop>' };
@@ -40,9 +53,6 @@ local mappings = {
   ['i<right>'] = { '<nop>' };
   ['n<space>'] = { '<nop>' };
   ['n<esc>'] = { '<nop>' };
-
-  -- terminal
-  ['tjk'] = { [[<C-\><C-n>]] };
 
   -- resize splits
   ['n>'] = { ':execute "vertical resize +5"<CR>' };
