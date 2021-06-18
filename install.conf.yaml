@@ -6,12 +6,26 @@
 
 - create:
     - ~/config
+    - ~/bin
 
 - link:
     ~/config/nvim: config/nvim
-    ~/.tmux.conf: tmux.conf
-    ~/.zshrc: zsh/zshrc
-    ~/.zshenv: zsh/zshenv
+    ~/bin: home/bin
+    ~/.ideavimrc: home/ideavimrc
+    ~/.tmux.conf: home/tmux.conf
+    ~/.zshrc: home/zshrc
+    ~/.zshenv: home/zshenv
 
 - shell:
   - [git submodule update --init --recursive, Installing submodules]
+
+- shell:
+  - chsh -s $(which zsh)
+  - [chsh -s $(which zsh), Making zsh the default shell]
+
+# Install neovim
+- shell:
+  - apt-get install -y libfuse2
+  - curl -L -o $HOME/bin/nvim https://github.com/neovim/neovim/releases/download/v0.4.4/nvim.appimage
+  - chmod a+x $HOME/bin/nvim
+ 
