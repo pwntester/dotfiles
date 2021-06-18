@@ -6,6 +6,7 @@
 
 - create:
     - ~/config
+    - ~/.local/share/site/pack/packer/start/packer.nvim
 
 - shell:
   - rm ~/.zshrc
