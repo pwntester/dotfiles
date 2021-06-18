@@ -24,6 +24,11 @@ local dropdown_theme = require('telescope.themes').get_dropdown({
 local function setup()
   require('telescope').setup{
     defaults = {
+    borderchars = {
+      prompt =  {'▀', '▐', '▄', '▌', '▛', '▜', '▟', '▙' };
+      results =  {'▀', '▐', '▄', '▌', '▛', '▜', '▟', '▙' };
+      preview = {'▀', '▐', '▄', '▌', '▛', '▜', '▟', '▙' };
+    },
       color_devicons = false;
       mappings = {
         i = {

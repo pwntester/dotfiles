@@ -8,3 +8,6 @@
 [submodule "dotbot-plugins/dotbot-brew"]
 	path = dotbot-plugins/dotbot-brew
 	url = https://github.com/d12frosted/dotbot-brew.git
+[submodule "home/zsh/prompts/git-prompt.zsh"]
+	path = home/zsh/prompts/git-prompt.zsh
+	url = git@github.com:woefe/git-prompt.zsh.git
