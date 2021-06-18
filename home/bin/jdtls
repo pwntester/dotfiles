@@ -3,7 +3,7 @@
 # Latest version can be found here:
 # https://download.eclipse.org/jdtls/snapshots/jdt-language-server-latest.tar.gz
 
-export JAVA_HOME=~/.sdkman/candidates/java/current
+export JAVA_HOME=~/.sdkman/candidates/java/11.0.6.hs-adpt/
 WORKSPACE_DIR=~/jdt_ws
 PLATFORM=mac
 JDT_DIR=${WORKSPACE_DIR}/jdt-language-server-latest 
@@ -11,7 +11,7 @@ cd ${JDT_DIR}
 LAUNCHER=`ls ${JDT_DIR}/plugins/org.eclipse.equinox.launcher_*`
 
 # tee /tmp/in.log | 
-java \
+$JAVA_HOME/bin/java \
     -Declipse.application=org.eclipse.jdt.ls.core.id1 \
     -Dosgi.bundles.defaultStartLevel=4 \
     -Declipse.product=org.eclipse.jdt.ls.core.product \

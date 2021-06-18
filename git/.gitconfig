@@ -1,12 +1,13 @@
 [user]
 	name = Alvaro Muñoz
 	email = alvaro@pwntester.com
+	signingkey = 3F036764
 [http]
 	proxy = 
 [credential]
 	helper = osxkeychain
 [core]
-	editor = nvim
+  editor = nvim -c 'set tw=120'
 	pager = delta --line-numbers --dark
 [color]
     ui = true
@@ -39,3 +40,7 @@
   diffFilter = delta --color-only
 [pull]
 	rebase = false
+[commit]
+	gpgSign = true
+[tag]
+	gpgSign = true

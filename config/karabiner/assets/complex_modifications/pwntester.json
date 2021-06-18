@@ -1,0 +1,38 @@
+{
+  "title": "CapsLock to Backspace",
+  "maintainers": [
+    "pwntester"
+  ],
+  "rules": [
+    {
+      "description": "CapsLock to Backspace",
+      "manipulators": [
+        {
+          "type": "basic",
+          "from": {
+            "key_code": "caps_lock",
+            "modifiers": {
+              "optional": [
+                "any"
+              ]
+            }
+          },
+          "to_if_alone": [
+            {
+              "key_code": "delete_or_backspace"
+            }
+          ],
+          "to_if_held_down": [
+            {
+              "key_code": "left_control"
+            }
+          ],
+          "parameters": {
+            "basic.to_if_alone_timeout_milliseconds": 300,
+            "basic.to_if_held_down_threshold_milliseconds": 0
+          }
+        }
+      ]
+    }
+  ]
+}

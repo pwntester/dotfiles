@@ -1,39 +1,73 @@
 local vim = vim
 local api = vim.api
 local nvim_lsp = require'lspconfig'
+local window = require'window'
 local configs = require'lspconfig/configs'
-local util = require 'vim.lsp.util'
+local jdtls = require 'jdtls'
 
-local function on_attach_callback(_, bufnr)
+local function on_init_callback(client)
+  --TODO:
+  -- require('me.lsp.ext').setup()
+  -- https://github.com/mfussenegger/dotfiles/blob/d04a4f1d7e338f946016bfc4f71d5ca98250da5e/vim/.config/nvim/lua/me/lsp/ext.lua
+  if client.config.settings then
+    client.notify('workspace/didChangeConfiguration', { settings = client.config.settings })
+  end
+end
+
+local function on_attach_callback(client, bufnr)
 
 	bufnr = bufnr or api.nvim_get_current_buf()
 
 	-- mappings
 	local map = function(type, key, value)
-		vim.fn.nvim_buf_set_keymap(bufnr, type, key, value,{noremap = true, silent = true});
+		api.nvim_buf_set_keymap(bufnr, type, key, value,{noremap = true, silent = true});
 	end
 
-  map('n', '<Plug>(LspNextDiagnostic)',    '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>')
-  map('n', '<Plug>(LspPrevDiagnostic)',    '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>')
-	map('n', '<Plug>(LspGotoDef)',           '<cmd>lua vim.lsp.buf.definition()<CR>')
-  map('n', '<Plug>(LspPeekDef)',           '<cmd>lua require"lsp_config".peek_definition()<CR>')
 	map('n', '<Plug>(LspGotoDecl)',          '<cmd>lua vim.lsp.buf.declaration()<CR>')
-	map('n', '<Plug>(LspShowDiagnostics)',   '<cmd>lua require"lsp_config".show_line_diagnostics()<CR>')
-	map('n', '<Plug>(LspHover)',             '<cmd>lua vim.lsp.buf.hover()<CR>')
-	map('n', '<Plug>(LspShowReferences)',    '<cmd>lua vim.lsp.buf.references()<CR>')
-	map('n', '<Plug>(LspShowSignatureHelp)', '<cmd>lua vim.lsp.buf.signature_help()<CR>')
 	map('n', '<Plug>(LspGotoImpl)',          '<cmd>lua vim.lsp.buf.implementation()<CR>')
 	map('n', '<Plug>(LspGotoTypeDef)',       '<cmd>lua vim.lsp.buf.type_definition()<CR>')
-	map('n', '<Plug><LspDocumentSymbol)',    '<cmd>lua vim.lsp.buf.document_symbol()<CR>')
-	map('n', '<Plug><LspWorkspaceSymbol)',   '<cmd>lua vim.lsp.buf.workspace_symbol()<CR>')
-	map('n', '<Plug>(LspRename)',            '<cmd>lua vim.lsp.buf.rename()<CR>')
 	map('n', '<Plug>(LspFormat)',            '<cmd>lua vim.lsp.buf.formatting()<CR>')
 	map('n', '<Plug>(LspIncomingCalls)',     '<cmd>lua vim.lsp.buf.incoming_calls()<CR>')
 	map('n', '<Plug>(LspOutgoingCalls)',     '<cmd>lua vim.lsp.buf.outgoing_calls()<CR>')
-	map('n', '<Plug>(LspCodeActions)',       '<cmd>lua vim.lsp.buf.code_action()<CR>')
+	map('n', '<Plug>(LspHover)',             '<cmd>lua vim.lsp.buf.hover()<CR>')
+	map('n', '<Plug>(LspShowSignatureHelp)', '<cmd>lua vim.lsp.buf.signature_help()<CR>')
+
+	--map('n', '<Plug>(LspHover)',             '<cmd>lua require("lspsaga.hover").render_hover_doc()<CR>')
+	--map('n', '<Plug>(LspShowSignatureHelp)', '<cmd>lua require("lspsaga.signaturehelp").signature_help()<CR>')
+  map('n', '<Plug>(LspNextDiagnostic)',    '<cmd>lua require"lspsaga.diagnostic".lsp_jump_diagnostic_next()<CR>')
+  map('n', '<Plug>(LspPrevDiagnostic)',    '<cmd>lua require"lspsaga.diagnostic".lsp_jump_diagnostic_prev()<CR>')
+	map('n', '<Plug>(LspRename)',            '<cmd>lua require("lspsaga.rename").rename()<CR>')
+	map('n', '<Plug>(LspFinder)',            '<cmd>lua require"lspsaga.provider".lsp_finder()<CR>')
+	map('n', '<Plug>(LspPreviewDefinition)', '<cmd>lua require"lspsaga.provider".preview_definition()<CR>')
+	map('n', '<Plug>(LspShowLineDiagnostics)','<cmd>lua require"lspsaga.diagnostic".show_line_diagnostics()<CR>')
+	map('n', '<Plug>(LspCodeActions)'        ,'<cmd>lua require("lspsaga.codeaction").code_action()<CR>')
+	map('n', '<Plug>(LspRangeCodeActions)'   ,':<C-U>lua require("lspsaga.codeaction").range_code_action()<CR>')
+
+	map('n', '<Plug>(LspGotoDef)',           '<cmd>lua require"telescope.builtin.lsp".definitions()<CR>')
+	map('n', '<Plug>(LspShowReferences)',    '<cmd>lua require"telescope.builtin.lsp".references()<CR>')
+	map('n', '<Plug><LspDocumentSymbol)',    '<cmd>lua require"telescope.builtin.lsp".document_symbols()<CR>')
+	map('n', '<Plug><LspWorkspaceSymbol)',   '<cmd>lua require"plugins.telescope".lsp_dynamic_symbols()<CR>')
+
+  require 'illuminate'.on_attach(client)
+end
+
+local function mk_config()
+  local capabilities = vim.lsp.protocol.make_client_capabilities()
+  capabilities.workspace.configuration = true
+  capabilities.textDocument.completion.completionItem.snippetSupport = true
+  return {
+    flags = {
+      debounce_text_changes = 150,
+      allow_incremental_sync = true,
+    };
+    capabilities = capabilities;
+    on_init = on_init_callback;
+    on_attach = on_attach_callback;
+  }
 end
 
 local function setup()
+
 	-- diagnostics signs
   vim.fn.sign_define('LspDiagnosticsSignError', {
     text = ''; texthl = 'LspDiagnosticsSignError';
@@ -61,21 +95,24 @@ local function setup()
     }
   )
 
-	-- custom callbacks
-	vim.lsp.callbacks['textDocument/hover'] = function(_, _, result)
-    if not (result and result.contents) then return end
-    local markdown_lines = util.convert_input_to_markdown_lines(result.contents)
-    markdown_lines = util.trim_empty_lines(markdown_lines)
-    if vim.tbl_isempty(markdown_lines) then return end
-    require("window").popup_window(markdown_lines, 'markdown', {}, true)
-  end
+	-- custom handlers
+  vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(
+    vim.lsp.handlers.hover, {
+      border = window.window_border_chars
+    }
+  )
 
-  vim.lsp.callbacks['textDocument/references'] = function(_, _, result)
-    if not result then return end
-    util.set_qflist(util.locations_to_items(result))
-    api.nvim_command("botright copen")
-    api.nvim_command("wincmd p")
-  end
+  vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(
+    vim.lsp.handlers.signature_help, {
+      border = window.window_border_chars
+    }
+  )
+  -- vim.lsp.handlers['textDocument/references'] = function(_, _, result)
+  --   if not result then return end
+  --   util.set_qflist(util.locations_to_items(result))
+  --   api.nvim_command("botright copen")
+  --   api.nvim_command("wincmd p")
+  -- end
 
 	-- language servers
 
@@ -104,14 +141,29 @@ local function setup()
 		}
 	}
 
+	--- JavaScript
+	nvim_lsp.tsserver.setup{
+		on_attach = on_attach_callback;
+	}
+
 	--- Go
 	nvim_lsp.gopls.setup{
 		on_attach = on_attach_callback;
 	}
 
+  --- .NET
+  local pid = vim.fn.getpid()
+  local omnisharp_bin = "/Users/pwntester/repos/omnisharp-osx/run"
+  nvim_lsp.omnisharp.setup{
+    cmd = { omnisharp_bin, "--languageserver" , "--hostPID", tostring(pid) };
+		on_attach = on_attach_callback;
+  }
+
 	--- CodeQL
+  --{"jsonrpc":"2.0","id":0,"result":{"capabilities":{"textDocumentSync":1,"hoverProvider":true,"completionProvider":{"resolveProvider":false,"triggerCharacters":[".",","]},"definitionProvider":true,"referencesProvider":true,"documentHighlightProvider":true,"documentSymbolProvider":true,"documentFormattingProvider":true,"workspace":{"workspaceFolders":{"supported":true,"changeNotifications":true}},"experimental":{"checkErrorsProvider":true,"guessLocationProvider":true}}}}
 	nvim_lsp.codeqlls.setup{
 		on_attach = on_attach_callback;
+    --on_init_callback = on_init_callback;
 		settings = {
 			search_path = vim.g.codeql_search_path;
 		};
@@ -133,71 +185,130 @@ local function setup()
 		on_attach = on_attach_callback;
 	}
 
-	--- Java Eclipse JDT
-	local lsp4j_status_callback = function(_, _, result)
-		api.nvim_command(string.format(':echohl Function | echo "%s" | echohl None', result.message))
-	end
-	local root_pattern = nvim_lsp.util.root_pattern('.git') --, '.project', 'pom.xml', 'project.xml', 'build.gradle');
-	if not configs.java_lsp then
-		configs.java_lsp = {
-			default_config = {
-				cmd = {"jdtls"};
-				filetypes = {'java'};
-				root_dir = function(fname)
-					return root_pattern(fname) or vim.loop.os_homedir()
-				end;
-			};
-		}
-	end
-	nvim_lsp.java_lsp.setup{
-		on_attach = on_attach_callback;
-		handlers = {
-		  ["language/status"] = lsp4j_status_callback,
-		};
-	}
-
 end
 
-local function show_line_diagnostics()
-  local lines = {'Diagnostics:'}
-  local highlights = {{0, "Bold"}}
-  local line_diagnostics = vim.lsp.util.get_line_diagnostics()
-  if vim.tbl_isempty(line_diagnostics) then return end
-  for i, diagnostic in ipairs(line_diagnostics) do
-    local prefix = string.format("%d. ", i)
-    local hiname = vim.lsp.util.get_severity_highlight_name(diagnostic.severity)
-    assert(hiname, 'unknown severity: ' .. tostring(diagnostic.severity))
-    local message_lines = vim.split(diagnostic.message, '\n', true)
-    table.insert(lines, prefix..message_lines[1])
-    table.insert(highlights, {#prefix + 1, hiname})
-    for j = 2, #message_lines do
-      table.insert(lines, message_lines[j])
-      table.insert(highlights, {0, hiname})
+local function start_jdt()
+  local root_markers = {'gradlew', 'mwnw', '.git'}
+  local root_dir = require('jdtls.setup').find_root(root_markers)
+  local home = os.getenv('HOME')
+  local workspace_folder = home .. "/jdt_ws/" .. vim.fn.fnamemodify(root_dir, ":p:h:t")
+  local config = mk_config()
+  config.filetypes = {'java'}
+  config.flags.server_side_fuzzy_completion = true
+  config.settings = {
+    java = {
+      signatureHelp = { enabled = true };
+      contentProvider = { preferred = 'fernflower' };
+      completion = {
+        favoriteStaticMembers = {
+          "org.hamcrest.MatcherAssert.assertThat",
+          "org.hamcrest.Matchers.*",
+          "org.hamcrest.CoreMatchers.*",
+          "org.junit.jupiter.api.Assertions.*",
+          "java.util.Objects.requireNonNull",
+          "java.util.Objects.requireNonNullElse",
+          "org.mockito.Mockito.*"
+        }
+      };
+      sources = {
+        organizeImports = {
+          starThreshold = 9999;
+          staticStarThreshold = 9999;
+        };
+      };
+      codeGeneration = {
+        toString = {
+          template = "${object.className}{${member.name()}=${member.value}, ${otherMembers}}"
+        }
+      };
+      configuration = {
+        runtimes = {
+          -- {
+          --   name = "JavaSE-8",
+          --   path = "/Users/pwntester/.sdkman/candidates/java/8.0.242.hs-adpt/",
+          -- },
+          {
+            name = "JavaSE-11",
+            path = "/Users/pwntester/.sdkman/candidates/java/11.0.6.hs-adpt/",
+          }
+        }
+      };
+    };
+  }
+  config.cmd = {'/Users/pwntester/bin/jdtls', workspace_folder}
+  config.on_attach = function (client, bufnr)
+    on_attach_callback(client, bufnr)
+    jdtls.setup.add_commands()
+
+    -- mappings
+    local map = function(type, key, value)
+      api.nvim_buf_set_keymap(bufnr, type, key, value,{noremap = true, silent = true});
     end
+
+    -- TODO: Can we make these look like the saga ones?
+	  map('n', '<Plug>(LspCodeActions)', '<cmd>lua require("jdtls").code_action()<CR>')
+    map('v', '<Plug>(LspRangeCodeActions)', ':<C-U>lua lua require("jdtls").code_action(true)<CR>')
   end
-  local popup_bufnr, winnr = require("window").popup_window(lines, 'plaintext', {}, true)
-  return popup_bufnr, winnr
+
+  local extendedClientCapabilities = jdtls.extendedClientCapabilities;
+  extendedClientCapabilities.resolveAdditionalTextEditsSupport = true;
+  config.init_options = {
+    extendedClientCapabilities = extendedClientCapabilities;
+  }
+  jdtls.start_or_attach(config)
 end
 
-local function preview_location_callback(_, method, result)
-  if result == nil or vim.tbl_isempty(result) then
-    vim.lsp.log.info(method, 'No location found')
-    return nil
-  end
-  if vim.tbl_islist(result) then
-    vim.lsp.util.preview_location(result[1])
-  else
-    vim.lsp.util.preview_location(result)
-  end
-end
+local function setup_jdt()
+  vim.cmd [[augroup lsp]]
+  vim.cmd [[au!]]
+  vim.cmd [[au FileType java lua require('lsp_config').start_jdt()]]
+  vim.cmd [[augroup end]]
 
-local function peek_definition()
-  local params = vim.lsp.util.make_position_params()
-  return vim.lsp.buf_request(0, 'textDocument/definition', params, preview_location_callback)
+  local finders = require'telescope.finders'
+  local sorters = require'telescope.sorters'
+  local actions = require'telescope.actions'
+  local pickers = require'telescope.pickers'
+  require('jdtls.ui').pick_one_async = function(items, prompt, label_fn, cb)
+    local dropdown_opts = require('telescope.themes').get_dropdown({
+      results_height = 15;
+      width = 0.4;
+      prompt_title = '';
+      previewer = false;
+      borderchars = {
+        prompt = window.window_border_chars_telescope_prompt;
+        results = window.window_border_chars_telescope_results;
+        preview = window.window_border_chars_telescope_preview;
+      };
+    })
+    pickers.new(dropdown_opts, {
+      prompt_title = prompt,
+      finder    = finders.new_table {
+        results = items,
+        entry_maker = function(entry)
+          return {
+            value = entry,
+            display = label_fn(entry),
+            ordinal = label_fn(entry),
+          }
+        end,
+      },
+      sorter = sorters.get_generic_fuzzy_sorter(),
+      attach_mappings = function(prompt_bufnr)
+        actions.select_default:replace(function()
+          local selection = actions.get_selected_entry(prompt_bufnr)
+          actions.close(prompt_bufnr)
+
+          cb(selection.value)
+        end)
+
+        return true
+      end,
+    }):find()
+  end
 end
 
 return {
 	setup = setup;
-  show_line_diagnostics = show_line_diagnostics;
-  peek_definition = peek_definition;
+  start_jdt = start_jdt;
+  setup_jdt = setup_jdt;
 }

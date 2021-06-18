@@ -13,7 +13,9 @@ set shiftwidth=2
 set tabstop=2
 set softtabstop=2
 set expandtab
-set smartindent
+set nosmartindent
+set nocindent
+set noautoindent
 set shiftround
 set showtabline=2
 set laststatus=2
@@ -36,6 +38,7 @@ set smartcase
 set nojoinspaces
 
 set jumpoptions=stack
+set switchbuf=uselast
 
 set shortmess=a     " abbreviate messages
 set shortmess+=s    " no 'search hit BOTTOM'
@@ -50,9 +53,7 @@ set shortmess+=t    " truncate file messages to fit on the command-line
 set wildmode=longest
 set wildmode+=full
 
-set completeopt=menu
-set completeopt+=menuone
-set completeopt+=noselect                               
+set completeopt=menuone,noinsert,noselect
 
 set wildignore+=*.swp,*.pyc,*.bak,*.class,*.orig
 set wildignore+=.git,.hg,.bzr,.svn
@@ -63,14 +64,14 @@ set wildignore+=log/**
 set wildignore+=tmp/**
 set wildignore+=*.jpg,*.bmp,*.gif,*.png,*.jpeg,*.svg
 
-set complete=.
-set complete+=w
-set complete+=b
-set complete+=u
-set complete+=U
-set complete+=i
-set complete+=d
-set complete+=t
+" set complete=.
+" set complete+=w
+" set complete+=b
+" set complete+=u
+" set complete+=U
+" set complete+=i
+" set complete+=d
+" set complete+=t
 
 set shada='1000                  " previously edited files
 set shada+=/1000                 " search history items
@@ -99,9 +100,10 @@ set listchars+=extends:>
 set listchars+=precedes:<
 set listchars+=nbsp:%
 
-set fillchars=fold:⠀             " Unicode U+2800
-set fillchars+=foldopen:+
-set fillchars+=foldclose:-
+" set fillchars=fold:⠀             " Unicode U+2800
+" set fillchars+=foldopen:┌ 
+" set fillchars+=foldclose:▸
+" set fillchars+=foldsep:│
 
 " FUNCTIONS
 function! OpenURL()
@@ -109,33 +111,11 @@ function! OpenURL()
   let s:uri = shellescape(s:uri, 1)
   echom s:uri
   if s:uri != ""
-    silent exec "!open '".s:uri."'"
+    silent exec "!/Applications/Firefox.app/Contents/MacOS/firefox '".s:uri."'"
     :redraw!
   else
     echo "No URI found in line."
   endif
-endfunction
-
-function ToggleDirvish(arg) abort
-  for w in nvim_list_wins()
-    let bufnr = nvim_win_get_buf(w)
-    if nvim_buf_get_option(bufnr, 'filetype') == 'dirvish'
-      call nvim_win_close(w, 1)
-      return
-    endif
-  endfor
-  let l:arg = a:arg
-  if l:arg == '%' | let l:arg = getreg('%') | endif
-  leftabove 30 vsplit
-  execute 'Dirvish '.l:arg
-endfunction
-
-function! s:setup_git_messenger_popup() abort
-  call nvim_win_set_option(0, 'winhl', 'Normal:NormalNC')
-
-    " For example, set go back/forward history to <C-o>/<C-i>
-    nmap <buffer><C-o> o
-    nmap <buffer><C-i> O
 endfunction
 
 " AUTOCOMMANDS
@@ -143,16 +123,12 @@ augroup vimrc
 au! 
 
   " close additional wins
-  au QuitPre * lua util.closeWin() 
+  " au QuitPre * lua util.closeWin() 
 
   " onEnter
   au TermEnter,WinEnter,BufEnter * nested lua util.onEnter() 
 
-  " dim active win
-  "au VimEnter,WinEnter,TermEnter,BufEnter,BufNew * lua util.dimWin() 
-  "au WinLeave * lua util.undimWin() 
-  au FocusGained,VimEnter,WinEnter,TermEnter,BufEnter,BufNew * lua util.dimWin() 
-  au FocusLost,WinLeave * lua util.undimWin() 
+  au FileType * nested lua util.onFileType() 
 
   " check if buffer was changed outside of vim
   au FocusGained,BufEnter * checktime 
@@ -170,18 +146,39 @@ au!
   au BufEnter *.txt if &buftype == 'help' | wincmd L | endif 
 
   " wiki
-  au BufWritePost ~/bitacora/* lua require'markdown'.asyncPush() 
-
-  " git-git-messenger
-  autocmd FileType gitmessengerpopup call <SID>setup_git_messenger_popup()
+  " au BufWritePost ~/bitacora/* lua require'markdown'.asyncPush() 
 
   " list startify buffer
   autocmd FileType startify nested setlocal buflisted
 augroup END 
 
 " COMMANDS
-command! HubberReports :ListIssues<space>github/pe-security-lab<space>labels:Vulnerability\<space>report<space>assignee:none
-command! VulnReports :ListIssues<space>github/securitylab_vulnerabilities
+command! LabIssues :call LabIssues()
+command! HubberReports :call HubberReports()
+command! VulnReports :call VulnReports()
+command! BountySubmissions :call BountySubmissions()
+command! Bitacora :call Bitacora()
+command! TODO :call TODO()
+
+function! TODO() abort
+  lua require'octo.utils'.get_issue('pwntester/bitacora', 41)
+endfunction
+
+function! Bitacora() abort
+  lua require'octo.telescope.menu'.issues({repo='pwntester/bitacora', states="OPEN"})
+endfunction
+function! LabIssues() abort
+  lua require'octo.telescope.menu'.issues({repo='github/pe-security-lab'})
+endfunction
+function! HubberReports() abort
+  lua require'octo.telescope.menu'.issues({repo='github/pe-security-lab', labels ='Vulnerability report', states="OPEN"})
+endfunction
+function! VulnReports() abort
+  lua require'octo.telescope.menu'.issues({repo='github/securitylab_vulnerabilities'})
+endfunction
+function! BountySubmissions() abort
+  lua require'octo.telescope.menu'.issues({repo='github/securitylab-bounties', states="OPEN"})
+endfunction
 
 " LUA INIT
 lua require'init'
@@ -195,25 +192,15 @@ lua require'plugins'
 " MAPPINGS
 lua require'mappings'
 
-" TODO: consider adding the following mappings to the lua file
-nnoremap <silent> [b    :bprevious<cr>
-nnoremap <silent> ]b    :bnext<cr>
-nnoremap <silent> [q    :cprevious<cr>
-nnoremap <silent> ]q    :cnext<cr>
-nnoremap <silent> [l    :lprevious<cr>
-nnoremap <silent> ]l    :lnext<cr>
-" nnoremap <silent> [t    :tabprevious<cr>
-" nnoremap <silent> ]t    :tabnext<cr>
-nnoremap gx :call OpenURL()<CR>
-tnoremap <Esc> <C-\><C-n>
+" ABBREVIATIONS
+cnoreabbrev <expr> bd (getcmdtype() == ':' && getcmdline() =~ '^bd$')? 'lua require("bufdelete").bufdelete(0, true)' : 'bd'
 
-" Move to previous/next
-nmap <silent> <S-h> <Plug>vem_prev_buffer-
-nmap <silent> <S-l> <Plug>vem_next_buffer-
-nmap <silent> [t <Plug>vem_move_buffer_left-
-nmap <silent> ]t <Plug>vem_move_buffer_right-
-
-nmap ]h <Plug>(GitGutterNextHunk)
-nmap [h <Plug>(GitGutterPrevHunk)
-
-nmap gw :InteractiveWindow<CR>
+" STARTIFY
+" let g:startify_lists = [
+"   \ { 'header': ['   GitHub Notifications'], 'type': function('octo#startify') },
+"   \ { 'header': ['   MRU'],            'type': 'files' },
+"   \ { 'header': ['   MRU '. getcwd()], 'type': 'dir' },
+"   \ { 'header': ['   Sessions'],       'type': 'sessions' },
+"   \ { 'header': ['   Bookmarks'],      'type': 'bookmarks' },
+"   \ { 'header': ['   Commands'],       'type': 'commands' },
+"   \ ]

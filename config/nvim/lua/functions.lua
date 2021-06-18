@@ -24,10 +24,19 @@ function M.relpath(P, start)
   return table.concat(rell,'/')
 end
 
--- RAINBOW-PARENTHESES
+function M.onFileType()
+  if not vim.tbl_contains(vim.g.special_buffers, vim.bo.filetype) then
+    vim.api.nvim_win_set_option(0, 'winhighlight', 'Normal:Normal')
+  else
+    vim.api.nvim_win_set_option(0, 'winhighlight', 'Normal:NormalDark')
+  end
+end
+
 function M.onEnter()
 
   if not vim.tbl_contains(vim.g.special_buffers, vim.bo.filetype) then
+
+    vim.api.nvim_win_set_option(0, 'winhighlight', 'Normal:Normal')
 
     -- activate rainbow parentheses
     -- if vim.fn.exists':RainbowParentheses' then
@@ -38,6 +47,8 @@ function M.onEnter()
     vim.wo.cursorline = true
 
   else
+
+    vim.api.nvim_win_set_option(0, 'winhighlight', 'Normal:NormalDark')
 
     -- disable rainbow parentheses
     -- if vim.fn.exists':RainbowParentheses' then
