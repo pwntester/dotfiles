@@ -52,11 +52,11 @@ setopt share_history
 # PLUGINS
 ##########
 
-fpath=(~/dotfiles/zsh/plugins $fpath)
+fpath=(~/.zsh/plugins $fpath)
 autoload -Uz cursor_mode; cursor_mode
-#source ~/dotfiles/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-#source ~/dotfiles/zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
-source ~/dotfiles/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
+#source ~/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+#source ~/.zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
+source ~/.zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
 
 #############
 # COMPLETION
@@ -158,7 +158,7 @@ source ~/.zsh/git-prompt.zsh/examples/multiline.zsh
 # ALIASES
 ##########
 
-source ~/dotfiles/zsh/aliases
+source ~/.zsh/aliases
 
 
 ############

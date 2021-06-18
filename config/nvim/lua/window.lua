@@ -25,6 +25,7 @@ M.window_border_chars_thin = {
   {"🭼", "FloatBorder"},
   {"▏", "FloatBorder"},
 }
+
 M.window_border_chars = M.window_border_chars_thin
 
 M.window_border_chars_telescope_prompt = {'▀', '▐', '▄', '▌', '▛', '▜', '▟', '▙' };

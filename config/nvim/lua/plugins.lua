@@ -335,7 +335,9 @@ local spec = function(use)
   -- end}
 
   use {"Pocco81/TrueZen.nvim"}
-  use {"RRethy/vim-illuminate"}
+  use {"RRethy/vim-illuminate", config = function()
+    vim.g.Illuminate_ftblacklist = {'NvimTree'}
+  end}
   use {"sindrets/diffview.nvim"}
   use {
     "folke/trouble.nvim",
