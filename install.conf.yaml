@@ -16,17 +16,17 @@
     ~/.tmux.conf: home/tmux.conf
     ~/.zshrc: home/zshrc
     ~/.zshenv: home/zshenv
-#~/bin: home/bin
+    ~/bin: home/bin
 
-- shell:
-  - [git submodule update --init --recursive, Installing submodules]
+# - shell:
+#   - [git submodule update --init --recursive, Installing submodules]
 
 - shell:
   - [sudo chsh -s `which zsh`, Making zsh the default shell]
 
 # Install neovim
 - shell:
-  - sudo apt-get install -y libfuse2
+  - sudo apt-get install -y fuse libfuse2
   - curl -L -o $HOME/bin/nvim https://github.com/neovim/neovim/releases/download/v0.4.4/nvim.appimage
   - chmod a+x $HOME/bin/nvim
  
