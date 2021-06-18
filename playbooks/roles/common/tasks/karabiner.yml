@@ -1,8 +1,0 @@
----
-- name: karabiner | symlink my dotfiles
-  file: src=~/dotfiles/config/{{ item }}
-        dest=~/.config/{{ item }}
-        state=link
-        force=yes
-  with_items:
-    - karabiner
