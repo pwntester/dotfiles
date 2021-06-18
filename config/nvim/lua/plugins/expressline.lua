@@ -33,6 +33,7 @@ local segments = {
     local base0A = tostring(require'nautilus'.Identifier.fg)
     local base0B = tostring(require'nautilus'.String.fg)
     local base0C = tostring(require'nautilus'.Special.fg)
+
     if mode == 'n' then
       -- Normal mode
       vim.cmd(format('hi! StatuslineDynamicMode guifg=%s guibg=%s', base0A, base01))
@@ -68,14 +69,14 @@ local segments = {
     return string.format(' %s ', require('el.data').modes[vim.api.nvim_get_mode().mode][1])
   end),
 
-  -- RIGHT
-  sections.split,
-
   --- cwd
   sections.highlight('StatuslineDynamicMode', function(window, buffer)
     if not should_print('cwd', window, buffer) then return '' end
-    return vim.fn.getcwd()..' '
+    return ' '..vim.fn.getcwd()..' '
   end),
+
+  -- RIGHT
+  sections.split,
 
   --- filename
   sections.highlight('StatuslineDynamicMode', function(window, buffer)
@@ -83,7 +84,8 @@ local segments = {
     local name = builtin.responsive_file(140, 90)(window, buffer)
     --local relname = util.makeRelative(name, vim.fn.getcwd())
     local relname = util.relpath(name, vim.fn.getcwd())
-    return relname..' '
+    --return relname..' '
+    return builtin.file_relative(window, buffer).." "
   end),
 
   --- file mod flag
@@ -94,13 +96,28 @@ local segments = {
   end),
 
   --- git
+  -- sections.highlight('StatuslineColor1', subscribe.buf_autocmd(
+  --   'el_git_hunks',
+  --   'BufEnter',
+  --   function(_, buffer)
+  --     if buffer and vim.b.gitsigns_status then
+  --       if not should_print('git_hunks', _, buffer) then return '' end
+  --       return vim.b.gitsigns_status..' '
+  --     end
+  --   end
+  -- )),
   sections.highlight('StatuslineColor1', subscribe.buf_autocmd(
     'el_git_hunks',
     'BufEnter',
     function(_, buffer)
-      if buffer and vim.b.gitsigns_status then
-        if not should_print('git_hunks', _, buffer) then return '' end
-        return vim.b.gitsigns_status..' '
+      if buffer then
+        if not should_print('github_repo', _, buffer) then return '' end
+        local name = require"octo.utils".get_remote_name()
+        if name then
+          return format(" %s ", name)
+        else
+          return ""
+        end
       end
     end
   )),
@@ -110,7 +127,7 @@ local segments = {
     function(_, buffer)
       if buffer and extensions.git_branch(_, buffer) then
         if not should_print('git_branch', _, buffer) then return '' end
-        return ' '..extensions.git_branch(_, buffer)..' '
+        return format("%s ", extensions.git_branch(_, buffer))
       end
     end
   )),

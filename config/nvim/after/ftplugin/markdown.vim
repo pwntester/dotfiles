@@ -9,8 +9,13 @@ au TextChangedI <buffer> lua require'markdown'.markdownBlocks()
 if exists('g:mkdx#settings') | let b:pear_tree_map_special_keys = 0 | endif 
 setlocal conceallevel=2 
 setlocal concealcursor=c 
-setlocal signcolumn=no 
+setlocal signcolumn=yes
 setlocal spell complete+=kspell 
-nnoremap <buffer> <leader>p :lua require'markdown'.pasteImage('images')<CR> 
-nnoremap <buffer> <leader>l :lua require'markdown'.pasteLink()<CR> 
+"nnoremap <buffer> <leader>p :lua require'markdown'.pasteImage('images')<CR> 
+nnoremap <buffer> <leader>p :PasteImg<CR> 
 
+augroup markdown
+  autocmd!
+  " Include dash in 'word'
+  autocmd FileType markdown setlocal iskeyword+=-
+augroup END

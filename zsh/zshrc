@@ -1,26 +1,102 @@
 # https://thevaluable.dev/zsh-install-configure/[201~
 # https://github.com/Phantas0s/.dotfiles/tree/master/zsh
+# https://github.com/mrnugget/dotfiles/blob/master/zshrc
+# MacOS repeat rate: https:/gist.github.com/hofmannsven/ff21749b0e6afc50da458bebbd9989c5
+### defaults write -g InitialKeyRepeat -int 11 # normal minimum is 15 (225 ms)
+### defaults write -g KeyRepeat -int 2 # normal minimum is 2 (30 ms)
 
-# options
-setopt SHARE_HISTORY
-setopt EXTENDED_GLOB        # Use extended globbing syntax.
-setopt PROMPT_SUBST 
-setopt AUTO_CD              # Go to folder path without using cd.
-setopt CORRECT              # Spelling correction
-setopt CDABLE_VARS          # Change directory to a path stored in a variable.
-setopt HIST_IGNORE_ALL_DUPS # remove older command from the history if a duplicate is to be added.
+###########
+# PROFILER
+# time /bin/zsh -i -c exit
+###########
+#zmodload zsh/zprof
 
-# language
-if [[ -z "$LANG" ]]; then
-	export LANG='en_US.UTF-8'
+##############
+# BASIC SETUP
+##############
+
+typeset -U PATH
+autoload colors; colors;
+
+###########
+## PRIVATE 
+###########
+# Include private stuff that's not supposed to show up
+# in the dotfiles repo
+local private="${HOME}/.zsh.d/private.sh"
+if [ -e ${private} ]; then
+  . ${private}
 fi
-if [[ -z "$LC_ALL" ]]; then
-	export LC_ALL='en_US.UTF-8'
+
+##########
+# HISTORY
+##########
+
+HISTFILE=$HOME/.zsh_history
+HISTSIZE=50000
+SAVEHIST=50000
+
+setopt EXTENDED_HISTORY
+setopt HIST_VERIFY
+setopt HIST_EXPIRE_DUPS_FIRST    # Expire duplicate entries first when trimming history.
+setopt HIST_IGNORE_DUPS          # Dont record an entry that was just recorded again.
+setopt HIST_IGNORE_ALL_DUPS      # Delete old recorded entry if new entry is a duplicate.
+setopt HIST_FIND_NO_DUPS         # Do not display a line previously found.
+setopt HIST_IGNORE_SPACE         # Dont record an entry starting with a space.
+setopt HIST_SAVE_NO_DUPS         # Dont write duplicate entries in the history file.
+
+setopt inc_append_history
+setopt share_history
+
+##########
+# PLUGINS
+##########
+
+fpath=(~/dotfiles/zsh/plugins $fpath)
+autoload -Uz cursor_mode; cursor_mode
+#source ~/dotfiles/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+#source ~/dotfiles/zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
+source ~/dotfiles/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
+
+#############
+# COMPLETION
+#############
+
+# Add completions installed through Homebrew packages
+# See: https://docs.brew.sh/Shell-Completion
+# This must be done before compinit is called
+if type brew &>/dev/null; then
+  FPATH=/usr/local/share/zsh/site-functions:$FPATH
 fi
 
-# vi(m) style key bindings.
+# Speed up completion init, see: https://htr3n.github.io/2018/07/faster-zsh/
+autoload -Uz compinit
+
+if [[ $OSTYPE = darwin* ]]; then
+  if [ $(date +'%j') != $(/usr/bin/stat -f '%Sm' -t '%j' ${ZDOTDIR:-$HOME}/.zcompdump) ]; then
+    compinit
+  else
+    compinit -C
+  fi
+else
+  compinit
+fi
+
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'  # partial completion
+zstyle ':completion:*' list-colors ''
+zstyle ':completion:*' special-dirs true
+zstyle ':completion:*:cd:*' tag-order local-directories directory-stack path-directories
+zstyle ':completion:*:*:*:*:*' menu select
+zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#) ([0-9a-z-]#)*=01;34=0=01'
+zstyle ':completion:*:*:*:*:processes' command "ps -u `whoami` -o pid,user,comm -w -w"
+
+###############
+# KEY BINDINGS
+###############
+
+# Vim Keybindings
 bindkey -v
-export KEYTIMEOUT=1
+export KEYTIMEOUT=10
 bindkey -M viins 'jk' vi-cmd-mode
 bindkey 'jk' vi-cmd-mode
 
@@ -31,59 +107,115 @@ bindkey -M menuselect 'k' vi-up-line-or-history
 bindkey -M menuselect 'l' vi-forward-char
 bindkey -M menuselect 'j' vi-down-line-or-history
 
-# aliases
+# Open line in Vim by pressing 'v' in Command-Mode
+autoload -U edit-command-line
+zle -N edit-command-line
+bindkey -M vicmd v edit-command-line
+
+# Push current line to buffer stack, return to PS1
+bindkey "^Q" push-input
+
+# Make up/down arrow put the cursor at the end of the line
+# instead of using the vi-mode mappings for these keys
+bindkey "\eOA" up-line-or-history
+bindkey "\eOB" down-line-or-history
+bindkey "\eOC" forward-char
+bindkey "\eOD" backward-char
+
+# CTRL-R to search through history
+bindkey '^R' history-incremental-search-backward
+# CTRL-S to search forward in history
+bindkey '^S' history-incremental-search-forward
+# Accept the presented search result
+bindkey '^Y' accept-search
+
+# Use the arrow keys to search forward/backward through the history,
+# using the first word of what's typed in as search word
+# bindkey '^[[A' history-search-backward
+# bindkey '^[[B' history-search-forward
+bindkey '^P' history-search-backward
+bindkey '^N' history-search-forward
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
+bindkey -M vicmd 'k' history-substring-search-up
+bindkey -M vicmd 'j' history-substring-search-down
+
+# Backspace working the way it should
+bindkey '^?' backward-delete-char
+bindkey '^[[3~' delete-char
+
+# Some emacs keybindings won't hurt nobody
+bindkey '^A' beginning-of-line
+bindkey '^E' end-of-line
+
+#########
+# PROMPT
+#########
+source ~/.zsh/git-prompt.zsh/git-prompt.zsh
+source ~/.zsh/git-prompt.zsh/examples/multiline.zsh
+
+##########
+# ALIASES
+##########
+
 source ~/dotfiles/zsh/aliases
+
+
+############
+# FUNCTIONS
+############
+
+function urlencode() {
+  setopt localoptions extendedglob
+  input=( ${(s::)1} )
+  print ${(j::)input/(#b)([^A-Za-z0-9_.\!~*\'\(\)-])/%${(l:2::0:)$(([##16]#match))}}
+}
+
+function load_sdkman() {
+  export SDKMAN_DIR="/Users/pwntester/.sdkman"
+  [[ -s "/Users/pwntester/.sdkman/bin/sdkman-init.sh" ]] && source "/Users/pwntester/.sdkman/bin/sdkman-init.sh"
+}
+
+function load_pyenv(){
+  export PYENV_ROOT="$HOME/.pyenv"
+  export PATH="$PYENV_ROOT/bin:$PATH"
+  if command -v pyenv 1>/dev/null 2>&1; then
+      eval "$(pyenv init -)"
+  fi
+}
+
+function load_rbenv(){
+  eval "$(rbenv init -)"
+}
+
+function load_nvm() {
+  export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+}
+
+#########
+# OPTIONS
+#########
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
 
 # Remove path separator from WORDCHARS.
 WORDCHARS=${WORDCHARS//[\/]}
-
-# completion
-fpath=(~/dotfiles/zsh/plugins/zsh-completions/src $fpath)
-autoload -Uz compinit; compinit 
-_comp_options+=(globdots) # With hidden files
-source ~/dotfiles/zsh/plugins/completion.zsh
 
 # dir stack
 setopt AUTO_PUSHD           # Push the current directory visited on the stack.
 setopt PUSHD_IGNORE_DUPS    # Do not store duplicates in the stack.
 setopt PUSHD_SILENT         # Do not print the directory stack after pushd or popd.
 
-# change cursor
-fpath=(~/dotfiles/zsh/plugins $fpath)
-autoload -Uz cursor_mode; cursor_mode
+# GnuPG
+export GPG_TTY=$(tty)
+gpgconf --launch gpg-agent
 
-# syntax highlighting
-source ~/dotfiles/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+###########
+# PROFILER
+###########
+#zprof
 
-# zsh-history-substring-search
-source ~/dotfiles/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
-bindkey '^[[A' history-substring-search-up
-bindkey '^[[B' history-substring-search-down
-bindkey -M vicmd 'k' history-substring-search-up
-bindkey -M vicmd 'j' history-substring-search-down
-
-# pyenv
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
-if command -v pyenv 1>/dev/null 2>&1; then
-    eval "$(pyenv init -)"
-fi
-
-# sdkman
-export SDKMAN_DIR="/Users/pwntester/.sdkman"
-[[ -s "/Users/pwntester/.sdkman/bin/sdkman-init.sh" ]] && source "/Users/pwntester/.sdkman/bin/sdkman-init.sh"
-
-# import secrets
-source ~/secrets
-
-# functions
-urlencode() {
-  setopt localoptions extendedglob
-  input=( ${(s::)1} )
-  print ${(j::)input/(#b)([^A-Za-z0-9_.\!~*\'\(\)-])/%${(l:2::0:)$(([##16]#match))}}
-}
-
-# prompt
-#fpath=(~/dotfiles/zsh/prompts $fpath)
-#autoload -Uz purification;purification 
-eval "$(starship init zsh)"
+# tabtab source for jhipster package
+# uninstall by removing these lines or running `tabtab uninstall jhipster`
+[[ -f /Users/pwntester/research/projects/audits/jHipster/microservices/jhipster-microservices-example/blog/node_modules/tabtab/.completions/jhipster.zsh ]] && . /Users/pwntester/research/projects/audits/jHipster/microservices/jhipster-microservices-example/blog/node_modules/tabtab/.completions/jhipster.zsh

@@ -3,17 +3,44 @@ local api = vim.api
 local validate = vim.validate
 local floor = math.floor
 
-local function getColorFromHighlight(hl, element)
-  return vim.fn.synIDattr(vim.fn.synIDtrans(vim.fn.hlID(hl)), element..'#')
-end
+local M = {}
 
+M.window_border_chars_thick = {
+  {'▛', "FloatBorder"},
+  {'▀', "FloatBorder"},
+  {'▜', "FloatBorder"},
+  {'▐', "FloatBorder"},
+  {'▟', "FloatBorder"},
+  {'▄', "FloatBorder"},
+  {'▙', "FloatBorder"},
+  {'▌', "FloatBorder"}
+}
+M.window_border_chars_thin = {
+  {"🭽", "FloatBorder"},
+  {"▔", "FloatBorder"},
+  {"🭾", "FloatBorder"},
+  {"▕", "FloatBorder"},
+  {"🭿", "FloatBorder"},
+  {"▁", "FloatBorder"},
+  {"🭼", "FloatBorder"},
+  {"▏", "FloatBorder"},
+}
+M.window_border_chars = M.window_border_chars_thin
+
+M.window_border_chars_telescope_prompt = {'▀', '▐', '▄', '▌', '▛', '▜', '▟', '▙' };
+M.window_border_chars_telescope_preview = {'▀', '▐', '▄', '▌', '▛', '▜', '▟', '▙' };
+M.window_border_chars_telescope_results = {' ', '▐', '▄', '▌', '▌', '▐', '▟', '▙' };
+
+-- local function getColorFromHighlight(hl, element)
+--   return vim.fn.synIDattr(vim.fn.synIDtrans(vim.fn.hlID(hl)), element..'#')
+-- end
 -- define border colors based on Normal and NormalNC bg colors
-local fg = getColorFromHighlight('Normal', 'bg')
-local bg = getColorFromHighlight('NormalFloat', 'bg')
-vim.cmd("hi PopupWindowBorder guifg="..fg.." guibg="..bg)
-vim.cmd("hi InvertedPopupWindowBorder guifg="..bg.." guibg="..fg)
+--local fg = getColorFromHighlight('Normal', 'bg')
+--local bg = getColorFromHighlight('NormalFloat', 'bg')
+--vim.cmd("hi PopupWindowBorder guifg="..fg.." guibg="..bg)
+--vim.cmd("hi InvertedPopupWindowBorder guifg="..bg.." guibg="..fg)
 
-local function scale_win(w, h)
+function M.scale_win(w, h)
   local	win_width = floor(vim.fn.winwidth(0) * w)
   local win_height = floor(vim.fn.winheight(0) * h)
   return win_width, win_height
@@ -64,7 +91,7 @@ local function make_popup_options(width, height, opts)
   }
 end
 
-local function floating_window(opts)
+function M.floating_window(opts)
   opts = opts or {}
   opts.border = opts.border or true
   opts.width_per = opts.width_per or 0.7
@@ -87,51 +114,18 @@ local function floating_window(opts)
   local	win_width = floor(ui_min_width * opts.width_per)
   local win_height = floor(ui_min_height * opts.height_per)
 
-  -- border window
-  local border_win
-  if opts.border then
-    local border_opts = {
-        relative = "editor",
-        width = win_width,
-        height = win_height,
-        row = floor((ui_min_height - win_height) / 2),
-        col = floor((ui_min_width - win_width) / 2),
-        style = 'minimal'
-    }
-    -- local top = "╭"..string.rep("─", win_width - 2).."╮"
-    -- local mid = "│"..string.rep(" ", win_width - 2).."│"
-    -- local bot = "╰"..string.rep("─", win_width - 2).."╯"
-    local top = "▛"..string.rep("▀", win_width - 2).."▜"
-    local mid = "▌"..string.rep(" ", win_width - 2).."▐"
-    local bot = "▙"..string.rep("▄", win_width - 2).."▟"
-    local lines = { top }
-    for i=1,win_height-2 do
-        table.insert(lines, mid)
-    end
-    table.insert(lines, bot)
-    local border_buf = api.nvim_create_buf(false, true)
-    api.nvim_buf_set_lines(border_buf, 0, -1, true, lines)
-    for i=0,win_height-1 do
-      api.nvim_buf_add_highlight(border_buf, 0, 'PopupWindowBorder', i, 0, -1)
-    end
-    border_win = api.nvim_open_win(border_buf, false, border_opts)
-    api.nvim_win_set_option(border_win, 'wrap', false)
-    api.nvim_win_set_option(border_win, 'number', false)
-    api.nvim_win_set_option(border_win, 'relativenumber', false)
-    api.nvim_win_set_option(border_win, 'cursorline', false)
-    api.nvim_win_set_option(border_win, 'signcolumn', 'no')
-    api.nvim_command("autocmd BufWipeout <buffer> exe 'bw '"..border_buf)
-  end
-
   -- content window
   local content_opts = {
     relative = "editor",
     width = win_width - 4,
     height = win_height - 2,
-	row = 1 + floor((ui_min_height - win_height) / 2),
-	col = 2 + floor((ui_min_width - win_width) / 2),
-    style = 'minimal'
+    row = 1 + floor((ui_min_height - win_height) / 2),
+    col = 2 + floor((ui_min_width - win_width) / 2),
+    style = 'minimal',
   }
+  if opts.border then
+    content_opts.border = M.window_border_chars
+  end
   local content_buf = api.nvim_create_buf(false, true)
   local content_win = api.nvim_open_win(content_buf, true, content_opts)
   api.nvim_buf_set_option(content_buf, 'ft', opts.filetype)
@@ -142,18 +136,10 @@ local function floating_window(opts)
   api.nvim_win_set_option(content_win, 'signcolumn', 'no')
   --api.nvim_win_set_option(content_win, "winhighlight", "NormalFloat:Normal")
 
-  -- map 'q' to close window
-  --api.nvim_buf_set_keymap(content_buf, 'n', 'q', ':lua pcall(vim.api.nvim_win_close, '..content_win..', true)<CR>', {["silent"]=true})
-  if opts.border then
-    -- close border window when leaving the main buffer
-    --api.nvim_command("autocmd BufLeave <buffer> ++once lua pcall(vim.api.nvim_win_close, "..border_win..", true)")
-    vim.lsp.util.close_preview_autocmd({"BufLeave", "BufHidden"}, border_win)
-  end
-
   return content_buf, content_win
 end
 
-local function popup_window(contents, filetype, opts, border)
+function M.popup_window(contents, filetype, opts, border)
   validate {
     contents = { contents, 't' };
     filetype = { filetype, 's', true };
@@ -189,18 +175,21 @@ local function popup_window(contents, filetype, opts, border)
   end
   api.nvim_buf_set_option(content_buf, 'modifiable', false)
   local content_opts = make_popup_options(width, height, opts)
-  if border and content_opts.anchor == 'SE' then
+  if content_opts.anchor == 'SE' then
       content_opts.row = content_opts.row - 1
       content_opts.col = content_opts.col - 1
-  elseif border and content_opts.anchor == 'NE' then
+  elseif content_opts.anchor == 'NE' then
       content_opts.row = content_opts.row + 1
       content_opts.col = content_opts.col - 1
-  elseif border and content_opts.anchor == 'NW' then
+  elseif content_opts.anchor == 'NW' then
       content_opts.row = content_opts.row + 1
       content_opts.col = content_opts.col + 1
-  elseif border and content_opts.anchor == 'SW' then
+  elseif content_opts.anchor == 'SW' then
       content_opts.row = content_opts.row - 1
       content_opts.col = content_opts.col + 1
+  end
+  if opts.border then
+    content_opts.border = M.window_border_chars
   end
   local content_win = api.nvim_open_win(content_buf, false, content_opts)
   if filetype == 'markdown' then
@@ -209,41 +198,13 @@ local function popup_window(contents, filetype, opts, border)
   --api.nvim_win_set_option(content_win, "winhighlight", "Normal:NormalNC")
   api.nvim_win_set_option(content_win, 'cursorline', false)
 
-  -- border window
-  local border_win
-  if border then
-    local border_width = width + 2
-    local border_height = height + 2
-    local top = "▛"..string.rep("▀", border_width-2).."▜"
-    local mid = "▌"..string.rep(" ", border_width-2).."▐"
-    local bot = "▙"..string.rep("▄", border_width-2).."▟"
-    local lines = { top }
-    for i=1, height do
-        table.insert(lines, mid)
-    end
-    table.insert(lines, bot)
-    local border_buf = api.nvim_create_buf(false, true)
-    api.nvim_buf_set_lines(border_buf, 0, -1, true, lines)
-    api.nvim_buf_add_highlight(border_buf, 0, 'PopupWindowBorder', 0, 0, -1)
-    for i=1,border_height do
-      api.nvim_buf_add_highlight(border_buf, 0, 'PopupWindowBorder', i, 0, -1)
-    end
-    api.nvim_buf_add_highlight(border_buf, 0, 'PopupWindowBorder', border_height-1, 0, -1)
-    api.nvim_command("autocmd BufWipeout <buffer> exe 'bw '"..border_buf)
-    local border_opts = make_popup_options(border_width, border_height, opts)
-    border_win = api.nvim_open_win(border_buf, false, border_opts)
-    --api.nvim_win_set_option(border_win, "winhighlight", "Normal:NormalNC")
-    api.nvim_win_set_option(border_win, 'cursorline', false)
-
-    vim.lsp.util.close_preview_autocmd({"CursorMoved", "BufHidden", "InsertCharPre", "WinLeave", "FocusLost"}, border_win)
-  end
   vim.lsp.util.close_preview_autocmd({"CursorMoved", "BufHidden", "InsertCharPre", "WinLeave", "FocusLost"}, content_win)
 
   return content_buf, content_win
 end
 
 --  get decoration column with (signs + folding + number)
-local function window_decoration_columns()
+function M.window_decoration_columns()
 	local function starts_with(str, start)
 		return str:sub(1, #start) == start
 	end
@@ -284,11 +245,4 @@ local function window_decoration_columns()
     return decoration_width
 end
 
-return {
-  floating_window = floating_window;
-  popup_window = popup_window;
-  window_decoration_columns = window_decoration_columns;
-  scale_win = scale_win;
-}
-
-
+return M

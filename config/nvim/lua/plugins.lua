@@ -6,63 +6,83 @@ local spec = function(use)
 
   use {'wbthomason/packer.nvim', opt = true}
 
-  -- SYNTAX
-  -- use {'SidOfc/mkdx', config = function()
-  --   vim.g['mkdx#settings'] = {
-  --     highlight = {
-  --       enable = 1;
-  --       frontmatter = {
-  --         yaml = 0;
-  --         toml = 0;
-  --         json = 0;
-  --       };
-  --     };
-  --     tokens = {
-  --       fence = ''
-  --     };
-  --     gf_on_steroids = 0;
-  --     enter = {
-  --       enable = 1;
-  --       shift = 1;
-  --     };
-  --   }
-  -- end}
-
   -- SESSIONS
-  use {'mhinz/vim-startify', config = function()
-    vim.g.startify_bookmarks = {
-      '~/.zshrc',
-      '~/.config/nvim/init.vim',
-      '~/.config/nvim/lua/plugins.lua',
+  use {'glepnir/dashboard-nvim', config = function()
+    vim.g.dashboard_default_executive = 'telescope'
+    vim.g.dashboard_custom_header = {
+      '██████╗ ██╗    ██╗███╗   ██╗████████╗███████╗███████╗████████╗███████╗██████╗ ',
+      '██╔══██╗██║    ██║████╗  ██║╚══██╔══╝██╔════╝██╔════╝╚══██╔══╝██╔════╝██╔══██╗',
+      '██████╔╝██║ █╗ ██║██╔██╗ ██║   ██║   █████╗  ███████╗   ██║   █████╗  ██████╔╝',
+      '██╔═══╝ ██║███╗██║██║╚██╗██║   ██║   ██╔══╝  ╚════██║   ██║   ██╔══╝  ██╔══██╗',
+      '██║     ╚███╔███╔╝██║ ╚████║   ██║   ███████╗███████║   ██║   ███████╗██║  ██║',
+      '╚═╝      ╚══╝╚══╝ ╚═╝  ╚═══╝   ╚═╝   ╚══════╝╚══════╝   ╚═╝   ╚══════╝╚═╝  ╚═╝',
+      }
+
+    vim.g.dashboard_custom_section = {
+        a = {description = {'  ToDo                '}, command = 'TODO'},
+        b = {description = {'  GitHub Notifications'}, command = 'Inbox'},
+        c = {description = {'  Find File           '}, command = 'Telescope find_files'},
+        d = {description = {'  Recently Used Files '}, command = 'Telescope frecency'},
+        e = {description = {'  Load Last Session   '}, command = 'SessionLoad'},
+        f = {description = {'  CWD Grep            '}, command = 'Telescope live_grep'},
+        g = {description = {'  Plugins             '}, command = ':e ~/.config/nvim/lua/plugins.lua'}
     }
-    vim.g.startify_update_oldfiles = true
-    local banner = {
-[[ ____  __    __  ____   ______    ___  _____ ______    ___  ____  ]],
-[[|    \|  |__|  ||    \ |      |  /  _]/ ___/|      |  /  _]|    \ ]],
-[[|  o  )  |  |  ||  _  ||      | /  [_(   \_ |      | /  [_ |  D  )]],
-[[|   _/|  |  |  ||  |  ||_|  |_||    _]\__  ||_|  |_||    _]|    / ]],
-[[|  |  |  `  '  ||  |  |  |  |  |   [_ /  \ |  |  |  |   [_ |    \ ]],
-[[|  |   \      / |  |  |  |  |  |     |\    |  |  |  |     ||  .  \]],
-[[|__|    \_/\_/  |__|__|  |__|  |_____| \___|  |__|  |_____||__|\_|]],
-}
-    vim.g.startify_custom_header = vim.fn['startify#pad'](banner)
+    --vim.g.dashboard_custom_footer = {'pwntester.com'}
   end}
 
-  -- TELESCOPE.NVIM
+  -- DEPS
+  use {'tami5/sql.nvim'}
   use {'nvim-lua/popup.nvim'}
   use {'nvim-lua/plenary.nvim'}
+
+  -- BASICS
+  use {'jdhao/better-escape.vim'}
+  use {'monaqa/dial.nvim'}
+  use {'t9md/vim-choosewin', config = function()
+    vim.g.choosewin_overlay_enable = 1
+  end}
+  use {'tpope/vim-scriptease'}
+    -- :Messages: view messages in quickfix list
+    -- :Verbose: view verbose output in preview window.
+    -- :Time: measure how long it takes to run some stuff.
+    -- zS: Debug syntax under cursor
+  use {'karb94/neoscroll.nvim'}
+
+  -- TELESCOPE.NVIM
   use {'nvim-lua/telescope.nvim', config = function()
     require'plugins.telescope'.setup()
   end}
+  use {'nvim-telescope/telescope-project.nvim', config = function()
+    require'telescope'.load_extension('project')
+  end}
+  use {'nvim-telescope/telescope-frecency.nvim', config = function()
+    require"telescope".load_extension("frecency")
+  end}
+  use {'nvim-telescope/telescope-cheat.nvim', config = function()
+    require'telescope'.load_extension("cheat")
+  end}
+  use {'nvim-telescope/telescope-symbols.nvim'}
+
+  -- SEARCH
+  use {'jremmen/vim-ripgrep', config = function()
+    vim.g.rg_derive_root = true
+    vim.g.rg_root_types = {'.git'}
+  end}
+  --- :Rg
+  --- :RgRoot
 
   -- COMPLETION
-  use {'nvim-lua/completion-nvim', config = function()
-    require'plugins.completion'.setup()
+  use {'hrsh7th/nvim-compe', config = function()
+    require"plugins.compe".setup()
   end}
-  -- use {'steelsojka/completion-buffers'}
+
+  -- SNIPPETS
+  use {'hrsh7th/vim-vsnip'}
+  use {'seudev/vscode-java-snippets'}
+  use {'NexSabre/vscode-python-snippets'}
 
   -- TREESITTER
-  --use {'~/Dev/nvim-treesitter', config = function()
+  --use {'~/dev/nvim-treesitter', config = function()
   use {'nvim-treesitter/nvim-treesitter', config = function()
     require'plugins.treesitter'.setup()
   end}
@@ -72,41 +92,36 @@ local spec = function(use)
   use {'nvim-treesitter/nvim-treesitter-textobjects'}
 
   -- TMUX
-  use {'christoomey/vim-tmux-navigator', config = function()
-    vim.g.tmux_navigator_no_mappings = true
+  use {'numToStr/Navigator.nvim', config = function()
+    require('Navigator').setup()
   end}
+
+  -- ALIGNING
+  use {'junegunn/vim-easy-align'}
+    -- MD tables: `EasyAlign*<Bar>`
 
   -- TEXT OBJECTS/MOTIONS/OPERATORS
   use {'machakann/vim-sandwich'}
     -- add: sa{motion/textobject}{delimiter}
     -- delete: sd{delimiter}
     -- replace: sr{old}{new}
-  use {'michaeljsmith/vim-indent-object'}
-    -- ii: inner Indentation level (no line above).
-    -- iI: inner Indentation level (no lines above/below).
-    -- ai: an Indentation level and line above.
-    -- aI: an Indentation level and lines above/below.
-  use {'tommcdo/vim-lion'}
-    -- gl{motion/textobject}{aligning char}: spaces to the left
-    -- gL{motion/textobject}{aligning char}: spaces to the right
   use {'chaoren/vim-wordmotion', config = function()
     vim.g.wordmotion_prefix = '<Leader>'
   end}
 
   -- GIT
-  use {'tpope/vim-fugitive'}
   use {'rhysd/committia.vim'}
-  use {'rhysd/git-messenger.vim', config = function()
-    vim.g.git_messenger_no_default_mappings = true
+  use {'tpope/vim-fugitive', config = function()
+    vim.g.fugitive_columns = 120
   end}
   use {'lewis6991/gitsigns.nvim', config = function()
     require('gitsigns').setup {
       signs = {
-        add          = {hl = 'DiffAdd'   , text = '+'},
-        change       = {hl = 'DiffChange', text = '~'},
-        delete       = {hl = 'DiffDelete', text = '_'},
-        topdelete    = {hl = 'DiffDelete', text = '‾'},
-        changedelete = {hl = 'DiffChange', text = '~'},
+        add          = {hl = 'GitSignsAdd'   , text = '+'},
+        change       = {hl = 'GitSignsChange', text = '~'},
+        delete       = {hl = 'GitSignsDelete', text = '_'},
+        topdelete    = {hl = 'GitSignsDelete', text = '‾'},
+        changedelete = {hl = 'GitSignsChange', text = '~'},
       },
       keymaps = {
         noremap = true,
@@ -125,18 +140,34 @@ local spec = function(use)
       status_formatter = nil,
     }
   end}
-  use {'~/Dev/octo.nvim', config = function()
-    vim.cmd [[ augroup octo ]]
-    vim.cmd [[ autocmd! ]]
-    vim.cmd [[ autocmd FileType octo_issue nested setlocal conceallevel=2 ]]
-    vim.cmd [[ autocmd FileType octo_issue nested setlocal concealcursor=c ]]
-    vim.cmd [[ augroup END ]]
+  use {'ruifm/gitlinker.nvim', requires = 'nvim-lua/plenary.nvim', config = function()
+    require"gitlinker".setup()
+  end}
+  --- <leader>gy
+  use {'~/dev/octo.nvim', config = function()
+    require"octo".setup({
+      reaction_viewer_hint_icon = "";
+    })
+  end}
+  use {'~/dev/octo-notifications.nvim', after='octo.nvim', config = function()
   end}
 
   -- THEMES & COLORS
   use {'rktjmp/lush.nvim'}
-  use {'~/Dev/nautilus', config = function()
+  use {'mhartington/oceanic-next', config = function()
+    --vim.cmd [[ colorscheme OceanicNext]]
+  end}
+  use {'shaunsingh/nord.nvim', config = function()
+    --vim.cmd [[ colorscheme nord ]]
+  end}
+  use {'~/dev/nautilus.nvim', config = function()
     vim.cmd [[ colorscheme nautilus ]]
+  end}
+  use {'kwsp/halcyon-neovim', config = function()
+    --vim.cmd [[ colorscheme halcyon]]
+  end}
+  use {'folke/tokyonight.nvim', config = function()
+    --vim.cmd [[colorscheme tokyonight]]
   end}
   use {'norcalli/nvim-colorizer.lua', branch = 'color-editor'}
 
@@ -145,98 +176,200 @@ local spec = function(use)
   use {'kyazdani42/nvim-web-devicons', config = function()
     require'nvim-web-devicons'.setup()
   end}
-  use {'Yggdroot/indentLine', config = function()
-    vim.g.indentLine_color_gui = tostring(require('nautilus').CursorLine.bg)
-    vim.g.indentLine_fileTypeExclude = vim.list_extend(vim.g.special_buffers, {'markdown','octo_issue'})
-    vim.g.indentLine_faster = 1
-    vim.g.indentLine_conceallevel = 2
-  end}
-  use {'lukas-reineke/indent-blankline.nvim', branch = 'lua'}
-  use {'psliwka/vim-smoothie', config = function()
-    vim.g.smoothie_no_default_mappings = true
+  use {'lukas-reineke/indent-blankline.nvim', branch = 'lua', config = function()
+    vim.g.indent_blankline_char = '¦' -- ['|', '¦', '┆', '┊']
+    vim.g.indent_blankline_filetype_exclude = vim.list_extend(vim.g.special_buffers, {'markdown', 'octo', 'dashboard'})
   end}
   use {'junegunn/rainbow_parentheses.vim'}
-  use {'junegunn/goyo.vim', config = function()
-    vim.cmd [[autocmd User GoyoEnter nested lua util.goyoEnter()]]
-  end}
-  -- use {'romgrk/lib.kom'}
-  -- use {'romgrk/barbar.nvim', config = function ()
-  --   vim.cmd [[ let g:bufferline = {} ]]
-  --   vim.cmd [[ let g:bufferline.icons = v:true]]
-  -- end}
   use {'tjdevries/express_line.nvim', config = function()
     require'plugins.expressline'
   end}
-  -- use {'mkitt/tabline.vim'}
+  --use {'glepnir/galaxyline.nvim', config = function()
+    --require'plugins.galaxyline'
+  --end}
   use {'pacha/vem-tabline', config = function()
     vim.g.vem_tabline_show = 2
   end}
 
   -- PAIRING
-  use {'andymass/vim-matchup', config = function()
-    vim.g.matchup_matchparen_status_offscreen = 0
-    vim.g.matchup_matchparen_nomode = [[ivV\<c-v>]]
-    vim.g.matchup_matchparen_deferred = 1
+  use {'steelsojka/pears.nvim', config = function()
+    require "pears".setup(function(conf)
+      conf.preset "tag_matching"
+      conf.on_enter(function(pears_handle)
+        if vim.fn.pumvisible() == 1 and vim.fn.complete_info().selected ~= -1 then
+          return vim.fn["compe#confirm"]("<CR>")
+        else
+          pears_handle()
+        end
+      end)
+      conf.disabled_filetypes({"TelescopePrompt", "octo"})
+      conf.expand_on_enter(true)
+    end)
   end}
 
   -- FILE EXPLORER
-  use {'justinmk/vim-dirvish'}
+  use {'kyazdani42/nvim-tree.lua', config = function()
+    vim.g.nvim_tree_width = 40
+    vim.g.nvim_tree_ignore = {'.git'}
+    vim.g.nvim_tree_auto_open = 0
+    vim.g.nvim_tree_gitignore = 1
+    vim.g.nvim_tree_auto_ignore_ft = {'dashboard'}
+    vim.g.nvim_tree_quit_on_open = 0
+    vim.g.nvim_tree_follow = 0
+    vim.g.nvim_tree_hide_dotfiles = 1
+    vim.g.nvim_tree_add_trailing = 1
+    vim.g.nvim_tree_group_empty = 1
+    vim.g.nvim_tree_show_icons = {
+      git = 0,
+      folders = 1,
+      files = 1,
+    }
+  end}
 
   -- COMMENTS
-  use {'tomtom/tcomment_vim'}
-
-  -- DIFFING
-  use {'AndrewRadev/linediff.vim'}
-
-  -- SNIPPETS
-  use {'norcalli/snippets.nvim', config = function()
-    require'plugins.snippets'.setup()
+  use {'terrortylor/nvim-comment', config = function()
+    require('nvim_comment').setup()
   end}
 
   -- ROOTER
   use {'airblade/vim-rooter', config = function()
-    vim.g.rooter_cd_cmd = 'lcd'
-    vim.g.rooter_patterns = {'.git/'}
+    vim.g.rooter_cd_cmd = 'cd'
+    vim.g.rooter_targets = '/,*'
+    vim.g.rooter_patterns = {'.git'}
     vim.g.rooter_silent_chdir = 1
     vim.g.rooter_change_directory_for_non_project_files = 'current'
   end}
 
   -- STATIC ANALYSIS
-  use {'~/Dev/codeql.nvim', config = function()
+  use {'~/dev/codeql.nvim', config = function()
     vim.g.codeql_group_by_sink = true
     vim.g.codeql_max_ram = 32000
-    vim.g.codeql_search_path = {'/Users/pwntester/codeql-home/codeql-repo', '/Users/pwntester/codeql-home/codeql-go-repo', '/Users/pwntester/codeql-home/pwntester-repo'}
+    vim.g.codeql_search_path = {'/Users/pwntester/codeql-home/codeql-repo', '/Users/pwntester/codeql-home/codeql-go'}
   end}
-  use {'~/Dev/fortify.nvim', config = function()
-    require'plugins.fortify'.setup()
-  end}
+  -- use {'~/dev/fortify.nvim', config = function()
+  --   require'plugins.fortify'.setup()
+  -- end}
 
   -- LSP
+  use {'liuchengxu/vista.vim', config = function()
+    vim.g.vista_executive_for = { lua = 'nvim_lsp', java = 'nvim_lsp' }
+  end}
   use {'neovim/nvim-lspconfig', config = function()
     require("lsp_config").setup()
   end}
-  use {'liuchengxu/vista.vim'}
+  use {'mfussenegger/nvim-jdtls', config = function()
+    require("lsp_config").setup_jdt()
+  end}
+  use {'glepnir/lspsaga.nvim', config = function()
+    require 'lspsaga'.init_lsp_saga()
+  end}
+  use {'onsails/lspkind-nvim', config = function()
+    require('lspkind').init()
+  end}
 
-  use {'tpope/vim-scriptease'}
-    -- :Messages: view messages in quickfix list
-    -- :Verbose: view verbose output in preview window.
-    -- :Time: measure how long it takes to run some stuff.
-    -- zS: Debug syntax under cursor
+  -- SYNTAX
+  -- use {'SidOfc/mkdx', config = function()
+  --   vim.g['mkdx#settings'] = {
+  --     highlight = {
+  --       enable = 1;
+  --       frontmatter = {
+  --         yaml = 0;
+  --         toml = 0;
+  --         json = 0;
+  --       };
+  --     };
+  --     tokens = {
+  --       fence = '`'
+  --     };
+  --     gf_on_steroids = 0;
+  --     enter = {
+  --       enable = 1; -- enter: adds new item
+  --       shift = 1; -- shift + enter: adds new item indented
+  --     };
+  --     checkbox = {
+  --       toggles = {' ', 'x'}
+  --     },
+  --     link = {
+  --       external = {
+  --         enable = 0
+  --       }
+  --     }
+  --   }
+  -- end}
+  --- <leader>t: prepends checkbox
+  --- <leader>ll: toggle list tokens
+  --- <leader>lt: toggle list tokens + checkboxes
+  --- <leader> =: checks a checkbox ->
+  --- <leader> -: checks a checkbox <-
+  --- <leader>]: Promote header
+  --- <leader>[: Demote header
+  --- <leader>': Toggle quotes (`>`)
+  --- <leader>ln: wrap word or visual selection in `[word](|)`
+  --- <leader>/:  italic
+  --- <leader>b: bold
+  --- <leader>`: inline code
+  --- <leader>s: strikethrough
+  --- <leader>,: cvs -> table
+  --- <leader>I: open TOC in QF
 
-  -- TESTING
-  use {'andreshazard/vim-freemarker'}
-  use {'wfxr/minimap.vim'}
+  -- HTTP Client
+  use {'nicwest/vim-http'} -- just for the syntax
+  use {'aquach/vim-http-client', config = function()
+    vim.g.http_client_bind_hotkey = false
+    vim.g.http_client_json_ft = 'javascript'
+    vim.g.http_client_focus_output_window = false
+    vim.g.http_client_preserve_responses = false
+    vim.cmd [[autocmd FileType http nnoremap <C-j> :HTTPClientDoRequest<CR>]]
+  end}
+
+  -- use {'sunjon/shade.nvim', config = function()
+  --   require'shade'.setup({
+  --     overlay_opacity = 20,
+  --     opacity_step = 1,
+  --     keys = {
+  --       brightness_up    = '<A-k>',
+  --       brightness_down  = '<A-j>',
+  --       toggle           = '<Leader>s',
+  --     }
+  --   })
+  -- end}
+
+  use {"Pocco81/TrueZen.nvim"}
+  use {"RRethy/vim-illuminate"}
+  use {"sindrets/diffview.nvim"}
+  use {
+    "folke/trouble.nvim",
+    requires = "kyazdani42/nvim-web-devicons",
+    config = function()
+      require("trouble").setup {
+        -- your configuration comes here
+        -- or leave it empty to use the default settings
+        -- refer to the configuration section below
+      }
+    end
+  }
+  use {
+    "folke/todo-comments.nvim",
+    requires = "nvim-lua/plenary.nvim",
+    config = function()
+      require("todo-comments").setup {
+        -- your configuration comes here
+        -- or leave it empty to use the default settings
+        -- refer to the configuration section below
+      }
+    end
+  }
+  use {'famiu/bufdelete.nvim'}
 
 end
 
 local config = {
   display = {
     open_fn = function()
-      local bufnr, winnr = require("window").floating_window({border=true;width_per=0.8;height_per=0.8})
+      local bufnr, winnr = require("window").floating_window({border=true, width_per=0.8, height_per=0.8})
       vim.api.nvim_set_current_win(winnr)
       return bufnr, winnr
     end
   }
 }
-
 packer.startup {spec, config = config}

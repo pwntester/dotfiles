@@ -96,7 +96,7 @@ end
 local function markdownBlocks()
   vim.cmd [[ sign define codeblock linehl=markdownCode ]]
   local continue = false
-  api.nvim_command('sign unplace * file='..vim.fn.expand('%'))
+  pcall(api.nvim_command, 'sign unplace * file='..vim.fn.expand('%'))
 
   -- iterate through each line in the buffer
   for lnum = 1, #vim.fn.getline(1, '$'), 1 do

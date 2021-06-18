@@ -1,3 +1,6 @@
+--local npairs = require('nvim-autopairs')
+local vim = vim
+
 local mappings = {
 
   -- * for visual selected text
@@ -9,7 +12,6 @@ local mappings = {
 
   -- escape to normal mode
   ['ijk'] = { '<ESC>' };
-  ['vjk'] = { '<ESC>' };
   ['tjk'] = { [[<C-\><C-n>]] };
 
   -- shifting visual block should keep it selected
@@ -17,9 +19,9 @@ local mappings = {
   ['v>'] = { '>gv|' };
 
   -- automatically jump to end of text you pasted
-  ['vy'] = { 'y`' };
-  ['vp'] = { 'p`' };
-  ['np'] = { 'p`' };
+  ['vy'] = { 'y`]' };
+  ['vp'] = { 'p`]' };
+  ['np'] = { 'p`]' };
 
   -- go up/down on visual line
   ['vj'] = { 'gj', noremap = false; };
@@ -32,10 +34,17 @@ local mappings = {
   ['nE'] = { '$' };
 
   -- move between windows
-  ['n<c-k>'] = { ':TmuxNavigateUp<CR>' };
-  ['n<c-j>'] = { ':TmuxNavigateDown<CR>' };
-  ['n<c-h>'] = { ':TmuxNavigateLeft<CR>' };
-  ['n<c-l>'] = { ':TmuxNavigateRight<CR>' };
+  ['n<C-p>'] = { '<Plug>(choosewin)', noremap = false; };
+  ['n<C-h>'] = {"<CMD>lua require('Navigator').left()<CR>" };
+  ['n<C-k>'] = {"<CMD>lua require('Navigator').up()<CR>" };
+  ['n<C-l>'] = {"<CMD>lua require('Navigator').right()<CR>" };
+  ['n<C-j>'] = {"<CMD>lua require('Navigator').down()<CR>" };
+  --['n<C-p>'] = {"<CMD>lua require('Navigator').previous()<CR>" };
+
+  -- ['n<c-k>'] = { ':TmuxNavigateUp<CR>' };
+  -- ['n<c-j>'] = { ':TmuxNavigateDown<CR>' };
+  -- ['n<c-h>'] = { ':TmuxNavigateLeft<CR>' };
+  -- ['n<c-l>'] = { ':TmuxNavigateRight<CR>' };
 
   -- ['n<c-k>'] = { ':wincmd k<CR>' };
   -- ['n<c-j>'] = { ':wincmd j<CR>' };
@@ -61,13 +70,25 @@ local mappings = {
   ['n-'] = { ':execute "resize -5"<CR>' };
 
   -- swap lines
-  ['n[e'] = { [[:<c-u>execute 'move -1-'. v:count1<cr>]] };
-  ['n]e'] = { [[:<c-u>execute 'move +'. v:count1<cr>]] };
+  -- ['n[e'] = { [[:<c-u>execute 'move -1-'. v:count1<cr>]] };
+  -- ['n]e'] = { [[:<c-u>execute 'move +'. v:count1<cr>]] };
+
+  -- unimpaired like mappings
+  ['n[b'] = { [[:bprevious<cr>]] };
+  ['n]b'] = { [[:bnext<cr>]] };
+  ['n[q'] = { [[:cprevious<cr>]] };
+  ['n]q'] = { [[:cnext<cr>]] };
+  ['n[l'] = { [[:lprevious<cr>]] };
+  ['n]l'] = { [[:lnext<cr>]] };
+  ['n[t'] = { [[:tabprevious<cr>]] };
+  ['n]t'] = { [[:tabnext<cr>]] };
 
   -- paste keeping the default register
   ['v<leader>p'] = { '"_dP' };
+  ['v<leader>x'] = { '"_d' };
+  ['n<leader>x'] = { '"_x' };
 
-  -- copy & paste to system clipboard
+  -- copy & paste to system clipboad
   ['v<leader>y'] = { '"*y', noremap = false; };
 
   -- quickly select text you pasted
@@ -81,13 +102,27 @@ local mappings = {
   ['_*'] = { [[:let @/ = '\<'.expand('<cword>').'\>'<bar>set hlsearch<C-M>]] };
   ['_g*'] = { [[:let @/ = expand('<cword>')<bar>set hlsearch<C-M>]] };
 
+  -- goto URL
+  ['ngx'] = { [[:call OpenURL()<CR>]] };
+  ['ngo'] = { '<Plug>(OctoOpenIssueAtCursor)', noremap = false; };
+
   -- TELESCOPE
-  ['n<leader>m'] = { [[<cmd>lua require'plugins.telescope'.mru()<CR>]] };
-  ['n<leader>f'] = { [[<cmd>lua require'plugins.telescope'.fd()<CR>]] };
+  --['n<leader>m'] = { [[<cmd>lua require'plugins.telescope'.mru()<CR>]] };
+  ['n<leader>m'] = { [[<cmd>lua require'telescope'.extensions.frecency.frecency({prompt_prefix='MRU>'})<CR>]]};
+  ['n<leader>f'] = { [[<cmd>lua require'telescope.builtin'.find_files({prompt_prefix='Files>'})<CR>]] };
+  ['n<leader>l'] = { [[<cmd>lua require'telescope.builtin'.live_grep({prompt_prefix='Live grep>'})<CR>]] };
   ['n<leader>r'] = { [[<cmd>lua require'plugins.telescope'.reloader()<CR>]] };
   ['n<leader>o'] = { [[<cmd>lua require'plugins.telescope'.buffers()<CR>]] };
-  ['n<leader>s'] = { [[<cmd>lua require'plugins.telescope'.treesitter()<CR>]] };
-  ['n<leader>l'] = { [[<cmd>lua require'plugins.telescope'.live_grep()<CR>]] };
+  ['n<leader>s'] = { [[<cmd>lua require'telescope.builtin'.treesitter({prompt_prefix='TS Symbols>'})<CR>]] };
+  ['n<leader>gc'] = { [[<cmd>lua require'telescope.builtin'.git_commits({prompt_prefix='Git commits>'})<CR>]] };
+  ['n<leader>gf'] = { [[<cmd>lua require'telescope.builtin'.git_files({prompt_prefix='Git files>'})<CR>]] };
+  ['n<leader>gb'] = { [[<cmd>lua require'telescope.builtin'.git_branches({prompt_prefix='Git branches>'})<CR>]] };
+  ['n<leader>p'] = { [[<cmd>lua require'telescope'.extensions.project.project{change_dir = true}<CR>]] };
+
+  -- GITSIGNS
+  ['n[h'] = { '<Plug>(GitGutterPrevHunk)', noremap = false; };
+  ['n]h'] = { '<Plug>(GitGutterNextHunk)', noremap = false; };
+
 
   -- VIM-SMOOTHIE
   ['n<c-d>'] = { '<Plug>(SmoothieDownwards)', noremap = false; };
@@ -96,18 +131,15 @@ local mappings = {
   -- GOYO
   ['n<leader>y'] = { ':Goyo<CR>' };
 
-  -- LAZY-GIT
-  ['n<Leader>g'] = { [[:call luaeval('require("window").floating_window({border=false;width_per=0.9;height_per=0.9;})')<bar>call termopen('lazygit')<CR>]] };
-
   -- VEM-TABLINE
-  -- ['n<s-h>'] = { '<Plug>vem_prev_buffer-', noremap = false; };
-  -- ['n<s-l>'] = { '<Plug>vem_next_buffer-', noremap = false; };
+  ['n<s-h>'] = { '<Plug>vem_prev_buffer-', noremap = false; };
+  ['n<s-l>'] = { '<Plug>vem_next_buffer-', noremap = false; };
   -- ['n<leader>['] = { '<Plug>vem_move_buffer_left-', noremap = false; };
   -- ['n<leader>]'] = { '<Plug>vem_move_buffer_right-', noremap = false; };
 
-  -- DIRVISH
-  ['ngE'] = { [[:call ToggleDirvish('')<CR>]] };
-  ['nge'] = { [[:call ToggleDirvish('%')<CR>]] };
+  -- NVIM-TREE
+  ['ngE'] = { [[:NvimTreeToggle<CR>]] };
+  ['nge'] = { [[:NvimTreeFindFile<CR>]] };
 
   -- GIT-MESSANGER
   ['n<leader>gm'] = { [[<Plug>(git-messenger)]], noremap = false };
@@ -117,6 +149,20 @@ local mappings = {
   ['c<c-k>'] = { '<left>' };
   ['c<c-h>'] = { '<space><bs><left>' };
   ['c<c-l>'] = { '<space><bs><right>' };
+
+  -- DIAL
+  ['n<C-a>'] = { [[<Plug>(dial-increment)]] };
+  ['n<C-x>'] = { [[<Plug>(dial-decrement)]] };
+  ['v<C-a>'] = { [[<Plug>(dial-increment)]] };
+  ['v<C-x>'] = { [[<Plug>(dial-decrement)]] };
+
+  -- TROUBLE
+  -- ['n<leader>xx'] = { [[<cmd>LspTroubleToggle<cr>]] };
+  -- ['n<leader>xw'] = { [[<cmd>LspTroubleToggle lsp_workspace_diagnostics<cr>]] };
+  -- ['n<leader>xd'] = { [[<cmd>LspTroubleToggle lsp_document_diagnostics<cr>]] };
+  -- ['n<leader>xl'] = { [[<cmd>LspTroubleToggle loclist<cr>]] };
+  -- ['n<leader>xq'] = { [[<cmd>LspTroubleToggle quickfix<cr>]] };
+  -- ['n<leader>xr'] = { [[<cmd>LspTrouble lsp_references<cr>]] };
 
   -- Treesitter
   -- ['ngnn'] = { [[<Plug>(TsSelInit)]]     , noremap = false};
@@ -129,60 +175,94 @@ local mappings = {
   -- ['ngnu'] = { [[<Plug>(TsGotoNextUse)]] , noremap = false};
   -- ['ngpu'] = { [[<Plug>(TsGotoPrevUse)]] , noremap = false};
   -- ['ngnD'] = { [[<Plug>(TsListDefs)]]    , noremap = false};
-  ['n]fs'] = { [[<Plug>(TsGotoNextFuncStart]],   noremap = false};
-  ['n]cs'] = { [[<Plug>(TsGotoNextClassStart)]], noremap = false};
-  ['n]fe'] = { [[<Plug>(TsGotoNextFuncEnd)]],    noremap = false};
-  ['n]ce'] = { [[<Plug>(TsGotoNextClassEnd)]],   noremap = false};
-  ['n[fs'] = { [[<Plug>(TsGotoPrevFuncStart)]],  noremap = false};
-  ['n[cs'] = { [[<Plug>(TsGotoPrevClassStart)]], noremap = false};
-  ['n[fe'] = { [[<Plug>(TsGotoPrevFuncEnd)]],    noremap = false};
-  ['n[ce'] = { [[<Plug>(TsGotoPrevClassEnd)]],   noremap = false};
-
--- nmap <leader>jd <plug>(ls-definition)
--- nmap <leader>jh <plug>(ls-hover)
--- nmap <leader>jr <plug>(ls-references)
--- nmap <leader>js <plug>(ls-signature-help)
--- nmap <leader>jf <plug>(ls-formatting)
+  -- ['n]fs'] = { [[<Plug>(TsGotoNextFuncStart]],   noremap = false};
+  -- ['n[f'] = { [[<Plug>(TsGotoPrevFuncStart)]],  noremap = false};
+  -- ['n]f'] = { [[<Plug>(TsGotoNextFuncEnd)]],    noremap = false};
+  -- ['n[fe'] = { [[<Plug>(TsGotoPrevFuncEnd)]],    noremap = false};
+  -- ['n]cs'] = { [[<Plug>(TsGotoNextClassStart)]], noremap = false};
+  -- ['n]ce'] = { [[<Plug>(TsGotoNextClassEnd)]],   noremap = false};
+  -- ['n[cs'] = { [[<Plug>(TsGotoPrevClassStart)]], noremap = false};
+  -- ['n[ce'] = { [[<Plug>(TsGotoPrevClassEnd)]],   noremap = false};
 
   -- LSP
-  ['ngl']     = { [[<Plug>(LspShowDiagnostics)]]  , noremap = false};
-  ['ngd']     = { [[<Plug>(LspGotoDef)]]          , noremap = false};
-  ['ngpd']    = { [[<Plug>(LspPeekDef)]]          , noremap = false};
-  ['ngi']     = { [[<Plug>(LspGotoImpl)]]         , noremap = false};
-  ['ngD']     = { [[<Plug>(LspGotoDecl)]]         , noremap = false};
-  ['ngr']     = { [[<Plug>(LspShowReferences)]]   , noremap = false};
-  ['ng=']     = { [[<Plug>(LspFormat)']]          , noremap = false};
-  ['ngK']     = { [[<Plug>(LspHover)]]            , noremap = false};
-  ['ngca']    = { [[<Plug>(LspCodeActions)]]      , noremap = false};
-  ['ngcr']    = { [[<Plug>(LspRename)]]           , noremap = false};
+  ['ng=']     = { [[<Plug>(LspFormat)]], noremap = false};
+
+  ['ngD']     = { [[<Plug>(LspShowLineDiagnostics)]], noremap = false};
+  ['ngP']     = { [[<Plug>(LspPreviewDefinition)]], noremap = false};
+
+  ['ngd']     = { [[<Plug>(LspGotoDef)]], noremap = false};
+  ['ngi']     = { [[<Plug>(LspGotoImpl)]], noremap = false};
+  ['ngdc']    = { [[<Plug>(LspGotoDecl)]], noremap = false};
+
+  ['ngr']     = { [[<Plug>(LspShowReferences)]], noremap = false};
+  ['ngf']     = { [[<Plug>(LspFinder)]], noremap = false};
+
+  ['ngK']     = { [[<Plug>(LspHover)]], noremap = false};
+
+  ['ngcr']    = { [[<Plug>(LspRename)]], noremap = false};
+  ['ngR']     = { [[<cmd>lua require('lspsaga.rename').rename()<CR>]], noremap = false};
+
   ['i<c-s>']  = { [[<Plug>(LspShowSignatureHelp)]], noremap = false};
 
-  ['n<leader>dn']  = { [[<Plug>(LspNextDiagnostic)]], noremap = false};
-  ['n<leader>dp']  = { [[<Plug>(LspPrevDiagnostic)]], noremap = false};
+  ['n]e']     = { [[<Plug>(LspNextDiagnostic)]] , noremap = false};
+  ['n[e']     = { [[<Plug>(LspPrevDiagnostic)]] , noremap = false};
 
-  -- ['ngtt'] = { [[<Plug>(LspGotoTypeDef)]]      , noremap = false};
-  -- ['ngds'] = { [[<Plug><LspDocumentSymbol)]]   , noremap = false};
-  -- ['ngws'] = { [[<Plug><LspWorkspaceSymbol)]]  , noremap = false};
-  -- ['ngic'] = { [[<Plug>(LspIncomingCalls)]]    , noremap = false};
-  -- ['ngoc'] = { [[<Plug>(LspOutgoingCalls)]]    , noremap = false};
+  ['n<A-CR>'] = { [[<Plug>(LspCodeActions)]], noremap = false};
+  ['v<A-CR>'] = { [[<Plug>(LspRangeCodeActions)]], noremap = false};
 
-  -- JDTLS
-  -- ['ngR']  = { [[<Plug>(LspRefactor)]],            noremap = false};
-  -- ['ngoi'] = { [[<Plug>(LspOrganizeImports)]],     noremap = false};
-  -- ['ngev'] = { [[<Plug>(LspExtractVar)]],          noremap = false};
-  -- ['ngem'] = { [[<Plug>(LspExtractMethod)]],       noremap = false};
-  -- ['vgev'] = { [[<Plug>(VisualLspExtractVar)]],    noremap = false};
-  -- ['vgem'] = { [[<Plug>(VisualLspExtractMethod)]], noremap = false};
+  ['n<C-d>']  = { [[<Plug><LspDocumentSymbol)]], noremap = false};
+  ['n<C-o>']  = { [[<Plug><LspWorkspaceSymbol)]], noremap = false};
 
-  -- COMPLETION.NVIM + SNIPPETS.NVIM
-  ['i<CR>']  = { [[pumvisible() ? "\<c-y>\<cr>" : "\<CR>"]], expr = true; };
-  ['i<c-j>'] = { [[pumvisible() ? "\<C-n>" : "\<cmd>lua return require'snippets'.expand_or_advance()<CR>"]], expr = true; };
-  ['i<c-k>'] = { [[pumvisible() ? "\<C-p>" : "\<cmd>lua return require'snippets'.advance_snippet(-1)<CR>" ]], expr = true; };
-  ['i<Tab>'] = { [[complete_info()["selected"] != "-1" ?]]..
-                 [["\<Plug>(completion_confirm_completion)" : v:lua.check_back_space() ?]]..
-                 [["\<Tab>" : completion#trigger_completion()]], expr = true; }
+  ['ngtt']    = { [[<Plug>(LspGotoTypeDef)]], noremap = false};
+  ['ngic']    = { [[<Plug>(LspIncomingCalls)]], noremap = false};
+  ['ngoc']    = { [[<Plug>(LspOutgoingCalls)]], noremap = false};
 }
 
-vim.cmd [[ let mapleader = "\<Space>" ]]
+-- COMPLE + VSNIP
+vim.g.completion_confirm_key = ""
+_G.next_complete = function()
+  if vim.fn.pumvisible() == 1 then
+    return vim.api.nvim_replace_termcodes("<C-n>", true, false, true)
+  elseif vim.fn.call("vsnip#available", {1}) == 1 then
+    return vim.api.nvim_replace_termcodes("<Plug>(vsnip-expand-or-jump)", true, false, true)
+  else
+    return vim.api.nvim_replace_termcodes("<C-j>", true, false, true)
+  end
+end
+_G.prev_complete = function()
+  if vim.fn.pumvisible() == 1 then
+    return vim.api.nvim_replace_termcodes("<C-p>", true, false, true)
+  elseif vim.fn.call("vsnip#jumpable", {-1}) == 1 then
+    return vim.api.nvim_replace_termcodes("<Plug>(vsnip-jump-prev)", true, false, true)
+  else
+    return vim.api.nvim_replace_termcodes("<C-k>", true, false, true)
+  end
+end
+-- _G.completion_confirm=function()
+--   if vim.fn.pumvisible() ~= 0  then
+--     if vim.fn.complete_info()["selected"] ~= -1 then
+--       vim.fn["compe#confirm"]()
+--       return npairs.esc("")
+--       --return npairs.esc("<c-y>")
+--     else
+--       --return npairs.esc("<CR>")
+--       return npairs.check_break_line_char()
+--     end
+--   else
+--     --return npairs.esc("<CR>")
+--     return npairs.check_break_line_char()
+--   end
+-- end
+
+--vim.api.nvim_set_keymap("i", "<CR>",  "v:lua.completion_confirm()", {expr = true})
+vim.api.nvim_set_keymap("i", "<C-j>", "v:lua.next_complete()", {expr = true})
+vim.api.nvim_set_keymap("s", "<C-j>", "v:lua.next_complete()", {expr = true})
+vim.api.nvim_set_keymap("i", "<C-k>", "v:lua.prev_complete()", {expr = true})
+vim.api.nvim_set_keymap("s", "<C-k>", "v:lua.prev_complete()", {expr = true})
+
+vim.cmd [[tnoremap <Esc> <C-\><C-n>]]
+
+vim.cmd [[let mapleader = "\<Space>"]]
+
 require'functions'.map(mappings, { silent = true; noremap = true; })
 
