@@ -5,14 +5,14 @@
 - clean: ['~']
 
 - create:
-    - ~/config
+    - ~/.config
     - ~/.local/share/nvim/site/pack/packer/start/packer.nvim
 
 - shell:
   - rm ~/.zshrc
 
 - link:
-    ~/config/nvim: config/nvim
+    ~/.config/nvim: config/nvim
     ~/.ideavimrc: home/ideavimrc
     ~/.tmux.conf: home/tmux.conf
     ~/.zshrc: home/zshrc
