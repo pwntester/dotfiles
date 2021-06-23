@@ -16,6 +16,7 @@
     ~/.tmux.conf: home/tmux.conf
     ~/.zshrc: home/zshrc
     ~/.zshenv: home/zshenv
+    ~/.zsh: home/zsh
     ~/bin: home/bin
 
 - shell:
