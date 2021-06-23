@@ -20,11 +20,6 @@
     ~/bin: home/bin
 
 - shell:
-  - pwd > /tmp/test
-  - ssh -o StrictHostKeyChecking=no "git@github.com"
-  - [git submodule update --init, Cloning submodules]
-
-- shell:
   - [sudo chsh -s `which zsh`, Making zsh the default shell]
 
 # Install neovim
