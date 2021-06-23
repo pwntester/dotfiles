@@ -1,4 +1,4 @@
 {
- "forwardPorts": [2222]
+ "forwardPorts": [2222],
  "postCreateCommand": "git submodule update --init"
 }
