@@ -108,15 +108,15 @@ local mappings = {
 
   -- TELESCOPE
   --['n<leader>m'] = { [[<cmd>lua require'plugins.telescope'.mru()<CR>]] };
-  ['n<leader>m'] = { [[<cmd>lua require'telescope'.extensions.frecency.frecency({prompt_prefix='MRU>'})<CR>]]};
-  ['n<leader>f'] = { [[<cmd>lua require'telescope.builtin'.find_files({prompt_prefix='Files>'})<CR>]] };
-  ['n<leader>l'] = { [[<cmd>lua require'telescope.builtin'.live_grep({prompt_prefix='Live grep>'})<CR>]] };
+  ['n<leader>m'] = { [[<cmd>lua require'telescope'.extensions.frecency.frecency({prompt_title='',preview_title='',results_title=''})<CR>]]};
+  ['n<leader>f'] = { [[<cmd>lua require'telescope.builtin'.find_files({prompt_title='',preview_title='',results_title=''})<CR>]] };
+  ['n<leader>l'] = { [[<cmd>lua require'telescope.builtin'.live_grep({prompt_title='',preview_title='',results_title=''})<CR>]] };
   ['n<leader>r'] = { [[<cmd>lua require'plugins.telescope'.reloader()<CR>]] };
-  ['n<leader>o'] = { [[<cmd>lua require'plugins.telescope'.buffers()<CR>]] };
-  ['n<leader>s'] = { [[<cmd>lua require'telescope.builtin'.treesitter({prompt_prefix='TS Symbols>'})<CR>]] };
-  ['n<leader>gc'] = { [[<cmd>lua require'telescope.builtin'.git_commits({prompt_prefix='Git commits>'})<CR>]] };
-  ['n<leader>gf'] = { [[<cmd>lua require'telescope.builtin'.git_files({prompt_prefix='Git files>'})<CR>]] };
-  ['n<leader>gb'] = { [[<cmd>lua require'telescope.builtin'.git_branches({prompt_prefix='Git branches>'})<CR>]] };
+  ['n<leader>o'] = { [[<cmd>lua require'telescope.builtin'.buffers({prompt_title='',preview_title='',results_title=''})<CR>]] };
+  ['n<leader>s'] = { [[<cmd>lua require'telescope.builtin'.treesitter({prompt_title='',preview_title='',results_title=''})<CR>]] };
+  ['n<leader>gc'] = { [[<cmd>lua require'telescope.builtin'.git_commits({prompt_title='',preview_title='',results_title=''})<CR>]] };
+  ['n<leader>gf'] = { [[<cmd>lua require'telescope.builtin'.git_files({prompt_title='',preview_title='',results_title=''})<CR>]] };
+  ['n<leader>gb'] = { [[<cmd>lua require'telescope.builtin'.git_branches({prompt_title='',preview_title='',results_title=''})<CR>]] };
   ['n<leader>p'] = { [[<cmd>lua require'telescope'.extensions.project.project{change_dir = true}<CR>]] };
 
   -- GITSIGNS

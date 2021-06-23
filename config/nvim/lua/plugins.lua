@@ -1,34 +1,68 @@
-vim.cmd [[packadd! packer.nvim]]
 
-local packer = require'packer'
+--- from https://github.com/akinsho/dotfiles/blob/main/.config/nvim/lua/as/plugins/init.lua#L64-L113
+---local variant of packer's `use` function that specifies both a local and upstream version of a plugin
+---@param spec table|string
+local function use_local(spec)
+  local path = ""
+  if type(spec) ~= "table" then
+    return as.echomsg(string.format("spec must be a table", spec[1]))
+  end
+  local local_spec = vim.deepcopy(spec)
+  if not local_spec.local_path then
+    return as.echomsg(string.format("%s has no specified local path", spec[1]))
+  end
+
+  local name = vim.split(spec[1], "/")[2]
+  path = os.getenv "HOME" .. "/" .. local_spec.local_path .. "/" .. name
+  if vim.fn.isdirectory(vim.fn.expand(path)) < 1 then
+    -- remote spec
+    require("packer").use(spec)
+  else
+    -- local spec
+    local_spec[1] = path
+    local_spec.tag = nil
+    local_spec.branch = nil
+    local_spec.commit = nil
+    local_spec.local_path = nil
+    local_spec.local_cond = nil
+    local_spec.local_disable = nil
+    local_spec.local_name = nil
+    require("packer").use(local_spec)
+  end
+end
 
 local spec = function(use)
 
-  use {'wbthomason/packer.nvim', opt = true}
+  use {
+    'wbthomason/packer.nvim',
+    opt = true
+  }
 
   -- SESSIONS
-  use {'glepnir/dashboard-nvim', config = function()
-    vim.g.dashboard_default_executive = 'telescope'
-    vim.g.dashboard_custom_header = {
-      '██████╗ ██╗    ██╗███╗   ██╗████████╗███████╗███████╗████████╗███████╗██████╗ ',
-      '██╔══██╗██║    ██║████╗  ██║╚══██╔══╝██╔════╝██╔════╝╚══██╔══╝██╔════╝██╔══██╗',
-      '██████╔╝██║ █╗ ██║██╔██╗ ██║   ██║   █████╗  ███████╗   ██║   █████╗  ██████╔╝',
-      '██╔═══╝ ██║███╗██║██║╚██╗██║   ██║   ██╔══╝  ╚════██║   ██║   ██╔══╝  ██╔══██╗',
-      '██║     ╚███╔███╔╝██║ ╚████║   ██║   ███████╗███████║   ██║   ███████╗██║  ██║',
-      '╚═╝      ╚══╝╚══╝ ╚═╝  ╚═══╝   ╚═╝   ╚══════╝╚══════╝   ╚═╝   ╚══════╝╚═╝  ╚═╝',
+  use {
+    'glepnir/dashboard-nvim',
+    config = function()
+      vim.g.dashboard_default_executive = 'telescope'
+      vim.g.dashboard_custom_header = {
+        [[███████ ██   ██  █████  ██      ██          ██     ██ ███████     ██████  ██       █████  ██    ██      █████       ██████   █████  ███    ███ ███████ ██████  ]],
+        [[██      ██   ██ ██   ██ ██      ██          ██     ██ ██          ██   ██ ██      ██   ██  ██  ██      ██   ██     ██       ██   ██ ████  ████ ██           ██ ]],
+        [[███████ ███████ ███████ ██      ██          ██  █  ██ █████       ██████  ██      ███████   ████       ███████     ██   ███ ███████ ██ ████ ██ █████     ▄███  ]],
+        [[     ██ ██   ██ ██   ██ ██      ██          ██ ███ ██ ██          ██      ██      ██   ██    ██        ██   ██     ██    ██ ██   ██ ██  ██  ██ ██        ▀▀    ]],
+        [[███████ ██   ██ ██   ██ ███████ ███████      ███ ███  ███████     ██      ███████ ██   ██    ██        ██   ██      ██████  ██   ██ ██      ██ ███████   ██    ]],
       }
 
-    vim.g.dashboard_custom_section = {
-        a = {description = {'  ToDo                '}, command = 'TODO'},
-        b = {description = {'  GitHub Notifications'}, command = 'Inbox'},
-        c = {description = {'  Find File           '}, command = 'Telescope find_files'},
-        d = {description = {'  Recently Used Files '}, command = 'Telescope frecency'},
-        e = {description = {'  Load Last Session   '}, command = 'SessionLoad'},
-        f = {description = {'  CWD Grep            '}, command = 'Telescope live_grep'},
-        g = {description = {'  Plugins             '}, command = ':e ~/.config/nvim/lua/plugins.lua'}
-    }
-    --vim.g.dashboard_custom_footer = {'pwntester.com'}
-  end}
+      vim.g.dashboard_custom_section = {
+          a = {description = {'  ToDo                '}, command = 'TODO'},
+          b = {description = {'  GitHub Notifications'}, command = 'Inbox'},
+          c = {description = {'  Find File           '}, command = 'Telescope find_files'},
+          d = {description = {'  Recently Used Files '}, command = 'Telescope frecency'},
+          e = {description = {'  Load Last Session   '}, command = 'SessionLoad'},
+          f = {description = {'  CWD Grep            '}, command = 'Telescope live_grep'},
+          g = {description = {'  Plugins             '}, command = ':e ~/.config/nvim/lua/plugins.lua'}
+      }
+      --vim.g.dashboard_custom_footer = {'pwntester.com'}
+    end
+  }
 
   -- DEPS
   use {'tami5/sql.nvim'}
@@ -38,9 +72,12 @@ local spec = function(use)
   -- BASICS
   use {'jdhao/better-escape.vim'}
   use {'monaqa/dial.nvim'}
-  use {'t9md/vim-choosewin', config = function()
-    vim.g.choosewin_overlay_enable = 1
-  end}
+  use {
+    't9md/vim-choosewin',
+    config = function()
+      vim.g.choosewin_overlay_enable = 1
+    end
+  }
   use {'tpope/vim-scriptease'}
     -- :Messages: view messages in quickfix list
     -- :Verbose: view verbose output in preview window.
@@ -49,32 +86,57 @@ local spec = function(use)
   use {'karb94/neoscroll.nvim'}
 
   -- TELESCOPE.NVIM
-  use {'nvim-lua/telescope.nvim', config = function()
-    require'plugins.telescope'.setup()
-  end}
-  use {'nvim-telescope/telescope-project.nvim', config = function()
-    require'telescope'.load_extension('project')
-  end}
-  use {'nvim-telescope/telescope-frecency.nvim', config = function()
-    require"telescope".load_extension("frecency")
-  end}
-  use {'nvim-telescope/telescope-cheat.nvim', config = function()
-    require'telescope'.load_extension("cheat")
-  end}
-  use {'nvim-telescope/telescope-symbols.nvim'}
+  use {
+    'nvim-lua/telescope.nvim',
+    config = function()
+      require'plugins.telescope'.setup()
+    end,
+    requires = {'nvim-lua/popup.nvim', 'nvim-lua/plenary.nvim'}
+  }
+  use {
+    'nvim-telescope/telescope-project.nvim',
+    requires = {'nvim-telescope/telescope.nvim'},
+    config = function()
+      require'telescope'.load_extension('project')
+    end
+  }
+  use {
+    'nvim-telescope/telescope-frecency.nvim',
+    requires = {'nvim-telescope/telescope.nvim'},
+    config = function()
+      require"telescope".load_extension("frecency")
+    end
+  }
+  use {
+    'nvim-telescope/telescope-cheat.nvim',
+    requires = {'nvim-telescope/telescope.nvim'},
+    config = function()
+      require'telescope'.load_extension("cheat")
+    end
+  }
+  use {
+    'nvim-telescope/telescope-symbols.nvim',
+    requires = {'nvim-telescope/telescope.nvim'}
+  }
 
   -- SEARCH
-  use {'jremmen/vim-ripgrep', config = function()
-    vim.g.rg_derive_root = true
-    vim.g.rg_root_types = {'.git'}
-  end}
+  use {
+    'jremmen/vim-ripgrep',
+    config = function()
+      vim.g.rg_derive_root = true
+      vim.g.rg_root_types = {'.git'}
+    end
+  }
   --- :Rg
   --- :RgRoot
 
   -- COMPLETION
-  use {'hrsh7th/nvim-compe', config = function()
-    require"plugins.compe".setup()
-  end}
+  use {
+    'hrsh7th/nvim-compe',
+    config = function()
+      require"plugins.compe".setup()
+    end
+  }
 
   -- SNIPPETS
   use {'hrsh7th/vim-vsnip'}
@@ -82,19 +144,24 @@ local spec = function(use)
   use {'NexSabre/vscode-python-snippets'}
 
   -- TREESITTER
-  --use {'~/dev/nvim-treesitter', config = function()
-  use {'nvim-treesitter/nvim-treesitter', config = function()
-    require'plugins.treesitter'.setup()
-  end}
+  use {
+    'nvim-treesitter/nvim-treesitter',
+    config = function()
+      require'plugins.treesitter'.setup()
+    end
+  }
   use {'nvim-treesitter/playground'}
   use {'nvim-treesitter/completion-treesitter'}
   use {'nvim-treesitter/nvim-treesitter-refactor'}
   use {'nvim-treesitter/nvim-treesitter-textobjects'}
 
   -- TMUX
-  use {'numToStr/Navigator.nvim', config = function()
-    require('Navigator').setup()
-  end}
+  use {
+    'numToStr/Navigator.nvim',
+    config = function()
+      require('Navigator').setup()
+    end
+  }
 
   -- ALIGNING
   use {'junegunn/vim-easy-align'}
@@ -105,167 +172,249 @@ local spec = function(use)
     -- add: sa{motion/textobject}{delimiter}
     -- delete: sd{delimiter}
     -- replace: sr{old}{new}
-  use {'chaoren/vim-wordmotion', config = function()
-    vim.g.wordmotion_prefix = '<Leader>'
-  end}
+  use {
+    'chaoren/vim-wordmotion',
+    config = function()
+      vim.g.wordmotion_prefix = '<Leader>'
+    end
+  }
 
   -- GIT
   use {'rhysd/committia.vim'}
-  use {'tpope/vim-fugitive', config = function()
-    vim.g.fugitive_columns = 120
-  end}
-  use {'lewis6991/gitsigns.nvim', config = function()
-    require('gitsigns').setup {
-      signs = {
-        add          = {hl = 'GitSignsAdd'   , text = '+'},
-        change       = {hl = 'GitSignsChange', text = '~'},
-        delete       = {hl = 'GitSignsDelete', text = '_'},
-        topdelete    = {hl = 'GitSignsDelete', text = '‾'},
-        changedelete = {hl = 'GitSignsChange', text = '~'},
-      },
-      keymaps = {
-        noremap = true,
-        buffer = true,
-        ['n ]h'] = { expr = true, "&diff ? ']c' : '<cmd>lua require\"gitsigns\".next_hunk()<CR>'"},
-        ['n [h'] = { expr = true, "&diff ? '[c' : '<cmd>lua require\"gitsigns\".prev_hunk()<CR>'"},
-        ['n <leader>hs'] = '<cmd>lua require"gitsigns".stage_hunk()<CR>',
-        ['n <leader>hu'] = '<cmd>lua require"gitsigns".undo_stage_hunk()<CR>',
-        ['n <leader>hr'] = '<cmd>lua require"gitsigns".reset_hunk()<CR>',
-        ['n <leader>hp'] = '<cmd>lua require"gitsigns".preview_hunk()<CR>',
-      },
-      watch_index = {
-        interval = 1000
-      },
-      sign_priority = 6,
-      status_formatter = nil,
-    }
-  end}
-  use {'ruifm/gitlinker.nvim', requires = 'nvim-lua/plenary.nvim', config = function()
-    require"gitlinker".setup()
-  end}
+  use {
+    'tpope/vim-fugitive',
+    config = function()
+      vim.g.fugitive_columns = 120
+    end
+  }
+  use {
+    'lewis6991/gitsigns.nvim',
+    config = function()
+      require('gitsigns').setup {
+        signs = {
+          add          = {hl = 'GitSignsAdd'   , text = '+'},
+          change       = {hl = 'GitSignsChange', text = '~'},
+          delete       = {hl = 'GitSignsDelete', text = '_'},
+          topdelete    = {hl = 'GitSignsDelete', text = '‾'},
+          changedelete = {hl = 'GitSignsChange', text = '~'},
+        },
+        keymaps = {
+          noremap = true,
+          buffer = true,
+          ['n ]h'] = { expr = true, "&diff ? ']c' : '<cmd>lua require\"gitsigns\".next_hunk()<CR>'"},
+          ['n [h'] = { expr = true, "&diff ? '[c' : '<cmd>lua require\"gitsigns\".prev_hunk()<CR>'"},
+          ['n <leader>hs'] = '<cmd>lua require"gitsigns".stage_hunk()<CR>',
+          ['n <leader>hu'] = '<cmd>lua require"gitsigns".undo_stage_hunk()<CR>',
+          ['n <leader>hr'] = '<cmd>lua require"gitsigns".reset_hunk()<CR>',
+          ['n <leader>hp'] = '<cmd>lua require"gitsigns".preview_hunk()<CR>',
+        },
+        watch_index = {
+          interval = 1000
+        },
+        sign_priority = 6,
+        status_formatter = nil,
+      }
+    end
+  }
+  use {
+    'ruifm/gitlinker.nvim',
+    requires = 'nvim-lua/plenary.nvim',
+    config = function()
+      require"gitlinker".setup()
+    end
+  }
   --- <leader>gy
-  use {'~/dev/octo.nvim', config = function()
-    require"octo".setup({
-      reaction_viewer_hint_icon = "";
-    })
-  end}
-  use {'~/dev/octo-notifications.nvim', after='octo.nvim', config = function()
-  end}
+
+  use_local {
+    'pwntester/octo.nvim',
+    config = function()
+      require"octo".setup({
+        reaction_viewer_hint_icon = "";
+      })
+    end,
+    local_path = "dev",
+    requires = {'nvim-telescope/telescope.nvim'},
+  }
+  use_local {
+    'pwntester/octo-notifications.nvim',
+    config = function()
+      require"octo".setup({
+        reaction_viewer_hint_icon = "";
+      })
+    end,
+    requires = 'pwntester/octo.nvim',
+    local_path = "dev",
+  }
 
   -- THEMES & COLORS
   use {'rktjmp/lush.nvim'}
-  use {'mhartington/oceanic-next', config = function()
-    --vim.cmd [[ colorscheme OceanicNext]]
-  end}
-  use {'shaunsingh/nord.nvim', config = function()
-    --vim.cmd [[ colorscheme nord ]]
-  end}
-  use {'~/dev/nautilus.nvim', config = function()
-    vim.cmd [[ colorscheme nautilus ]]
-  end}
-  use {'kwsp/halcyon-neovim', config = function()
-    --vim.cmd [[ colorscheme halcyon]]
-  end}
-  use {'folke/tokyonight.nvim', config = function()
-    --vim.cmd [[colorscheme tokyonight]]
-  end}
-  use {'norcalli/nvim-colorizer.lua', branch = 'color-editor'}
+  use_local {
+    'pwntester/nautilus.nvim',
+    config = function()
+      require'nautilus'.setup({mode = "grey"})
+    end,
+    local_path = "dev",
+  }
+  use {
+    'norcalli/nvim-colorizer.lua',
+    branch = 'color-editor'
+  }
 
   -- UI
   use {'ryanoasis/vim-devicons'}
-  use {'kyazdani42/nvim-web-devicons', config = function()
-    require'nvim-web-devicons'.setup()
-  end}
-  use {'lukas-reineke/indent-blankline.nvim', branch = 'lua', config = function()
-    vim.g.indent_blankline_char = '¦' -- ['|', '¦', '┆', '┊']
-    vim.g.indent_blankline_filetype_exclude = vim.list_extend(vim.g.special_buffers, {'markdown', 'octo', 'dashboard'})
-  end}
+  use {
+    'kyazdani42/nvim-web-devicons',
+    config = function()
+      require'nvim-web-devicons'.setup()
+    end
+  }
+  use {
+    'lukas-reineke/indent-blankline.nvim',
+    branch = 'lua',
+    config = function()
+      vim.g.indent_blankline_char = '¦' -- ['|', '¦', '┆', '┊']
+      vim.g.indent_blankline_filetype_exclude = vim.list_extend(vim.g.special_buffers, {'markdown', 'octo', 'dashboard'})
+    end
+  }
   use {'junegunn/rainbow_parentheses.vim'}
-  use {'tjdevries/express_line.nvim', config = function()
-    require'plugins.expressline'
-  end}
-  --use {'glepnir/galaxyline.nvim', config = function()
-    --require'plugins.galaxyline'
-  --end}
-  use {'pacha/vem-tabline', config = function()
-    vim.g.vem_tabline_show = 2
-  end}
+  use {
+    'tjdevries/express_line.nvim',
+    config = function()
+      require'plugins.expressline'
+    end
+  }
+  -- use {
+  --   'glepnir/galaxyline.nvim',
+  --   config = function()
+  --     require'plugins.galaxyline'
+  --   end
+  -- }
+  use {
+    'pacha/vem-tabline',
+    config = function()
+      vim.g.vem_tabline_show = 2
+    end
+  }
 
   -- PAIRING
-  use {'steelsojka/pears.nvim', config = function()
-    require "pears".setup(function(conf)
-      conf.preset "tag_matching"
-      conf.on_enter(function(pears_handle)
-        if vim.fn.pumvisible() == 1 and vim.fn.complete_info().selected ~= -1 then
-          return vim.fn["compe#confirm"]("<CR>")
-        else
-          pears_handle()
-        end
+  use {
+    'steelsojka/pears.nvim',
+    config = function()
+      require "pears".setup(function(conf)
+        conf.preset "tag_matching"
+        conf.on_enter(function(pears_handle)
+          if vim.fn.pumvisible() == 1 and vim.fn.complete_info().selected ~= -1 then
+            return vim.fn["compe#confirm"]("<CR>")
+          else
+            pears_handle()
+          end
+        end)
+        conf.disabled_filetypes({"TelescopePrompt", "octo"})
+        conf.expand_on_enter(true)
       end)
-      conf.disabled_filetypes({"TelescopePrompt", "octo"})
-      conf.expand_on_enter(true)
-    end)
-  end}
+    end
+  }
 
   -- FILE EXPLORER
-  use {'kyazdani42/nvim-tree.lua', config = function()
-    vim.g.nvim_tree_width = 40
-    vim.g.nvim_tree_ignore = {'.git'}
-    vim.g.nvim_tree_auto_open = 0
-    vim.g.nvim_tree_gitignore = 1
-    vim.g.nvim_tree_auto_ignore_ft = {'dashboard'}
-    vim.g.nvim_tree_quit_on_open = 0
-    vim.g.nvim_tree_follow = 0
-    vim.g.nvim_tree_hide_dotfiles = 1
-    vim.g.nvim_tree_add_trailing = 1
-    vim.g.nvim_tree_group_empty = 1
-    vim.g.nvim_tree_show_icons = {
-      git = 0,
-      folders = 1,
-      files = 1,
-    }
-  end}
+  use {
+    'kyazdani42/nvim-tree.lua',
+    config = function()
+      vim.g.nvim_tree_width = 30
+      vim.g.nvim_tree_ignore = {'.git'}
+      vim.g.nvim_tree_auto_open = 0
+      vim.g.nvim_tree_gitignore = 1
+      vim.g.nvim_tree_auto_ignore_ft = vim.g.special_buffers
+      vim.g.nvim_tree_quit_on_open = 0
+      vim.g.nvim_tree_follow = 0
+      vim.g.nvim_tree_hide_dotfiles = 1
+      vim.g.nvim_tree_add_trailing = 1
+      vim.g.nvim_tree_group_empty = 1
+      vim.g.nvim_tree_show_icons = {
+        git = 0,
+        folders = 1,
+        files = 1,
+      }
+    end
+  }
 
   -- COMMENTS
-  use {'terrortylor/nvim-comment', config = function()
-    require('nvim_comment').setup()
-  end}
+  use {
+    'terrortylor/nvim-comment',
+    config = function()
+      require('nvim_comment').setup()
+    end
+  }
 
   -- ROOTER
-  use {'airblade/vim-rooter', config = function()
-    vim.g.rooter_cd_cmd = 'cd'
-    vim.g.rooter_targets = '/,*'
-    vim.g.rooter_patterns = {'.git'}
-    vim.g.rooter_silent_chdir = 1
-    vim.g.rooter_change_directory_for_non_project_files = 'current'
-  end}
+  use {
+    'airblade/vim-rooter',
+    config = function()
+      vim.g.rooter_cd_cmd = 'cd'
+      vim.g.rooter_targets = '/,*'
+      vim.g.rooter_patterns = {'.git'}
+      vim.g.rooter_silent_chdir = 1
+      vim.g.rooter_change_directory_for_non_project_files = 'current'
+    end
+  }
 
   -- STATIC ANALYSIS
-  use {'~/dev/codeql.nvim', config = function()
-    vim.g.codeql_group_by_sink = true
-    vim.g.codeql_max_ram = 32000
-    vim.g.codeql_search_path = {'/Users/pwntester/codeql-home/codeql-repo', '/Users/pwntester/codeql-home/codeql-go'}
-  end}
-  -- use {'~/dev/fortify.nvim', config = function()
-  --   require'plugins.fortify'.setup()
-  -- end}
+  use_local {
+    'pwntester/codeql.nvim',
+    config = function()
+      vim.g.codeql_group_by_sink = true
+      vim.g.codeql_max_ram = 32000
+      vim.g.codeql_search_path = {'/Users/pwntester/codeql-home/codeql-repo', '/Users/pwntester/codeql-home/codeql-go'}
+    end,
+    local_path = "dev",
+  }
+  use_local {
+    'pwntester/fortify.nvim',
+    config = function()
+      require'plugins.fortify'.setup()
+    end,
+    local_path = "dev",
+  }
 
   -- LSP
-  use {'liuchengxu/vista.vim', config = function()
-    vim.g.vista_executive_for = { lua = 'nvim_lsp', java = 'nvim_lsp' }
-  end}
-  use {'neovim/nvim-lspconfig', config = function()
-    require("lsp_config").setup()
-  end}
-  use {'mfussenegger/nvim-jdtls', config = function()
-    require("lsp_config").setup_jdt()
-  end}
-  use {'glepnir/lspsaga.nvim', config = function()
-    require 'lspsaga'.init_lsp_saga()
-  end}
-  use {'onsails/lspkind-nvim', config = function()
-    require('lspkind').init()
-  end}
+  use {
+    'liuchengxu/vista.vim',
+    config = function()
+      vim.g.vista_executive_for = { lua = 'nvim_lsp', java = 'nvim_lsp' }
+    end
+  }
+  use {
+    'neovim/nvim-lspconfig',
+    config = function()
+      require'lsp_config'.setup()
+    end
+  }
+  use {
+    'mfussenegger/nvim-jdtls',
+    config = function()
+      require'lsp_config'.setup_jdt()
+    end
+  }
+  use {
+    'glepnir/lspsaga.nvim',
+    config = function()
+      require'lspsaga'.init_lsp_saga()
+    end
+  }
+  use {
+    'onsails/lspkind-nvim',
+    config = function()
+      require'lspkind'.init()
+    end
+  }
+  use {
+    'doums/lsp_status',
+    config = function()
+      require'lsp_status'.setup {
+        spinner = {'⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'},
+        interval = 80 -- in ms
+      }
+    end
+  }
 
   -- SYNTAX
   -- use {'SidOfc/mkdx', config = function()
@@ -314,13 +463,16 @@ local spec = function(use)
 
   -- HTTP Client
   use {'nicwest/vim-http'} -- just for the syntax
-  use {'aquach/vim-http-client', config = function()
-    vim.g.http_client_bind_hotkey = false
-    vim.g.http_client_json_ft = 'javascript'
-    vim.g.http_client_focus_output_window = false
-    vim.g.http_client_preserve_responses = false
-    vim.cmd [[autocmd FileType http nnoremap <C-j> :HTTPClientDoRequest<CR>]]
-  end}
+  use {
+    'aquach/vim-http-client',
+    config = function()
+      vim.g.http_client_bind_hotkey = false
+      vim.g.http_client_json_ft = 'javascript'
+      vim.g.http_client_focus_output_window = false
+      vim.g.http_client_preserve_responses = false
+      vim.cmd [[autocmd FileType http nnoremap <C-j> :HTTPClientDoRequest<CR>]]
+    end
+  }
 
   -- use {'sunjon/shade.nvim', config = function()
   --   require'shade'.setup({
@@ -334,10 +486,12 @@ local spec = function(use)
   --   })
   -- end}
 
-  use {"Pocco81/TrueZen.nvim"}
-  use {"RRethy/vim-illuminate", config = function()
-    vim.g.Illuminate_ftblacklist = {'NvimTree'}
-  end}
+  use {
+    "RRethy/vim-illuminate",
+    config = function()
+      vim.g.Illuminate_ftblacklist = vim.g.special_buffers
+    end
+  }
   use {"sindrets/diffview.nvim"}
   use {
     "folke/trouble.nvim",
@@ -362,6 +516,22 @@ local spec = function(use)
     end
   }
   use {'famiu/bufdelete.nvim'}
+  use {
+    'TimUntersberger/neogit',
+    requires = {
+      'nvim-lua/plenary.nvim',
+      'sindrets/diffview.nvim',
+    },
+    config = function()
+      require('neogit').setup {}
+    end
+  }
+  use {
+    'stevearc/aerial.nvim',
+    config = function()
+      vim.g.aerial_manage_folds = false
+    end
+  }
 
 end
 
@@ -372,6 +542,24 @@ local config = {
       vim.api.nvim_set_current_win(winnr)
       return bufnr, winnr
     end
-  }
+  },
+  profile = {
+    enable = true,
+    threshold = 1,
+  },
 }
-packer.startup {spec, config = config}
+
+-- Bootstrap Packer
+local install_path = string.format("%s/site/pack/packer/opt/packer.nvim", vim.fn.stdpath "data")
+if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
+  vim.notify "Downloading packer.nvim..."
+  vim.notify(
+    vim.fn.system { "git", "clone", "https://github.com/wbthomason/packer.nvim", install_path }
+  )
+  vim.cmd "packadd! packer.nvim"
+  require'packer'.startup {spec, config = config}
+  require"packer".sync()
+else
+  vim.cmd "packadd! packer.nvim"
+  require'packer'.startup {spec, config = config}
+end
