@@ -20,6 +20,9 @@
     ~/bin: home/bin
 
 - shell:
+  - [git submodule update --init, Cloning submodules]
+
+- shell:
   - [sudo chsh -s `which zsh`, Making zsh the default shell]
 
 # Install neovim
