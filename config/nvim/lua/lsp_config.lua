@@ -1,9 +1,11 @@
 local vim = vim
 local api = vim.api
 local nvim_lsp = require'lspconfig'
+local lsp_status = require'lsp_status'
 local window = require'window'
 local configs = require'lspconfig/configs'
 local jdtls = require 'jdtls'
+local aerial = require 'aerial'
 
 local function on_init_callback(client)
   --TODO:
@@ -14,9 +16,17 @@ local function on_init_callback(client)
   end
 end
 
+-- turn on `window/workDoneProgress` capability for lsp_status
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+lsp_status.init_capabilities(capabilities)
+
 local function on_attach_callback(client, bufnr)
 
 	bufnr = bufnr or api.nvim_get_current_buf()
+
+  -- lsp_status
+  lsp_status.on_attach(client, bufnr)
+  aerial.on_attach(client)
 
 	-- mappings
 	local map = function(type, key, value)
@@ -49,21 +59,6 @@ local function on_attach_callback(client, bufnr)
 	map('n', '<Plug><LspWorkspaceSymbol)',   '<cmd>lua require"plugins.telescope".lsp_dynamic_symbols()<CR>')
 
   require 'illuminate'.on_attach(client)
-end
-
-local function mk_config()
-  local capabilities = vim.lsp.protocol.make_client_capabilities()
-  capabilities.workspace.configuration = true
-  capabilities.textDocument.completion.completionItem.snippetSupport = true
-  return {
-    flags = {
-      debounce_text_changes = 150,
-      allow_incremental_sync = true,
-    };
-    capabilities = capabilities;
-    on_init = on_init_callback;
-    on_attach = on_attach_callback;
-  }
 end
 
 local function setup()
@@ -123,6 +118,7 @@ local function setup()
 			"-E",
 			"/Users/pwntester/repos/lua-language-server/main.lua",
 		};
+    capabilities = capabilities;
 		on_attach = on_attach_callback;
 		settings = {
 			Lua = {
@@ -143,11 +139,13 @@ local function setup()
 
 	--- JavaScript
 	nvim_lsp.tsserver.setup{
+    capabilities = capabilities;
 		on_attach = on_attach_callback;
 	}
 
 	--- Go
 	nvim_lsp.gopls.setup{
+    capabilities = capabilities;
 		on_attach = on_attach_callback;
 	}
 
@@ -156,12 +154,14 @@ local function setup()
   local omnisharp_bin = "/Users/pwntester/repos/omnisharp-osx/run"
   nvim_lsp.omnisharp.setup{
     cmd = { omnisharp_bin, "--languageserver" , "--hostPID", tostring(pid) };
+    capabilities = capabilities;
 		on_attach = on_attach_callback;
   }
 
 	--- CodeQL
   --{"jsonrpc":"2.0","id":0,"result":{"capabilities":{"textDocumentSync":1,"hoverProvider":true,"completionProvider":{"resolveProvider":false,"triggerCharacters":[".",","]},"definitionProvider":true,"referencesProvider":true,"documentHighlightProvider":true,"documentSymbolProvider":true,"documentFormattingProvider":true,"workspace":{"workspaceFolders":{"supported":true,"changeNotifications":true}},"experimental":{"checkErrorsProvider":true,"guessLocationProvider":true}}}}
 	nvim_lsp.codeqlls.setup{
+    capabilities = capabilities;
 		on_attach = on_attach_callback;
     --on_init_callback = on_init_callback;
 		settings = {
@@ -182,78 +182,96 @@ local function setup()
 		}
 	end
 	nvim_lsp.fortify_lsp.setup{
+    capabilities = capabilities;
 		on_attach = on_attach_callback;
 	}
 
 end
 
 local function start_jdt()
+
+  local bufname = vim.fn.bufname()
+  if vim.startswith(bufname, "codeql:") then return end
   local root_markers = {'gradlew', 'mwnw', '.git'}
   local root_dir = require('jdtls.setup').find_root(root_markers)
   local home = os.getenv('HOME')
   local workspace_folder = home .. "/jdt_ws/" .. vim.fn.fnamemodify(root_dir, ":p:h:t")
-  local config = mk_config()
-  config.filetypes = {'java'}
-  config.flags.server_side_fuzzy_completion = true
-  config.settings = {
-    java = {
-      signatureHelp = { enabled = true };
-      contentProvider = { preferred = 'fernflower' };
-      completion = {
-        favoriteStaticMembers = {
-          "org.hamcrest.MatcherAssert.assertThat",
-          "org.hamcrest.Matchers.*",
-          "org.hamcrest.CoreMatchers.*",
-          "org.junit.jupiter.api.Assertions.*",
-          "java.util.Objects.requireNonNull",
-          "java.util.Objects.requireNonNullElse",
-          "org.mockito.Mockito.*"
-        }
-      };
-      sources = {
-        organizeImports = {
-          starThreshold = 9999;
-          staticStarThreshold = 9999;
-        };
-      };
-      codeGeneration = {
-        toString = {
-          template = "${object.className}{${member.name()}=${member.value}, ${otherMembers}}"
-        }
-      };
-      configuration = {
-        runtimes = {
-          -- {
-          --   name = "JavaSE-8",
-          --   path = "/Users/pwntester/.sdkman/candidates/java/8.0.242.hs-adpt/",
-          -- },
-          {
-            name = "JavaSE-11",
-            path = "/Users/pwntester/.sdkman/candidates/java/11.0.6.hs-adpt/",
-          }
-        }
-      };
-    };
-  }
-  config.cmd = {'/Users/pwntester/bin/jdtls', workspace_folder}
-  config.on_attach = function (client, bufnr)
-    on_attach_callback(client, bufnr)
-    jdtls.setup.add_commands()
 
-    -- mappings
-    local map = function(type, key, value)
-      api.nvim_buf_set_keymap(bufnr, type, key, value,{noremap = true, silent = true});
-    end
-
-    -- TODO: Can we make these look like the saga ones?
-	  map('n', '<Plug>(LspCodeActions)', '<cmd>lua require("jdtls").code_action()<CR>')
-    map('v', '<Plug>(LspRangeCodeActions)', ':<C-U>lua lua require("jdtls").code_action(true)<CR>')
-  end
+  local jdt_capabilities = vim.lsp.protocol.make_client_capabilities()
+  jdt_capabilities.workspace.configuration = true
+  jdt_capabilities.textDocument.completion.completionItem.snippetSupport = true
+  -- lsp_status
+  lsp_status.init_capabilities(jdt_capabilities)
 
   local extendedClientCapabilities = jdtls.extendedClientCapabilities;
   extendedClientCapabilities.resolveAdditionalTextEditsSupport = true;
-  config.init_options = {
-    extendedClientCapabilities = extendedClientCapabilities;
+
+  local config = {
+    flags = {
+      debounce_text_changes = 150,
+      allow_incremental_sync = true,
+      server_side_fuzzy_completion = true
+    };
+    capabilities = jdt_capabilities;
+    init_options = {
+      extendedClientCapabilities = extendedClientCapabilities;
+    },
+    on_init = on_init_callback;
+    filetypes = {'java'};
+    cmd = {'/Users/pwntester/bin/jdtls', workspace_folder};
+    on_attach = function (client, bufnr)
+      on_attach_callback(client, bufnr)
+      jdtls.setup.add_commands()
+
+      -- mappings
+      local map = function(type, key, value)
+        api.nvim_buf_set_keymap(bufnr, type, key, value,{noremap = true, silent = true});
+      end
+
+      -- TODO: Can we make these look like the saga ones?
+      map('n', '<Plug>(LspCodeActions)', '<cmd>lua require("jdtls").code_action()<CR>')
+      map('v', '<Plug>(LspRangeCodeActions)', ':<C-U>lua lua require("jdtls").code_action(true)<CR>')
+    end,
+    settings = {
+      java = {
+        signatureHelp = { enabled = true };
+        contentProvider = { preferred = 'fernflower' };
+        completion = {
+          favoriteStaticMembers = {
+            "org.hamcrest.MatcherAssert.assertThat",
+            "org.hamcrest.Matchers.*",
+            "org.hamcrest.CoreMatchers.*",
+            "org.junit.jupiter.api.Assertions.*",
+            "java.util.Objects.requireNonNull",
+            "java.util.Objects.requireNonNullElse",
+            "org.mockito.Mockito.*"
+          }
+        };
+        sources = {
+          organizeImports = {
+            starThreshold = 9999;
+            staticStarThreshold = 9999;
+          };
+        };
+        codeGeneration = {
+          toString = {
+            template = "${object.className}{${member.name()}=${member.value}, ${otherMembers}}"
+          }
+        };
+        configuration = {
+          runtimes = {
+            -- {
+            --   name = "JavaSE-8",
+            --   path = "/Users/pwntester/.sdkman/candidates/java/8.0.242.hs-adpt/",
+            -- },
+            {
+              name = "JavaSE-11",
+              path = "/Users/pwntester/.sdkman/candidates/java/11.0.6.hs-adpt/",
+            }
+          }
+        };
+      };
+    }
   }
   jdtls.start_or_attach(config)
 end

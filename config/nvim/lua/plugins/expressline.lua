@@ -3,7 +3,6 @@ local extensions = require('el.extensions')
 local sections = require('el.sections')
 local subscribe = require('el.subscribe')
 local format = string.format
---local c = require('colorbuddy.color').colors
 
 local function should_print(module, window, buffer)
   if window and window.win_id ~= vim.api.nvim_get_current_win() then
@@ -22,17 +21,18 @@ local segments = {
 
   --- set dynamic color based on current mode
   function(_, _)
+    local theme = require'nautilus'.theme()
     local mode = vim.fn.mode()
-    local base00 = tostring(require'nautilus'.Normal.bg)
-    local base01 = tostring(require'nautilus'.CursorLine.bg)
-    local base03 = tostring(require'nautilus'.NonText.fg)
-    local base04 = tostring(require'nautilus'.Search.bg)
-    local base05 = tostring(require'nautilus'.Normal.fg)
-    local base08 = tostring(require'nautilus'.ErrorMsg.fg)
-    local base09 = tostring(require'nautilus'.Constant.fg)
-    local base0A = tostring(require'nautilus'.Identifier.fg)
-    local base0B = tostring(require'nautilus'.String.fg)
-    local base0C = tostring(require'nautilus'.Special.fg)
+    local base00 = tostring(theme.Normal.bg)
+    local base01 = tostring(theme.CursorColumn.bg)
+    local base03 = tostring(theme.NonText.fg)
+    local base04 = tostring(theme.Search.bg)
+    local base05 = tostring(theme.Normal.fg)
+    local base08 = tostring(theme.ErrorMsg.fg)
+    local base09 = tostring(theme.Constant.fg)
+    local base0A = tostring(theme.Identifier.fg)
+    local base0B = tostring(theme.String.fg)
+    local base0C = tostring(theme.Special.fg)
 
     if mode == 'n' then
       -- Normal mode
@@ -57,6 +57,7 @@ local segments = {
     vim.cmd(format('hi! StatuslineColor2 guifg=%s guibg=%s', base05, base01))
     vim.cmd(format('hi! StatuslineColor3 guifg=%s guibg=%s', base04, base01))
     vim.cmd(format('hi! StatuslineColor4 guifg=%s guibg=%s', base00, base0A))
+    vim.cmd(format('hi! StatuslineLspStatus guifg=%s guibg=%s', base0B, base01))
     vim.cmd(format('hi! StatuslineLspError guifg=%s guibg=%s', base08, base01))
     vim.cmd(format('hi! StatuslineLspWarning guifg=%s guibg=%s', base09, base01))
     return ''
@@ -127,33 +128,33 @@ local segments = {
     function(_, buffer)
       if buffer and extensions.git_branch(_, buffer) then
         if not should_print('git_branch', _, buffer) then return '' end
-        return format("%s ", extensions.git_branch(_, buffer))
+        return format(" %s ", extensions.git_branch(_, buffer))
       end
     end
   )),
 
   --- col
-  function(window, buffer)
+  sections.highlight('StatuslineColor2', function(window, buffer)
     if not should_print('col_icon', window, buffer) then return '' end
     return '‣'
-  end,
+  end),
   sections.highlight('StatuslineColor1', function(window, buffer)
     if not should_print('col', window, buffer) then return '' end
     return builtin.column..' '
   end),
 
   --- percent
-  function(window, buffer)
+  sections.highlight('StatuslineColor2', function(window, buffer)
     if not should_print('percent_icon', window, buffer) then return '' end
     return 'Ξ'
-  end,
+  end),
   sections.highlight('StatuslineColor1', function(window, buffer)
     if not should_print('percent', window, buffer) then return '' end
     return builtin.percentage_through_file..' '
   end),
 
   --- filetype
-  function(window, buffer)
+  sections.highlight('StatuslineColor2', function(window, buffer)
     if not should_print('filetype_icon', window, buffer) then return '' end
     if buffer.name ~= '' then
       local icon = require'nvim-web-devicons'.get_icon(buffer.name, buffer.filetype, { default = true })
@@ -161,13 +162,21 @@ local segments = {
     else
       return '␜'
     end
-  end,
+  end),
   sections.highlight('StatuslineColor1', function(window, buffer)
     if not should_print('filetype', window, buffer) then return '' end
     return buffer.filetype..' '
   end),
 
   --- lsp
+  sections.highlight('StatuslineLspStatus', function(window, buffer)
+    if not should_print('lsp', window, buffer) then return '' end
+    return ' '
+  end),
+  sections.highlight('StatuslineLspStatus', function(window, buffer)
+    if not should_print('lsp', window, buffer) then return '' end
+    return require'lsp_status'.status().. ' '
+  end),
   sections.highlight('StatuslineLspError', subscribe.user_autocmd(
     'el_lsp_err_diagnostics',
     'LspDiagnosticsChanged',

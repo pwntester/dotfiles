@@ -24,11 +24,14 @@ local dropdown_theme = require('telescope.themes').get_dropdown({
 local function setup()
   require('telescope').setup{
     defaults = {
-    borderchars = {
-      prompt =  {'▀', '▐', '▄', '▌', '▛', '▜', '▟', '▙' };
-      results =  {'▀', '▐', '▄', '▌', '▛', '▜', '▟', '▙' };
-      preview = {'▀', '▐', '▄', '▌', '▛', '▜', '▟', '▙' };
-    },
+      borderchars = {
+        -- prompt =  {'▀', '▐', '▄', '▌', '▛', '▜', '▟', '▙' };
+        -- results =  {'▀', '▐', '▄', '▌', '▛', '▜', '▟', '▙' };
+        -- preview = {'▀', '▐', '▄', '▌', '▛', '▜', '▟', '▙' };
+        results =  {'▔', '▕', '▁', '▏', '🭽', '🭾', '🭿', '🭼' };
+        prompt =  {' ', '▕', '▁', '▏', '▏', '▕', '🭿', '🭼' };
+        preview = {'▔', '▕', '▁', '▏', '🭽', '🭾', '🭿', '🭼' };
+      },
       color_devicons = false;
       mappings = {
         i = {
@@ -43,7 +46,8 @@ local function setup()
           ["<esc>"] = actions.close,
           ["<c-t>"] = trouble.open_with_trouble
         };
-      }
+      },
+      prompt_title = ""
     },
     extensions = {
       frecency = {
@@ -124,7 +128,7 @@ end
 -- buffers
 local function buffers()
   local opts = deepcopy(dropdown_theme)
-  opts.prompt_prefix = 'Buffers>'
+  opts.prompt_title = ''
   require'telescope.builtin'.buffers(opts)
 end
 

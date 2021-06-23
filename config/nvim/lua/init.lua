@@ -1,9 +1,4 @@
--- GLOBALS
-_G.util = require'functions'
-_G.RELOAD = function(module)
-  package.loaded[module] = nil
-  return require(module)
-end
+require('globals')
 
 vim.g.special_buffers = {
   'help',
@@ -20,25 +15,14 @@ vim.g.special_buffers = {
   'codeqlpanel',
   'goyo_pad',
   'terminal',
-  'TelescopePrompt',
   'packer',
   'NvimTree',
-  'octo_panel'
+  'octo_panel',
+  'aerieal',
+  'Trouble'
 }
 
--- packer.nvim
-local execute = vim.api.nvim_command
-local fn = vim.fn
-
-local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
-
-if fn.empty(fn.glob(install_path)) > 0 then
-  fn.system({'git', 'clone', 'https://github.com/wbthomason/packer.nvim', install_path})
-  execute 'packadd packer.nvim'
-end
-
 -- -- OPTIONS
--- require('globals')
 -- local opt = vim.opt
 --
 -- opt.belloff        = 'all' -- Just turn the dang bell off
