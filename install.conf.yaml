@@ -19,9 +19,9 @@
     ~/.zsh: home/zsh
     ~/bin: home/bin
 
-# - shell:
-#   - ssh -o StrictHostKeyChecking=no "git@github.com"
-#   - [git submodule update --init, Cloning submodules]
+- shell:
+  - ssh -o StrictHostKeyChecking=no "git@github.com"
+  - [git submodule update --init, Cloning submodules]
 
 - shell:
   - [sudo chsh -s `which zsh`, Making zsh the default shell]
