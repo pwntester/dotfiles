@@ -19,7 +19,7 @@ alias glol='git log --graph --oneline --decorate'
 alias awb='auditworkbench'
 alias sca='sourceanalyzer'
 alias vi='nvim'
-alias ls='gls --color=auto --group-directories-first'
+#alias ls='gls --color=auto --group-directories-first'
 alias tree='exa --tree'
 
 alias uao='python ~/bin/unzip-and-open.py'

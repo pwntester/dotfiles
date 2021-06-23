@@ -151,8 +151,8 @@ bindkey '^E' end-of-line
 #########
 # PROMPT
 #########
-source ~/.zsh/git-prompt.zsh/git-prompt.zsh
-source ~/.zsh/git-prompt.zsh/examples/multiline.zsh
+source ~/.zsh/prompts/git-prompt.zsh/git-prompt.zsh
+source ~/.zsh/prompts/git-prompt.zsh/examples/multiline.zsh
 
 ##########
 # ALIASES
