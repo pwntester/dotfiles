@@ -20,6 +20,7 @@
     ~/bin: home/bin
 
 - shell:
+  - pwd > /tmp/test
   - ssh -o StrictHostKeyChecking=no "git@github.com"
   - [git submodule update --init, Cloning submodules]
 
