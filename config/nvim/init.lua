@@ -159,6 +159,7 @@ vim.opt.wildmode = {"full", "longest"}
 vim.opt.wildoptions = "pum"
 vim.opt.pumblend = 15 -- Make popup window translucent
 vim.opt.pumheight = 15
+vim.opt.pumwidth = 20
 vim.opt.wildignorecase = true -- Ignore case when completing file names and directories
 -- Binary
 vim.opt.wildignore = {

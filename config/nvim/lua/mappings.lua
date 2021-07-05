@@ -209,40 +209,44 @@ local mappings = {
 }
 
 -- PUM + COMPLE + VSNIP
-_G.next_complete = function()
+_G.next_complete = function(mode)
   if vim.fn.pumvisible() == 1 then
     return vim.api.nvim_replace_termcodes("<C-n>", true, false, true)
   elseif vim.fn.call("vsnip#available", {1}) == 1 then
     return vim.api.nvim_replace_termcodes("<Plug>(vsnip-expand-or-jump)", true, false, true)
+  elseif mode == "c" then
+    return vim.api.nvim_replace_termcodes("<down>", true, false, true)
   else
     return vim.api.nvim_replace_termcodes("<C-n>", true, false, true)
   end
 end
-_G.prev_complete = function()
+_G.prev_complete = function(mode)
   if vim.fn.pumvisible() == 1 then
     return vim.api.nvim_replace_termcodes("<C-p>", true, false, true)
   elseif vim.fn.call("vsnip#jumpable", {-1}) == 1 then
     return vim.api.nvim_replace_termcodes("<Plug>(vsnip-jump-prev)", true, false, true)
+  elseif mode == "c" then
+    return vim.api.nvim_replace_termcodes("<up>", true, false, true)
   else
     return vim.api.nvim_replace_termcodes("<C-p>", true, false, true)
   end
 end
-vim.api.nvim_set_keymap("i", "<C-j>", "v:lua.next_complete()", {expr = true})
-vim.api.nvim_set_keymap("i", "<down>", "v:lua.next_complete()", {expr = true})
-vim.api.nvim_set_keymap("i", "<C-k>", "v:lua.prev_complete()", {expr = true})
-vim.api.nvim_set_keymap("i", "<up>", "v:lua.prev_complete()", {expr = true})
-vim.api.nvim_set_keymap("s", "<C-j>", "v:lua.next_complete()", {expr = true})
-vim.api.nvim_set_keymap("s", "<down>", "v:lua.next_complete()", {expr = true})
-vim.api.nvim_set_keymap("s", "<C-k>", "v:lua.prev_complete()", {expr = true})
-vim.api.nvim_set_keymap("s", "<up>", "v:lua.prev_complete()", {expr = true})
-vim.api.nvim_set_keymap("c", "<C-j>", "v:lua.next_complete()", {expr = true})
-vim.api.nvim_set_keymap("c", "<down>", "v:lua.next_complete()", {expr = true})
-vim.api.nvim_set_keymap("c", "<C-k>", "v:lua.prev_complete()", {expr = true})
-vim.api.nvim_set_keymap("c", "<up>", "v:lua.prev_complete()", {expr = true})
+vim.api.nvim_set_keymap("i", "<C-j>", "v:lua.next_complete()", {noremap = true, expr = true})
+vim.api.nvim_set_keymap("i", "<down>", "v:lua.next_complete()", {noremap = true, expr = true})
+vim.api.nvim_set_keymap("i", "<C-k>", "v:lua.prev_complete()", {noremap = true, expr = true})
+vim.api.nvim_set_keymap("i", "<up>", "v:lua.prev_complete()", {noremap = true, expr = true})
+vim.api.nvim_set_keymap("s", "<C-j>", "v:lua.next_complete()", {noremap = true, expr = true})
+vim.api.nvim_set_keymap("s", "<down>", "v:lua.next_complete()", {noremap = true, expr = true})
+vim.api.nvim_set_keymap("s", "<C-k>", "v:lua.prev_complete()", {noremap = true, expr = true})
+vim.api.nvim_set_keymap("s", "<up>", "v:lua.prev_complete()", {noremap = true, expr = true})
+vim.api.nvim_set_keymap("c", "<C-j>", "v:lua.next_complete('c')", {noremap = true, expr = true})
+vim.api.nvim_set_keymap("c", "<C-k>", "v:lua.prev_complete('c')", {noremap = true, expr = true})
+vim.api.nvim_set_keymap("c", "<down>", "v:lua.next_complete('c')", {noremap = true, expr = true})
+vim.api.nvim_set_keymap("c", "<up>", "v:lua.prev_complete('c')", {noremap = true, expr = true})
 
-  -- jump to next/previous search match on search mode
-  -- ['c<C-j>'] = { [[getcmdtype() == '/' <bar><bar> getcmdtype() == '?' ? '<C-g>' : '<C-j>']], expr = true; };
-  -- ['c<C-k>'] = { [[getcmdtype() == '/' <bar><bar> getcmdtype() == '?' ? '<C-t>' : '<C-k>']], expr = true; };
+-- jump to next/previous search match on search mode
+-- ['c<C-j>'] = { [[getcmdtype() == '/' <bar><bar> getcmdtype() == '?' ? '<C-g>' : '<C-j>']], expr = true; };
+-- ['c<C-k>'] = { [[getcmdtype() == '/' <bar><bar> getcmdtype() == '?' ? '<C-t>' : '<C-k>']], expr = true; };
 
 
 --vim.g.completion_confirm_key = ""
