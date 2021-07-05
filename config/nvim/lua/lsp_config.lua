@@ -1,11 +1,12 @@
 local vim = vim
 local api = vim.api
 local nvim_lsp = require'lspconfig'
-local lsp_status = require'lsp_status'
 local window = require'window'
 local configs = require'lspconfig/configs'
+local util = require 'lspconfig/util'
 local jdtls = require 'jdtls'
-local aerial = require 'aerial'
+
+local clients = {}
 
 local function on_init_callback(client)
   --TODO:
@@ -16,17 +17,20 @@ local function on_init_callback(client)
   end
 end
 
--- turn on `window/workDoneProgress` capability for lsp_status
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-lsp_status.init_capabilities(capabilities)
+local function register_buffer(bufnr, client_id)
+  if not clients[bufnr] then
+    clients[bufnr] = {client_id}
+  else
+    table.insert(clients[bufnr], client_id)
+  end
+end
 
 local function on_attach_callback(client, bufnr)
-
 	bufnr = bufnr or api.nvim_get_current_buf()
+  vim.notify("Attaching LSP client "..client.id.." to buffer "..bufnr)
 
-  -- lsp_status
-  lsp_status.on_attach(client, bufnr)
-  aerial.on_attach(client)
+  -- register client/buffer relation
+  register_buffer(bufnr, client.id)
 
 	-- mappings
 	local map = function(type, key, value)
@@ -58,7 +62,10 @@ local function on_attach_callback(client, bufnr)
 	map('n', '<Plug><LspDocumentSymbol)',    '<cmd>lua require"telescope.builtin.lsp".document_symbols()<CR>')
 	map('n', '<Plug><LspWorkspaceSymbol)',   '<cmd>lua require"plugins.telescope".lsp_dynamic_symbols()<CR>')
 
+  -- Extensions
   require 'illuminate'.on_attach(client)
+  --require 'aerial'.on_attach(client)
+
 end
 
 local function setup()
@@ -118,7 +125,6 @@ local function setup()
 			"-E",
 			"/Users/pwntester/repos/lua-language-server/main.lua",
 		};
-    capabilities = capabilities;
 		on_attach = on_attach_callback;
 		settings = {
 			Lua = {
@@ -139,13 +145,11 @@ local function setup()
 
 	--- JavaScript
 	nvim_lsp.tsserver.setup{
-    capabilities = capabilities;
 		on_attach = on_attach_callback;
 	}
 
 	--- Go
 	nvim_lsp.gopls.setup{
-    capabilities = capabilities;
 		on_attach = on_attach_callback;
 	}
 
@@ -154,16 +158,18 @@ local function setup()
   local omnisharp_bin = "/Users/pwntester/repos/omnisharp-osx/run"
   nvim_lsp.omnisharp.setup{
     cmd = { omnisharp_bin, "--languageserver" , "--hostPID", tostring(pid) };
-    capabilities = capabilities;
 		on_attach = on_attach_callback;
   }
 
 	--- CodeQL
   --{"jsonrpc":"2.0","id":0,"result":{"capabilities":{"textDocumentSync":1,"hoverProvider":true,"completionProvider":{"resolveProvider":false,"triggerCharacters":[".",","]},"definitionProvider":true,"referencesProvider":true,"documentHighlightProvider":true,"documentSymbolProvider":true,"documentFormattingProvider":true,"workspace":{"workspaceFolders":{"supported":true,"changeNotifications":true}},"experimental":{"checkErrorsProvider":true,"guessLocationProvider":true}}}}
 	nvim_lsp.codeqlls.setup{
-    capabilities = capabilities;
 		on_attach = on_attach_callback;
-    --on_init_callback = on_init_callback;
+    root_dir = function(fname)
+      if vim.startswith(fname, "octo:") or vim.startswith(fname, "codeql:") then return end
+      local root_pattern = util.root_pattern("qlpack.yml")
+      return root_pattern(fname) or util.path.dirname(fname)
+    end,
 		settings = {
 			search_path = vim.g.codeql_search_path;
 		};
@@ -182,16 +188,14 @@ local function setup()
 		}
 	end
 	nvim_lsp.fortify_lsp.setup{
-    capabilities = capabilities;
 		on_attach = on_attach_callback;
 	}
 
 end
 
 local function start_jdt()
-
   local bufname = vim.fn.bufname()
-  if vim.startswith(bufname, "codeql:") then return end
+  if vim.startswith(bufname, "codeql:") or vim.startswith(bufname, "octo:") then return end
   local root_markers = {'gradlew', 'mwnw', '.git'}
   local root_dir = require('jdtls.setup').find_root(root_markers)
   local home = os.getenv('HOME')
@@ -200,8 +204,6 @@ local function start_jdt()
   local jdt_capabilities = vim.lsp.protocol.make_client_capabilities()
   jdt_capabilities.workspace.configuration = true
   jdt_capabilities.textDocument.completion.completionItem.snippetSupport = true
-  -- lsp_status
-  lsp_status.init_capabilities(jdt_capabilities)
 
   local extendedClientCapabilities = jdtls.extendedClientCapabilities;
   extendedClientCapabilities.resolveAdditionalTextEditsSupport = true;
@@ -329,4 +331,5 @@ return {
 	setup = setup;
   start_jdt = start_jdt;
   setup_jdt = setup_jdt;
+  clients = clients;
 }

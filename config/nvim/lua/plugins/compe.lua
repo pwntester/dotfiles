@@ -20,6 +20,7 @@ local function setup()
       nvim_lua = true;
       spell = true;
       treesitter = true;
+      orgmode = true;
     };
   }
 end

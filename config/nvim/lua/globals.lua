@@ -16,38 +16,32 @@ _G.as = {
 }
 
 _G.util = require'functions'
-_G.RELOAD = function(module)
-  package.loaded[module] = nil
-  return require(module)
-end
 
------------------------------------------------------------------------------//
--- UI
------------------------------------------------------------------------------//
--- Consistent store of various UI items to reuse throughout my config
-as.style = {
-  icons = {
-    error = "✗",
-    warning = "",
-    info = "",
-    hint = "",
-  },
-  palette = {
-    pale_red = "#E06C75",
-    dark_red = "#be5046",
-    light_red = "#c43e1f",
-    dark_orange = "#FF922B",
-    green = "#98c379",
-    bright_yellow = "#FAB005",
-    light_yellow = "#e5c07b",
-    dark_blue = "#4e88ff",
-    magenta = "#c678dd",
-    comment_grey = "#5c6370",
-    grey = "#3E4556",
-    whitesmoke = "#626262",
-    bright_blue = "#51afef",
-    teal = "#15AABF",
-  },
+_G.special_buffers = {
+  'help',
+  'fortifytestpane',
+  'fortifyauditpane',
+  'defx',
+  'dirvish',
+  'qf',
+  'vim-plug',
+  'fzf',
+  'magit',
+  'goterm',
+  'vista_kind',
+  'codeqlpanel',
+  'goyo_pad',
+  'terminal',
+  'packer',
+  'NvimTree',
+  'octo_panel',
+  'octo',
+  'aerieal',
+  'Trouble',
+  'dashboard',
+  'frecency',
+  'TelescopePrompt',
+  'NeogitStatus'
 }
 
 -----------------------------------------------------------------------------//
@@ -286,84 +280,6 @@ local function validate_opts(opts)
   return true
 end
 
-local function validate_mappings(lhs, rhs, opts)
-  vim.validate {
-    lhs = { lhs, "string" },
-    rhs = {
-      rhs,
-      function(a)
-        local arg_type = type(a)
-        return arg_type == "string" or arg_type == "function"
-      end,
-      "right hand side",
-    },
-    opts = { opts, validate_opts, "mapping options are incorrect" },
-  }
-end
-
----create a mapping function factory
----@param mode string
----@param o table
----@return function
-local function make_mapper(mode, o)
-  -- copy the opts table as extends will mutate the opts table passed in otherwise
-  local parent_opts = vim.deepcopy(o)
-  ---Create a mapping
-  ---@param lhs string
-  ---@param rhs string|function
-  ---@param opts table
-  return function(lhs, rhs, opts)
-    assert(lhs ~= mode, fmt("The lhs should not be the same as mode for %s", lhs))
-    local _opts = opts and vim.deepcopy(opts) or {}
-
-    validate_mappings(lhs, rhs, _opts)
-
-    if _opts.check_existing and as.has_map(lhs) then
-      return
-    else
-      -- don't pass this invalid key to set keymap
-      _opts.check_existing = nil
-    end
-
-    -- add functions to a global table keyed by their index
-    if type(rhs) == "function" then
-      local fn_id = as._create(rhs)
-      rhs = string.format("<cmd>lua as._execute(%s)<CR>", fn_id)
-    end
-
-    if _opts.buffer then
-      -- Remove the buffer from the args sent to the key map function
-      local bufnr = _opts.buffer
-      _opts.buffer = nil
-      _opts = vim.tbl_extend("keep", _opts, parent_opts)
-      api.nvim_buf_set_keymap(bufnr, mode, lhs, rhs, _opts)
-    else
-      api.nvim_set_keymap(mode, lhs, rhs, vim.tbl_extend("keep", _opts, parent_opts))
-    end
-  end
-end
-
-local map_opts = { noremap = false, silent = true }
-local noremap_opts = { noremap = true, silent = true }
-
-as.nmap = make_mapper("n", map_opts)
-as.xmap = make_mapper("x", map_opts)
-as.imap = make_mapper("i", map_opts)
-as.vmap = make_mapper("v", map_opts)
-as.omap = make_mapper("o", map_opts)
-as.tmap = make_mapper("t", map_opts)
-as.smap = make_mapper("s", map_opts)
-as.cmap = make_mapper("c", { noremap = false, silent = false })
-
-as.nnoremap = make_mapper("n", noremap_opts)
-as.xnoremap = make_mapper("x", noremap_opts)
-as.vnoremap = make_mapper("v", noremap_opts)
-as.inoremap = make_mapper("i", noremap_opts)
-as.onoremap = make_mapper("o", noremap_opts)
-as.tnoremap = make_mapper("t", noremap_opts)
-as.snoremap = make_mapper("s", noremap_opts)
-as.cnoremap = make_mapper("c", { noremap = true, silent = false })
-
 function as.command(args)
   local nargs = args.nargs or 0
   local name = args[1]
@@ -419,7 +335,8 @@ function as.notify(lines, opts)
     return vim.split(line, "\n")
   end, lines))
   opts = opts or {}
-  local highlights = { "NormalFloat:Normal" }
+  local highlights = { "Normal:NormalDark" }
+
   local level = opts.log_level or 1
   local timeout = opts.timeout or 5000
 
@@ -446,16 +363,16 @@ function as.notify(lines, opts)
     anchor = "SE",
     style = "minimal",
     focusable = false,
-    --border = "rounded",
+    border = "rounded"
   })
 
   local level_hl = notification_hl[level]
-
   vim.list_extend(highlights, level_hl)
-  vim.wo[win].winhighlight = table.concat(highlights, ",")
+  vim.api.nvim_win_set_option(win, "winhighlight", table.concat(highlights, ","))
+  vim.api.nvim_win_set_option(win, "cursorline", false)
+  vim.api.nvim_win_set_option(win, "wrap", true)
+  --vim.api.nvim_buf_set_option(buf, "filetype", "vim-notify")
 
-  vim.bo[buf].filetype = "vim-notify"
-  vim.wo[win].wrap = true
   if timeout then
     vim.defer_fn(function()
       if api.nvim_win_is_valid(win) then

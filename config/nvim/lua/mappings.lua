@@ -94,29 +94,25 @@ local mappings = {
   -- quickly select text you pasted
   ['ngp'] = { [['`[' . strpart(getregtype(), 0, 1) . '`]']], expr = true; };
 
-  -- jump to next/previous search match on search mode
-  ['c<C-j>'] = { [[getcmdtype() == '/' <bar><bar> getcmdtype() == '?' ? '<C-g>' : '<C-j>']], expr = true; };
-  ['c<C-k>'] = { [[getcmdtype() == '/' <bar><bar> getcmdtype() == '?' ? '<C-t>' : '<C-k>']], expr = true; };
-
   -- these work like * and g*, but do not move the cursor and always set hls.
   ['_*'] = { [[:let @/ = '\<'.expand('<cword>').'\>'<bar>set hlsearch<C-M>]] };
   ['_g*'] = { [[:let @/ = expand('<cword>')<bar>set hlsearch<C-M>]] };
 
   -- goto URL
-  ['ngx'] = { [[:call OpenURL()<CR>]] };
+  ['ngx'] = { [[:call v:lua.util.OpenURL()<CR>]] };
   ['ngo'] = { '<Plug>(OctoOpenIssueAtCursor)', noremap = false; };
 
   -- TELESCOPE
   --['n<leader>m'] = { [[<cmd>lua require'plugins.telescope'.mru()<CR>]] };
-  ['n<leader>m'] = { [[<cmd>lua require'telescope'.extensions.frecency.frecency({prompt_title='',preview_title='',results_title=''})<CR>]]};
-  ['n<leader>f'] = { [[<cmd>lua require'telescope.builtin'.find_files({prompt_title='',preview_title='',results_title=''})<CR>]] };
-  ['n<leader>l'] = { [[<cmd>lua require'telescope.builtin'.live_grep({prompt_title='',preview_title='',results_title=''})<CR>]] };
+  ['n<leader>m'] = { [[<cmd>lua require'telescope'.extensions.frecency.frecency({prompt_title=false,preview_title=false,results_title=false})<CR>]]};
+  ['n<leader>f'] = { [[<cmd>lua require'telescope.builtin'.find_files({prompt_title=false,preview_title=false,results_title=false})<CR>]] };
+  ['n<leader>l'] = { [[<cmd>lua require'telescope.builtin'.live_grep({prompt_title=false,preview_title=false,results_title=false})<CR>]] };
   ['n<leader>r'] = { [[<cmd>lua require'plugins.telescope'.reloader()<CR>]] };
-  ['n<leader>o'] = { [[<cmd>lua require'telescope.builtin'.buffers({prompt_title='',preview_title='',results_title=''})<CR>]] };
-  ['n<leader>s'] = { [[<cmd>lua require'telescope.builtin'.treesitter({prompt_title='',preview_title='',results_title=''})<CR>]] };
-  ['n<leader>gc'] = { [[<cmd>lua require'telescope.builtin'.git_commits({prompt_title='',preview_title='',results_title=''})<CR>]] };
-  ['n<leader>gf'] = { [[<cmd>lua require'telescope.builtin'.git_files({prompt_title='',preview_title='',results_title=''})<CR>]] };
-  ['n<leader>gb'] = { [[<cmd>lua require'telescope.builtin'.git_branches({prompt_title='',preview_title='',results_title=''})<CR>]] };
+  ['n<leader>o'] = { [[<cmd>lua require'telescope.builtin'.buffers({prompt_title=false,preview_title=false,results_title=false})<CR>]] };
+  ['n<leader>s'] = { [[<cmd>lua require'telescope.builtin'.treesitter({prompt_title=false,preview_title=false,results_title=false})<CR>]] };
+  ['n<leader>gc'] = { [[<cmd>lua require'telescope.builtin'.git_commits({prompt_title=false,preview_title=false,results_title=false})<CR>]] };
+  ['n<leader>gf'] = { [[<cmd>lua require'telescope.builtin'.git_files({prompt_title=false,preview_title=false,results_title=false})<CR>]] };
+  ['n<leader>gb'] = { [[<cmd>lua require'telescope.builtin'.git_branches({prompt_title=false,preview_title=false,results_title=false})<CR>]] };
   ['n<leader>p'] = { [[<cmd>lua require'telescope'.extensions.project.project{change_dir = true}<CR>]] };
 
   -- GITSIGNS
@@ -131,11 +127,11 @@ local mappings = {
   -- GOYO
   ['n<leader>y'] = { ':Goyo<CR>' };
 
-  -- VEM-TABLINE
-  ['n<s-h>'] = { '<Plug>vem_prev_buffer-', noremap = false; };
-  ['n<s-l>'] = { '<Plug>vem_next_buffer-', noremap = false; };
-  -- ['n<leader>['] = { '<Plug>vem_move_buffer_left-', noremap = false; };
-  -- ['n<leader>]'] = { '<Plug>vem_move_buffer_right-', noremap = false; };
+  -- NVIM-BUFFERLINE
+  ['n<s-l>'] = { ':BufferLineCycleNext<CR>', noremap = false; };
+  ['n<s-h>'] = { ':BufferLineCyclePrev<CR>', noremap = false; };
+  -- ['n<leader>]'] = { ':BufferLineMoveNext<CR>', noremap = false; };
+  -- ['n<leader>['] = { ':BufferLineMovePrev<CR>', noremap = false; };
 
   -- NVIM-TREE
   ['ngE'] = { [[:NvimTreeToggle<CR>]] };
@@ -143,12 +139,6 @@ local mappings = {
 
   -- GIT-MESSANGER
   ['n<leader>gm'] = { [[<Plug>(git-messenger)]], noremap = false };
-
-  -- WILDMENU
-  ['c<c-j>'] = { '<right>' };
-  ['c<c-k>'] = { '<left>' };
-  ['c<c-h>'] = { '<space><bs><left>' };
-  ['c<c-l>'] = { '<space><bs><right>' };
 
   -- DIAL
   ['n<C-a>'] = { [[<Plug>(dial-increment)]] };
@@ -218,15 +208,14 @@ local mappings = {
   ['ngoc']    = { [[<Plug>(LspOutgoingCalls)]], noremap = false};
 }
 
--- COMPLE + VSNIP
-vim.g.completion_confirm_key = ""
+-- PUM + COMPLE + VSNIP
 _G.next_complete = function()
   if vim.fn.pumvisible() == 1 then
     return vim.api.nvim_replace_termcodes("<C-n>", true, false, true)
   elseif vim.fn.call("vsnip#available", {1}) == 1 then
     return vim.api.nvim_replace_termcodes("<Plug>(vsnip-expand-or-jump)", true, false, true)
   else
-    return vim.api.nvim_replace_termcodes("<C-j>", true, false, true)
+    return vim.api.nvim_replace_termcodes("<C-n>", true, false, true)
   end
 end
 _G.prev_complete = function()
@@ -235,9 +224,28 @@ _G.prev_complete = function()
   elseif vim.fn.call("vsnip#jumpable", {-1}) == 1 then
     return vim.api.nvim_replace_termcodes("<Plug>(vsnip-jump-prev)", true, false, true)
   else
-    return vim.api.nvim_replace_termcodes("<C-k>", true, false, true)
+    return vim.api.nvim_replace_termcodes("<C-p>", true, false, true)
   end
 end
+vim.api.nvim_set_keymap("i", "<C-j>", "v:lua.next_complete()", {expr = true})
+vim.api.nvim_set_keymap("i", "<down>", "v:lua.next_complete()", {expr = true})
+vim.api.nvim_set_keymap("i", "<C-k>", "v:lua.prev_complete()", {expr = true})
+vim.api.nvim_set_keymap("i", "<up>", "v:lua.prev_complete()", {expr = true})
+vim.api.nvim_set_keymap("s", "<C-j>", "v:lua.next_complete()", {expr = true})
+vim.api.nvim_set_keymap("s", "<down>", "v:lua.next_complete()", {expr = true})
+vim.api.nvim_set_keymap("s", "<C-k>", "v:lua.prev_complete()", {expr = true})
+vim.api.nvim_set_keymap("s", "<up>", "v:lua.prev_complete()", {expr = true})
+vim.api.nvim_set_keymap("c", "<C-j>", "v:lua.next_complete()", {expr = true})
+vim.api.nvim_set_keymap("c", "<down>", "v:lua.next_complete()", {expr = true})
+vim.api.nvim_set_keymap("c", "<C-k>", "v:lua.prev_complete()", {expr = true})
+vim.api.nvim_set_keymap("c", "<up>", "v:lua.prev_complete()", {expr = true})
+
+  -- jump to next/previous search match on search mode
+  -- ['c<C-j>'] = { [[getcmdtype() == '/' <bar><bar> getcmdtype() == '?' ? '<C-g>' : '<C-j>']], expr = true; };
+  -- ['c<C-k>'] = { [[getcmdtype() == '/' <bar><bar> getcmdtype() == '?' ? '<C-t>' : '<C-k>']], expr = true; };
+
+
+--vim.g.completion_confirm_key = ""
 -- _G.completion_confirm=function()
 --   if vim.fn.pumvisible() ~= 0  then
 --     if vim.fn.complete_info()["selected"] ~= -1 then
@@ -253,12 +261,7 @@ end
 --     return npairs.check_break_line_char()
 --   end
 -- end
-
 --vim.api.nvim_set_keymap("i", "<CR>",  "v:lua.completion_confirm()", {expr = true})
-vim.api.nvim_set_keymap("i", "<C-j>", "v:lua.next_complete()", {expr = true})
-vim.api.nvim_set_keymap("s", "<C-j>", "v:lua.next_complete()", {expr = true})
-vim.api.nvim_set_keymap("i", "<C-k>", "v:lua.prev_complete()", {expr = true})
-vim.api.nvim_set_keymap("s", "<C-k>", "v:lua.prev_complete()", {expr = true})
 
 vim.cmd [[tnoremap <Esc> <C-\><C-n>]]
 
