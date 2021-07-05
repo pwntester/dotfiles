@@ -157,9 +157,7 @@ source ~/.zsh/prompts/git-prompt.zsh/examples/multiline.zsh
 ##########
 # ALIASES
 ##########
-
 source ~/.zsh/aliases
-
 
 ############
 # FUNCTIONS

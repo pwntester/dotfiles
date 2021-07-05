@@ -1,4 +1,3 @@
-
 --- from https://github.com/akinsho/dotfiles/blob/main/.config/nvim/lua/as/plugins/init.lua#L64-L113
 ---local variant of packer's `use` function that specifies both a local and upstream version of a plugin
 ---@param spec table|string
@@ -58,9 +57,8 @@ local spec = function(use)
           d = {description = {'  Recently Used Files '}, command = 'Telescope frecency'},
           e = {description = {'  Load Last Session   '}, command = 'SessionLoad'},
           f = {description = {'  CWD Grep            '}, command = 'Telescope live_grep'},
-          g = {description = {'  Plugins             '}, command = ':e ~/.config/nvim/lua/plugins.lua'}
+          g = {description = {'  Config              '}, command = ':e ~/.config/nvim/lua/plugins.lua'}
       }
-      --vim.g.dashboard_custom_footer = {'pwntester.com'}
     end
   }
 
@@ -70,6 +68,7 @@ local spec = function(use)
   use {'nvim-lua/plenary.nvim'}
 
   -- BASICS
+  use {'famiu/bufdelete.nvim'}
   use {'jdhao/better-escape.vim'}
   use {'monaqa/dial.nvim'}
   use {
@@ -142,6 +141,7 @@ local spec = function(use)
   use {'hrsh7th/vim-vsnip'}
   use {'seudev/vscode-java-snippets'}
   use {'NexSabre/vscode-python-snippets'}
+  use {'github/vscode-codeql'}
 
   -- TREESITTER
   use {
@@ -182,12 +182,6 @@ local spec = function(use)
   -- GIT
   use {'rhysd/committia.vim'}
   use {
-    'tpope/vim-fugitive',
-    config = function()
-      vim.g.fugitive_columns = 120
-    end
-  }
-  use {
     'lewis6991/gitsigns.nvim',
     config = function()
       require('gitsigns').setup {
@@ -224,7 +218,6 @@ local spec = function(use)
     end
   }
   --- <leader>gy
-
   use_local {
     'pwntester/octo.nvim',
     config = function()
@@ -237,14 +230,45 @@ local spec = function(use)
   }
   use_local {
     'pwntester/octo-notifications.nvim',
-    config = function()
-      require"octo".setup({
-        reaction_viewer_hint_icon = "";
-      })
-    end,
     requires = 'pwntester/octo.nvim',
     local_path = "dev",
   }
+  use {"sindrets/diffview.nvim"}
+  use {
+    'TimUntersberger/neogit',
+    requires = {
+      'nvim-lua/plenary.nvim',
+      'sindrets/diffview.nvim',
+    },
+    config = function()
+      require('neogit').setup {
+        integrations = {
+          diffview = true
+        },
+        disable_commit_confirmation = true,
+        mappings = {
+          status = {
+            [">"] = "Toggle",
+          }
+        }
+      }
+    end
+  }
+  --- <tab>: Toggle diff
+  --- s: tage (also supports staging selection/hunk)
+  --- S: Stage unstaged changes
+  --- u: Unstage (also supports staging selection/hunk)
+  --- U: Unstage staged changes
+  --- c: Open commit popup
+  --- r: Open rebase popup
+  --- L: Open log popup
+  --- p: Open pull popup
+  --- P: Open push popup
+  --- Z: Open stash popup
+  --- x: Discard changes (also supports discarding hunks)
+  --- <C-r>: Refresh Buffer
+  --- d: Open diffview.nvim at hovered file
+  --- D: Open diff popup
 
   -- THEMES & COLORS
   use {'rktjmp/lush.nvim'}
@@ -270,48 +294,59 @@ local spec = function(use)
   }
   use {
     'lukas-reineke/indent-blankline.nvim',
-    branch = 'lua',
     config = function()
       vim.g.indent_blankline_char = '¦' -- ['|', '¦', '┆', '┊']
-      vim.g.indent_blankline_filetype_exclude = vim.list_extend(vim.g.special_buffers, {'markdown', 'octo', 'dashboard'})
+      vim.g.indent_blankline_filetype_exclude = vim.list_extend(vim.fn.deepcopy(special_buffers), {'markdown'})
     end
   }
   use {'junegunn/rainbow_parentheses.vim'}
   use {
-    'tjdevries/express_line.nvim',
+    "RRethy/vim-illuminate",
     config = function()
-      require'plugins.expressline'
+      vim.g.Illuminate_ftblacklist = special_buffers
     end
   }
-  -- use {
-  --   'glepnir/galaxyline.nvim',
-  --   config = function()
-  --     require'plugins.galaxyline'
-  --   end
-  -- }
   use {
-    'pacha/vem-tabline',
+    "folke/trouble.nvim",
+    requires = "kyazdani42/nvim-web-devicons",
     config = function()
-      vim.g.vem_tabline_show = 2
+      require("trouble").setup {
+        -- your configuration comes here
+        -- or leave it empty to use the default settings
+        -- refer to the configuration section below
+      }
+    end
+  }
+
+  -- STATUSLINE & TABLINE
+  use {
+    'glepnir/galaxyline.nvim',
+    config = function()
+      require'plugins.galaxyline'()
+    end
+  }
+  use {
+    'akinsho/nvim-bufferline.lua',
+    config = function()
+      require'plugins.nvim-bufferline'()
     end
   }
 
   -- PAIRING
+  --
   use {
-    'steelsojka/pears.nvim',
+    'windwp/nvim-autopairs',
     config = function()
-      require "pears".setup(function(conf)
-        conf.preset "tag_matching"
-        conf.on_enter(function(pears_handle)
-          if vim.fn.pumvisible() == 1 and vim.fn.complete_info().selected ~= -1 then
-            return vim.fn["compe#confirm"]("<CR>")
-          else
-            pears_handle()
-          end
-        end)
-        conf.disabled_filetypes({"TelescopePrompt", "octo"})
-        conf.expand_on_enter(true)
-      end)
+      require('nvim-autopairs').setup({
+        disable_filetype = { "TelescopePrompt" , "octo" },
+        --ignored_next_char = [[ [%w%%%{%(%[%"%'%.] ]]
+        ignored_next_char = "[%w%.%(%{%[]"
+      })
+
+      require("nvim-autopairs.completion.compe").setup({
+        map_cr = true, --  map <CR> on insert mode
+        map_complete = true -- it will auto insert `(` after select function or method item
+      })
     end
   }
 
@@ -323,7 +358,7 @@ local spec = function(use)
       vim.g.nvim_tree_ignore = {'.git'}
       vim.g.nvim_tree_auto_open = 0
       vim.g.nvim_tree_gitignore = 1
-      vim.g.nvim_tree_auto_ignore_ft = vim.g.special_buffers
+      vim.g.nvim_tree_auto_ignore_ft = special_buffers
       vim.g.nvim_tree_quit_on_open = 0
       vim.g.nvim_tree_follow = 0
       vim.g.nvim_tree_hide_dotfiles = 1
@@ -342,6 +377,13 @@ local spec = function(use)
     'terrortylor/nvim-comment',
     config = function()
       require('nvim_comment').setup()
+    end
+  }
+  use {
+    "folke/todo-comments.nvim",
+    requires = "nvim-lua/plenary.nvim",
+    config = function()
+      require("todo-comments").setup {}
     end
   }
 
@@ -367,21 +409,15 @@ local spec = function(use)
     end,
     local_path = "dev",
   }
-  use_local {
-    'pwntester/fortify.nvim',
-    config = function()
-      require'plugins.fortify'.setup()
-    end,
-    local_path = "dev",
-  }
+  -- use_local {
+  --   'pwntester/fortify.nvim',
+  --   config = function()
+  --     require'plugins.fortify'.setup()
+  --   end,
+  --   local_path = "dev",
+  -- }
 
   -- LSP
-  use {
-    'liuchengxu/vista.vim',
-    config = function()
-      vim.g.vista_executive_for = { lua = 'nvim_lsp', java = 'nvim_lsp' }
-    end
-  }
   use {
     'neovim/nvim-lspconfig',
     config = function()
@@ -407,59 +443,25 @@ local spec = function(use)
     end
   }
   use {
-    'doums/lsp_status',
+    'stevearc/aerial.nvim',
     config = function()
-      require'lsp_status'.setup {
-        spinner = {'⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'},
-        interval = 80 -- in ms
-      }
+      vim.g.aerial_manage_folds = false
     end
   }
 
-  -- SYNTAX
-  -- use {'SidOfc/mkdx', config = function()
-  --   vim.g['mkdx#settings'] = {
-  --     highlight = {
-  --       enable = 1;
-  --       frontmatter = {
-  --         yaml = 0;
-  --         toml = 0;
-  --         json = 0;
-  --       };
-  --     };
-  --     tokens = {
-  --       fence = '`'
-  --     };
-  --     gf_on_steroids = 0;
-  --     enter = {
-  --       enable = 1; -- enter: adds new item
-  --       shift = 1; -- shift + enter: adds new item indented
-  --     };
-  --     checkbox = {
-  --       toggles = {' ', 'x'}
-  --     },
-  --     link = {
-  --       external = {
-  --         enable = 0
-  --       }
-  --     }
-  --   }
-  -- end}
-  --- <leader>t: prepends checkbox
-  --- <leader>ll: toggle list tokens
-  --- <leader>lt: toggle list tokens + checkboxes
-  --- <leader> =: checks a checkbox ->
-  --- <leader> -: checks a checkbox <-
-  --- <leader>]: Promote header
-  --- <leader>[: Demote header
-  --- <leader>': Toggle quotes (`>`)
-  --- <leader>ln: wrap word or visual selection in `[word](|)`
-  --- <leader>/:  italic
-  --- <leader>b: bold
-  --- <leader>`: inline code
-  --- <leader>s: strikethrough
-  --- <leader>,: cvs -> table
-  --- <leader>I: open TOC in QF
+  -- MARKDOWN
+  use {
+    'SidOfc/mkdx',
+    config = function()
+      require'plugins.mkdx'.setup()
+    end
+  }
+  use {
+    'dkarter/bullets.vim',
+    config = function()
+      vim.g.bullets_enabled_file_types = {'markdown', 'octo'}
+    end
+  }
 
   -- HTTP Client
   use {'nicwest/vim-http'} -- just for the syntax
@@ -474,6 +476,18 @@ local spec = function(use)
     end
   }
 
+  use {
+    'kristijanhusak/orgmode.nvim',
+    config = function()
+      require('orgmode').setup({
+        org_agenda_files = {'~/bitacora/org/*'},
+        org_default_notes_file = '~/bitacora/org/refile.org',
+      })
+    end
+  }
+  --- Open agenda prompt: <Leader>oa
+  --- Open capture prompt: <Leader>oc
+
   -- use {'sunjon/shade.nvim', config = function()
   --   require'shade'.setup({
   --     overlay_opacity = 20,
@@ -486,52 +500,6 @@ local spec = function(use)
   --   })
   -- end}
 
-  use {
-    "RRethy/vim-illuminate",
-    config = function()
-      vim.g.Illuminate_ftblacklist = vim.g.special_buffers
-    end
-  }
-  use {"sindrets/diffview.nvim"}
-  use {
-    "folke/trouble.nvim",
-    requires = "kyazdani42/nvim-web-devicons",
-    config = function()
-      require("trouble").setup {
-        -- your configuration comes here
-        -- or leave it empty to use the default settings
-        -- refer to the configuration section below
-      }
-    end
-  }
-  use {
-    "folke/todo-comments.nvim",
-    requires = "nvim-lua/plenary.nvim",
-    config = function()
-      require("todo-comments").setup {
-        -- your configuration comes here
-        -- or leave it empty to use the default settings
-        -- refer to the configuration section below
-      }
-    end
-  }
-  use {'famiu/bufdelete.nvim'}
-  use {
-    'TimUntersberger/neogit',
-    requires = {
-      'nvim-lua/plenary.nvim',
-      'sindrets/diffview.nvim',
-    },
-    config = function()
-      require('neogit').setup {}
-    end
-  }
-  use {
-    'stevearc/aerial.nvim',
-    config = function()
-      vim.g.aerial_manage_folds = false
-    end
-  }
 
 end
 

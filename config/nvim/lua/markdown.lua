@@ -7,6 +7,7 @@ local loop = vim.loop
 -- vim.cmd [[
 -- inoremap <expr> <c-x><c-f> fzf#vim#complete(fzf#wrap({'source': 'find '.getcwd().' -type f -name "*.md" -not -path "*/\.*"\; \| xargs realpath', 'reducer': function('<sid>make_relative') }))
 -- ]]
+vim.cmd [[ sign define codeblock linehl=markdownCode ]]
 
 local function pasteLink()
   -- TODO: get url from clipboard
@@ -94,10 +95,13 @@ local function asyncPush()
 end
 
 local function markdownBlocks()
-  vim.cmd [[ sign define codeblock linehl=markdownCode ]]
-  local continue = false
+
+  local bufnr = vim.api.nvim_get_current_buf()
+  if not vim.api.nvim_buf_is_loaded(bufnr) then return end
+
   pcall(api.nvim_command, 'sign unplace * file='..vim.fn.expand('%'))
 
+  local continue = false
   -- iterate through each line in the buffer
   for lnum = 1, #vim.fn.getline(1, '$'), 1 do
     -- detect the start fo a code block

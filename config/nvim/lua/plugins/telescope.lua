@@ -2,7 +2,7 @@ local uv = vim.loop
 local deepcopy = vim.deepcopy
 local make_entry = require"telescope.make_entry"
 local actions = require"telescope.actions"
-local trouble = require"trouble.providers.telescope"
+local _, trouble = pcall(require, "trouble.providers.telescope")
 local finders = require"telescope.finders"
 local pickers = require"telescope.pickers"
 local sorters = require"telescope.sorters"
@@ -11,13 +11,13 @@ local window = require"window"
 local dropdown_theme = require('telescope.themes').get_dropdown({
   results_height = 20;
   width = 0.8;
-  prompt_title = '';
+  prompt_title = false;
+  results_title = false;
   previewer = false;
   file_sorter = sorters.get_fzy_sorter;
   borderchars = {
-    prompt = window.window_border_chars_telescope_prompt;
-    results = window.window_border_chars_telescope_results;
-    preview = window.window_border_chars_telescope_preview;
+    results =  {'▔', '▕', '▁', '▏', '🭽', '🭾', '🭿', '🭼' };
+    prompt =  {'▔', '▕', '▁', '▏', '🭽', '🭾', '🭿', '🭼' };
   };
 })
 
@@ -25,9 +25,6 @@ local function setup()
   require('telescope').setup{
     defaults = {
       borderchars = {
-        -- prompt =  {'▀', '▐', '▄', '▌', '▛', '▜', '▟', '▙' };
-        -- results =  {'▀', '▐', '▄', '▌', '▛', '▜', '▟', '▙' };
-        -- preview = {'▀', '▐', '▄', '▌', '▛', '▜', '▟', '▙' };
         results =  {'▔', '▕', '▁', '▏', '🭽', '🭾', '🭿', '🭼' };
         prompt =  {' ', '▕', '▁', '▏', '▏', '▕', '🭿', '🭼' };
         preview = {'▔', '▕', '▁', '▏', '🭽', '🭾', '🭿', '🭼' };
@@ -47,7 +44,9 @@ local function setup()
           ["<c-t>"] = trouble.open_with_trouble
         };
       },
-      prompt_title = ""
+      prompt_title = false;
+      results_title = false;
+      preview_title = false;
     },
     extensions = {
       frecency = {
