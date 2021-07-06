@@ -174,11 +174,14 @@ local mappings = {
   -- ['n[cs'] = { [[<Plug>(TsGotoPrevClassStart)]], noremap = false};
   -- ['n[ce'] = { [[<Plug>(TsGotoPrevClassEnd)]],   noremap = false};
 
+  -- GOTO-PREVIEW
+  ['ngP'] = {"<cmd>lua require('goto-preview').goto_preview_definition()<CR>" };
+
   -- LSP
   ['ng=']     = { [[<Plug>(LspFormat)]], noremap = false};
 
   ['ngD']     = { [[<Plug>(LspShowLineDiagnostics)]], noremap = false};
-  ['ngP']     = { [[<Plug>(LspPreviewDefinition)]], noremap = false};
+  --['ngP']     = { [[<Plug>(LspPreviewDefinition)]], noremap = false};
 
   ['ngd']     = { [[<Plug>(LspGotoDef)]], noremap = false};
   ['ngi']     = { [[<Plug>(LspGotoImpl)]], noremap = false};
