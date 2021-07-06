@@ -64,7 +64,7 @@ local function on_attach_callback(client, bufnr)
 
   -- Extensions
   require 'illuminate'.on_attach(client)
-  --require 'aerial'.on_attach(client)
+  require 'aerial'.on_attach(client)
 
 end
 
