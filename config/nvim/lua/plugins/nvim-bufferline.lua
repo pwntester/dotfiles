@@ -148,17 +148,19 @@ return function()
 
           local client = get_lsp_client()
           if client == 'No Active LSP' then
-            result[1] = {text = " ", guifg = "#f04c75"}
+            result[1] = {text = "  ", guifg = "#f04c75"}
+            result[2] = {text = "", guifg = "#98c379"}
           else
-            result[1] = {text = " "..client.." ", guifg = "#98c379"}
+            result[1] = {text = "  ", guifg = "#ffcc66"}
+            result[2] = {text = client.." ", guifg = "#98c379"}
           end
 
           if error ~= 0 then
-            result[2] = {text = " "..error.." ", guifg = "#f04c75"}
+            result[3] = {text = " "..error.." ", guifg = "#f04c75"}
           end
 
           if warning ~= 0 then
-            result[3] = {text = " "..warning.." ", guifg = "#ffae57"}
+            result[4] = {text = " "..warning.." ", guifg = "#ffae57"}
           end
           return result
         end
