@@ -9,8 +9,10 @@ local sorters = require"telescope.sorters"
 local window = require"window"
 
 local dropdown_theme = require('telescope.themes').get_dropdown({
-  results_height = 20;
-  width = 0.8;
+  layout_config = {
+    width = 0.8;
+    height = 20;
+  };
   prompt_title = false;
   results_title = false;
   previewer = false;
@@ -67,8 +69,10 @@ end
 -- LSP workspace symbols
 local function lsp_dynamic_symbols()
   local opts = require("telescope.themes").get_dropdown({
-    results_height = 15;
-    width = 0.4;
+    layout_config = {
+      width = 0.4;
+      height = 15;
+    };
     prompt_title = "";
     previewer = false;
     borderchars = {

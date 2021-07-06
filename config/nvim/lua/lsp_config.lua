@@ -290,8 +290,10 @@ local function setup_jdt()
   local pickers = require'telescope.pickers'
   require('jdtls.ui').pick_one_async = function(items, prompt, label_fn, cb)
     local dropdown_opts = require('telescope.themes').get_dropdown({
-      results_height = 15;
-      width = 0.4;
+      layout_config = {
+        width = 0.4;
+        height = 15;
+      };
       prompt_title = '';
       previewer = false;
       borderchars = {
