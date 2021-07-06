@@ -446,6 +446,15 @@ local spec = function(use)
     'stevearc/aerial.nvim',
     config = function()
       vim.g.aerial_manage_folds = false
+      vim.g.aerial_icons = {
+        Class          = ' ';
+        ClassCollapsed = ' ';
+        Function       = '';
+        Constant       = ' ';
+        Collapsed      = '▶';
+      }
+    end
+  }
     end
   }
 
