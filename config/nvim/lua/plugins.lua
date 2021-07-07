@@ -4,11 +4,11 @@
 local function use_local(spec)
   local path = ""
   if type(spec) ~= "table" then
-    return as.echomsg(string.format("spec must be a table", spec[1]))
+    return g.echomsg(string.format("spec must be a table", spec[1]))
   end
   local local_spec = vim.deepcopy(spec)
   if not local_spec.local_path then
-    return as.echomsg(string.format("%s has no specified local path", spec[1]))
+    return g.echomsg(string.format("%s has no specified local path", spec[1]))
   end
 
   local name = vim.split(spec[1], "/")[2]
