@@ -26,17 +26,17 @@ require'autocmds'
 -----------------------------------------------------------------------------//
 -- ALIASES
 -----------------------------------------------------------------------------//
-util.alias("bd", "lua require('bufdelete').bufdelete(0, true)")
+g.alias("bd", "lua require('bufdelete').bufdelete(0, true)")
 
 -----------------------------------------------------------------------------//
 -- COMMANDS
 -----------------------------------------------------------------------------//
-vim.cmd [[command! LabIssues :call v:lua.util.LabIssues()]]
-vim.cmd [[command! HubberReports :call v:lua.util.HubberReports()]]
-vim.cmd [[command! VulnReports :call v:lua.util.VulnReports()]]
-vim.cmd [[command! BountySubmissions :call v:lua.util.BountySubmissions()]]
-vim.cmd [[command! Bitacora :call v:lua.util.Bitacora()]]
-vim.cmd [[command! TODO :call v:lua.util.TODO()]]
+vim.cmd [[command! LabIssues :call v:lua.g.LabIssues()]]
+vim.cmd [[command! HubberReports :call v:lua.g.HubberReports()]]
+vim.cmd [[command! VulnReports :call v:lua.g.VulnReports()]]
+vim.cmd [[command! BountySubmissions :call v:lua.g.BountySubmissions()]]
+vim.cmd [[command! Bitacora :call v:lua.g.Bitacora()]]
+vim.cmd [[command! TODO :call v:lua.g.TODO()]]
 
 -----------------------------------------------------------------------------//
 -- Message output on vim actions {{{1
@@ -136,18 +136,14 @@ vim.cmd [[set formatoptions=qrnj]]
 -- vim.opt.foldopen = vim.opt.foldopen + "search"
 -- vim.opt.foldlevelstart = 10
 -- vim.opt.foldmethod = "indent"
--- -----------------------------------------------------------------------------//
--- Quickfix {{{1
------------------------------------------------------------------------------//
---vim.o.quickfixtextfunc = "v:lua.as.qftf"
 -----------------------------------------------------------------------------//
 -- Grepprg {{{1
 -----------------------------------------------------------------------------//
 -- Use faster grep alternatives if possible
-if as.executable "rg" then
+if g.executable "rg" then
   vim.o.grepprg = [[rg --hidden --glob "!.git" --no-heading --smart-case --vimgrep --follow $*]]
   vim.opt.grepformat = vim.opt.grepformat ^ { "%f:%l:%c:%m" }
-elseif as.executable "ag" then
+elseif g.executable "ag" then
   vim.o.grepprg = [[ag --nogroup --nocolor --vimgrep]]
   vim.opt.grepformat = vim.opt.grepformat ^ { "%f:%l:%c:%m" }
 end

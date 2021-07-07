@@ -3,33 +3,29 @@ return function()
   local gl = require'galaxyline'
   local vcs = require'galaxyline.provider_vcs'
   local fileinfo = require'galaxyline.provider_fileinfo'
---  local lspconfig = require'lsp_config'
   local condition = require'galaxyline.condition'
   local buffer = require'galaxyline.provider_buffer'
   local gls = gl.section
 
-  -- special filetypes that show a short statusline
-  gl.short_line_list = vim.tbl_filter(
-    function(item) return item ~= "octo" end,
-    vim.fn.deepcopy(special_buffers)
-  )
-
---   local function get_lsp_client(msg)
---     msg = msg or 'No Active Lsp'
---     local clients = vim.lsp.get_active_clients()
---     if next(clients) == nil then
---       return msg
---     end
--- 
---     local bufnr = vim.api.nvim_get_current_buf()
---     local client_id = lspconfig.clients[bufnr]
---     if client_id then
---       for _, client in ipairs(clients) do
---         if client.id == client_id[1] then return client.name.."("..client.id..")" end
---       end
---     end
---     return msg
---   end
+  local function relpath(P, start)
+    local split,min,append = vim.split, math.min, table.insert
+    local compare = function(v) return v end
+    local startl, Pl = split(start,'/'), split(P,'/')
+    local n = min(#startl,#Pl)
+    local k = n+1 -- default value if this loop doesn't bail out!
+    for i = 1,n do
+      if compare(startl[i]) ~= compare(Pl[i]) then
+        k = i
+        break
+      end
+    end
+    local rell = {}
+    for i = 1, #startl-k+1 do rell[i] = '..' end
+    if k <= #Pl then
+        for i = k,#Pl do append(rell,Pl[i]) end
+    end
+    return table.concat(rell,'/')
+  end
 
   local repo_cache = {}
 
@@ -43,6 +39,12 @@ return function()
     orange = tostring(theme.Constant.fg),
     red = tostring(theme.ErrorMsg.fg),
   }
+
+  -- special filetypes that show a short statusline
+  gl.short_line_list = vim.tbl_filter(
+    function(item) return item ~= "octo" end,
+    vim.fn.deepcopy(g.special_buffers)
+  )
 
   gls.left[1] = {
     Space = {
@@ -85,7 +87,7 @@ return function()
   gls.right[1] = {
     FileName = {
       provider = function()
-        return util.relpath(vim.fn.fnamemodify(vim.fn.bufname(), ':p'), vim.fn.getcwd())
+        return relpath(vim.fn.fnamemodify(vim.fn.bufname(), ':p'), vim.fn.getcwd())
       end,
       condition = condition.buffer_not_empty,
       highlight = {colors.yellow, colors.bg},
@@ -107,7 +109,7 @@ return function()
       end,
       icon = " ",
       condition = function()
-        if vim.tbl_contains(special_buffers, vim.bo.ft) then return end
+        if vim.tbl_contains(g.special_buffers, vim.bo.ft) then return end
         local name = require"octo.utils".get_remote_name()
         return type(name) == "string" and name ~=""
       end,
