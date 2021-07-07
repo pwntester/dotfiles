@@ -1,6 +1,33 @@
 --local npairs = require('nvim-autopairs')
 local vim = vim
 
+local function map(mappings, defaults)
+  for k, v in pairs(mappings) do
+    local opts = vim.fn.deepcopy(defaults)
+    local mode = k:sub(1,1)
+    if mode == '_' then mode = '' end
+    local lhs = k:sub(2)
+    local rhs = v[1]
+    v[1] = nil
+
+    -- merge default options and individual ones
+    for i,j in pairs(v) do opts[i] = j end
+
+    -- for <expr> mappings, discard all options except `noremap`
+    -- probably needed for <script> or other modifiers that need to be first
+    if opts.expr then
+      local noremap_opt = opts['noremap']
+      opts = { expr = true; noremap = noremap_opt }
+    end
+
+    -- apply settings
+    vim.api.nvim_set_keymap(mode, lhs, rhs, opts)
+
+    -- restore
+    --v[1] = rhs
+  end
+end
+
 local mappings = {
 
   -- * for visual selected text
@@ -99,7 +126,7 @@ local mappings = {
   ['_g*'] = { [[:let @/ = expand('<cword>')<bar>set hlsearch<C-M>]] };
 
   -- goto URL
-  ['ngx'] = { [[:call v:lua.util.OpenURL()<CR>]] };
+  ['ngx'] = { [[:call v:lua.g.openURL()<CR>]] };
   ['ngo'] = { '<Plug>(OctoOpenIssueAtCursor)', noremap = false; };
 
   -- TELESCOPE
@@ -274,5 +301,5 @@ vim.cmd [[tnoremap <Esc> <C-\><C-n>]]
 
 vim.cmd [[let mapleader = "\<Space>"]]
 
-require'functions'.map(mappings, { silent = true; noremap = true; })
+map(mappings, { silent = true; noremap = true; })
 

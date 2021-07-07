@@ -296,14 +296,14 @@ local spec = function(use)
     'lukas-reineke/indent-blankline.nvim',
     config = function()
       vim.g.indent_blankline_char = '¦' -- ['|', '¦', '┆', '┊']
-      vim.g.indent_blankline_filetype_exclude = vim.list_extend(vim.fn.deepcopy(special_buffers), {'markdown'})
+      vim.g.indent_blankline_filetype_exclude = vim.list_extend(vim.fn.deepcopy(g.special_buffers), {'markdown'})
     end
   }
   use {'junegunn/rainbow_parentheses.vim'}
   use {
     "RRethy/vim-illuminate",
     config = function()
-      vim.g.Illuminate_ftblacklist = special_buffers
+      vim.g.Illuminate_ftblacklist = g.special_buffers
     end
   }
   use {
@@ -358,7 +358,7 @@ local spec = function(use)
       vim.g.nvim_tree_ignore = {'.git'}
       vim.g.nvim_tree_auto_open = 0
       vim.g.nvim_tree_gitignore = 1
-      vim.g.nvim_tree_auto_ignore_ft = special_buffers
+      vim.g.nvim_tree_auto_ignore_ft = g.special_buffers
       vim.g.nvim_tree_quit_on_open = 0
       vim.g.nvim_tree_follow = 0
       vim.g.nvim_tree_hide_dotfiles = 1
@@ -440,6 +440,29 @@ local spec = function(use)
     'onsails/lspkind-nvim',
     config = function()
       require'lspkind'.init()
+    end
+  }
+  use {
+    'simrat39/symbols-outline.nvim',
+    config = function(_)
+      vim.g.symbols_outline = {
+        highlight_hovered_item = false,
+        show_guides = true,
+        auto_preview = false,
+        position = 'right',
+        show_numbers = false,
+        show_relative_numbers = false,
+        show_symbol_details = true,
+        keymaps = {
+          close = "<Esc>",
+          goto_location = "<Cr>",
+          focus_location = "o",
+          hover_symbol = "<C-space>",
+          rename_symbol = "r",
+          code_actions = "a",
+        },
+        lsp_blacklist = {},
+      }
     end
   }
   use {

@@ -1,10 +1,10 @@
-as.augroup("VimRC", {
+g.augroup("VimRC", {
   -- au TermEnter,WinEnter,BufEnter * nested lua util.onEnter()
   {
     events = { "TermEnter", "WinEnter", "BufEnter" },
     targets = { "*" },
     command = function()
-      util.onEnter()
+      g.onEnter()
     end,
   },
   -- au FileType * nested lua util.onFileType()
@@ -12,7 +12,7 @@ as.augroup("VimRC", {
     events = { "FileType" },
     targets = { "*" },
     command = function()
-      util.onFileType()
+      g.onFileType()
     end,
   },
   -- au FocusGained,BufEnter * checktime

@@ -1,7 +1,4 @@
-local fn = vim.fn
-local api = vim.api
-local fmt = string.format
-
+-- Heavily inspired by @akinsho dots
 -- from: https://raw.githubusercontent.com/akinsho/dotfiles/58b2979f51b2f3e467e14e940b6a4aa63d1868f3/.config/nvim/lua/as/globals.lua
 
 -----------------------------------------------------------------------------//
@@ -11,38 +8,112 @@ local fmt = string.format
 --- store all callbacks in one global table so they are able to survive re-requiring this file
 _G.__as_global_callbacks = __as_global_callbacks or {}
 
-_G.as = {
-  _store = __as_global_callbacks,
+_G.g = {
+  _store = __as_global_callbacks;
+  special_buffers = {
+    'help',
+    'fortifytestpane',
+    'fortifyauditpane',
+    'qf',
+    'goterm',
+    'codeqlpanel',
+    'terminal',
+    'packer',
+    'NvimTree',
+    'octo',
+    'octo_panel',
+    'aerieal',
+    'Trouble',
+    'dashboard',
+    'frecency',
+    'TelescopePrompt',
+    'NeogitStatus'
+  }
 }
 
-_G.util = require'functions'
 
-_G.special_buffers = {
-  'help',
-  'fortifytestpane',
-  'fortifyauditpane',
-  'defx',
-  'dirvish',
-  'qf',
-  'vim-plug',
-  'fzf',
-  'magit',
-  'goterm',
-  'vista_kind',
-  'codeqlpanel',
-  'goyo_pad',
-  'terminal',
-  'packer',
-  'NvimTree',
-  'octo_panel',
-  'octo',
-  'aerieal',
-  'Trouble',
-  'dashboard',
-  'frecency',
-  'TelescopePrompt',
-  'NeogitStatus'
-}
+
+-----------------------------------------------------------------------------//
+-- Global functions
+-----------------------------------------------------------------------------//
+
+function g.onFileType()
+  if vim.tbl_contains({'frecency', 'TelescopePrompt'}, vim.bo.filetype) or
+     not vim.tbl_contains(g.special_buffers, vim.bo.filetype) then
+    vim.api.nvim_win_set_option(0, 'winhighlight', 'Normal:Normal')
+  else
+    vim.api.nvim_win_set_option(0, 'winhighlight', 'Normal:NormalDark')
+  end
+end
+
+function g.onEnter()
+  if vim.tbl_contains(g.special_buffers, vim.bo.filetype) then
+    vim.api.nvim_win_set_option(0, 'winhighlight', 'Normal:NormalDark')
+
+    -- hide cursorline
+    vim.wo.cursorline = false
+
+    if not vim.tbl_contains({'octo', 'dashboard'}, vim.bo.filetype) then
+      -- prevent changing buffer
+      vim.cmd [[ nnoremap <silent><buffer><s-l> <nop> ]]
+      vim.cmd [[ nnoremap <silent><buffer><s-h> <nop> ]]
+      vim.cmd [[ nnoremap <silent><buffer><leader>m <nop> ]]
+      vim.cmd [[ nnoremap <silent><buffer><leader>f <nop> ]]
+      vim.cmd [[ cmap <silent><buffer><expr>e<Space> (getcmdtype()==':' && getcmdpos()==1? "<Space>": "e<Space>") ]]
+      vim.cmd [[ cmap <silent><buffer><expr>bd<Return> (getcmdtype()==':' && getcmdpos()==1? "<Space>": "bd<Return>") ]]
+      vim.cmd [[ cmap <silent><buffer><expr>bp<Return> (getcmdtype()==':' && getcmdpos()==1? "<Space>": "bp<Return>") ]]
+      vim.cmd [[ cmap <silent><buffer><expr>bn<Return> (getcmdtype()==':' && getcmdpos()==1? "<Space>": "bn<Return>") ]]
+    end
+  else
+    vim.api.nvim_win_set_option(0, 'winhighlight', 'Normal:Normal')
+
+    -- show cursorline
+    vim.wo.cursorline = true
+  end
+end
+
+-- ALIASES
+function g.alias(from, to, buffer)
+  local cmd = string.format('cnoreabbrev <expr> %s ((getcmdtype() is# ":" && getcmdline() is# "%s")? ("%s") : ("%s"))', from, from, to, from)
+  if buffer then
+    cmd = string.format('cnoreabbrev <expr><buffer> %s ((getcmdtype() is# ":" && getcmdline() is# "%s")? ("%s") : ("%s"))', from, from, to, from)
+  end
+  vim.cmd(cmd)
+end
+
+-- FUNCTIONS
+function g.openURL()
+  local uri = vim.fn.matchstr(vim.fn.getline("."), '[a-z]*:\\/\\/[^ >,;()]*')
+  uri = vim.fn.shellescape(uri, 1)
+  print(uri)
+  if uri ~= "" then
+    vim.fn.execute(string.format("!/Applications/Firefox.app/Contents/MacOS/firefox '%s'", uri))
+    vim.cmd [[:redraw!]]
+  else
+    print("No URI found in line.")
+  end
+end
+
+-- OCTO FUNCTIONS
+function g.TODO()
+  require'octo.utils'.get_issue('pwntester/bitacora', 41)
+end
+
+function g.Bitacora()
+  require'octo.telescope.menu'.issues({repo='pwntester/bitacora', states="OPEN"})
+end
+function g.LabIssues()
+  require'octo.telescope.menu'.issues({repo='github/pe-security-lab'})
+end
+function g.HubberReports()
+  require'octo.telescope.menu'.issues({repo='github/pe-security-lab', labels ='Vulnerability report', states="OPEN"})
+end
+function g.VulnReports()
+  require'octo.telescope.menu'.issues({repo='github/securitylab_vulnerabilities'})
+end
+function g.BountySubmissions()
+  require'octo.telescope.menu'.issues({repo='github/securitylab-bounties', states="OPEN"})
+end
 
 -----------------------------------------------------------------------------//
 -- Messaging
@@ -55,7 +126,7 @@ if vim.notify then
   --@param opts Dictionary with optional options (timeout, etc)
   vim.notify = function(message, log_level, _)
     assert(message, "The message key of vim.notify should be a string")
-    as.notify(message, { timeout = 5000, log_level = log_level })
+    g.notify(message, { timeout = 5000, log_level = log_level })
   end
 end
 
@@ -86,13 +157,13 @@ local installed
 ---Check if a plugin is on the system not whether or not it is loaded
 ---@param plugin_name string
 ---@return boolean
-function as.plugin_installed(plugin_name)
+function g.plugin_installed(plugin_name)
   if not installed then
-    local dirs = fn.expand(fn.stdpath "data" .. "/site/pack/packer/start/*", true, true)
-    local opt = fn.expand(fn.stdpath "data" .. "/site/pack/packer/opt/*", true, true)
+    local dirs = vim.fn.expand(vim.fn.stdpath "data" .. "/site/pack/packer/start/*", true, true)
+    local opt = vim.fn.expand(vim.fn.stdpath "data" .. "/site/pack/packer/opt/*", true, true)
     vim.list_extend(dirs, opt)
     installed = vim.tbl_map(function(path)
-      return fn.fnamemodify(path, ":t")
+      return vim.fn.fnamemodify(path, ":t")
     end, dirs)
   end
   return vim.tbl_contains(installed, plugin_name)
@@ -110,13 +181,13 @@ end
 -----------------------------------------------------------------------------//
 -- Utils
 -----------------------------------------------------------------------------//
-function as._create(f)
-  table.insert(as._store, f)
-  return #as._store
+function g._create(f)
+  table.insert(g._store, f)
+  return #g._store
 end
 
-function as._execute(id, args)
-  as._store[id](args)
+function g._execute(id, args)
+  g._store[id](args)
 end
 
 ---@class Autocmd
@@ -128,14 +199,14 @@ end
 ---Create an autocommand
 ---@param name string
 ---@param commands Autocmd[]
-function as.augroup(name, commands)
+function g.augroup(name, commands)
   vim.cmd("augroup " .. name)
   vim.cmd "autocmd!"
   for _, c in ipairs(commands) do
     local command = c.command
     if type(command) == "function" then
-      local fn_id = as._create(command)
-      command = fmt("lua as._execute(%s)", fn_id)
+      local fn_id = g._create(command)
+      command = string.format("lua g._execute(%s)", fn_id)
     end
     vim.cmd(
       string.format(
@@ -153,11 +224,11 @@ end
 ---Check if a cmd is executable
 ---@param e string
 ---@return boolean
-function as.executable(e)
-  return fn.executable(e) > 0
+function g.executable(e)
+  return vim.fn.executable(e) > 0
 end
 
-function as.echomsg(msg, hl)
+function g.echomsg(msg, hl)
   hl = hl or "Title"
   local msg_type = type(msg)
   if msg_type ~= "string" or "table" then
@@ -170,10 +241,10 @@ function as.echomsg(msg, hl)
 end
 
 -- https://stackoverflow.com/questions/1283388/lua-merge-tables
-function as.deep_merge(t1, t2)
+function g.deep_merge(t1, t2)
   for k, v in pairs(t2) do
     if (type(v) == "table") and (type(t1[k] or false) == "table") then
-      as.deep_merge(t1[k], t2[k])
+      g.deep_merge(t1[k], t2[k])
     else
       t1[k] = v
     end
@@ -185,9 +256,9 @@ end
 --- 1. Call `local stop = utils.profile('my-log')` at the top of the file
 --- 2. At the bottom of the file call `stop()`
 --- 3. Restart neovim, the newly created log file should open
-function as.profile(filename)
+function g.profile(filename)
   local base = "/tmp/config/profile/"
-  fn.mkdir(base, "p")
+  vim.fn.mkdir(base, "p")
   local success, profile = pcall(require, "plenary.profile.lua_profiler")
   if not success then
     vim.api.nvim_echo({ "Plenary is not installed.", "Title" }, true, {})
@@ -206,21 +277,21 @@ end
 ---check if a certain feature/version/commit exists in nvim
 ---@param feature string
 ---@return boolean
-function as.has(feature)
+function g.has(feature)
   return vim.fn.has(feature) > 0
 end
 
 ---Check if directory exists using vim's isdirectory function
 ---@param path string
 ---@return boolean
-function as.is_dir(path)
-  return fn.isdirectory(path) > 0
+function g.is_dir(path)
+  return vim.fn.isdirectory(path) > 0
 end
 
 ---Check if a vim variable usually a number is truthy or not
 ---@param value integer
-function as.truthy(value)
-  assert(type(value) == "number", fmt("Value should be a number but you passed %s", value))
+function g.truthy(value)
+  assert(type(value) == "number", string.format("Value should be a number but you passed %s", value))
   return value > 0
 end
 
@@ -229,7 +300,7 @@ end
 ---@param haystack T[]
 ---@param matcher fun(arg: T):boolean
 ---@return T
-function as.find(haystack, matcher)
+function g.find(haystack, matcher)
   local found
   for _, needle in ipairs(haystack) do
     if matcher(needle) then
@@ -243,7 +314,7 @@ end
 ---Determine if a value of any type is empty
 ---@param item any
 ---@return boolean
-function as.empty(item)
+function g.empty(item)
   if not item then
     return true
   end
@@ -259,7 +330,7 @@ end
 ---@param lhs string
 ---@param mode string
 ---@return boolean
-function as.has_map(lhs, mode)
+function g.has_map(lhs, mode)
   mode = mode or "n"
   return vim.fn.maparg(lhs, mode) ~= ""
 end
@@ -280,21 +351,21 @@ local function validate_opts(opts)
   return true
 end
 
-function as.command(args)
+function g.command(args)
   local nargs = args.nargs or 0
   local name = args[1]
   local rhs = args[2]
   local types = (args.types and type(args.types) == "table") and table.concat(args.types, " ") or ""
 
   if type(rhs) == "function" then
-    local fn_id = as._create(rhs)
-    rhs = string.format("lua as._execute(%d%s)", fn_id, nargs > 0 and ", <f-args>" or "")
+    local fn_id = g._create(rhs)
+    rhs = string.format("lua g._execute(%d%s)", fn_id, nargs > 0 and ", <f-args>" or "")
   end
 
   vim.cmd(string.format("command! -nargs=%s %s %s %s", nargs, types, name, rhs))
 end
 
-function as.invalidate(path, recursive)
+function g.invalidate(path, recursive)
   if recursive then
     for key, value in pairs(package.loaded) do
       if key ~= "_G" and value and vim.fn.match(key, path) ~= -1 then
@@ -309,10 +380,10 @@ function as.invalidate(path, recursive)
 end
 
 local function get_last_notification()
-  for _, win in ipairs(api.nvim_list_wins()) do
-    local buf = api.nvim_win_get_buf(win)
-    if vim.bo[buf].filetype == "vim-notify" and api.nvim_win_is_valid(win) then
-      return api.nvim_win_get_config(win)
+  for _, win in ipairs(vim.api.nvim_list_wins()) do
+    local buf = vim.api.nvim_win_get_buf(win)
+    if vim.bo[buf].filetype == "vim-notify" and vim.api.nvim_win_is_valid(win) then
+      return vim.api.nvim_win_get_config(win)
     end
   end
 end
@@ -329,7 +400,7 @@ local notification_hl = setmetatable({
 ---Utility function to create a notification message
 ---@param lines string[] | string
 ---@param opts table
-function as.notify(lines, opts)
+function g.notify(lines, opts)
   lines = type(lines) == "string" and { lines } or lines
   lines = vim.tbl_flatten(vim.tbl_map(function(line)
     return vim.split(line, "\n")
@@ -349,12 +420,12 @@ function as.notify(lines, opts)
       width = length
     end
   end
-  local buf = api.nvim_create_buf(false, true)
-  api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+  local buf = vim.api.nvim_create_buf(false, true)
+  vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
   local height = #lines
   local prev = get_last_notification()
   local row = prev and prev.row[false] - prev.height - 2 or vim.o.lines - vim.o.cmdheight - 3
-  local win = api.nvim_open_win(buf, false, {
+  local win = vim.api.nvim_open_win(buf, false, {
     relative = "editor",
     width = width + 2,
     height = height,
@@ -375,8 +446,8 @@ function as.notify(lines, opts)
 
   if timeout then
     vim.defer_fn(function()
-      if api.nvim_win_is_valid(win) then
-        api.nvim_win_close(win, true)
+      if vim.api.nvim_win_is_valid(win) then
+        vim.api.nvim_win_close(win, true)
       end
     end, timeout)
   end
