@@ -43,6 +43,8 @@ local spec = function(use)
     config = function()
       vim.g.dashboard_default_executive = 'telescope'
       vim.g.dashboard_custom_header = {
+        [[]],
+        [[]],
         [[███████ ██   ██  █████  ██      ██          ██     ██ ███████     ██████  ██       █████  ██    ██      █████       ██████   █████  ███    ███ ███████ ██████  ]],
         [[██      ██   ██ ██   ██ ██      ██          ██     ██ ██          ██   ██ ██      ██   ██  ██  ██      ██   ██     ██       ██   ██ ████  ████ ██           ██ ]],
         [[███████ ███████ ███████ ██      ██          ██  █  ██ █████       ██████  ██      ███████   ████       ███████     ██   ███ ███████ ██ ████ ██ █████     ▄███  ]],
@@ -82,7 +84,12 @@ local spec = function(use)
     -- :Verbose: view verbose output in preview window.
     -- :Time: measure how long it takes to run some stuff.
     -- zS: Debug syntax under cursor
-  use {'karb94/neoscroll.nvim'}
+  use {
+    'karb94/neoscroll.nvim',
+    config = function()
+      require('neoscroll').setup()
+    end
+  }
 
   -- TELESCOPE.NVIM
   use {
@@ -175,7 +182,7 @@ local spec = function(use)
   use {
     'chaoren/vim-wordmotion',
     config = function()
-      vim.g.wordmotion_prefix = '<Leader>'
+      vim.g.wordmotion_prefix = '_'
     end
   }
 
@@ -272,6 +279,14 @@ local spec = function(use)
 
   -- THEMES & COLORS
   use {'rktjmp/lush.nvim'}
+  use {
+    'shaunsingh/nord.nvim',
+    config = function()
+      -- require('nord').set()
+      vim.g.nord_contrast = true
+      vim.g.nord_borders = true
+    end
+  }
   use_local {
     'pwntester/nautilus.nvim',
     config = function()
