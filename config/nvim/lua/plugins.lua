@@ -353,6 +353,7 @@ local spec = function(use)
   -- FILE EXPLORER
   use {
     'kyazdani42/nvim-tree.lua',
+    cmd = {'NvimTreeToggle', 'NvimTreeFindFile'},
     config = function()
       vim.g.nvim_tree_width = 30
       vim.g.nvim_tree_ignore = {'.git'}
@@ -442,42 +443,42 @@ local spec = function(use)
       require'lspkind'.init()
     end
   }
-  use {
-    'simrat39/symbols-outline.nvim',
-    config = function(_)
-      vim.g.symbols_outline = {
-        highlight_hovered_item = false,
-        show_guides = true,
-        auto_preview = false,
-        position = 'right',
-        show_numbers = false,
-        show_relative_numbers = false,
-        show_symbol_details = true,
-        keymaps = {
-          close = "<Esc>",
-          goto_location = "<Cr>",
-          focus_location = "o",
-          hover_symbol = "<C-space>",
-          rename_symbol = "r",
-          code_actions = "a",
-        },
-        lsp_blacklist = {},
-      }
-    end
-  }
-  use {
-    'stevearc/aerial.nvim',
-    config = function()
-      vim.g.aerial_manage_folds = false
-      vim.g.aerial_icons = {
-        Class          = ' ';
-        ClassCollapsed = ' ';
-        Function       = '';
-        Constant       = ' ';
-        Collapsed      = '▶';
-      }
-    end
-  }
+  -- use {
+  --   'simrat39/symbols-outline.nvim',
+  --   config = function(_)
+  --     vim.g.symbols_outline = {
+  --       highlight_hovered_item = false,
+  --       show_guides = true,
+  --       auto_preview = false,
+  --       position = 'right',
+  --       show_numbers = false,
+  --       show_relative_numbers = false,
+  --       show_symbol_details = true,
+  --       keymaps = {
+  --         close = "<Esc>",
+  --         goto_location = "<Cr>",
+  --         focus_location = "o",
+  --         hover_symbol = "<C-space>",
+  --         rename_symbol = "r",
+  --         code_actions = "a",
+  --       },
+  --       lsp_blacklist = {},
+  --     }
+  --   end
+  -- }
+  -- use {
+  --   'stevearc/aerial.nvim',
+  --   config = function()
+  --     vim.g.aerial_manage_folds = false
+  --     vim.g.aerial_icons = {
+  --       Class          = ' ';
+  --       ClassCollapsed = ' ';
+  --       Function       = '';
+  --       Constant       = ' ';
+  --       Collapsed      = '▶';
+  --     }
+  --   end
+  -- }
   use {
     'rmagatti/goto-preview',
     config = function()
@@ -519,18 +520,6 @@ local spec = function(use)
     end
   }
 
-  use {
-    'kristijanhusak/orgmode.nvim',
-    config = function()
-      require('orgmode').setup({
-        org_agenda_files = {'~/bitacora/org/*'},
-        org_default_notes_file = '~/bitacora/org/refile.org',
-      })
-    end
-  }
-  --- Open agenda prompt: <Leader>oa
-  --- Open capture prompt: <Leader>oc
-
   -- use {'sunjon/shade.nvim', config = function()
   --   require'shade'.setup({
   --     overlay_opacity = 20,
@@ -554,10 +543,10 @@ local config = {
       return bufnr, winnr
     end
   },
-  profile = {
-    enable = true,
-    threshold = 1,
-  },
+  -- profile = {
+  --   enable = true,
+  --   threshold = 1,
+  -- },
 }
 
 -- Bootstrap Packer

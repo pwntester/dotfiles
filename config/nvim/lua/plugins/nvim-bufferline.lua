@@ -54,9 +54,17 @@ return function()
 
   require("bufferline").setup {
     highlights = {
+      background = {
+        guibg = '#1f283b',
+        guifg = '#80b2d6'
+      },
       tab_selected = {
         guifg = '#1f283b',
         guibg = '#ffcc66'
+      },
+      buffer_visible = {
+        guibg = '#1f283b',
+        guifg = '#80b2d6'
       },
       buffer_selected = {
         guifg = '#1f283b',

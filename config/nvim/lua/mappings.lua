@@ -132,6 +132,7 @@ local mappings = {
   -- TELESCOPE
   --['n<leader>m'] = { [[<cmd>lua require'plugins.telescope'.mru()<CR>]] };
   ['n<leader>m'] = { [[<cmd>lua require'telescope'.extensions.frecency.frecency({prompt_title=false,preview_title=false,results_title=false})<CR>]]};
+  ['n<leader>e'] = { [[<cmd>lua require'telescope.builtin'.file_browser({prompt_title=false,preview_title=false,results_title=false})<CR>]] };
   ['n<leader>f'] = { [[<cmd>lua require'telescope.builtin'.find_files({prompt_title=false,preview_title=false,results_title=false})<CR>]] };
   ['n<leader>l'] = { [[<cmd>lua require'telescope.builtin'.live_grep({prompt_title=false,preview_title=false,results_title=false})<CR>]] };
   ['n<leader>r'] = { [[<cmd>lua require'plugins.telescope'.reloader()<CR>]] };

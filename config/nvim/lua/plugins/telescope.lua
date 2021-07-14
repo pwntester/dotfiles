@@ -58,7 +58,7 @@ local function setup()
         workspaces = {
           ["octo"]    = "/Users/pwntester/dev/octo.nvim",
           ["dots"]    = "/Users/pwntester/dotfiles",
-          ["codeql"]  = "/Users/pwntester/codeql-home/codeql-securitylab",
+          ["ql"]      = "/Users/pwntester/research/codeql/codeql-securitylab",
           ["wiki"]    = "/Users/pwntester/bitacora"
         }
       }
