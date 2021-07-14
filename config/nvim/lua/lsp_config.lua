@@ -27,7 +27,7 @@ end
 
 local function on_attach_callback(client, bufnr)
 	bufnr = bufnr or api.nvim_get_current_buf()
-  vim.notify("Attaching LSP client "..client.id.." to buffer "..bufnr)
+  --vim.notify("Attaching LSP client "..client.id.." to buffer "..bufnr)
 
   -- register client/buffer relation
   register_buffer(bufnr, client.id)
@@ -64,7 +64,7 @@ local function on_attach_callback(client, bufnr)
 
   -- Extensions
   require 'illuminate'.on_attach(client)
-  require 'aerial'.on_attach(client)
+  --require 'aerial'.on_attach(client)
 
 end
 

@@ -1,11 +1,12 @@
 return function()
   local theme = require'nautilus'.theme("grey")
   local gl = require'galaxyline'
-  local vcs = require'galaxyline.provider_vcs'
+  --local vcs = require'galaxyline.provider_vcs'
   local fileinfo = require'galaxyline.provider_fileinfo'
   local condition = require'galaxyline.condition'
   local buffer = require'galaxyline.provider_buffer'
   local gls = gl.section
+  local _, Job = pcall(require, 'plenary.job')
 
   local function relpath(P, start)
     local split,min,append = vim.split, math.min, table.insert
@@ -70,33 +71,12 @@ return function()
         return alias[vim.fn.mode()] .. " "
       end,
       separator = " ",
-      highlight = {colors.bg, colors.yellow}
-    }
-  }
-
-  gls.left[3] = {
-    cwd = {
-      provider = function()
-        return vim.fn.getcwd()
-      end,
-      highlight = {colors.yellow, colors.bg},
-      separator_highlight = {colors.yellow, colors.bg}
-    }
-  }
-
-  gls.right[1] = {
-    FileName = {
-      provider = function()
-        return relpath(vim.fn.fnamemodify(vim.fn.bufname(), ':p'), vim.fn.getcwd())
-      end,
-      condition = condition.buffer_not_empty,
-      highlight = {colors.yellow, colors.bg},
-      separator = " ",
+      highlight = {colors.bg, colors.yellow},
       separator_highlight = {colors.fg, colors.bg}
     }
   }
 
-  gls.right[2] = {
+  gls.left[3] = {
     GitHubRepo = {
       provider = function()
         if repo_cache[vim.fn.getcwd()] then
@@ -109,7 +89,7 @@ return function()
       end,
       icon = " ",
       condition = function()
-        if vim.tbl_contains(g.special_buffers, vim.bo.ft) then return end
+        if vim.tbl_contains(gl.short_line_list, vim.bo.ft) then return end
         local name = require"octo.utils".get_remote_name()
         return type(name) == "string" and name ~=""
       end,
@@ -119,18 +99,62 @@ return function()
     }
   }
 
-  gls.right[3] = {
+  gls.left[4] = {
     GitBranch = {
-      provider = "GitBranch",
+      --provider = "GitBranch",
+      --condition = vcs.check_git_workspace,
+      provider = function()
+        if not Job then return end
+        local j = Job:new({
+          command = "git",
+          args = {"branch", "--show-current"},
+          cwd = vim.fn.getcwd(),
+        })
+
+        local ok, result = pcall(function()
+          return vim.trim(j:sync()[1])
+        end)
+
+        if ok then
+          return result
+        end
+      end,
       icon = " ",
-      condition = vcs.check_git_workspace,
       highlight = {colors.grey, colors.bg},
       separator = " ",
       separator_highlight = {colors.fg, colors.bg}
     }
   }
 
-  gls.right[4] = {
+  gls.left[5] = {
+    cwd = {
+      provider = function()
+        return vim.fn.getcwd()
+      end,
+      highlight = {colors.yellow, colors.bg},
+      separator_highlight = {colors.yellow, colors.bg}
+    }
+  }
+
+  gls.right[1] = {
+    FileName = {
+      provider = function()
+        local bufname = vim.fn.bufname()
+        if vim.startswith(bufname, "octo:") or vim.startswith(bufname, "codeql:") then
+          return bufname
+        else
+          return relpath(vim.fn.fnamemodify(bufname, ':p'), vim.fn.getcwd())
+        end
+      end,
+      condition = condition.buffer_not_empty,
+      highlight = {colors.yellow, colors.bg},
+      separator = " ",
+      separator_highlight = {colors.fg, colors.bg}
+    }
+  }
+
+
+  gls.right[2] = {
     Column = {
       icon = "‣",
       provider = function()
@@ -142,7 +166,7 @@ return function()
     }
   }
 
-  gls.right[5] = {
+  gls.right[3] = {
     PerCent = {
       icon = "Ξ",
       provider = function()
@@ -163,7 +187,7 @@ return function()
     }
   }
 
-  gls.right[7] = {
+  gls.right[4] = {
     Filetype = {
       provider = function()
         return string.lower(buffer.get_buffer_filetype())
@@ -172,7 +196,7 @@ return function()
     }
   }
 
-  gls.right[8] = {
+  gls.right[5] = {
     Space2 = {
       provider = function()
         return " "
