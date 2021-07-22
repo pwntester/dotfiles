@@ -56,7 +56,7 @@ local function setup()
         show_unindexed = true,
         ignore_patterns = {".*codeql_db.*", "*.git/*", "*/tmp/*"},
         workspaces = {
-          ["octo"]    = "/Users/pwntester/dev/octo.nvim",
+          ["octo"]    = "/Users/pwntester/dev/personal/octo.nvim",
           ["dots"]    = "/Users/pwntester/dotfiles",
           ["ql"]      = "/Users/pwntester/research/codeql/codeql-securitylab",
           ["wiki"]    = "/Users/pwntester/bitacora"

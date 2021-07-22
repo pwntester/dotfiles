@@ -146,11 +146,25 @@ local function setup()
 	--- JavaScript
 	nvim_lsp.tsserver.setup{
 		on_attach = on_attach_callback;
+    flags = {
+      debounce_text_changes = 150
+    }
 	}
 
 	--- Go
 	nvim_lsp.gopls.setup{
 		on_attach = on_attach_callback;
+    flags = {
+      debounce_text_changes = 150
+    }
+	}
+
+	--- Ruby
+	nvim_lsp.solargraph.setup{
+		on_attach = on_attach_callback;
+    flags = {
+      debounce_text_changes = 150
+    }
 	}
 
   --- .NET
@@ -159,12 +173,18 @@ local function setup()
   nvim_lsp.omnisharp.setup{
     cmd = { omnisharp_bin, "--languageserver" , "--hostPID", tostring(pid) };
 		on_attach = on_attach_callback;
+    flags = {
+      debounce_text_changes = 150
+    }
   }
 
 	--- CodeQL
   --{"jsonrpc":"2.0","id":0,"result":{"capabilities":{"textDocumentSync":1,"hoverProvider":true,"completionProvider":{"resolveProvider":false,"triggerCharacters":[".",","]},"definitionProvider":true,"referencesProvider":true,"documentHighlightProvider":true,"documentSymbolProvider":true,"documentFormattingProvider":true,"workspace":{"workspaceFolders":{"supported":true,"changeNotifications":true}},"experimental":{"checkErrorsProvider":true,"guessLocationProvider":true}}}}
 	nvim_lsp.codeqlls.setup{
 		on_attach = on_attach_callback;
+    flags = {
+      debounce_text_changes = 150
+    };
     root_dir = function(fname)
       if vim.startswith(fname, "octo:") or vim.startswith(fname, "codeql:") then return end
       local root_pattern = util.root_pattern("qlpack.yml")
