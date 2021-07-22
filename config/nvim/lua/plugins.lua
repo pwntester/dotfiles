@@ -2,20 +2,20 @@
 ---local variant of packer's `use` function that specifies both a local and upstream version of a plugin
 ---@param spec table|string
 local function use_local(spec)
-  local path = ""
-  if type(spec) ~= "table" then
-    return g.echomsg(string.format("spec must be a table", spec[1]))
+  local path = ''
+  if type(spec) ~= 'table' then
+    return g.echomsg(string.format('spec must be a table', spec[1]))
   end
   local local_spec = vim.deepcopy(spec)
   if not local_spec.local_path then
-    return g.echomsg(string.format("%s has no specified local path", spec[1]))
+    return g.echomsg(string.format('%s has no specified local path', spec[1]))
   end
 
-  local name = vim.split(spec[1], "/")[2]
-  path = os.getenv "HOME" .. "/" .. local_spec.local_path .. "/" .. name
+  local name = vim.split(spec[1], '/')[2]
+  path = os.getenv 'HOME' .. '/' .. local_spec.local_path .. '/' .. name
   if vim.fn.isdirectory(vim.fn.expand(path)) < 1 then
     -- remote spec
-    require("packer").use(spec)
+    require'packer'.use(spec)
   else
     -- local spec
     local_spec[1] = path
@@ -26,7 +26,7 @@ local function use_local(spec)
     local_spec.local_cond = nil
     local_spec.local_disable = nil
     local_spec.local_name = nil
-    require("packer").use(local_spec)
+    require'packer'.use(local_spec)
   end
 end
 
@@ -79,15 +79,10 @@ local spec = function(use)
       vim.g.choosewin_overlay_enable = 1
     end
   }
-  use {'tpope/vim-scriptease'}
-    -- :Messages: view messages in quickfix list
-    -- :Verbose: view verbose output in preview window.
-    -- :Time: measure how long it takes to run some stuff.
-    -- zS: Debug syntax under cursor
   use {
     'karb94/neoscroll.nvim',
     config = function()
-      require('neoscroll').setup()
+      require'neoscroll'.setup()
     end
   }
 
@@ -110,14 +105,14 @@ local spec = function(use)
     'nvim-telescope/telescope-frecency.nvim',
     requires = {'nvim-telescope/telescope.nvim'},
     config = function()
-      require"telescope".load_extension("frecency")
+      require'telescope'.load_extension('frecency')
     end
   }
   use {
     'nvim-telescope/telescope-cheat.nvim',
     requires = {'nvim-telescope/telescope.nvim'},
     config = function()
-      require'telescope'.load_extension("cheat")
+      require'telescope'.load_extension('cheat')
     end
   }
   use {
@@ -125,22 +120,12 @@ local spec = function(use)
     requires = {'nvim-telescope/telescope.nvim'}
   }
 
-  -- SEARCH
-  use {
-    'jremmen/vim-ripgrep',
-    config = function()
-      vim.g.rg_derive_root = true
-      vim.g.rg_root_types = {'.git'}
-    end
-  }
-  --- :Rg
-  --- :RgRoot
-
   -- COMPLETION
   use {
     'hrsh7th/nvim-compe',
+    -- event = 'InsertEnter',
     config = function()
-      require"plugins.compe".setup()
+      require'plugins.compe'.setup()
     end
   }
 
@@ -153,32 +138,42 @@ local spec = function(use)
   -- TREESITTER
   use {
     'nvim-treesitter/nvim-treesitter',
+    --event = 'BufRead',
     config = function()
       require'plugins.treesitter'.setup()
     end
   }
-  use {'nvim-treesitter/playground'}
-  use {'nvim-treesitter/completion-treesitter'}
-  use {'nvim-treesitter/nvim-treesitter-refactor'}
-  use {'nvim-treesitter/nvim-treesitter-textobjects'}
-
-  -- TMUX
   use {
-    'numToStr/Navigator.nvim',
-    config = function()
-      require('Navigator').setup()
-    end
+    'nvim-treesitter/playground',
+    requires = 'nvim-treesitter'
+  }
+  use {
+    'nvim-treesitter/completion-treesitter',
+    requires = 'nvim-treesitter'
+  }
+  use {
+    'nvim-treesitter/nvim-treesitter-refactor',
+    requires = 'nvim-treesitter'
+  }
+  use {
+    'nvim-treesitter/nvim-treesitter-textobjects',
+    requires = 'nvim-treesitter'
   }
 
   -- ALIGNING
-  use {'junegunn/vim-easy-align'}
-    -- MD tables: `EasyAlign*<Bar>`
+  use {
+    'junegunn/vim-easy-align',
+    keys = '<Plug>(EasyAlign)'
+    --- MD tables: `EasyAlign*<Bar>`
+  }
 
   -- TEXT OBJECTS/MOTIONS/OPERATORS
-  use {'machakann/vim-sandwich'}
-    -- add: sa{motion/textobject}{delimiter}
-    -- delete: sd{delimiter}
-    -- replace: sr{old}{new}
+  use {
+    'machakann/vim-sandwich'
+    --- add: sa{motion/textobject}{delimiter}
+    --- delete: sd{delimiter}
+    --- replace: sr{old}{new}
+  }
   use {
     'chaoren/vim-wordmotion',
     config = function()
@@ -187,11 +182,10 @@ local spec = function(use)
   }
 
   -- GIT
-  use {'rhysd/committia.vim'}
   use {
     'lewis6991/gitsigns.nvim',
     config = function()
-      require('gitsigns').setup {
+      require'gitsigns'.setup {
         signs = {
           add          = {hl = 'GitSignsAdd'   , text = '+'},
           change       = {hl = 'GitSignsChange', text = '~'},
@@ -202,12 +196,6 @@ local spec = function(use)
         keymaps = {
           noremap = true,
           buffer = true,
-          ['n ]h'] = { expr = true, "&diff ? ']c' : '<cmd>lua require\"gitsigns\".next_hunk()<CR>'"},
-          ['n [h'] = { expr = true, "&diff ? '[c' : '<cmd>lua require\"gitsigns\".prev_hunk()<CR>'"},
-          ['n <leader>hs'] = '<cmd>lua require"gitsigns".stage_hunk()<CR>',
-          ['n <leader>hu'] = '<cmd>lua require"gitsigns".undo_stage_hunk()<CR>',
-          ['n <leader>hr'] = '<cmd>lua require"gitsigns".reset_hunk()<CR>',
-          ['n <leader>hp'] = '<cmd>lua require"gitsigns".preview_hunk()<CR>',
         },
         watch_index = {
           interval = 1000
@@ -221,26 +209,26 @@ local spec = function(use)
     'ruifm/gitlinker.nvim',
     requires = 'nvim-lua/plenary.nvim',
     config = function()
-      require"gitlinker".setup()
+      require'gitlinker'.setup()
     end
   }
   --- <leader>gy
   use_local {
     'pwntester/octo.nvim',
     config = function()
-      require"octo".setup({
-        reaction_viewer_hint_icon = "";
+      require'octo'.setup({
+        reaction_viewer_hint_icon = '';
       })
     end,
-    local_path = "dev",
+    local_path = 'dev/personal',
     requires = {'nvim-telescope/telescope.nvim'},
   }
   use_local {
     'pwntester/octo-notifications.nvim',
     requires = 'pwntester/octo.nvim',
-    local_path = "dev",
+    local_path = 'dev/personal',
   }
-  use {"sindrets/diffview.nvim"}
+  use {'sindrets/diffview.nvim'}
   use {
     'TimUntersberger/neogit',
     requires = {
@@ -248,51 +236,31 @@ local spec = function(use)
       'sindrets/diffview.nvim',
     },
     config = function()
-      require('neogit').setup {
+      require'neogit'.setup {
         integrations = {
           diffview = true
         },
         disable_commit_confirmation = true,
         mappings = {
           status = {
-            [">"] = "Toggle",
+            ['>'] = 'Toggle',
           }
         }
       }
     end
   }
-  --- <tab>: Toggle diff
-  --- s: tage (also supports staging selection/hunk)
-  --- S: Stage unstaged changes
-  --- u: Unstage (also supports staging selection/hunk)
-  --- U: Unstage staged changes
-  --- c: Open commit popup
-  --- r: Open rebase popup
-  --- L: Open log popup
-  --- p: Open pull popup
-  --- P: Open push popup
-  --- Z: Open stash popup
-  --- x: Discard changes (also supports discarding hunks)
-  --- <C-r>: Refresh Buffer
-  --- d: Open diffview.nvim at hovered file
-  --- D: Open diff popup
 
   -- THEMES & COLORS
-  use {'rktjmp/lush.nvim'}
   use {
-    'shaunsingh/nord.nvim',
-    config = function()
-      -- require('nord').set()
-      vim.g.nord_contrast = true
-      vim.g.nord_borders = true
-    end
+    'rktjmp/lush.nvim',
   }
   use_local {
     'pwntester/nautilus.nvim',
+    local_path = 'dev/personal',
+    requires = 'rktjmp/lush.nvim',
     config = function()
-      require'nautilus'.setup({mode = "grey"})
+      require'nautilus'.setup({mode = 'grey'})
     end,
-    local_path = "dev",
   }
   use {
     'norcalli/nvim-colorizer.lua',
@@ -300,12 +268,13 @@ local spec = function(use)
   }
 
   -- UI
-  use {'ryanoasis/vim-devicons'}
+  -- use {
+  --   'ryanoasis/vim-devicons',
+  --   module = 'vim-devicons',
+  -- }
   use {
     'kyazdani42/nvim-web-devicons',
-    config = function()
-      require'nvim-web-devicons'.setup()
-    end
+    module = 'nvim-web-devicons',
   }
   use {
     'lukas-reineke/indent-blankline.nvim',
@@ -316,20 +285,16 @@ local spec = function(use)
   }
   use {'junegunn/rainbow_parentheses.vim'}
   use {
-    "RRethy/vim-illuminate",
+    'RRethy/vim-illuminate',
     config = function()
       vim.g.Illuminate_ftblacklist = g.special_buffers
     end
   }
   use {
-    "folke/trouble.nvim",
-    requires = "kyazdani42/nvim-web-devicons",
+    'folke/trouble.nvim',
+    requires = 'kyazdani42/nvim-web-devicons',
     config = function()
-      require("trouble").setup {
-        -- your configuration comes here
-        -- or leave it empty to use the default settings
-        -- refer to the configuration section below
-      }
+      require'trouble'.setup({})
     end
   }
 
@@ -348,17 +313,17 @@ local spec = function(use)
   }
 
   -- PAIRING
-  --
   use {
     'windwp/nvim-autopairs',
+    requires = 'hrsh7th/nvim-compe',
     config = function()
-      require('nvim-autopairs').setup({
-        disable_filetype = { "TelescopePrompt" , "octo" },
-        --ignored_next_char = [[ [%w%%%{%(%[%"%'%.] ]]
-        ignored_next_char = "[%w%.%(%{%[]"
+      require'nvim-autopairs'.setup({
+        disable_filetype = { 'TelescopePrompt' , 'octo' },
+        --ignored_next_char = [[ [%w%%%{%(%[%'%'%.] ]]
+        ignored_next_char = '[%w%.%(%{%[]'
       })
 
-      require("nvim-autopairs.completion.compe").setup({
+      require'nvim-autopairs.completion.compe'.setup({
         map_cr = true, --  map <CR> on insert mode
         map_complete = true -- it will auto insert `(` after select function or method item
       })
@@ -392,14 +357,14 @@ local spec = function(use)
   use {
     'terrortylor/nvim-comment',
     config = function()
-      require('nvim_comment').setup()
+      require'nvim_comment'.setup()
     end
   }
   use {
-    "folke/todo-comments.nvim",
-    requires = "nvim-lua/plenary.nvim",
+    'folke/todo-comments.nvim',
+    requires = 'nvim-lua/plenary.nvim',
     config = function()
-      require("todo-comments").setup {}
+      require'todo-comments'.setup {}
     end
   }
 
@@ -423,14 +388,14 @@ local spec = function(use)
       vim.g.codeql_max_ram = 32000
       vim.g.codeql_search_path = {'/Users/pwntester/codeql-home/codeql-repo', '/Users/pwntester/codeql-home/codeql-go'}
     end,
-    local_path = "dev",
+    local_path = 'dev/personal',
   }
   -- use_local {
   --   'pwntester/fortify.nvim',
   --   config = function()
   --     require'plugins.fortify'.setup()
   --   end,
-  --   local_path = "dev",
+  --   local_path = 'dev/personal',
   -- }
 
   -- LSP
@@ -470,12 +435,12 @@ local spec = function(use)
   --       show_relative_numbers = false,
   --       show_symbol_details = true,
   --       keymaps = {
-  --         close = "<Esc>",
-  --         goto_location = "<Cr>",
-  --         focus_location = "o",
-  --         hover_symbol = "<C-space>",
-  --         rename_symbol = "r",
-  --         code_actions = "a",
+  --         close = '<Esc>',
+  --         goto_location = '<Cr>',
+  --         focus_location = 'o',
+  --         hover_symbol = '<C-space>',
+  --         rename_symbol = 'r',
+  --         code_actions = 'a',
   --       },
   --       lsp_blacklist = {},
   --     }
@@ -497,7 +462,7 @@ local spec = function(use)
   use {
     'rmagatti/goto-preview',
     config = function()
-      require('goto-preview').setup {
+      require'goto-preview'.setup {
         width = 120; -- Width of the floating window
         height = 15; -- Height of the floating window
         default_mappings = false; -- Bind default mappings
@@ -534,26 +499,12 @@ local spec = function(use)
       vim.cmd [[autocmd FileType http nnoremap <C-j> :HTTPClientDoRequest<CR>]]
     end
   }
-
-  -- use {'sunjon/shade.nvim', config = function()
-  --   require'shade'.setup({
-  --     overlay_opacity = 20,
-  --     opacity_step = 1,
-  --     keys = {
-  --       brightness_up    = '<A-k>',
-  --       brightness_down  = '<A-j>',
-  --       toggle           = '<Leader>s',
-  --     }
-  --   })
-  -- end}
-
-
 end
 
 local config = {
   display = {
     open_fn = function()
-      local bufnr, winnr = require("window").floating_window({border=true, width_per=0.8, height_per=0.8})
+      local bufnr, winnr = require'window'.floating_window({border=true, width_per=0.8, height_per=0.8})
       vim.api.nvim_set_current_win(winnr)
       return bufnr, winnr
     end
@@ -565,16 +516,16 @@ local config = {
 }
 
 -- Bootstrap Packer
-local install_path = string.format("%s/site/pack/packer/opt/packer.nvim", vim.fn.stdpath "data")
+local install_path = string.format('%s/site/pack/packer/opt/packer.nvim', vim.fn.stdpath 'data')
 if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
-  vim.notify "Downloading packer.nvim..."
+  vim.notify 'Downloading packer.nvim...'
   vim.notify(
-    vim.fn.system { "git", "clone", "https://github.com/wbthomason/packer.nvim", install_path }
+    vim.fn.system { 'git', 'clone', 'https://github.com/wbthomason/packer.nvim', install_path }
   )
-  vim.cmd "packadd! packer.nvim"
+  vim.cmd 'packadd! packer.nvim'
   require'packer'.startup {spec, config = config}
-  require"packer".sync()
+  require'packer'.sync()
 else
-  vim.cmd "packadd! packer.nvim"
+  vim.cmd 'packadd! packer.nvim'
   require'packer'.startup {spec, config = config}
 end

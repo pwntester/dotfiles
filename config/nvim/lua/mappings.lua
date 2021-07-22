@@ -62,21 +62,21 @@ local mappings = {
 
   -- move between windows
   ['n<C-p>'] = { '<Plug>(choosewin)', noremap = false; };
-  ['n<C-h>'] = {"<CMD>lua require('Navigator').left()<CR>" };
-  ['n<C-k>'] = {"<CMD>lua require('Navigator').up()<CR>" };
-  ['n<C-l>'] = {"<CMD>lua require('Navigator').right()<CR>" };
-  ['n<C-j>'] = {"<CMD>lua require('Navigator').down()<CR>" };
-  --['n<C-p>'] = {"<CMD>lua require('Navigator').previous()<CR>" };
+
+  -- ['n<C-h>'] = {"<CMD>lua require('Navigator').left()<CR>" };
+  -- ['n<C-k>'] = {"<CMD>lua require('Navigator').up()<CR>" };
+  -- ['n<C-l>'] = {"<CMD>lua require('Navigator').right()<CR>" };
+  -- ['n<C-j>'] = {"<CMD>lua require('Navigator').down()<CR>" };
 
   -- ['n<c-k>'] = { ':TmuxNavigateUp<CR>' };
   -- ['n<c-j>'] = { ':TmuxNavigateDown<CR>' };
   -- ['n<c-h>'] = { ':TmuxNavigateLeft<CR>' };
   -- ['n<c-l>'] = { ':TmuxNavigateRight<CR>' };
 
-  -- ['n<c-k>'] = { ':wincmd k<CR>' };
-  -- ['n<c-j>'] = { ':wincmd j<CR>' };
-  -- ['n<c-h>'] = { ':wincmd h<CR>' };
-  -- ['n<c-l>'] = { ':wincmd l<CR>' };
+  ['n<c-k>'] = { ':wincmd k<CR>' };
+  ['n<c-j>'] = { ':wincmd j<CR>' };
+  ['n<c-h>'] = { ':wincmd h<CR>' };
+  ['n<c-l>'] = { ':wincmd l<CR>' };
 
   -- disable keys
   ['n<up>'] = { '<nop>' };
@@ -137,7 +137,8 @@ local mappings = {
   ['n<leader>l'] = { [[<cmd>lua require'telescope.builtin'.live_grep({prompt_title=false,preview_title=false,results_title=false})<CR>]] };
   ['n<leader>r'] = { [[<cmd>lua require'plugins.telescope'.reloader()<CR>]] };
   ['n<leader>o'] = { [[<cmd>lua require'telescope.builtin'.buffers({prompt_title=false,preview_title=false,results_title=false})<CR>]] };
-  ['n<leader>s'] = { [[<cmd>lua require'telescope.builtin'.treesitter({prompt_title=false,preview_title=false,results_title=false})<CR>]] };
+  --['n<leader>s'] = { [[<cmd>lua require'telescope.builtin'.treesitter({prompt_title=false,preview_title=false,results_title=false})<CR>]] };
+  ['n<leader>s'] = { [[<cmd>lua require'telescope.builtin'.grep_string({prompt_title=false,preview_title=false,results_title=false})<CR>]] };
   ['n<leader>gc'] = { [[<cmd>lua require'telescope.builtin'.git_commits({prompt_title=false,preview_title=false,results_title=false})<CR>]] };
   ['n<leader>gf'] = { [[<cmd>lua require'telescope.builtin'.git_files({prompt_title=false,preview_title=false,results_title=false})<CR>]] };
   ['n<leader>gb'] = { [[<cmd>lua require'telescope.builtin'.git_branches({prompt_title=false,preview_title=false,results_title=false})<CR>]] };
