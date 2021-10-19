@@ -3,17 +3,24 @@ local function setup()
     highlight = {
       enable = 1;
       frontmatter = {
-        yaml = 0;
+        yaml = 1;
         toml = 0;
         json = 0;
       };
     };
     tokens = {
-      fence = '`'
+      fence = '`',
+      enter = {"-"},
+      list = '-'
     };
     gf_on_steroids = 0;
+    restore_visual = 1;
+    map = {
+      prefix = "<leader>",
+      enable = 1
+    },
     enter = {
-      enable = 0; -- enter: adds new item
+      enable = 1; -- enter: adds new item
       shift = 0;  -- shift + enter: adds new item indented
     };
     checkbox = {

@@ -51,7 +51,7 @@ function g.onEnter()
     vim.api.nvim_win_set_option(0, 'winhighlight', 'Normal:NormalDark')
 
     -- hide cursorline
-    vim.wo.cursorline = false
+    -- vim.wo.cursorline = false
 
     if not vim.tbl_contains({'octo', 'dashboard'}, vim.bo.filetype) then
       -- prevent changing buffer
@@ -67,8 +67,10 @@ function g.onEnter()
   else
     vim.api.nvim_win_set_option(0, 'winhighlight', 'Normal:Normal')
 
-    -- show cursorline
-    vim.wo.cursorline = true
+    --if not vim.tbl_contains({'octo', 'markdown'}, vim.bo.filetype) then
+      -- show cursorline
+      -- vim.wo.cursorline = true
+    --end
   end
 end
 
@@ -115,6 +117,20 @@ function g.BountySubmissions()
   require'octo.telescope.menu'.issues({repo='github/securitylab-bounties', states="OPEN"})
 end
 
+-- ZK FUNCTIONS
+vim.g.zk_notebook = "/Users/pwntester/bitacora"
+vim.g.zk_journal = "areas/planning/daily\\ notes"
+function g.DailyNote()
+  vim.cmd("cd "..vim.g.zk_notebook)
+  local cmd = string.format("zk new --no-input --group journal --working-dir=%s -p %s", vim.g.zk_notebook, vim.g.zk_journal)
+  local path = vim.fn.system(cmd)
+  path = path:gsub("^%s*(.-)%s*$", "%1")
+  if vim.fn.filereadable(path) then
+    vim.cmd(string.format([[execute "edit %s"]], path))
+  end
+end
+
+--
 -----------------------------------------------------------------------------//
 -- Messaging
 -----------------------------------------------------------------------------//
@@ -124,10 +140,10 @@ if vim.notify then
   --@param message of the notification to show to the user
   --@param log_level Optional log level
   --@param opts Dictionary with optional options (timeout, etc)
-  vim.notify = function(message, log_level, _)
-    assert(message, "The message key of vim.notify should be a string")
-    g.notify(message, { timeout = 5000, log_level = log_level })
-  end
+  -- vim.notify = function(message, log_level, _)
+  --   assert(message, "The message key of vim.notify should be a string")
+  --   g.notify(message, { timeout = 5000, log_level = log_level })
+  -- end
 end
 
 -----------------------------------------------------------------------------//

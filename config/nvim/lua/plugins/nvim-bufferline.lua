@@ -108,7 +108,6 @@ return function()
       },
     },
     options = {
-      mappings = false,
       -- sort_by = function(a, b)
       --   local astat = vim.loop.fs_stat(a.path)
       --   local bstat = vim.loop.fs_stat(b.path)

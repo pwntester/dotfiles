@@ -26,41 +26,41 @@ local function register_buffer(bufnr, client_id)
 end
 
 local function on_attach_callback(client, bufnr)
-	bufnr = bufnr or api.nvim_get_current_buf()
+  bufnr = bufnr or api.nvim_get_current_buf()
   --vim.notify("Attaching LSP client "..client.id.." to buffer "..bufnr)
 
   -- register client/buffer relation
   register_buffer(bufnr, client.id)
 
-	-- mappings
-	local map = function(type, key, value)
-		api.nvim_buf_set_keymap(bufnr, type, key, value,{noremap = true, silent = true});
-	end
+  -- mappings
+  local map = function(type, key, value)
+    api.nvim_buf_set_keymap(bufnr, type, key, value,{noremap = true, silent = true});
+  end
 
-	map('n', '<Plug>(LspGotoDecl)',          '<cmd>lua vim.lsp.buf.declaration()<CR>')
-	map('n', '<Plug>(LspGotoImpl)',          '<cmd>lua vim.lsp.buf.implementation()<CR>')
-	map('n', '<Plug>(LspGotoTypeDef)',       '<cmd>lua vim.lsp.buf.type_definition()<CR>')
-	map('n', '<Plug>(LspFormat)',            '<cmd>lua vim.lsp.buf.formatting()<CR>')
-	map('n', '<Plug>(LspIncomingCalls)',     '<cmd>lua vim.lsp.buf.incoming_calls()<CR>')
-	map('n', '<Plug>(LspOutgoingCalls)',     '<cmd>lua vim.lsp.buf.outgoing_calls()<CR>')
-	map('n', '<Plug>(LspHover)',             '<cmd>lua vim.lsp.buf.hover()<CR>')
-	map('n', '<Plug>(LspShowSignatureHelp)', '<cmd>lua vim.lsp.buf.signature_help()<CR>')
+  map('n', '<Plug>(LspGotoDecl)',          '<cmd>lua vim.lsp.buf.declaration()<CR>')
+  map('n', '<Plug>(LspGotoImpl)',          '<cmd>lua vim.lsp.buf.implementation()<CR>')
+  map('n', '<Plug>(LspGotoTypeDef)',       '<cmd>lua vim.lsp.buf.type_definition()<CR>')
+  map('n', '<Plug>(LspFormat)',            '<cmd>lua vim.lsp.buf.formatting()<CR>')
+  map('n', '<Plug>(LspIncomingCalls)',     '<cmd>lua vim.lsp.buf.incoming_calls()<CR>')
+  map('n', '<Plug>(LspOutgoingCalls)',     '<cmd>lua vim.lsp.buf.outgoing_calls()<CR>')
+  map('n', '<Plug>(LspHover)',             '<cmd>lua vim.lsp.buf.hover()<CR>')
+  map('n', '<Plug>(LspShowSignatureHelp)', '<cmd>lua vim.lsp.buf.signature_help()<CR>')
 
-	--map('n', '<Plug>(LspHover)',             '<cmd>lua require("lspsaga.hover").render_hover_doc()<CR>')
-	--map('n', '<Plug>(LspShowSignatureHelp)', '<cmd>lua require("lspsaga.signaturehelp").signature_help()<CR>')
-  map('n', '<Plug>(LspNextDiagnostic)',    '<cmd>lua require"lspsaga.diagnostic".lsp_jump_diagnostic_next()<CR>')
-  map('n', '<Plug>(LspPrevDiagnostic)',    '<cmd>lua require"lspsaga.diagnostic".lsp_jump_diagnostic_prev()<CR>')
-	map('n', '<Plug>(LspRename)',            '<cmd>lua require("lspsaga.rename").rename()<CR>')
-	map('n', '<Plug>(LspFinder)',            '<cmd>lua require"lspsaga.provider".lsp_finder()<CR>')
-	map('n', '<Plug>(LspPreviewDefinition)', '<cmd>lua require"lspsaga.provider".preview_definition()<CR>')
-	map('n', '<Plug>(LspShowLineDiagnostics)','<cmd>lua require"lspsaga.diagnostic".show_line_diagnostics()<CR>')
-	map('n', '<Plug>(LspCodeActions)'        ,'<cmd>lua require("lspsaga.codeaction").code_action()<CR>')
-	map('n', '<Plug>(LspRangeCodeActions)'   ,':<C-U>lua require("lspsaga.codeaction").range_code_action()<CR>')
+  -- map('n', '<Plug>(LspHover)',             '<cmd>lua require("lspsaga.hover").render_hover_doc()<CR>')
+  -- map('n', '<Plug>(LspShowSignatureHelp)', '<cmd>lua require("lspsaga.signaturehelp").signature_help()<CR>')
+  -- map('n', '<Plug>(LspNextDiagnostic)',    '<cmd>lua require"lspsaga.diagnostic".lsp_jump_diagnostic_next()<CR>')
+  -- map('n', '<Plug>(LspPrevDiagnostic)',    '<cmd>lua require"lspsaga.diagnostic".lsp_jump_diagnostic_prev()<CR>')
+  -- map('n', '<Plug>(LspRename)',            '<cmd>lua require("lspsaga.rename").rename()<CR>')
+  -- map('n', '<Plug>(LspFinder)',            '<cmd>lua require"lspsaga.provider".lsp_finder()<CR>')
+  -- map('n', '<Plug>(LspPreviewDefinition)', '<cmd>lua require"lspsaga.provider".preview_definition()<CR>')
+  -- map('n', '<Plug>(LspShowLineDiagnostics)','<cmd>lua require"lspsaga.diagnostic".show_line_diagnostics()<CR>')
+  -- map('n', '<Plug>(LspCodeActions)'        ,'<cmd>lua require("lspsaga.codeaction").code_action()<CR>')
+  -- map('n', '<Plug>(LspRangeCodeActions)'   ,':<C-U>lua require("lspsaga.codeaction").range_code_action()<CR>')
 
-	map('n', '<Plug>(LspGotoDef)',           '<cmd>lua require"telescope.builtin.lsp".definitions()<CR>')
-	map('n', '<Plug>(LspShowReferences)',    '<cmd>lua require"telescope.builtin.lsp".references()<CR>')
-	map('n', '<Plug><LspDocumentSymbol)',    '<cmd>lua require"telescope.builtin.lsp".document_symbols()<CR>')
-	map('n', '<Plug><LspWorkspaceSymbol)',   '<cmd>lua require"plugins.telescope".lsp_dynamic_symbols()<CR>')
+  map('n', '<Plug>(LspGotoDef)',           '<cmd>lua require"telescope.builtin.lsp".definitions()<CR>')
+  map('n', '<Plug>(LspShowReferences)',    '<cmd>lua require"telescope.builtin.lsp".references()<CR>')
+  map('n', '<Plug><LspDocumentSymbol)',    '<cmd>lua require"telescope.builtin.lsp".document_symbols()<CR>')
+  map('n', '<Plug><LspWorkspaceSymbol)',   '<cmd>lua require"plugins.telescope".lsp_dynamic_symbols()<CR>')
 
   -- Extensions
   require 'illuminate'.on_attach(client)
@@ -70,7 +70,7 @@ end
 
 local function setup()
 
-	-- diagnostics signs
+  -- diagnostics signs
   vim.fn.sign_define('LspDiagnosticsSignError', {
     text = ''; texthl = 'LspDiagnosticsSignError';
   })
@@ -89,15 +89,14 @@ local function setup()
       signs = true,
       update_in_insert = false,
       underline = true,
-      --virtual_text = true,
       virtual_text = {
         spacing = 4,
-        prefix = '~',
+        prefix = '»',
       },
     }
   )
 
-	-- custom handlers
+  -- custom handlers
   vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(
     vim.lsp.handlers.hover, {
       border = window.window_border_chars
@@ -116,100 +115,133 @@ local function setup()
   --   api.nvim_command("wincmd p")
   -- end
 
-	-- language servers
+  -- language servers
 
-	--- Lua
-	nvim_lsp.sumneko_lua.setup{
-		cmd = {
-			"/Users/pwntester/repos/lua-language-server/bin/macOS/lua-language-server",
-			"-E",
-			"/Users/pwntester/repos/lua-language-server/main.lua",
-		};
-		on_attach = on_attach_callback;
-		settings = {
-			Lua = {
-				completion = { keywordSnippet = "Disable", },
-				diagnostics = { enable = true, globals = {
-					"vim", "describe", "it", "before_each", "after_each" },
-				},
-	      runtime = { version = "LuaJIT", path = vim.split(package.path, ';'), },
-				workspace = {
-					library = {
-						[vim.fn.expand("$VIMRUNTIME/lua")] = true,
-						[vim.fn.expand("$VIMRUNTIME/lua/vim/lsp")] = true,
-					}
-				}
-			}
-		}
-	}
+  --- Lua
+  nvim_lsp.sumneko_lua.setup{
+    cmd = {
+      "/Users/pwntester/repos/lua-language-server/bin/macOS/lua-language-server",
+      "-E",
+      "/Users/pwntester/repos/lua-language-server/main.lua",
+    };
+    on_attach = on_attach_callback;
+    capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities());
+    settings = {
+      Lua = {
+        completion = { keywordSnippet = "Disable", },
+        diagnostics = { enable = true, globals = {
+          "vim", "describe", "it", "before_each", "after_each" },
+        },
+        runtime = { version = "LuaJIT", path = vim.split(package.path, ';'), },
+        workspace = {
+          library = {
+            [vim.fn.expand("$VIMRUNTIME/lua")] = true,
+            [vim.fn.expand("$VIMRUNTIME/lua/vim/lsp")] = true,
+          }
+        }
+      }
+    }
+  }
 
-	--- JavaScript
-	nvim_lsp.tsserver.setup{
-		on_attach = on_attach_callback;
+  --- JavaScript
+  nvim_lsp.tsserver.setup{
+    on_attach = on_attach_callback;
+    capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities());
     flags = {
       debounce_text_changes = 150
     }
-	}
+  }
 
-	--- Go
-	nvim_lsp.gopls.setup{
-		on_attach = on_attach_callback;
+  --- Go
+  nvim_lsp.gopls.setup{
+    on_attach = on_attach_callback;
+    capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities());
     flags = {
       debounce_text_changes = 150
     }
-	}
+  }
 
-	--- Ruby
-	nvim_lsp.solargraph.setup{
-		on_attach = on_attach_callback;
+  --- Ruby
+  nvim_lsp.solargraph.setup{
+    on_attach = on_attach_callback;
+    capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities());
     flags = {
       debounce_text_changes = 150
     }
-	}
+  }
 
   --- .NET
   local pid = vim.fn.getpid()
   local omnisharp_bin = "/Users/pwntester/repos/omnisharp-osx/run"
   nvim_lsp.omnisharp.setup{
     cmd = { omnisharp_bin, "--languageserver" , "--hostPID", tostring(pid) };
-		on_attach = on_attach_callback;
+    capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities());
+    on_attach = on_attach_callback;
     flags = {
       debounce_text_changes = 150
     }
   }
 
-	--- CodeQL
+  --- CodeQL
   --{"jsonrpc":"2.0","id":0,"result":{"capabilities":{"textDocumentSync":1,"hoverProvider":true,"completionProvider":{"resolveProvider":false,"triggerCharacters":[".",","]},"definitionProvider":true,"referencesProvider":true,"documentHighlightProvider":true,"documentSymbolProvider":true,"documentFormattingProvider":true,"workspace":{"workspaceFolders":{"supported":true,"changeNotifications":true}},"experimental":{"checkErrorsProvider":true,"guessLocationProvider":true}}}}
-	nvim_lsp.codeqlls.setup{
-		on_attach = on_attach_callback;
+  nvim_lsp.codeqlls.setup{
+    on_attach = on_attach_callback;
+    capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities());
     flags = {
       debounce_text_changes = 150
     };
     root_dir = function(fname)
-      if vim.startswith(fname, "octo:") or vim.startswith(fname, "codeql:") then return end
+      if vim.startswith(fname, "octo:") or
+         vim.startswith(fname, "codeql:") or
+         vim.startswith(fname, "docker:")
+         then return end
       local root_pattern = util.root_pattern("qlpack.yml")
       return root_pattern(fname) or util.path.dirname(fname)
     end,
-		settings = {
-			search_path = vim.g.codeql_search_path;
-		};
-	}
+    settings = {
+      search_path = vim.g.codeql_search_path;
+    };
+  }
 
-	--- Fortify Language Server
-	if not configs.fortify_lsp then
-		configs.fortify_lsp = {
-			default_config = {
-				cmd = {'fls'};
-				filetypes = {'fortifyrulepack'};
-				root_dir = function(fname)
-					return nvim_lsp.util.path.dirname(fname)
-				end;
-			};
-		}
-	end
-	nvim_lsp.fortify_lsp.setup{
-		on_attach = on_attach_callback;
-	}
+  --- ZK
+  nvim_lsp.zk.setup {
+    capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities());
+    root_dir = function() return vim.loop.cwd() end;
+    --root_dir = function() return vim.g.zk_notebook end;
+    on_attach = function(client, bufnr)
+      -- Key mappings
+      local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
+      local opts = { noremap=true, silent=false }
+      buf_set_keymap("n", "<Plug>(ZKFollowLink)", "<CMD>lua vim.lsp.buf.definition()<CR>", opts)
+      buf_set_keymap("v", "<Plug>(ZKCreateNoteFromSelection)", ":'<,'>lua vim.lsp.buf.range_code_action()<CR>", opts)
+      buf_set_keymap("n", "<Plug>(ZKIndex)", "<CMD>lua require'lspconfig'.zk.index()<CR>", opts)
+      buf_set_keymap("n", "<Plug>(ZKNewNote)", "<CMD>lua require'lspconfig'.zk.new({title = vim.fn.input('Title: '), dir = 'areas/inbox'})<CR>", opts)
+
+      -- Find the backlinks for the note linked under the cursor.
+      --buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+      -- Preview a note with K when the cursor is on a link.
+      --buf_set_keymap("n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>", opts)
+      --buf_set_keymap("i", "<S-tab>", "<cmd>lua vim.lsp.buf.completion()<CR>", opts)
+
+      on_attach_callback(client, bufnr)
+    end
+  }
+
+  --- Fortify Language Server
+  if not configs.fortify_lsp then
+    configs.fortify_lsp = {
+      default_config = {
+        cmd = {'fls'};
+        filetypes = {'fortifyrulepack'};
+        root_dir = function(fname)
+          return nvim_lsp.util.path.dirname(fname)
+        end;
+      };
+    }
+  end
+  nvim_lsp.fortify_lsp.setup{
+    on_attach = on_attach_callback;
+  }
 
 end
 
@@ -350,8 +382,9 @@ local function setup_jdt()
 end
 
 return {
-	setup = setup;
+  setup = setup;
   start_jdt = start_jdt;
   setup_jdt = setup_jdt;
   clients = clients;
+  on_attach_callback = on_attach_callback;
 }

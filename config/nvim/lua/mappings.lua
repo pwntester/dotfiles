@@ -142,19 +142,18 @@ local mappings = {
   ['n<leader>gc'] = { [[<cmd>lua require'telescope.builtin'.git_commits({prompt_title=false,preview_title=false,results_title=false})<CR>]] };
   ['n<leader>gf'] = { [[<cmd>lua require'telescope.builtin'.git_files({prompt_title=false,preview_title=false,results_title=false})<CR>]] };
   ['n<leader>gb'] = { [[<cmd>lua require'telescope.builtin'.git_branches({prompt_title=false,preview_title=false,results_title=false})<CR>]] };
-  ['n<leader>p'] = { [[<cmd>lua require'telescope'.extensions.project.project{change_dir = true}<CR>]] };
+  ['n<leader>p'] = { [[<cmd>lua require'telescope'.extensions.projects.projects({prompt_title=false,preview_title=false,results_title=false})<CR>]] };
 
   -- GITSIGNS
   ['n[h'] = { '<Plug>(GitGutterPrevHunk)', noremap = false; };
   ['n]h'] = { '<Plug>(GitGutterNextHunk)', noremap = false; };
 
-
   -- VIM-SMOOTHIE
   ['n<c-d>'] = { '<Plug>(SmoothieDownwards)', noremap = false; };
   ['n<c-e>'] = { '<Plug>(SmoothieUpwards)', noremap = false; };
 
-  -- GOYO
-  ['n<leader>y'] = { ':Goyo<CR>' };
+  -- TRUEZEN
+  ['n<leader>t'] = { ':TZAtaraxis<CR>' };
 
   -- NVIM-BUFFERLINE
   ['n<s-l>'] = { ':BufferLineCycleNext<CR>', noremap = false; };
@@ -163,8 +162,8 @@ local mappings = {
   -- ['n<leader>['] = { ':BufferLineMovePrev<CR>', noremap = false; };
 
   -- NVIM-TREE
-  ['ngE'] = { [[:NvimTreeToggle<CR>]] };
-  ['nge'] = { [[:NvimTreeFindFile<CR>]] };
+  ['nge'] = { [[:NvimTreeToggle<CR>]] };
+  --['nge'] = { [[:NvimTreeFindFile<CR>]] };
 
   -- GIT-MESSANGER
   ['n<leader>gm'] = { [[<Plug>(git-messenger)]], noremap = false };
@@ -238,69 +237,30 @@ local mappings = {
   ['ngtt']    = { [[<Plug>(LspGotoTypeDef)]], noremap = false};
   ['ngic']    = { [[<Plug>(LspIncomingCalls)]], noremap = false};
   ['ngoc']    = { [[<Plug>(LspOutgoingCalls)]], noremap = false};
-}
 
--- PUM + COMPLE + VSNIP
-_G.next_complete = function(mode)
-  if vim.fn.pumvisible() == 1 then
-    return vim.api.nvim_replace_termcodes("<C-n>", true, false, true)
-  elseif vim.fn.call("vsnip#available", {1}) == 1 then
-    return vim.api.nvim_replace_termcodes("<Plug>(vsnip-expand-or-jump)", true, false, true)
-  elseif mode == "c" then
-    return vim.api.nvim_replace_termcodes("<down>", true, false, true)
-  else
-    return vim.api.nvim_replace_termcodes("<C-n>", true, false, true)
-  end
-end
-_G.prev_complete = function(mode)
-  if vim.fn.pumvisible() == 1 then
-    return vim.api.nvim_replace_termcodes("<C-p>", true, false, true)
-  elseif vim.fn.call("vsnip#jumpable", {-1}) == 1 then
-    return vim.api.nvim_replace_termcodes("<Plug>(vsnip-jump-prev)", true, false, true)
-  elseif mode == "c" then
-    return vim.api.nvim_replace_termcodes("<up>", true, false, true)
-  else
-    return vim.api.nvim_replace_termcodes("<C-p>", true, false, true)
-  end
-end
-vim.api.nvim_set_keymap("i", "<C-j>", "v:lua.next_complete()", {noremap = true, expr = true})
-vim.api.nvim_set_keymap("i", "<down>", "v:lua.next_complete()", {noremap = true, expr = true})
-vim.api.nvim_set_keymap("i", "<C-k>", "v:lua.prev_complete()", {noremap = true, expr = true})
-vim.api.nvim_set_keymap("i", "<up>", "v:lua.prev_complete()", {noremap = true, expr = true})
-vim.api.nvim_set_keymap("s", "<C-j>", "v:lua.next_complete()", {noremap = true, expr = true})
-vim.api.nvim_set_keymap("s", "<down>", "v:lua.next_complete()", {noremap = true, expr = true})
-vim.api.nvim_set_keymap("s", "<C-k>", "v:lua.prev_complete()", {noremap = true, expr = true})
-vim.api.nvim_set_keymap("s", "<up>", "v:lua.prev_complete()", {noremap = true, expr = true})
-vim.api.nvim_set_keymap("c", "<C-j>", "v:lua.next_complete('c')", {noremap = true, expr = true})
-vim.api.nvim_set_keymap("c", "<C-k>", "v:lua.prev_complete('c')", {noremap = true, expr = true})
-vim.api.nvim_set_keymap("c", "<down>", "v:lua.next_complete('c')", {noremap = true, expr = true})
-vim.api.nvim_set_keymap("c", "<up>", "v:lua.prev_complete('c')", {noremap = true, expr = true})
+  -- MKDX
+  ['nQ949']   = { [[:call mkdx#ToggleList()<CR>]], noremap = true }; -- cmd + i
+  ['vQ949']   = { [[:call mkdx#ToggleList()<CR>]], noremap = true }; -- cmd + i
+
+  -- ZK
+  ['nS591']   = { [[:call v:lua.g.DailyNote()<CR>]], noremap = true }; -- cmd + t
+  ['nU678']   = { [[<Plug>(ZKFollowLink)]], noremap = false }; -- cmd + enter
+  ['vU678']   = { [[<Plug>(ZKCreateNoteFromSelection)]], noremap = false }; -- cmd + enter
+  ['n<leader>zi'] = { [[<Plug>(ZKIndex)]], noremap = false };
+  ['n<leader>zn'] = { [[<Plug>(ZKNewNote)]], noremap = false };
+
+  -- ZK.NVIM
+  -- ['n<leader>n'] =  { [[<cmd>lua require('telescope').extensions.zk.zk_notes()<CR>]],     noremap = false; };
+  -- ['n<leader>zg'] = { [[<cmd>lua require('telescope').extensions.zk.zk_grep()<CR>]],      noremap = false; };
+  -- ['n<leader>zb'] = { [[<cmd>lua require('telescope').extensions.zk.zk_backlinks()<CR>]], noremap = false; };
+
+}
 
 -- jump to next/previous search match on search mode
 -- ['c<C-j>'] = { [[getcmdtype() == '/' <bar><bar> getcmdtype() == '?' ? '<C-g>' : '<C-j>']], expr = true; };
 -- ['c<C-k>'] = { [[getcmdtype() == '/' <bar><bar> getcmdtype() == '?' ? '<C-t>' : '<C-k>']], expr = true; };
 
-
---vim.g.completion_confirm_key = ""
--- _G.completion_confirm=function()
---   if vim.fn.pumvisible() ~= 0  then
---     if vim.fn.complete_info()["selected"] ~= -1 then
---       vim.fn["compe#confirm"]()
---       return npairs.esc("")
---       --return npairs.esc("<c-y>")
---     else
---       --return npairs.esc("<CR>")
---       return npairs.check_break_line_char()
---     end
---   else
---     --return npairs.esc("<CR>")
---     return npairs.check_break_line_char()
---   end
--- end
---vim.api.nvim_set_keymap("i", "<CR>",  "v:lua.completion_confirm()", {expr = true})
-
 vim.cmd [[tnoremap <Esc> <C-\><C-n>]]
-
 vim.cmd [[let mapleader = "\<Space>"]]
 
 map(mappings, { silent = true; noremap = true; })

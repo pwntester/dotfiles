@@ -1,10 +1,10 @@
 [user]
-	name = Alvaro Muñoz Sanchez
-	email = alvaro@pwntester.com
+  name = Alvaro Muñoz Sanchez
+  email = alvaro@pwntester.com
 [alias]
-	co = checkout
+  co = checkout
 [pull]
-	rebase = false
+  rebase = false
 
-[url "git@github.com:"]
-    insteadOf = "https://github.com/"
+; [url "git@github.com:"]
+;   insteadOf = "https://github.com/"
