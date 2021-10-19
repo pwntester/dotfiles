@@ -23,10 +23,14 @@ require'mappings'
 -----------------------------------------------------------------------------//
 require'autocmds'
 
+vim.cmd [[autocmd BufEnter *.md set foldexpr=NestedMarkdownFolds()]]
+vim.cmd [[autocmd FileType octo set foldexpr=NestedMarkdownFolds()]]
+
 -----------------------------------------------------------------------------//
 -- ALIASES
 -----------------------------------------------------------------------------//
-g.alias("bd", "lua require('bufdelete').bufdelete(0, true)")
+--g.alias("bd", "lua require('bufdelete').bufdelete(0, true)")
+g.alias("bd", "lua require('close_buffers').delete({type = 'this'})")
 
 -----------------------------------------------------------------------------//
 -- COMMANDS
@@ -128,7 +132,6 @@ vim.opt.formatoptions = {
   v = false,
 }
 vim.cmd [[set formatoptions=qrnj]]
-
 ---------------------------------------------------------------------------//
 -- Folds {{{1
 -----------------------------------------------------------------------------//
@@ -150,7 +153,6 @@ end
 -----------------------------------------------------------------------------//
 -- Wild and file globbing stuff in command mode {{{1
 -----------------------------------------------------------------------------//
-vim.opt.wildcharm = vim.fn.char2nr [[<C-Z>]]
 vim.opt.wildmode = {"full", "longest"}
 vim.opt.wildoptions = "pum"
 vim.opt.pumblend = 15 -- Make popup window translucent

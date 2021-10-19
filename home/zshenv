@@ -4,7 +4,6 @@ export HISTSIZE=10000                   # Maximum events for internal history
 export SAVEHIST=10000                   # Maximum events in history file
 
 # system
-export BROWSER=/Applications/Firefox.app/Contents/MacOS/firefox
 export EDITOR=nvim
 export VISUAL=nvim
 export PAGER=less
@@ -27,6 +26,7 @@ export PATH=$PATH:/usr/local/share/npm/bin
 export PATH=$PATH:/Applications/Fortify/Fortify_SCA_and_Apps_19.2.0/bin
 export PATH=$PATH:$(go env GOPATH)/bin
 export PATH=$PATH:/Users/pwntester/.gem/ruby/3.0.0/bin
+export PATH=$PATH:/Users/pwntester/.cargo/bin
 
 # mvn
 # export MAVEN_DEBUG_OPTS="-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005"

@@ -7,7 +7,6 @@ local loop = vim.loop
 -- vim.cmd [[
 -- inoremap <expr> <c-x><c-f> fzf#vim#complete(fzf#wrap({'source': 'find '.getcwd().' -type f -name "*.md" -not -path "*/\.*"\; \| xargs realpath', 'reducer': function('<sid>make_relative') }))
 -- ]]
-vim.cmd [[ sign define codeblock linehl=markdownCode ]]
 
 local function pasteLink()
   -- TODO: get url from clipboard
@@ -74,7 +73,7 @@ local function asyncPush()
   local cmd_str = 'git add %s ;git commit -m "Auto commit of %s" "%s";git push;'
   local cmd = format(cmd_str, vim.fn.expand('%'), vim.fn.expand('%:t'), vim.fn.expand('%'))
 
-  print('AutoCommiting changes ...')
+  --print('AutoCommiting changes ...')
   handle = loop.spawn('sh', {
       args = {'-c', cmd};
       stdio = {stdout,stderr};
@@ -87,7 +86,7 @@ local function asyncPush()
       if not handle:is_closing() then
         handle:close()
       end
-      print('Saved!')
+      vim.notify('Pushed changes to GitHub')
     end)
   )
   loop.read_start(stdout, on_read)
@@ -106,12 +105,12 @@ local function markdownBlocks()
   for lnum = 1, #vim.fn.getline(1, '$'), 1 do
     -- detect the start fo a code block
     local line = vim.fn.getline(lnum)
-    if ((not continue and match(line, '^```.*$')) or (not match(line, '^```.*$') and continue)) then
+    if ((not continue and match(line, '^%s*```.*$')) or (not match(line, '^%s*```.*$') and continue)) then
       -- continue placing signs, until the block stops
       continue = true
       -- place sign
       api.nvim_command('sign place '..lnum..' line='..lnum..' name=codeblock file='..vim.fn.expand('%'))
-    elseif line == "```" and continue then
+    elseif match(line, "^%s*```%s*") and continue then
       -- place sign
       api.nvim_command('sign place '..lnum..' line='..lnum..' name=codeblock file='..vim.fn.expand('%'))
       -- stop placing signs

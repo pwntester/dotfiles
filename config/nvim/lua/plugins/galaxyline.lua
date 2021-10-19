@@ -140,7 +140,9 @@ return function()
     FileName = {
       provider = function()
         local bufname = vim.fn.bufname()
-        if vim.startswith(bufname, "octo:") or vim.startswith(bufname, "codeql:") then
+        if vim.startswith(bufname, "octo:") or
+           vim.startswith(bufname, "codeql:") or
+           vim.startswith(bufname, "docker:") then
           return bufname
         else
           return relpath(vim.fn.fnamemodify(bufname, ':p'), vim.fn.getcwd())

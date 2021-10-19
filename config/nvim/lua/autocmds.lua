@@ -36,7 +36,7 @@ g.augroup("VimRC", {
     events = { "TermOpen" },
     targets = { "term://*" },
     command = function()
-      vim.opt.filetype = "terminal"
+      vim.bo.ft = "terminal"
     end,
   },
   -- au TermOpen term://* startinsert
@@ -73,13 +73,33 @@ g.augroup("VimRC", {
       end
     end,
   },
-  -- au BufWritePost ~/bitacora/* lua require'markdown'.asyncPush()
-  -- {
-  --   events = { "BufWritePost" },
-  --   targets = { "*/bitacora/*" },
-  --   command = function()
-  --     require"markdown".asyncPush()
-  --   end,
-  -- },
-})
 
+  {
+    events = { "BufEnter" },
+    targets = { "*" },
+    command = function()
+      if vim.bo.ft == 'markdown' then
+        vim.lsp.handlers["textDocument/publishDiagnostics"] = function() end
+      else
+        vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
+          vim.lsp.diagnostic.on_publish_diagnostics, {
+            signs = true,
+            update_in_insert = false,
+            underline = true,
+            virtual_text = {
+              spacing = 4,
+              prefix = '»',
+            },
+          }
+        )
+      end
+    end,
+  },
+  {
+    events = { "BufWritePost" },
+    targets = { "*/bitacora/*" },
+    command = function()
+      require"markdown".asyncPush()
+    end,
+  },
+})
