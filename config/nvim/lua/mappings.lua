@@ -223,7 +223,7 @@ local mappings = {
   ['ngcr']    = { [[<Plug>(LspRename)]], noremap = false};
   ['ngR']     = { [[<cmd>lua require('lspsaga.rename').rename()<CR>]], noremap = false};
 
-  ['i<c-s>']  = { [[<Plug>(LspShowSignatureHelp)]], noremap = false};
+  --['i<c-s>']  = { [[<Plug>(LspShowSignatureHelp)]], noremap = false};
 
   ['n]e']     = { [[<Plug>(LspNextDiagnostic)]] , noremap = false};
   ['n[e']     = { [[<Plug>(LspPrevDiagnostic)]] , noremap = false};

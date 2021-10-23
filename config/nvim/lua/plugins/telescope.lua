@@ -59,7 +59,7 @@ local function setup()
           ["octo"]    = "/Users/pwntester/dev/personal/octo.nvim",
           ["dots"]    = "/Users/pwntester/dotfiles",
           ["ql"]      = "/Users/pwntester/research/codeql/codeql-securitylab",
-          ["wiki"]    = "/Users/pwntester/bitacora"
+          ["notes"]    = "/Users/pwntester/bitacora"
         }
       }
     }

@@ -36,31 +36,31 @@ local spec = function(use)
   }
 
   -- SESSIONS
-  use {
-    "glepnir/dashboard-nvim",
-    config = function()
-      vim.g.dashboard_default_executive = "telescope"
-      vim.g.dashboard_custom_header = {
-        [[]],
-        [[]],
-        [[███████ ██   ██  █████  ██      ██          ██     ██ ███████     ██████  ██       █████  ██    ██      █████       ██████   █████  ███    ███ ███████ ██████  ]],
-        [[██      ██   ██ ██   ██ ██      ██          ██     ██ ██          ██   ██ ██      ██   ██  ██  ██      ██   ██     ██       ██   ██ ████  ████ ██           ██ ]],
-        [[███████ ███████ ███████ ██      ██          ██  █  ██ █████       ██████  ██      ███████   ████       ███████     ██   ███ ███████ ██ ████ ██ █████     ▄███  ]],
-        [[     ██ ██   ██ ██   ██ ██      ██          ██ ███ ██ ██          ██      ██      ██   ██    ██        ██   ██     ██    ██ ██   ██ ██  ██  ██ ██        ▀▀    ]],
-        [[███████ ██   ██ ██   ██ ███████ ███████      ███ ███  ███████     ██      ███████ ██   ██    ██        ██   ██      ██████  ██   ██ ██      ██ ███████   ██    ]],
-      }
-
-      vim.g.dashboard_custom_section = {
-        a = { description = { "  ToDo                " }, command = "TODO" },
-        b = { description = { "  GitHub Notifications" }, command = "Inbox" },
-        c = { description = { "  Find File           " }, command = "Telescope find_files" },
-        d = { description = { "  Recently Used Files " }, command = "Telescope frecency" },
-        e = { description = { "  Load Last Session   " }, command = "SessionLoad" },
-        f = { description = { "  CWD Grep            " }, command = "Telescope live_grep" },
-        g = { description = { "  Config              " }, command = ":e ~/.config/nvim/lua/plugins.lua" },
-      }
-    end,
-  }
+  -- use {
+  --   "glepnir/dashboard-nvim",
+  --   config = function()
+  --     vim.g.dashboard_default_executive = "telescope"
+  --     vim.g.dashboard_custom_header = {
+  --       [[]],
+  --       [[]],
+  --       [[███████ ██   ██  █████  ██      ██          ██     ██ ███████     ██████  ██       █████  ██    ██      █████       ██████   █████  ███    ███ ███████ ██████  ]],
+  --       [[██      ██   ██ ██   ██ ██      ██          ██     ██ ██          ██   ██ ██      ██   ██  ██  ██      ██   ██     ██       ██   ██ ████  ████ ██           ██ ]],
+  --       [[███████ ███████ ███████ ██      ██          ██  █  ██ █████       ██████  ██      ███████   ████       ███████     ██   ███ ███████ ██ ████ ██ █████     ▄███  ]],
+  --       [[     ██ ██   ██ ██   ██ ██      ██          ██ ███ ██ ██          ██      ██      ██   ██    ██        ██   ██     ██    ██ ██   ██ ██  ██  ██ ██        ▀▀    ]],
+  --       [[███████ ██   ██ ██   ██ ███████ ███████      ███ ███  ███████     ██      ███████ ██   ██    ██        ██   ██      ██████  ██   ██ ██      ██ ███████   ██    ]],
+  --     }
+  --
+  --     vim.g.dashboard_custom_section = {
+  --       a = { description = { "  ToDo                " }, command = "TODO" },
+  --       b = { description = { "  GitHub Notifications" }, command = "Inbox" },
+  --       c = { description = { "  Find File           " }, command = "Telescope find_files" },
+  --       d = { description = { "  Recently Used Files " }, command = "Telescope frecency" },
+  --       e = { description = { "  Load Last Session   " }, command = "SessionLoad" },
+  --       f = { description = { "  CWD Grep            " }, command = "Telescope live_grep" },
+  --       g = { description = { "  Config              " }, command = ":e ~/.config/nvim/lua/plugins.lua" },
+  --     }
+  --   end,
+  -- }
 
   -- DEPS
   use { "tami5/sql.nvim" }
@@ -82,31 +82,31 @@ local spec = function(use)
       require("neoscroll").setup()
     end,
   }
-  use {
-    "abecodes/tabout.nvim",
-    config = function()
-      require("tabout").setup {
-        tabkey = "<Tab>", -- key to trigger tabout
-        backwards_tabkey = "<S-Tab>", -- key to trigger backwards tabout
-        act_as_tab = true, -- shift content if tab out is not possible
-        act_as_shift_tab = false, -- reverse shift content if tab out is not possible (if your keyboard/terminal supports <S-Tab>)
-        enable_backwards = true, -- well ...
-        completion = false, -- if the tabkey is used in a completion pum
-        tabouts = {
-          { open = "'", close = "'" },
-          { open = '"', close = '"' },
-          { open = "`", close = "`" },
-          { open = "(", close = ")" },
-          { open = "[", close = "]" },
-          { open = "{", close = "}" },
-        },
-        ignore_beginning = true, --[[ if the cursor is at the beginning of a filled element it will rather tab out than shift the content ]]
-        exclude = {}, -- tabout will ignore these filetypes
-      }
-    end,
-    wants = { "nvim-treesitter" }, -- or require if not used so far
-    --after = {'nvim-cmp'} -- if a completion plugin is using tabs load it before
-  }
+  -- use {
+  --   "abecodes/tabout.nvim",
+  --   config = function()
+  --     require("tabout").setup {
+  --       tabkey = "<Tab>", -- key to trigger tabout
+  --       backwards_tabkey = "<S-Tab>", -- key to trigger backwards tabout
+  --       act_as_tab = true, -- shift content if tab out is not possible
+  --       act_as_shift_tab = false, -- reverse shift content if tab out is not possible (if your keyboard/terminal supports <S-Tab>)
+  --       enable_backwards = true, -- well ...
+  --       completion = false, -- if the tabkey is used in a completion pum
+  --       tabouts = {
+  --         { open = "'", close = "'" },
+  --         { open = '"', close = '"' },
+  --         { open = "`", close = "`" },
+  --         { open = "(", close = ")" },
+  --         { open = "[", close = "]" },
+  --         { open = "{", close = "}" },
+  --       },
+  --       ignore_beginning = true, --[[ if the cursor is at the beginning of a filled element it will rather tab out than shift the content ]]
+  --       exclude = {}, -- tabout will ignore these filetypes
+  --     }
+  --   end,
+  --   wants = { "nvim-treesitter" }, -- or require if not used so far
+  --   --after = {'nvim-cmp'} -- if a completion plugin is using tabs load it before
+  -- }
   use {
     "kazhala/close-buffers.nvim",
     config = function()
@@ -148,7 +148,9 @@ local spec = function(use)
 
   -- COMPLETION
   use { "hrsh7th/cmp-buffer" }
+  use { "hrsh7th/cmp-path" }
   use { "hrsh7th/cmp-nvim-lsp" }
+  use { "hrsh7th/cmp-nvim-lua" }
   use { "hrsh7th/cmp-vsnip" }
   use {
     "hrsh7th/nvim-cmp",
@@ -201,10 +203,14 @@ local spec = function(use)
 
   -- TEXT OBJECTS/MOTIONS/OPERATORS
   use {
-    "machakann/vim-sandwich",
+    "blackCauldron7/surround.nvim",
+    config = function()
+      require"surround".setup {mappings_style = "sandwich"}
+    end
     --- add: sa{motion/textobject}{delimiter}
     --- delete: sd{delimiter}
     --- replace: sr{old}{new}
+    --- ss repeats last surround command.
   }
   use {
     "chaoren/vim-wordmotion",
@@ -615,7 +621,25 @@ local spec = function(use)
     "rcarriga/nvim-notify",
     config = function()
       vim.notify = require "notify"
+      require("notify").setup({
+        stages = "fade_in_slide_out",
+        timeout = 5000,
+        background_colour = "#ffcc66",
+        icons = {
+          ERROR = "",
+          WARN = "",
+          INFO = "",
+          DEBUG = "",
+          TRACE = "✎",
+        }
+      })
     end,
+  }
+  use {
+    "ggandor/lightspeed.nvim"
+  }
+  use {
+    "github/copilot.vim"
   }
 
 end
@@ -646,3 +670,10 @@ else
   vim.cmd "packadd! packer.nvim"
   require("packer").startup { spec, config = config }
 end
+
+
+
+
+
+
+

@@ -10,11 +10,11 @@ local function setup()
           with_text = true,
           maxwidth = 50,
           menu = {
-            buffer = "[Buffer]",
-            nvim_lsp = "[LSP]",
-            luasnip = "[LuaSnip]",
-            nvim_lua = "[Lua]",
-            latex_symbols = "[Latex]",
+            buffer = "[buf]",
+            nvim_lsp = "[lsp]",
+            path = "[path]",
+            nvim_lua = "[lua]",
+            vsnip = "[snip]",
           }
         })
         item = lspkind_formatter(entry, item)
@@ -26,6 +26,10 @@ local function setup()
       expand = function(args)
         vim.fn["vsnip#anonymous"](args.body)
       end,
+    },
+    experimental = {
+      native_menu = false,
+      ghost_text = true,
     },
     -- https://github.com/hrsh7th/nvim-cmp/issues/231
     mapping = {
@@ -48,8 +52,10 @@ local function setup()
     },
     sources = {
       { name = 'nvim_lsp' },
+      { name = 'nvim_lua' },
+      { name = 'path' },
       { name = 'vsnip' },
-      { name = 'buffer' },
+      { name = 'buffer', keyword_length = 5 },
     }
   })
   autopairs.setup({
