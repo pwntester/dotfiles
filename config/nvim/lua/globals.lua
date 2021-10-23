@@ -27,28 +27,31 @@ _G.g = {
     'dashboard',
     'frecency',
     'TelescopePrompt',
-    'NeogitStatus'
+    'TelescopeResults',
+    'NeogitStatus',
+    'notify',
   }
 }
-
-
 
 -----------------------------------------------------------------------------//
 -- Global functions
 -----------------------------------------------------------------------------//
 
 function g.onFileType()
-  if vim.tbl_contains({'frecency', 'TelescopePrompt'}, vim.bo.filetype) or
-     not vim.tbl_contains(g.special_buffers, vim.bo.filetype) then
+  if vim.tbl_contains({'frecency', 'TelescopePrompt'}, vim.bo.filetype) then
     vim.api.nvim_win_set_option(0, 'winhighlight', 'Normal:Normal')
-  else
+  elseif vim.tbl_contains(g.special_buffers, vim.bo.filetype) then
     vim.api.nvim_win_set_option(0, 'winhighlight', 'Normal:NormalDark')
+  elseif vim.bo.filetype == "" then
+    vim.api.nvim_win_set_option(0, 'winhighlight', 'Normal:NormalDark')
+  else
+    vim.api.nvim_win_set_option(0, 'winhighlight', 'Normal:Normal')
   end
 end
 
 function g.onEnter()
   if vim.tbl_contains(g.special_buffers, vim.bo.filetype) then
-    vim.api.nvim_win_set_option(0, 'winhighlight', 'Normal:NormalDark')
+    --vim.api.nvim_win_set_option(0, 'winhighlight', 'Normal:NormalDark')
 
     -- hide cursorline
     -- vim.wo.cursorline = false
@@ -65,7 +68,7 @@ function g.onEnter()
       vim.cmd [[ cmap <silent><buffer><expr>bn<Return> (getcmdtype()==':' && getcmdpos()==1? "<Space>": "bn<Return>") ]]
     end
   else
-    vim.api.nvim_win_set_option(0, 'winhighlight', 'Normal:Normal')
+    --vim.api.nvim_win_set_option(0, 'winhighlight', 'Normal:Normal')
 
     --if not vim.tbl_contains({'octo', 'markdown'}, vim.bo.filetype) then
       -- show cursorline
@@ -119,7 +122,7 @@ end
 
 -- ZK FUNCTIONS
 vim.g.zk_notebook = "/Users/pwntester/bitacora"
-vim.g.zk_journal = "areas/planning/daily\\ notes"
+vim.g.zk_journal = "resources/daily\\ notes"
 function g.DailyNote()
   vim.cmd("cd "..vim.g.zk_notebook)
   local cmd = string.format("zk new --no-input --group journal --working-dir=%s -p %s", vim.g.zk_notebook, vim.g.zk_journal)

@@ -6,6 +6,7 @@ local conf = require("telescope.config").values
 local scan = require "plenary.scandir"
 local actions = require "telescope.actions"
 local action_state = require "telescope.actions.state"
+local tree_cb = require'nvim-tree.config'.nvim_tree_callback
 
 local function is_dir(name)
   local stats = luv.fs_stat(name)
@@ -50,15 +51,15 @@ local function telescope_move()
 end
 
 local function setup()
-  vim.g.nvim_tree_respect_buf_cwd = true
-  vim.g.nvim_tree_hide_dotfiles = true
+  vim.g.nvim_tree_respect_buf_cwd = 1
+  vim.g.nvim_tree_hide_dotfiles = 1
   vim.g.nvim_tree_ignore = {".DS_Store", ".git"}
-  vim.g.nvim_tree_highlight_opened_files = true
+  vim.g.nvim_tree_highlight_opened_files = 1
   vim.g.nvim_tree_show_icons = {
-    git = false,
-    folders = true,
-    files = true,
-    folder_arrows = true,
+    git = 0,
+    folders = 1,
+    files = 1,
+    folder_arrows = 1,
   }
   vim.g.nvim_tree_window_picker_exclude = {
     ["filetype"] = { 'packer', 'qf' },
@@ -97,10 +98,14 @@ local function setup()
         custom_only = false,
         list = {
           {
-            key = {"m"},
+            key = "m",
             mode = "n",
             cb = ":lua require'plugins.nvim-tree'.telescope_move()<CR>"
-          }
+          },
+          {
+            key = "h",
+            cb = tree_cb("toggle_dotfiles")
+          },
         }
       }
     }
