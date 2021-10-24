@@ -35,33 +35,6 @@ local spec = function(use)
     opt = true,
   }
 
-  -- SESSIONS
-  -- use {
-  --   "glepnir/dashboard-nvim",
-  --   config = function()
-  --     vim.g.dashboard_default_executive = "telescope"
-  --     vim.g.dashboard_custom_header = {
-  --       [[]],
-  --       [[]],
-  --       [[███████ ██   ██  █████  ██      ██          ██     ██ ███████     ██████  ██       █████  ██    ██      █████       ██████   █████  ███    ███ ███████ ██████  ]],
-  --       [[██      ██   ██ ██   ██ ██      ██          ██     ██ ██          ██   ██ ██      ██   ██  ██  ██      ██   ██     ██       ██   ██ ████  ████ ██           ██ ]],
-  --       [[███████ ███████ ███████ ██      ██          ██  █  ██ █████       ██████  ██      ███████   ████       ███████     ██   ███ ███████ ██ ████ ██ █████     ▄███  ]],
-  --       [[     ██ ██   ██ ██   ██ ██      ██          ██ ███ ██ ██          ██      ██      ██   ██    ██        ██   ██     ██    ██ ██   ██ ██  ██  ██ ██        ▀▀    ]],
-  --       [[███████ ██   ██ ██   ██ ███████ ███████      ███ ███  ███████     ██      ███████ ██   ██    ██        ██   ██      ██████  ██   ██ ██      ██ ███████   ██    ]],
-  --     }
-  --
-  --     vim.g.dashboard_custom_section = {
-  --       a = { description = { "  ToDo                " }, command = "TODO" },
-  --       b = { description = { "  GitHub Notifications" }, command = "Inbox" },
-  --       c = { description = { "  Find File           " }, command = "Telescope find_files" },
-  --       d = { description = { "  Recently Used Files " }, command = "Telescope frecency" },
-  --       e = { description = { "  Load Last Session   " }, command = "SessionLoad" },
-  --       f = { description = { "  CWD Grep            " }, command = "Telescope live_grep" },
-  --       g = { description = { "  Config              " }, command = ":e ~/.config/nvim/lua/plugins.lua" },
-  --     }
-  --   end,
-  -- }
-
   -- DEPS
   use { "tami5/sql.nvim" }
   use { "nvim-lua/popup.nvim" }
@@ -82,31 +55,6 @@ local spec = function(use)
       require("neoscroll").setup()
     end,
   }
-  -- use {
-  --   "abecodes/tabout.nvim",
-  --   config = function()
-  --     require("tabout").setup {
-  --       tabkey = "<Tab>", -- key to trigger tabout
-  --       backwards_tabkey = "<S-Tab>", -- key to trigger backwards tabout
-  --       act_as_tab = true, -- shift content if tab out is not possible
-  --       act_as_shift_tab = false, -- reverse shift content if tab out is not possible (if your keyboard/terminal supports <S-Tab>)
-  --       enable_backwards = true, -- well ...
-  --       completion = false, -- if the tabkey is used in a completion pum
-  --       tabouts = {
-  --         { open = "'", close = "'" },
-  --         { open = '"', close = '"' },
-  --         { open = "`", close = "`" },
-  --         { open = "(", close = ")" },
-  --         { open = "[", close = "]" },
-  --         { open = "{", close = "}" },
-  --       },
-  --       ignore_beginning = true, --[[ if the cursor is at the beginning of a filled element it will rather tab out than shift the content ]]
-  --       exclude = {}, -- tabout will ignore these filetypes
-  --     }
-  --   end,
-  --   wants = { "nvim-treesitter" }, -- or require if not used so far
-  --   --after = {'nvim-cmp'} -- if a completion plugin is using tabs load it before
-  -- }
   use {
     "kazhala/close-buffers.nvim",
     config = function()
@@ -205,8 +153,8 @@ local spec = function(use)
   use {
     "blackCauldron7/surround.nvim",
     config = function()
-      require"surround".setup {mappings_style = "sandwich"}
-    end
+      require("surround").setup { mappings_style = "sandwich" }
+    end,
     --- add: sa{motion/textobject}{delimiter}
     --- delete: sd{delimiter}
     --- replace: sr{old}{new}
@@ -241,10 +189,10 @@ local spec = function(use)
         sign_priority = 6,
         status_formatter = nil,
         on_attach = function()
-          if vim.bo.ft == 'markdown' then
+          if vim.bo.ft == "markdown" then
             return false
           end
-        end
+        end,
       }
     end,
   }
@@ -261,6 +209,7 @@ local spec = function(use)
     config = function()
       require("octo").setup {
         reaction_viewer_hint_icon = "",
+        picker = "telescope",
       }
     end,
     local_path = "dev/personal",
@@ -293,26 +242,6 @@ local spec = function(use)
     end,
   }
 
-  -- NOTES
-  -- use_local {
-  --   "pwntester/zk.nvim",
-  --   config = function()
-  --     require('telescope').load_extension('zk')
-  --     require("zk").setup({
-  --       debug = false,
-  --       log = true,
-  --       default_keymaps = true,
-  --       default_notebook_path = vim.env.ZK_NOTEBOOK_DIR or "~/Library/Mobile Documents/iCloud~md~obsidian/Documents/Pwntester",
-  --       fuzzy_finder = "telescope",
-  --       link_format = "wiki"
-  --     })
-  --   end,
-  --   local_path = "dev/personal",
-  --   requires = { "nvim-telescope/telescope.nvim" },
-  -- }
-  --- Search/filtering of notes
-  ----- :lua require('zk.command').search({ query = "hiring NOT onboarding", notebook = "", tags = ""})
-
   -- THEMES & COLORS
   use {
     "rktjmp/lush.nvim",
@@ -331,10 +260,6 @@ local spec = function(use)
   }
 
   -- UI
-  -- use {
-  --   'ryanoasis/vim-devicons',
-  --   module = 'vim-devicons',
-  -- }
   use {
     "kyazdani42/nvim-web-devicons",
     module = "nvim-web-devicons",
@@ -379,15 +304,15 @@ local spec = function(use)
   use {
     "windwp/nvim-autopairs",
     config = function()
-      local npairs = require('nvim-autopairs')
+      local npairs = require "nvim-autopairs"
       npairs.setup {
         disable_filetype = { "TelescopePrompt", "octo" },
         --ignored_next_char = [[ [%w%%%{%(%[%'%'%.] ]]
         ignored_next_char = "[%w%.%(%{%[]",
       }
-      local Rule = require('nvim-autopairs.rule')
-      npairs.add_rule(Rule("|","","ql"))
-    end
+      local Rule = require "nvim-autopairs.rule"
+      npairs.add_rule(Rule("|", "", "ql"))
+    end,
   }
 
   -- FILE EXPLORER
@@ -403,7 +328,7 @@ local spec = function(use)
   use {
     "numToStr/Comment.nvim",
     config = function()
-      require('Comment').setup()
+      require("Comment").setup()
     end,
   }
   use {
@@ -465,12 +390,6 @@ local spec = function(use)
       require("lsp_config").setup_jdt()
     end,
   }
-  -- use {
-  --   "glepnir/lspsaga.nvim",
-  --   config = function()
-  --     require("lspsaga").init_lsp_saga()
-  --   end,
-  -- }
   use {
     "onsails/lspkind-nvim",
     config = function()
@@ -526,24 +445,6 @@ local spec = function(use)
       }
     end,
   }
-  use {
-    "jose-elias-alvarez/null-ls.nvim",
-    config = function()
-      require("null-ls").config {
-        sources = {
-          require("null-ls").builtins.formatting.stylua.with {
-            condition = function(utils)
-              return utils.root_has_file "stylua.toml"
-            end,
-          },
-        },
-      }
-      require("lspconfig")["null-ls"].setup {
-        on_attach = require("lsp_config").on_attach_callback,
-      }
-    end,
-    requires = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
-  }
 
   -- MARKDOWN
   use {
@@ -552,31 +453,10 @@ local spec = function(use)
       require("plugins.mkdx").setup()
     end,
   }
-  -- use { "masukomi/vim-markdown-folding" }
-  -- use {
-  --   "dkarter/bullets.vim",
-  --   config = function()
-  --     vim.g.bullets_enabled_file_types = { "markdown", "octo" }
-  --     vim.g.bullets_outline_levels = { "std-" }
-  --     --vim.g.bullets_checkbox_markers = { "x" }
-  --   end,
-  --   -- <leader>x: complete task
-  --   -- demote:
-  --     -- Normal: >>
-  --     -- Insert: <C-t>
-  --     -- Visual: >
-  --   -- premote:
-  --     -- Normal: <<
-  --     -- Insert: <C-d>
-  --     -- Visual: <
-  -- }
-  -- use {
-  --   "boson-joe/markdowneyJR",
-  -- }
   use {
     "Pocco81/TrueZen.nvim",
     config = function()
-      require("true-zen").setup({
+      require("true-zen").setup {
         integrations = {
           vim_gitgutter = false,
           galaxyline = true,
@@ -591,10 +471,10 @@ local spec = function(use)
           express_line = false,
           lualine = false,
           lightline = false,
-          feline = false
+          feline = false,
         },
-      })
-    end
+      }
+    end,
   }
 
   -- HTTP Client
@@ -621,7 +501,7 @@ local spec = function(use)
     "rcarriga/nvim-notify",
     config = function()
       vim.notify = require "notify"
-      require("notify").setup({
+      require("notify").setup {
         stages = "fade_in_slide_out",
         timeout = 5000,
         background_colour = "#ffcc66",
@@ -631,17 +511,22 @@ local spec = function(use)
           INFO = "",
           DEBUG = "",
           TRACE = "✎",
-        }
-      })
+        },
+      }
     end,
   }
   use {
-    "ggandor/lightspeed.nvim"
+    "ggandor/lightspeed.nvim",
   }
   use {
-    "github/copilot.vim"
+    "github/copilot.vim",
   }
-
+  use {
+    "ibhagwan/fzf-lua",
+  }
+  use {
+    "liuchengxu/vim-clap",
+  }
 end
 
 local config = {
@@ -670,10 +555,3 @@ else
   vim.cmd "packadd! packer.nvim"
   require("packer").startup { spec, config = config }
 end
-
-
-
-
-
-
-
