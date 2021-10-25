@@ -209,7 +209,6 @@ local spec = function(use)
     config = function()
       require("octo").setup {
         reaction_viewer_hint_icon = "",
-        picker = "telescope",
       }
     end,
     local_path = "dev/personal",

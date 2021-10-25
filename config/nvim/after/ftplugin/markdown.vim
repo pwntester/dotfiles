@@ -7,23 +7,27 @@ sign define codeblock linehl=markdownCodeBlock
 
 setlocal conceallevel=2 
 setlocal concealcursor=c 
-setlocal signcolumn=no
 setlocal nonumber
 setlocal norelativenumber
 setlocal spell complete+=kspell 
 setlocal iskeyword+=-
 setlocal iskeyword+=@-@
-setlocal foldcolumn=9
-setlocal signcolumn=yes:9
-
-set breakindent
-set wrap
+setlocal breakindent
+setlocal wrap
 setlocal breakindentopt=min:5,list:-1
-setl linebreak list&vim listchars&vim
-"let &l:formatlistpat = '^\s*\d\+\.\?[\]:)}\t ]\s*'
+setlocal linebreak list&vim listchars&vim
 let &l:formatlistpat = '^\s*\d\+\.\s\+\|^\s*[-*+>]\s\+\|^\[^\ze[^\]]\+\]:'
 
-silent! execute "Gitsigns toggle_signs"
+"silent! execute "Gitsigns toggle_signs"
 
 "nnoremap <buffer> <leader>p :lua require'markdown'.pasteImage('images')<CR> 
 "nnoremap <buffer> <leader>p :PasteImg<CR> 
+
+if &ft != 'octo'
+  setlocal foldcolumn=9
+  setlocal signcolumn=yes:9
+else
+  setlocal foldcolumn=0
+  setlocal signcolumn=yes:1
+endif
+
