@@ -1,4 +1,4 @@
-local lspconfig = require'lsp_config'
+local lspconfig = require "lsp_config"
 
 return function()
   -- local function is_ft(b, ft)
@@ -36,7 +36,7 @@ return function()
   -- end
 
   local function get_lsp_client(msg)
-    msg = msg or 'No Active LSP'
+    msg = msg or "No Active LSP"
     local clients = vim.lsp.get_active_clients()
     if next(clients) == nil then
       return msg
@@ -46,7 +46,9 @@ return function()
     local client_id = lspconfig.clients[bufnr]
     if client_id then
       for _, client in ipairs(clients) do
-        if client.id == client_id[1] then return client.name.." ("..client.id..")" end
+        if client.id == client_id[1] then
+          return client.name .. " (" .. client.id .. ")"
+        end
       end
     end
     return msg
@@ -55,56 +57,68 @@ return function()
   require("bufferline").setup {
     highlights = {
       background = {
-        guibg = '#1f283b',
-        guifg = '#80b2d6'
+        guifg = "#80b2d6",
+        guibg = "#1f283b",
       },
       tab_selected = {
-        guifg = '#1f283b',
-        guibg = '#ffcc66'
+        guifg = "#1f283b",
+        guibg = "#ffcc66",
+      },
+      duplicate = {
+        guifg = "#80b2d6",
+        guibg = "#1f283b",
+      },
+      duplicate_visible = {
+        guifg = "#80b2d6",
+        guibg = "#1f283b",
+      },
+      duplicate_selected = {
+        guifg = "#1f283b",
+        guibg = "#ffcc66",
       },
       buffer_visible = {
-        guibg = '#1f283b',
-        guifg = '#80b2d6'
+        guifg = "#80b2d6",
+        guibg = "#1f283b",
       },
       buffer_selected = {
-        guifg = '#1f283b',
-        guibg = '#ffcc66'
+        guifg = "#1f283b",
+        guibg = "#ffcc66",
       },
       modified = {
-        guifg = '#f04c75',
-        guibg = '#1f283b',
+        guifg = "#f04c75",
+        guibg = "#1f283b",
       },
       modified_visible = {
-        guifg = '#f04c75',
-        guibg = '#1f283b',
+        guifg = "#f04c75",
+        guibg = "#1f283b",
       },
       modified_selected = {
-        guifg = '#f04c75',
-        guibg = '#ffcc66',
+        guifg = "#f04c75",
+        guibg = "#ffcc66",
       },
       separator = {
-        guibg = '#1f283b',
+        guibg = "#1f283b",
       },
       separator_visible = {
-        guibg = '#1f283b',
+        guibg = "#1f283b",
       },
       separator_selected = {
-        guibg = '#ffcc66',
+        guibg = "#ffcc66",
       },
       close_button = {
-        guifg = '#abb2bf',
-        guibg = '#1f283b',
+        guifg = "#abb2bf",
+        guibg = "#1f283b",
       },
       close_button_visible = {
-        guifg = '#abb2bf',
-        guibg = '#1f283b',
+        guifg = "#abb2bf",
+        guibg = "#1f283b",
       },
       close_button_selected = {
-        guifg = '#1f283b',
-        guibg = '#ffcc66',
+        guifg = "#1f283b",
+        guibg = "#ffcc66",
       },
       indicator_selected = {
-        guifg = '#0000ff',
+        guifg = "#0000ff",
       },
     },
     options = {
@@ -154,24 +168,24 @@ return function()
           local warning = vim.lsp.diagnostic.get_count(0, [[Warning]])
 
           local client = get_lsp_client()
-          if client == 'No Active LSP' then
-            result[1] = {text = "  ", guifg = "#f04c75"}
-            result[2] = {text = "", guifg = "#98c379"}
+          if client == "No Active LSP" then
+            result[1] = { text = "  ", guifg = "#f04c75" }
+            result[2] = { text = "", guifg = "#98c379" }
           else
-            result[1] = {text = "  ", guifg = "#ffcc66"}
-            result[2] = {text = client.." ", guifg = "#98c379"}
+            result[1] = { text = "  ", guifg = "#ffcc66" }
+            result[2] = { text = client .. " ", guifg = "#98c379" }
           end
 
           if error ~= 0 then
-            result[3] = {text = " "..error.." ", guifg = "#f04c75"}
+            result[3] = { text = " " .. error .. " ", guifg = "#f04c75" }
           end
 
           if warning ~= 0 then
-            result[4] = {text = " "..warning.." ", guifg = "#ffae57"}
+            result[4] = { text = " " .. warning .. " ", guifg = "#ffae57" }
           end
           return result
-        end
-      }
+        end,
+      },
     },
   }
 end
