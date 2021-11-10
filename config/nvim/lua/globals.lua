@@ -9,28 +9,28 @@
 _G.__as_global_callbacks = __as_global_callbacks or {}
 
 _G.g = {
-  _store = __as_global_callbacks;
+  _store = __as_global_callbacks,
   special_buffers = {
-    'help',
-    'fortifytestpane',
-    'fortifyauditpane',
-    'qf',
-    'goterm',
-    'codeqlpanel',
-    'terminal',
-    'packer',
-    'NvimTree',
-    'octo',
-    'octo_panel',
-    'aerieal',
-    'Trouble',
-    'dashboard',
-    'frecency',
-    'TelescopePrompt',
-    'TelescopeResults',
-    'NeogitStatus',
-    'notify',
-  }
+    "help",
+    "fortifytestpane",
+    "fortifyauditpane",
+    "qf",
+    "goterm",
+    "codeqlpanel",
+    "terminal",
+    "packer",
+    "NvimTree",
+    "octo",
+    "octo_panel",
+    "aerieal",
+    "Trouble",
+    "dashboard",
+    "frecency",
+    "TelescopePrompt",
+    "TelescopeResults",
+    "NeogitStatus",
+    "notify",
+  },
 }
 
 -----------------------------------------------------------------------------//
@@ -38,15 +38,16 @@ _G.g = {
 -----------------------------------------------------------------------------//
 
 function g.onFileType()
-  if vim.tbl_contains({'frecency', 'TelescopePrompt'}, vim.bo.filetype) then
-    vim.api.nvim_win_set_option(0, 'winhighlight', 'Normal:Normal')
+  if vim.tbl_contains({ "frecency", "TelescopePrompt" }, vim.bo.filetype) then
+    vim.api.nvim_win_set_option(0, "winhighlight", "Normal:Normal")
   elseif vim.tbl_contains(g.special_buffers, vim.bo.filetype) then
-    vim.api.nvim_win_set_option(0, 'winhighlight', 'Normal:NormalDark')
+    vim.api.nvim_win_set_option(0, "winhighlight", "Normal:NormalDark")
   elseif vim.bo.filetype == "" then
-    vim.api.nvim_win_set_option(0, 'winhighlight', 'Normal:NormalDark')
+    vim.api.nvim_win_set_option(0, "winhighlight", "Normal:NormalDark")
   else
-    vim.api.nvim_win_set_option(0, 'winhighlight', 'Normal:Normal')
+    vim.api.nvim_win_set_option(0, "winhighlight", "Normal:Normal")
   end
+  vim.cmd [[au FileType * set fo-=c fo-=r fo-=o]]
 end
 
 function g.onEnter()
@@ -56,7 +57,7 @@ function g.onEnter()
     -- hide cursorline
     -- vim.wo.cursorline = false
 
-    if not vim.tbl_contains({'octo', 'dashboard'}, vim.bo.filetype) then
+    if not vim.tbl_contains({ "octo", "dashboard" }, vim.bo.filetype) then
       -- prevent changing buffer
       vim.cmd [[ nnoremap <silent><buffer><s-l> <nop> ]]
       vim.cmd [[ nnoremap <silent><buffer><s-h> <nop> ]]
@@ -71,61 +72,81 @@ function g.onEnter()
     --vim.api.nvim_win_set_option(0, 'winhighlight', 'Normal:Normal')
 
     --if not vim.tbl_contains({'octo', 'markdown'}, vim.bo.filetype) then
-      -- show cursorline
-      -- vim.wo.cursorline = true
+    -- show cursorline
+    -- vim.wo.cursorline = true
     --end
   end
 end
 
 -- ALIASES
 function g.alias(from, to, buffer)
-  local cmd = string.format('cnoreabbrev <expr> %s ((getcmdtype() is# ":" && getcmdline() is# "%s")? ("%s") : ("%s"))', from, from, to, from)
+  local cmd = string.format(
+    'cnoreabbrev <expr> %s ((getcmdtype() is# ":" && getcmdline() is# "%s")? ("%s") : ("%s"))',
+    from,
+    from,
+    to,
+    from
+  )
   if buffer then
-    cmd = string.format('cnoreabbrev <expr><buffer> %s ((getcmdtype() is# ":" && getcmdline() is# "%s")? ("%s") : ("%s"))', from, from, to, from)
+    cmd = string.format(
+      'cnoreabbrev <expr><buffer> %s ((getcmdtype() is# ":" && getcmdline() is# "%s")? ("%s") : ("%s"))',
+      from,
+      from,
+      to,
+      from
+    )
   end
   vim.cmd(cmd)
 end
 
 -- FUNCTIONS
 function g.openURL()
-  local uri = vim.fn.matchstr(vim.fn.getline("."), '[a-z]*:\\/\\/[^ >,;()]*')
+  local uri = vim.fn.matchstr(vim.fn.getline ".", "[a-z]*:\\/\\/[^ >,;()]*")
   uri = vim.fn.shellescape(uri, 1)
   print(uri)
   if uri ~= "" then
     vim.fn.execute(string.format("!/Applications/Firefox.app/Contents/MacOS/firefox '%s'", uri))
     vim.cmd [[:redraw!]]
   else
-    print("No URI found in line.")
+    print "No URI found in line."
   end
 end
 
 -- OCTO FUNCTIONS
 function g.TODO()
-  require'octo.utils'.get_issue('pwntester/bitacora', 41)
+  require("octo.utils").get_issue("pwntester/bitacora", 41)
 end
 
 function g.Bitacora()
-  require'octo.telescope.menu'.issues({repo='pwntester/bitacora', states="OPEN"})
+  require("octo.telescope.menu").issues { repo = "pwntester/bitacora", states = "OPEN" }
 end
 function g.LabIssues()
-  require'octo.telescope.menu'.issues({repo='github/pe-security-lab'})
+  require("octo.telescope.menu").issues { repo = "github/pe-security-lab" }
 end
 function g.HubberReports()
-  require'octo.telescope.menu'.issues({repo='github/pe-security-lab', labels ='Vulnerability report', states="OPEN"})
+  require("octo.telescope.menu").issues {
+    repo = "github/pe-security-lab",
+    labels = "Vulnerability report",
+    states = "OPEN",
+  }
 end
 function g.VulnReports()
-  require'octo.telescope.menu'.issues({repo='github/securitylab_vulnerabilities'})
+  require("octo.telescope.menu").issues { repo = "github/securitylab_vulnerabilities" }
 end
 function g.BountySubmissions()
-  require'octo.telescope.menu'.issues({repo='github/securitylab-bounties', states="OPEN"})
+  require("octo.telescope.menu").issues { repo = "github/securitylab-bounties", states = "OPEN" }
 end
 
 -- ZK FUNCTIONS
 vim.g.zk_notebook = "/Users/pwntester/bitacora"
 vim.g.zk_journal = "resources/daily\\ notes"
 function g.DailyNote()
-  vim.cmd("cd "..vim.g.zk_notebook)
-  local cmd = string.format("zk new --no-input --group journal --working-dir=%s -p %s", vim.g.zk_notebook, vim.g.zk_journal)
+  vim.cmd("cd " .. vim.g.zk_notebook)
+  local cmd = string.format(
+    "zk new --no-input --group journal --working-dir=%s -p %s",
+    vim.g.zk_notebook,
+    vim.g.zk_journal
+  )
   local path = vim.fn.system(cmd)
   path = path:gsub("^%s*(.-)%s*$", "%1")
   if vim.fn.filereadable(path) then
@@ -453,7 +474,7 @@ function g.notify(lines, opts)
     anchor = "SE",
     style = "minimal",
     focusable = false,
-    border = "rounded"
+    border = "rounded",
   })
 
   local level_hl = notification_hl[level]
@@ -472,3 +493,19 @@ function g.notify(lines, opts)
   end
 end
 
+function g.replace_termcodes(str)
+  return vim.api.nvim_replace_termcodes(str, true, true, true)
+end
+
+---Require a module using [pcall] and report any errors
+---@param module string
+---@param opts table?
+---@return boolean, any
+function g.safe_require(module, opts)
+  opts = opts or { silent = false }
+  local ok, result = pcall(require, module)
+  if not ok and not opts.silent then
+    vim.notify(result, 2, { title = string.format("Error requiring: %s", module) })
+  end
+  return ok, result
+end

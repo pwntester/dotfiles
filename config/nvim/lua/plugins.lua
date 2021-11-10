@@ -36,7 +36,7 @@ local spec = function(use)
   }
 
   -- DEPS
-  use { "tami5/sql.nvim" }
+  -- use { "tami5/sqlite.lua" }
   use { "nvim-lua/popup.nvim" }
   use { "nvim-lua/plenary.nvim" }
 
@@ -77,34 +77,83 @@ local spec = function(use)
   -- TELESCOPE.NVIM
   use {
     "nvim-lua/telescope.nvim",
+    cmd = "Telescope",
+    module_pattern = "telescope.*",
+    requires = {
+      {
+        "nvim-telescope/telescope-fzf-native.nvim",
+        run = "make",
+        after = "telescope.nvim",
+        config = function()
+          require("telescope").load_extension "fzf"
+        end,
+      },
+      {
+        "nvim-telescope/telescope-frecency.nvim",
+        after = "telescope.nvim",
+        requires = "tami5/sqlite.lua",
+        config = function()
+          require("telescope").load_extension "frecency"
+        end,
+      },
+      {
+        "camgraff/telescope-tmux.nvim",
+        after = "telescope.nvim",
+        config = function()
+          require("telescope").load_extension "tmux"
+        end,
+      },
+      {
+        "nvim-telescope/telescope-symbols.nvim",
+        after = "telescope.nvim",
+      },
+      {
+        "ekickx/clipboard-image.nvim",
+        config = function()
+          require("clipboard-image").setup {
+            markdown = {
+              img_dir = "resources/attachments",
+              img_dir_txt = "resources/attachments",
+              affix = "![](%s)",
+            },
+          }
+        end,
+      },
+    },
     config = function()
       require("plugins.telescope").setup()
     end,
-    requires = { "nvim-lua/popup.nvim", "nvim-lua/plenary.nvim" },
-  }
-  use {
-    "nvim-telescope/telescope-frecency.nvim",
-    requires = { "nvim-telescope/telescope.nvim" },
-    config = function()
-      require("telescope").load_extension "frecency"
-    end,
-  }
-  use {
-    "nvim-telescope/telescope-symbols.nvim",
-    requires = { "nvim-telescope/telescope.nvim" },
   }
 
   -- COMPLETION
-  use { "hrsh7th/cmp-buffer" }
-  use { "hrsh7th/cmp-path" }
-  use { "hrsh7th/cmp-nvim-lsp" }
+  use {
+    "saadparwaiz1/cmp_luasnip",
+    requires = { "LuaSnip" },
+  }
+  --use { "tzachar/fuzzy.nvim" }
+  --use { "tzachar/cmp-fzy-buffer", requires = { "hrsh7th/nvim-cmp", "tzachar/fuzzy.nvim" } }
+  --use { "tzachar/cmp-fuzzy-path", requires = { "hrsh7th/nvim-cmp", "hrsh7th/cmp-path", "tzachar/fuzzy.nvim" } }
   use { "hrsh7th/cmp-nvim-lua" }
-  use { "hrsh7th/cmp-vsnip" }
   use {
     "hrsh7th/nvim-cmp",
     requires = {
-      "windwp/nvim-autopairs",
-      "onsails/lspkind-nvim",
+      { "hrsh7th/cmp-nvim-lsp" },
+      { "hrsh7th/cmp-nvim-lsp-document-symbol", after = "nvim-cmp" },
+      { "hrsh7th/cmp-cmdline", after = "nvim-cmp" },
+      { "f3fora/cmp-spell", after = "nvim-cmp" },
+      { "hrsh7th/cmp-path", after = "nvim-cmp" },
+      { "hrsh7th/cmp-buffer", after = "nvim-cmp" },
+      { "saadparwaiz1/cmp_luasnip", after = "nvim-cmp" },
+      {
+        "tzachar/cmp-fuzzy-path",
+        after = "cmp-path",
+        requires = { "hrsh7th/cmp-path", "tzachar/fuzzy.nvim" },
+      },
+      {
+        "tzachar/cmp-fuzzy-buffer",
+        after = "nvim-cmp",
+        requires = { "tzachar/fuzzy.nvim" },
+      },
     },
     config = function()
       require("plugins.nvim-cmp").setup()
@@ -112,10 +161,50 @@ local spec = function(use)
   }
 
   -- SNIPPETS
-  use { "hrsh7th/vim-vsnip" }
-  use { "seudev/vscode-java-snippets" }
-  use { "NexSabre/vscode-python-snippets" }
-  use { "github/vscode-codeql" }
+  use {
+    "L3MON4D3/LuaSnip",
+    after = "nvim-cmp",
+    module = "luasnip",
+    requires = "friendly-snippets",
+    config = function()
+      local ls = require "luasnip"
+      ls.config.set_config {
+        history = true,
+        updateevents = "TextChanged,TextChangedI",
+      }
+      require("luasnip/loaders/from_vscode").lazy_load()
+    end,
+  }
+  use {
+    "rafamadriz/friendly-snippets",
+    event = "InsertEnter",
+  }
+  -- use { "hrsh7th/vim-vsnip" }
+  -- use { "seudev/vscode-java-snippets" }
+  -- use { "NexSabre/vscode-python-snippets" }
+  -- use { "github/vscode-codeql" }
+
+  -- PAIRS
+  use {
+    "windwp/nvim-autopairs",
+    after = "nvim-cmp",
+    config = function()
+      local npairs = require "nvim-autopairs"
+      local cmp_autopairs = require "nvim-autopairs.completion.cmp"
+      local Rule = require "nvim-autopairs.rule"
+
+      npairs.setup {
+        disable_filetype = { "TelescopePrompt", "octo" },
+        --ignored_next_char = [[ [%w%%%{%(%[%'%'%.] ]]
+        ignored_next_char = "[%w%.%(%{%[]",
+      }
+
+      npairs.add_rule(Rule("|", "", "ql"))
+
+      local cmp = require "cmp"
+      cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
+    end,
+  }
 
   -- TREESITTER
   use {
@@ -286,31 +375,30 @@ local spec = function(use)
   }
 
   -- STATUSLINE & TABLINE
+  -- use {
+  --   "glepnir/galaxyline.nvim",
+  --   config = function()
+  --     require "plugins.galaxyline"()
+  --   end,
+  -- }
   use {
-    "glepnir/galaxyline.nvim",
+    "windwp/windline.nvim",
+    requires = { "kyazdani42/nvim-web-devicons" },
     config = function()
-      require "plugins.galaxyline"()
+      -- vim.cmd [[set cmdheight=1]]
+      -- vim.cmd [[set noshowmode]]
+      require "plugins.windline"
+      -- local windline = require "windline"
+      --windline.setup {
+      -- statuslines = {
+      -- },
+      --}
     end,
   }
   use {
     "akinsho/nvim-bufferline.lua",
     config = function()
       require "plugins.nvim-bufferline"()
-    end,
-  }
-
-  -- PAIRING
-  use {
-    "windwp/nvim-autopairs",
-    config = function()
-      local npairs = require "nvim-autopairs"
-      npairs.setup {
-        disable_filetype = { "TelescopePrompt", "octo" },
-        --ignored_next_char = [[ [%w%%%{%(%[%'%'%.] ]]
-        ignored_next_char = "[%w%.%(%{%[]",
-      }
-      local Rule = require "nvim-autopairs.rule"
-      npairs.add_rule(Rule("|", "", "ql"))
     end,
   }
 
@@ -379,6 +467,7 @@ local spec = function(use)
   -- LSP
   use {
     "neovim/nvim-lspconfig",
+    requires = { "cmp-nvim-lsp" },
     config = function()
       require("lsp_config").setup()
     end,
@@ -395,42 +484,6 @@ local spec = function(use)
       require("lspkind").init()
     end,
   }
-  -- use {
-  --   'simrat39/symbols-outline.nvim',
-  --   config = function(_)
-  --     vim.g.symbols_outline = {
-  --       highlight_hovered_item = false,
-  --       show_guides = true,
-  --       auto_preview = false,
-  --       position = 'right',
-  --       show_numbers = false,
-  --       show_relative_numbers = false,
-  --       show_symbol_details = true,
-  --       keymaps = {
-  --         close = '<Esc>',
-  --         goto_location = '<Cr>',
-  --         focus_location = 'o',
-  --         hover_symbol = '<C-space>',
-  --         rename_symbol = 'r',
-  --         code_actions = 'a',
-  --       },
-  --       lsp_blacklist = {},
-  --     }
-  --   end
-  -- }
-  -- use {
-  --   'stevearc/aerial.nvim',
-  --   config = function()
-  --     vim.g.aerial_manage_folds = false
-  --     vim.g.aerial_icons = {
-  --       Class          = ' ';
-  --       ClassCollapsed = ' ';
-  --       Function       = '';
-  --       Constant       = ' ';
-  --       Collapsed      = '▶';
-  --     }
-  --   end
-  -- }
   use {
     "rmagatti/goto-preview",
     config = function()
@@ -444,22 +497,21 @@ local spec = function(use)
       }
     end,
   }
+  use {
+    "filipdutescu/Erenamer.nvim",
+    branch = "master",
+    requires = { { "nvim-lua/plenary.nvim" } },
+  }
 
   -- MARKDOWN
-  use {
-    "SidOfc/mkdx",
-    config = function()
-      require("plugins.mkdx").setup()
-    end,
-  }
   use {
     "Pocco81/TrueZen.nvim",
     config = function()
       require("true-zen").setup {
         integrations = {
           vim_gitgutter = false,
-          galaxyline = true,
-          tmux = true,
+          --galaxyline = true,
+          --tmux = true,
           gitsigns = true,
           nvim_bufferline = true,
           limelight = false,
@@ -513,18 +565,67 @@ local spec = function(use)
         },
       }
     end,
+    --- :Telescope notify
+    --- :lua require('telescope').extensions.notify.notify(<opts>)
   }
   use {
     "ggandor/lightspeed.nvim",
   }
   use {
     "github/copilot.vim",
+    config = function()
+      -- vim.g.copilot_no_tab_map = true
+      -- vim.g.copilot_assume_mapped = true
+      -- vim.g.copilot_tab_fallback = ""
+      vim.g.copilot_filetypes = {
+        ["*"] = false,
+        python = true,
+        lua = true,
+        go = true,
+        ql = true,
+        html = true,
+        javascript = true,
+        typescript = true,
+      }
+    end,
   }
   use {
-    "ibhagwan/fzf-lua",
+    "kevinhwang91/nvim-hlslens",
+    config = function()
+      require("hlslens").setup {
+        calm_down = true,
+        nearest_only = true,
+        -- nearest_float_when = "always",
+      }
+    end,
   }
   use {
-    "liuchengxu/vim-clap",
+    "luukvbaal/stabilize.nvim",
+    config = function()
+      require("stabilize").setup {
+        nested = "QuickFixCmdPost,User LspDiagnosticsChanged",
+      }
+    end,
+  }
+  use {
+    "abecodes/tabout.nvim",
+    wants = { "nvim-treesitter" },
+    after = { "nvim-cmp", "copilot.vim" },
+    config = function()
+      require("tabout").setup {
+        completion = false,
+        ignore_beginning = false,
+        exclude = {},
+        tabouts = {
+          { open = "'", close = "'" },
+          { open = '"', close = '"' },
+          { open = "`", close = "`" },
+          { open = "(", close = ")" },
+          { open = "[", close = "]" },
+          { open = "{", close = "}" },
+        },
+      }
+    end,
   }
 end
 

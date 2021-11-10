@@ -12,16 +12,18 @@ setlocal norelativenumber
 setlocal spell complete+=kspell 
 setlocal iskeyword+=-
 setlocal iskeyword+=@-@
-setlocal breakindent
 setlocal wrap
+setlocal breakindent
 setlocal breakindentopt=min:5,list:-1
-setlocal linebreak list&vim listchars&vim
 let &l:formatlistpat = '^\s*\d\+\.\s\+\|^\s*[-*+>]\s\+\|^\[^\ze[^\]]\+\]:'
-
-"silent! execute "Gitsigns toggle_signs"
 
 "nnoremap <buffer> <leader>p :lua require'markdown'.pasteImage('images')<CR> 
 "nnoremap <buffer> <leader>p :PasteImg<CR> 
+
+" Modify <CR>, o and O to continue lists
+inoremap <CR> <C-R>=v:lua.markdownEnter()<CR>
+nnoremap o <CMD>lua markdownO()<CR>
+nnoremap O <CMD>lua markdownShiftO()<CR>
 
 if &ft != 'octo'
   setlocal foldcolumn=9
