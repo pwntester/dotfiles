@@ -28,7 +28,7 @@ g.augroup("VimRC", {
     events = { "TextYankPost" },
     targets = { "*" },
     command = function()
-      vim.highlight.on_yank {on_visual=false, higroup="IncSearch", timeout=500}
+      vim.highlight.on_yank { on_visual = false, higroup = "IncSearch", timeout = 500 }
     end,
   },
   -- au TermOpen * set ft=terminal
@@ -60,7 +60,7 @@ g.augroup("VimRC", {
     events = { "TermClose" },
     targets = { "term://*" },
     command = function()
-      vim.api.nvim_input('<CR>')
+      vim.api.nvim_input "<CR>"
     end,
   },
   -- au BufEnter *.txt if &buftype == 'help' | wincmd L | endif
@@ -68,7 +68,7 @@ g.augroup("VimRC", {
     events = { "BufEnter" },
     targets = { "*.txt" },
     command = function()
-      if vim.opt.buftype._value == 'help' then
+      if vim.opt.buftype._value == "help" then
         vim.cmd [[wincmd L]]
       end
     end,
@@ -78,20 +78,18 @@ g.augroup("VimRC", {
     events = { "BufEnter" },
     targets = { "*" },
     command = function()
-      if vim.bo.ft == 'markdown' then
+      if vim.bo.ft == "markdown" then
         vim.lsp.handlers["textDocument/publishDiagnostics"] = function() end
       else
-        vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
-          vim.lsp.diagnostic.on_publish_diagnostics, {
-            signs = true,
-            update_in_insert = false,
-            underline = true,
-            virtual_text = {
-              spacing = 4,
-              prefix = '»',
-            },
-          }
-        )
+        vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
+          signs = true,
+          update_in_insert = false,
+          underline = true,
+          virtual_text = {
+            spacing = 4,
+            prefix = "»",
+          },
+        })
       end
     end,
   },
@@ -99,7 +97,7 @@ g.augroup("VimRC", {
     events = { "BufWritePost" },
     targets = { "*/bitacora/*" },
     command = function()
-      require"markdown".asyncPush()
+      require("markdown").asyncPush()
     end,
   },
 })

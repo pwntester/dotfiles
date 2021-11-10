@@ -1,0 +1,5 @@
+{
+    "^\U0077" = deleteWordBackward:; // ctrl-w 
+    "^\U0068" = moveWordBackward:; // ctrl-h
+    "^\U006c" = moveWordForward:; // ctrl-l
+}

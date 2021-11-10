@@ -1,27 +1,27 @@
 -----------------------------------------------------------------------------//
 -- GLOBALS
 -----------------------------------------------------------------------------//
-require'globals'
+require "globals"
 
 -----------------------------------------------------------------------------//
 -- MODULES
 -----------------------------------------------------------------------------//
-require'markdown'
+require "markdown"
 
 -----------------------------------------------------------------------------//
 -- PLUGINS
 -----------------------------------------------------------------------------//
-require'plugins'
+require "plugins"
 
 -----------------------------------------------------------------------------//
 -- MAPPINGS
 -----------------------------------------------------------------------------//
-require'mappings'
+require "mappings"
 
 -----------------------------------------------------------------------------//
 -- AUTOCMDs
 -----------------------------------------------------------------------------//
-require'autocmds'
+require "autocmds"
 
 vim.cmd [[autocmd BufEnter *.md set foldexpr=NestedMarkdownFolds()]]
 vim.cmd [[autocmd FileType octo set foldexpr=NestedMarkdownFolds()]]
@@ -71,12 +71,12 @@ vim.opt.ttimeoutlen = 10
 --Shada {{{1
 -----------------------------------------------------------------------------//
 vim.opt.shada = {
-  "'1000",      -- previously edited files
-  "/1000",      -- search history items
-  ":1000",      -- command-line history items
-  "<1000",      -- lines for each saved registry
-  "s100",       -- max size of item in KiB
-  "h"           -- no hlsearch when loading shada
+  "'1000", -- previously edited files
+  "/1000", -- search history items
+  ":1000", -- command-line history items
+  "<1000", -- lines for each saved registry
+  "s100", -- max size of item in KiB
+  "h", -- no hlsearch when loading shada
 }
 -----------------------------------------------------------------------------//
 --Window splitting and buffers {{{1
@@ -121,7 +121,8 @@ vim.opt.formatoptions = {
   a = false, -- Auto formatting is BAD.
   q = true, -- continue comments with gq"
   c = false, -- Auto-wrap comments using textwidth
-  r = true, -- Continue comments when pressing Enter
+  r = false, -- Continue comments when pressing Enter
+  o = false, -- Automatically insert the current comment leader after hitting 'o' or 'O'
   n = true, -- Recognize numbered lists
   t = false, -- autowrap lines using text width value
   j = true, -- remove a comment leader when joining lines.
@@ -131,7 +132,7 @@ vim.opt.formatoptions = {
   l = false,
   v = false,
 }
-vim.cmd [[set formatoptions=qrnj]]
+-- vim.cmd [[set formatoptions=qnj]]
 ---------------------------------------------------------------------------//
 -- Folds {{{1
 -----------------------------------------------------------------------------//
@@ -153,7 +154,7 @@ end
 -----------------------------------------------------------------------------//
 -- Wild and file globbing stuff in command mode {{{1
 -----------------------------------------------------------------------------//
-vim.opt.wildmode = {"full", "longest"}
+vim.opt.wildmode = { "full", "longest" }
 vim.opt.wildoptions = "pum"
 vim.opt.pumblend = 15 -- Make popup window translucent
 vim.opt.pumheight = 15
@@ -239,7 +240,7 @@ vim.opt.shiftwidth = 2
 vim.opt.tabstop = 2
 vim.opt.softtabstop = 2
 vim.opt.expandtab = true
- -----------------------------------------------------------------------------//
+-----------------------------------------------------------------------------//
 -- vim.o.debug = "msg"
 vim.opt.joinspaces = false
 vim.opt.gdefault = true
@@ -262,7 +263,7 @@ vim.opt.inccommand = "nosplit"
 -----------------------------------------------------------------------------//
 -- Utilities {{{1
 -----------------------------------------------------------------------------//
-vim.opt.jumpoptions = {"stack"}
+vim.opt.jumpoptions = { "stack" }
 vim.opt.showmode = false
 vim.opt.sessionoptions = {
   "globals",
@@ -308,4 +309,3 @@ vim.opt.spellsuggest:prepend { 12 }
 vim.opt.spelloptions = "camel"
 vim.opt.spellcapcheck = "" -- don't check for capital letters at start of sentence
 vim.opt.fileformats = { "unix", "mac", "dos" }
-
