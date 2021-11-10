@@ -227,5 +227,5 @@ require("wlfloatline").setup {
     "NvimTree",
   },
   -- by default it skip all floating window but you can change it
-  floating_show_filetypes = {},
+  --floating_show_filetypes = {},
 }
