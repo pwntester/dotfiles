@@ -1,3 +1,9 @@
+unlet b:current_syntax
+
+syntax include @Yaml syntax/yaml.vim
+syntax region yamlFrontmatter start=/\%^---$/ end=/^---$/ keepend contains=@Yaml
+
+
 syn region wikiLinkText matchgroup=markdownLinkTextDelimiter start=/\[\[/ end=/\]\]/ oneline
 "syn match markdownTaskTODO  ' ' containedin=markdownTask
 "syn match markdownTaskDONE 'x' containedin=markdownTask

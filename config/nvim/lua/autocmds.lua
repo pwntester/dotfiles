@@ -97,7 +97,7 @@ g.augroup("VimRC", {
     events = { "BufWritePost" },
     targets = { "*/bitacora/*" },
     command = function()
-      require("markdown").asyncPush()
+      require("pwntester.markdown").asyncPush()
     end,
   },
 })

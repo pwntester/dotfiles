@@ -33,27 +33,7 @@ local function on_attach_callback(client, bufnr)
   register_buffer(bufnr, client.id)
 
   -- mappings
-  local map = function(type, key, value)
-    api.nvim_buf_set_keymap(bufnr, type, key, value, { noremap = true, silent = true })
-  end
-
-  map("n", "<Plug>(LspGotoDecl)", "<cmd>lua vim.lsp.buf.declaration()<CR>")
-  map("n", "<Plug>(LspGotoImpl)", "<cmd>lua vim.lsp.buf.implementation()<CR>")
-  map("n", "<Plug>(LspGotoTypeDef)", "<cmd>lua vim.lsp.buf.type_definition()<CR>")
-  map("n", "<Plug>(LspFormat)", "<cmd>lua vim.lsp.buf.formatting()<CR>")
-  map("n", "<Plug>(LspIncomingCalls)", "<cmd>lua vim.lsp.buf.incoming_calls()<CR>")
-  map("n", "<Plug>(LspOutgoingCalls)", "<cmd>lua vim.lsp.buf.outgoing_calls()<CR>")
-  map("n", "<Plug>(LspHover)", "<cmd>lua vim.lsp.buf.hover()<CR>")
-  map("n", "<Plug>(LspShowSignatureHelp)", "<cmd>lua vim.lsp.buf.signature_help()<CR>")
-  map(
-    "n",
-    "<Plug>(LspShowLineDiagnostics)",
-    '<cmd>lua vim.diagnostic.open_float(0, { scope = "line", border = "single" })<CR>'
-  )
-  map("n", "<Plug>(LspGotoDef)", '<cmd>lua require"telescope.builtin.lsp".definitions()<CR>')
-  map("n", "<Plug>(LspShowReferences)", '<cmd>lua require"telescope.builtin.lsp".references()<CR>')
-  map("n", "<Plug><LspDocumentSymbol)", '<cmd>lua require"telescope.builtin.lsp".document_symbols()<CR>')
-  map("n", "<Plug><LspWorkspaceSymbol)", '<cmd>lua require"plugins.telescope".lsp_dynamic_symbols()<CR>')
+  g.map(require("pwntester.mappings").lsp, { silent = false, noremap = true }, bufnr)
 
   -- Extensions
   require("illuminate").on_attach(client)
@@ -142,6 +122,7 @@ local function setup()
   --- JavaScript
   nvim_lsp.tsserver.setup {
     on_attach = on_attach_callback,
+    root_dir = util.root_pattern("package.json", "tsconfig.json", ".git") or vim.loop.cwd(),
     capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities()),
     flags = {
       debounce_text_changes = 150,
@@ -206,46 +187,26 @@ local function setup()
     end,
     --root_dir = function() return vim.g.zk_notebook end;
     on_attach = function(client, bufnr)
-      -- Key mappings
-      local function buf_set_keymap(...)
-        vim.api.nvim_buf_set_keymap(bufnr, ...)
-      end
-      local opts = { noremap = true, silent = false }
-      buf_set_keymap("n", "<Plug>(ZKFollowLink)", "<CMD>lua vim.lsp.buf.definition()<CR>", opts)
-      buf_set_keymap("v", "<Plug>(ZKCreateNoteFromSelection)", ":'<,'>lua vim.lsp.buf.range_code_action()<CR>", opts)
-      buf_set_keymap("n", "<Plug>(ZKIndex)", "<CMD>lua require'lspconfig'.zk.index()<CR>", opts)
-      buf_set_keymap(
-        "n",
-        "<Plug>(ZKNewNote)",
-        "<CMD>lua require'lspconfig'.zk.new({title = vim.fn.input('Title: '), dir = 'areas/inbox'})<CR>",
-        opts
-      )
-
-      -- Find the backlinks for the note linked under the cursor.
-      --buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-      -- Preview a note with K when the cursor is on a link.
-      --buf_set_keymap("n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>", opts)
-      --buf_set_keymap("i", "<S-tab>", "<cmd>lua vim.lsp.buf.completion()<CR>", opts)
-
       on_attach_callback(client, bufnr)
+      g.map(require("pwntester.mappings").zk, { silent = true, noremap = true }, bufnr)
     end,
   }
 
   --- Fortify Language Server
-  if not configs.fortify_lsp then
-    configs.fortify_lsp = {
-      default_config = {
-        cmd = { "fls" },
-        filetypes = { "fortifyrulepack" },
-        root_dir = function(fname)
-          return nvim_lsp.util.path.dirname(fname)
-        end,
-      },
-    }
-  end
-  nvim_lsp.fortify_lsp.setup {
-    on_attach = on_attach_callback,
-  }
+  -- if not configs.fortify_lsp then
+  --   configs.fortify_lsp = {
+  --     default_config = {
+  --       cmd = { "fls" },
+  --       filetypes = { "fortifyrulepack" },
+  --       root_dir = function(fname)
+  --         return nvim_lsp.util.path.dirname(fname)
+  --       end,
+  --     },
+  --   }
+  -- end
+  -- nvim_lsp.fortify_lsp.setup {
+  --   on_attach = on_attach_callback,
+  -- }
 end
 
 local function start_jdt()
@@ -338,7 +299,7 @@ end
 local function setup_jdt()
   vim.cmd [[augroup lsp]]
   vim.cmd [[au!]]
-  vim.cmd [[au FileType java lua require('lsp_config').start_jdt()]]
+  vim.cmd [[au FileType java lua require('pwntester.lsp').start_jdt()]]
   vim.cmd [[augroup end]]
 
   local finders = require "telescope.finders"
