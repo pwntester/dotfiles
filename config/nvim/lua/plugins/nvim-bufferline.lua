@@ -1,4 +1,4 @@
-local lspconfig = require "lsp_config"
+local lspconfig = require "pwntester.lsp"
 
 return function()
   -- local function is_ft(b, ft)

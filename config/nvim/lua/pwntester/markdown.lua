@@ -1,27 +1,24 @@
-local api = vim.api
-local match = string.match
-local format = string.format
-local loop = vim.loop
+local M = {}
 
--- TODO
--- vim.cmd [[
--- inoremap <expr> <c-x><c-f> fzf#vim#complete(fzf#wrap({'source': 'find '.getcwd().' -type f -name "*.md" -not -path "*/\.*"\; \| xargs realpath', 'reducer': function('<sid>make_relative') }))
--- ]]
-
-vim.cmd [[command! -range ToggleBullets lua require'markdown'.toggleBullets()]]
-
-local function pasteLink()
-  -- TODO: get url from clipboard
-  local url = "foo"
-  local link = format("[](%s)", url)
-  local line = vim.fn.getline "."
-  vim.fn.setline(".", vim.fn.strpart(line, 0, vim.fn.col "." - 1) .. link .. vim.fn.strpart(line, vim.fn.col "." - 1))
-  -- TODO: move cursor to [_]()
+function M.insertCheckbox()
+  vim.api.nvim_put({ "[ ] " }, "c", true, true)
 end
 
-local function pasteImage(dir)
-  local stdout = loop.new_pipe(false)
-  local stderr = loop.new_pipe(false)
+function M.pasteLink()
+  -- get the contents of the system clipboard
+  local url = vim.fn.getreg "*"
+  local link = string.format("[](%s)", url)
+  -- get cursor position
+  local cursor = vim.fn.getpos "."
+  -- insert link
+  vim.api.nvim_put({ link }, "c", true, true)
+  -- move the cursor to `[_](link)`
+  vim.fn.setpos(".", { cursor[1], cursor[2], cursor[3] + 1, cursor[4] })
+end
+
+function M.pasteImage(dir)
+  local stdout = vim.loop.new_pipe(false)
+  local stderr = vim.loop.new_pipe(false)
   local handle = nil
 
   local function on_read(err, _)
@@ -32,14 +29,14 @@ local function pasteImage(dir)
 
   local uuid = vim.fn.trim(vim.fn.system "uuidgen")
   uuid = string.gsub(uuid, "\n+$", "")
-  dir = format("%s/%s", vim.fn.expand "%:p:h", dir)
+  dir = string.format("%s/%s", vim.fn.expand "%:p:h", dir)
   if vim.fn.isdirectory(dir) then
     print(dir)
     vim.fn.mkdir(dir, "p")
   end
-  local cmd = format("pngpaste %s/%s.png", dir, uuid)
+  local cmd = string.format("pngpaste %s/%s.png", dir, uuid)
 
-  handle = loop.spawn(
+  handle = vim.loop.spawn(
     "sh",
     {
       args = { "-c", cmd },
@@ -53,8 +50,8 @@ local function pasteImage(dir)
       if not handle:is_closing() then
         handle:close()
       end
-      local img = format("%s/%s.png", dir, uuid)
-      local link = format("![](%s)", img)
+      local img = string.format("%s/%s.png", dir, uuid)
+      local link = string.format("![](%s)", img)
       local line = vim.fn.getline "."
       vim.fn.setline(
         ".",
@@ -62,13 +59,13 @@ local function pasteImage(dir)
       )
     end)
   )
-  loop.read_start(stdout, on_read)
-  loop.read_start(stderr, on_read)
+  vim.loop.read_start(stdout, on_read)
+  vim.loop.read_start(stderr, on_read)
 end
 
-local function asyncPush()
-  local stdout = loop.new_pipe(false)
-  local stderr = loop.new_pipe(false)
+function M.asyncPush()
+  local stdout = vim.loop.new_pipe(false)
+  local stderr = vim.loop.new_pipe(false)
   local handle = nil
 
   local function on_read(err, _)
@@ -78,10 +75,10 @@ local function asyncPush()
   end
 
   local cmd_str = 'git add %s ;git commit -m "Auto commit of %s" "%s";git push;'
-  local cmd = format(cmd_str, vim.fn.expand "%", vim.fn.expand "%:t", vim.fn.expand "%")
+  local cmd = string.format(cmd_str, vim.fn.expand "%", vim.fn.expand "%:t", vim.fn.expand "%")
 
   --print('AutoCommiting changes ...')
-  handle = loop.spawn(
+  handle = vim.loop.spawn(
     "sh",
     {
       args = { "-c", cmd },
@@ -98,31 +95,31 @@ local function asyncPush()
       vim.notify "Pushed changes to GitHub"
     end)
   )
-  loop.read_start(stdout, on_read)
-  loop.read_start(stderr, on_read)
+  vim.loop.read_start(stdout, on_read)
+  vim.loop.read_start(stderr, on_read)
 end
 
-local function markdownBlocks()
+function M.markdownBlocks()
   local bufnr = vim.api.nvim_get_current_buf()
   if not vim.api.nvim_buf_is_loaded(bufnr) then
     return
   end
 
-  pcall(api.nvim_command, "sign unplace * file=" .. vim.fn.expand "%")
+  pcall(vim.api.nvim_command, "sign unplace * file=" .. vim.fn.expand "%")
 
   local continue = false
   -- iterate through each line in the buffer
   for lnum = 1, #vim.fn.getline(1, "$"), 1 do
     -- detect the start fo a code block
     local line = vim.fn.getline(lnum)
-    if (not continue and match(line, "^%s*```.*$")) or (not match(line, "^%s*```.*$") and continue) then
+    if (not continue and string.match(line, "^%s*```.*$")) or (not string.match(line, "^%s*```.*$") and continue) then
       -- continue placing signs, until the block stops
       continue = true
       -- place sign
-      api.nvim_command("sign place " .. lnum .. " line=" .. lnum .. " name=codeblock file=" .. vim.fn.expand "%")
-    elseif match(line, "^%s*```%s*") and continue then
+      vim.api.nvim_command("sign place " .. lnum .. " line=" .. lnum .. " name=codeblock file=" .. vim.fn.expand "%")
+    elseif string.match(line, "^%s*```%s*") and continue then
       -- place sign
-      api.nvim_command("sign place " .. lnum .. " line=" .. lnum .. " name=codeblock file=" .. vim.fn.expand "%")
+      vim.api.nvim_command("sign place " .. lnum .. " line=" .. lnum .. " name=codeblock file=" .. vim.fn.expand "%")
       -- stop placing signs
       continue = false
     end
@@ -130,7 +127,7 @@ local function markdownBlocks()
 end
 
 -- add/remove list bullets
-local function toggleBullets()
+function M.toggleBullets()
   local line_start, line_end
   if vim.fn.getpos("'<")[2] == vim.fn.getcurpos()[2] and vim.fn.getpos("'<")[3] == vim.fn.getcurpos()[3] then
     line_start = vim.fn.getpos("'<")[2]
@@ -158,7 +155,7 @@ local function toggleBullets()
 end
 
 -- add/remove checkbox
-local function toggleCheckboxes()
+function M.toggleCheckboxes()
   local line_start, line_end
   if vim.fn.getpos("'<")[2] == vim.fn.getcurpos()[2] and vim.fn.getpos("'<")[3] == vim.fn.getcurpos()[3] then
     line_start = vim.fn.getpos("'<")[2]
@@ -188,21 +185,53 @@ local function toggleCheckboxes()
   end
 end
 
--- continue lists when adding a new line
-_G.markdownEnter = function()
-  local current_line = vim.fn.getline "."
-  local prefix = current_line:match "^%s*%-%s"
-  if prefix then
-    return "\n" .. prefix
+-- add/remove bullets
+function M.toggleEntries()
+  local line_start, line_end
+  if vim.fn.getpos("'<")[2] == vim.fn.getcurpos()[2] and vim.fn.getpos("'<")[3] == vim.fn.getcurpos()[3] then
+    line_start = vim.fn.getpos("'<")[2]
+    line_end = vim.fn.getpos("'>")[2]
   else
-    return "\n"
+    line_start = vim.fn.getcurpos()[2]
+    line_end = vim.fn.getcurpos()[2]
+  end
+  local newlines = {}
+  local lines = vim.fn.getline(line_start, line_end)
+  for _, line in ipairs(lines) do
+    -- if line starts with an todo checkbox (`- [ ]`), toggle it (`- [x]`)
+    if string.match(line, "^(%s*)%-%s%[%s%]%s") then
+      table.insert(newlines, (string.gsub(line, "^(%s*)%-%s%[%s%]%s", "%1- [x] ")))
+
+      -- if line starts with an done checkbox (`- [x]`), remove it (``)
+    elseif string.match(line, "^(%s*)%-%s%[x%]%s") then
+      table.insert(newlines, (string.gsub(line, "^(%s*)%-%s%[x%]%s", "%1")))
+
+      -- if line starts with a bullet (`- `), add an empty checkbox (`- [ ]`)
+    elseif string.match(line, "^(%s*)%-%s") then
+      table.insert(newlines, (string.gsub(line, "^(%s*)%-%s", "%1- [ ] ")))
+
+      -- otherwise add a bullet
+    else
+      table.insert(newlines, (string.gsub(line, "^(%s*)", "%1- ")))
+    end
+  end
+  if line_start == line_end then
+    vim.api.nvim_buf_set_lines(0, line_start - 1, line_end, true, newlines)
+  else
+    vim.api.nvim_buf_set_lines(0, line_start - 1, line_end, true, newlines)
   end
 end
 
-_G.markdownO = function()
+function M.markdownO()
   local current_line = vim.fn.getline "."
   local prefix = current_line:match "^%s*%-%s"
-  if prefix then
+  local exact = current_line:match "^%s*%-%s$"
+  if prefix and exact then
+    local line = vim.fn.line "."
+    vim.api.nvim_buf_set_lines(0, line - 1, line, true, {})
+    vim.cmd "normal! o"
+    vim.cmd "startinsert!"
+  elseif prefix then
     vim.cmd("normal! o" .. prefix)
     vim.cmd "startinsert!"
   else
@@ -211,7 +240,7 @@ _G.markdownO = function()
   end
 end
 
-_G.markdownShiftO = function()
+function M.markdownShiftO()
   local current_line = vim.fn.getline "."
   local prefix = current_line:match "^%s*%-%s"
   if prefix then
@@ -223,12 +252,19 @@ _G.markdownShiftO = function()
   end
 end
 
-return {
-  markdownBlocks = markdownBlocks,
-  asyncPush = asyncPush,
-  pasteImage = pasteImage,
-  pasteLink = pasteLink,
-  toggleCheckboxes = toggleCheckboxes,
-  toggleBullets = toggleBullets,
-  continueList = continueList,
-}
+function M.markdownEnter()
+  local current_line = vim.fn.getline "."
+  local prefix = current_line:match "^%s*%-%s"
+  local exact = current_line:match "^%s*%-%s$"
+  if prefix and exact then
+    local line = vim.fn.line "."
+    vim.api.nvim_buf_set_lines(0, line - 1, line, true, {})
+    return ""
+  elseif prefix then
+    vim.api.nvim_put({ "", prefix }, "c", true, true)
+  else
+    vim.api.nvim_put({ "", "" }, "c", true, true)
+  end
+end
+
+return M

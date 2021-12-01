@@ -36,7 +36,6 @@ local spec = function(use)
   }
 
   -- DEPS
-  -- use { "tami5/sqlite.lua" }
   use { "nvim-lua/popup.nvim" }
   use { "nvim-lua/plenary.nvim" }
 
@@ -44,9 +43,23 @@ local spec = function(use)
   use { "jdhao/better-escape.vim" }
   use { "monaqa/dial.nvim" }
   use {
-    "t9md/vim-choosewin",
+    "abecodes/tabout.nvim",
+    wants = { "nvim-treesitter" },
+    after = { "nvim-cmp", "copilot.vim" },
     config = function()
-      vim.g.choosewin_overlay_enable = 1
+      require("tabout").setup {
+        completion = false,
+        ignore_beginning = false,
+        exclude = {},
+        tabouts = {
+          { open = "'", close = "'" },
+          { open = '"', close = '"' },
+          { open = "`", close = "`" },
+          { open = "(", close = ")" },
+          { open = "[", close = "]" },
+          { open = "{", close = "}" },
+        },
+      }
     end,
   }
   use {
@@ -83,77 +96,54 @@ local spec = function(use)
       {
         "nvim-telescope/telescope-fzf-native.nvim",
         run = "make",
-        after = "telescope.nvim",
         config = function()
           require("telescope").load_extension "fzf"
         end,
       },
       {
         "nvim-telescope/telescope-frecency.nvim",
-        after = "telescope.nvim",
         requires = "tami5/sqlite.lua",
         config = function()
           require("telescope").load_extension "frecency"
         end,
       },
       {
+        "nvim-telescope/telescope-live-grep-raw.nvim",
+      },
+      --- to search `foo` on java files use: `-tjava foo`
+      {
         "camgraff/telescope-tmux.nvim",
-        after = "telescope.nvim",
         config = function()
           require("telescope").load_extension "tmux"
         end,
       },
       {
         "nvim-telescope/telescope-symbols.nvim",
-        after = "telescope.nvim",
-      },
-      {
-        "ekickx/clipboard-image.nvim",
-        config = function()
-          require("clipboard-image").setup {
-            markdown = {
-              img_dir = "resources/attachments",
-              img_dir_txt = "resources/attachments",
-              affix = "![](%s)",
-            },
-          }
-        end,
       },
     },
     config = function()
       require("plugins.telescope").setup()
     end,
   }
+  use_local {
+    "pwntester/telescope-zip.nvim",
+    local_path = "dev/personal",
+  }
 
   -- COMPLETION
-  use {
-    "saadparwaiz1/cmp_luasnip",
-    requires = { "LuaSnip" },
-  }
-  --use { "tzachar/fuzzy.nvim" }
-  --use { "tzachar/cmp-fzy-buffer", requires = { "hrsh7th/nvim-cmp", "tzachar/fuzzy.nvim" } }
-  --use { "tzachar/cmp-fuzzy-path", requires = { "hrsh7th/nvim-cmp", "hrsh7th/cmp-path", "tzachar/fuzzy.nvim" } }
   use { "hrsh7th/cmp-nvim-lua" }
   use {
     "hrsh7th/nvim-cmp",
     requires = {
       { "hrsh7th/cmp-nvim-lsp" },
-      { "hrsh7th/cmp-nvim-lsp-document-symbol", after = "nvim-cmp" },
-      { "hrsh7th/cmp-cmdline", after = "nvim-cmp" },
-      { "f3fora/cmp-spell", after = "nvim-cmp" },
-      { "hrsh7th/cmp-path", after = "nvim-cmp" },
-      { "hrsh7th/cmp-buffer", after = "nvim-cmp" },
-      { "saadparwaiz1/cmp_luasnip", after = "nvim-cmp" },
-      {
-        "tzachar/cmp-fuzzy-path",
-        after = "cmp-path",
-        requires = { "hrsh7th/cmp-path", "tzachar/fuzzy.nvim" },
-      },
-      {
-        "tzachar/cmp-fuzzy-buffer",
-        after = "nvim-cmp",
-        requires = { "tzachar/fuzzy.nvim" },
-      },
+      { "hrsh7th/cmp-nvim-lsp-document-symbol" },
+      { "hrsh7th/cmp-cmdline" },
+      { "hrsh7th/cmp-path" },
+      { "hrsh7th/cmp-buffer" },
+      --{ "hrsh7th/cmp-copilot" },
+      { "f3fora/cmp-spell" },
+      { "saadparwaiz1/cmp_luasnip" },
+      { "dmitmel/cmp-cmdline-history" },
     },
     config = function()
       require("plugins.nvim-cmp").setup()
@@ -164,8 +154,9 @@ local spec = function(use)
   use {
     "L3MON4D3/LuaSnip",
     after = "nvim-cmp",
-    module = "luasnip",
-    requires = "friendly-snippets",
+    requires = {
+      { "rafamadriz/friendly-snippets" },
+    },
     config = function()
       local ls = require "luasnip"
       ls.config.set_config {
@@ -176,13 +167,23 @@ local spec = function(use)
     end,
   }
   use {
-    "rafamadriz/friendly-snippets",
-    event = "InsertEnter",
+    "github/copilot.vim",
+    config = function()
+      vim.g.copilot_no_tab_map = true
+      vim.g.copilot_assume_mapped = true
+      vim.g.copilot_tab_fallback = "<Plug>(Tabout)"
+      vim.g.copilot_filetypes = {
+        ["*"] = false,
+        python = true,
+        lua = true,
+        go = true,
+        ql = true,
+        html = true,
+        javascript = true,
+        typescript = true,
+      }
+    end,
   }
-  -- use { "hrsh7th/vim-vsnip" }
-  -- use { "seudev/vscode-java-snippets" }
-  -- use { "NexSabre/vscode-python-snippets" }
-  -- use { "github/vscode-codeql" }
 
   -- PAIRS
   use {
@@ -192,15 +193,12 @@ local spec = function(use)
       local npairs = require "nvim-autopairs"
       local cmp_autopairs = require "nvim-autopairs.completion.cmp"
       local Rule = require "nvim-autopairs.rule"
-
       npairs.setup {
         disable_filetype = { "TelescopePrompt", "octo" },
         --ignored_next_char = [[ [%w%%%{%(%[%'%'%.] ]]
         ignored_next_char = "[%w%.%(%{%[]",
       }
-
       npairs.add_rule(Rule("|", "", "ql"))
-
       local cmp = require "cmp"
       cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
     end,
@@ -209,26 +207,15 @@ local spec = function(use)
   -- TREESITTER
   use {
     "nvim-treesitter/nvim-treesitter",
-    --event = 'BufRead',
+    requires = {
+      { "nvim-treesitter/playground" },
+      { "nvim-treesitter/completion-treesitter" },
+      { "nvim-treesitter/nvim-treesitter-refactor" },
+      { "nvim-treesitter/nvim-treesitter-textobjects" },
+    },
     config = function()
       require("plugins.treesitter").setup()
     end,
-  }
-  use {
-    "nvim-treesitter/playground",
-    requires = "nvim-treesitter",
-  }
-  use {
-    "nvim-treesitter/completion-treesitter",
-    requires = "nvim-treesitter",
-  }
-  use {
-    "nvim-treesitter/nvim-treesitter-refactor",
-    requires = "nvim-treesitter",
-  }
-  use {
-    "nvim-treesitter/nvim-treesitter-textobjects",
-    requires = "nvim-treesitter",
   }
 
   -- ALIGNING
@@ -254,6 +241,9 @@ local spec = function(use)
     config = function()
       vim.g.wordmotion_prefix = "_"
     end,
+  }
+  use {
+    "ggandor/lightspeed.nvim",
   }
 
   -- GIT
@@ -303,11 +293,11 @@ local spec = function(use)
     local_path = "dev/personal",
     requires = { "nvim-telescope/telescope.nvim" },
   }
-  use_local {
-    "pwntester/octo-notifications.nvim",
-    requires = "pwntester/octo.nvim",
-    local_path = "dev/personal",
-  }
+  -- use_local {
+  --   "pwntester/octo-notifications.nvim",
+  --   requires = "pwntester/octo.nvim",
+  --   local_path = "dev/personal",
+  -- }
   use { "sindrets/diffview.nvim" }
   use {
     "TimUntersberger/neogit",
@@ -373,26 +363,33 @@ local spec = function(use)
       require("trouble").setup {}
     end,
   }
+  use {
+    "rcarriga/nvim-notify",
+    config = function()
+      vim.notify = require "notify"
+      require("notify").setup {
+        stages = "fade_in_slide_out",
+        timeout = 5000,
+        background_colour = "#ffcc66",
+        icons = {
+          ERROR = "",
+          WARN = "",
+          INFO = "",
+          DEBUG = "",
+          TRACE = "✎",
+        },
+      }
+    end,
+    --- :Telescope notify
+    --- :lua require('telescope').extensions.notify.notify(<opts>)
+  }
 
   -- STATUSLINE & TABLINE
-  -- use {
-  --   "glepnir/galaxyline.nvim",
-  --   config = function()
-  --     require "plugins.galaxyline"()
-  --   end,
-  -- }
   use {
     "windwp/windline.nvim",
     requires = { "kyazdani42/nvim-web-devicons" },
     config = function()
-      -- vim.cmd [[set cmdheight=1]]
-      -- vim.cmd [[set noshowmode]]
       require "plugins.windline"
-      -- local windline = require "windline"
-      --windline.setup {
-      -- statuslines = {
-      -- },
-      --}
     end,
   }
   use {
@@ -405,8 +402,22 @@ local spec = function(use)
   -- FILE EXPLORER
   use {
     "kyazdani42/nvim-tree.lua",
-    cmd = { "NvimTreeToggle", "NvimTreeFindFile" },
+    after = { "windline.nvim" },
     config = function()
+      -- will change cwd of nvim-tree to that of new buffer's when opening nvim-tree.
+      vim.g.nvim_tree_respect_buf_cwd = 1
+      -- enable highligting for folders and both file icons and names.
+      vim.g.nvim_tree_show_icons = {
+        git = 0,
+        folders = 1,
+        files = 1,
+        folder_arrows = 1,
+      }
+      vim.g.nvim_tree_window_picker_exclude = {
+        ["filetype"] = g.special_buffers,
+        ["buftype"] = { "terminal" },
+      }
+      vim.g.nvim_tree_highlight_opened_files = 3
       require("plugins.nvim-tree").setup()
     end,
   }
@@ -434,7 +445,7 @@ local spec = function(use)
       require("project_nvim").setup {
         detection_methods = { "lsp", "pattern" },
         manual_mode = false,
-        patterns = { ".git", "package.json" },
+        patterns = { ".git" },
         ignore_lsp = {},
         silent_chdir = true,
         datapath = vim.fn.stdpath "data",
@@ -469,13 +480,14 @@ local spec = function(use)
     "neovim/nvim-lspconfig",
     requires = { "cmp-nvim-lsp" },
     config = function()
-      require("lsp_config").setup()
+      require("pwntester.lsp").setup()
     end,
   }
+  use { "ii14/lsp-command" }
   use {
     "mfussenegger/nvim-jdtls",
     config = function()
-      require("lsp_config").setup_jdt()
+      require("pwntester.lsp").setup_jdt()
     end,
   }
   use {
@@ -498,12 +510,27 @@ local spec = function(use)
     end,
   }
   use {
-    "filipdutescu/Erenamer.nvim",
+    "filipdutescu/renamer.nvim",
     branch = "master",
     requires = { { "nvim-lua/plenary.nvim" } },
+    config = function()
+      require("renamer").setup {}
+    end,
   }
 
   -- MARKDOWN
+  use {
+    "ekickx/clipboard-image.nvim",
+    config = function()
+      require("clipboard-image").setup {
+        markdown = {
+          img_dir = "resources/attachments",
+          img_dir_txt = "resources/attachments",
+          affix = "![](%s)",
+        },
+      }
+    end,
+  }
   use {
     "Pocco81/TrueZen.nvim",
     config = function()
@@ -528,6 +555,18 @@ local spec = function(use)
     end,
   }
 
+  -- SEARCH
+  use {
+    "kevinhwang91/nvim-hlslens",
+    config = function()
+      require("hlslens").setup {
+        calm_down = true,
+        nearest_only = true,
+        -- nearest_float_when = "always",
+      }
+    end,
+  }
+
   -- HTTP Client
   use { "nicwest/vim-http" } -- just for the syntax
   use {
@@ -541,92 +580,18 @@ local spec = function(use)
     end,
   }
 
-  use_local {
-    "pwntester/crane.nvim",
-    local_path = "dev/personal",
-    config = function()
-      require("crane").setup()
-    end,
-  }
-  use {
-    "rcarriga/nvim-notify",
-    config = function()
-      vim.notify = require "notify"
-      require("notify").setup {
-        stages = "fade_in_slide_out",
-        timeout = 5000,
-        background_colour = "#ffcc66",
-        icons = {
-          ERROR = "",
-          WARN = "",
-          INFO = "",
-          DEBUG = "",
-          TRACE = "✎",
-        },
-      }
-    end,
-    --- :Telescope notify
-    --- :lua require('telescope').extensions.notify.notify(<opts>)
-  }
-  use {
-    "ggandor/lightspeed.nvim",
-  }
-  use {
-    "github/copilot.vim",
-    config = function()
-      -- vim.g.copilot_no_tab_map = true
-      -- vim.g.copilot_assume_mapped = true
-      -- vim.g.copilot_tab_fallback = ""
-      vim.g.copilot_filetypes = {
-        ["*"] = false,
-        python = true,
-        lua = true,
-        go = true,
-        ql = true,
-        html = true,
-        javascript = true,
-        typescript = true,
-      }
-    end,
-  }
-  use {
-    "kevinhwang91/nvim-hlslens",
-    config = function()
-      require("hlslens").setup {
-        calm_down = true,
-        nearest_only = true,
-        -- nearest_float_when = "always",
-      }
-    end,
-  }
-  use {
-    "luukvbaal/stabilize.nvim",
-    config = function()
-      require("stabilize").setup {
-        nested = "QuickFixCmdPost,User LspDiagnosticsChanged",
-      }
-    end,
-  }
-  use {
-    "abecodes/tabout.nvim",
-    wants = { "nvim-treesitter" },
-    after = { "nvim-cmp", "copilot.vim" },
-    config = function()
-      require("tabout").setup {
-        completion = false,
-        ignore_beginning = false,
-        exclude = {},
-        tabouts = {
-          { open = "'", close = "'" },
-          { open = '"', close = '"' },
-          { open = "`", close = "`" },
-          { open = "(", close = ")" },
-          { open = "[", close = "]" },
-          { open = "{", close = "}" },
-        },
-      }
-    end,
-  }
+  -- DOCKER
+  -- use_local {
+  --   "pwntester/crane.nvim",
+  --   local_path = "dev/personal",
+  --   config = function()
+  --     require("crane").setup()
+  --   end,
+  -- }
+
+  -- Try:
+  -- ldelossa/calltree.nvim
+  -- AckslD/nvim-neoclip.lua
 end
 
 local config = {

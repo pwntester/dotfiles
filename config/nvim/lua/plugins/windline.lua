@@ -1,5 +1,5 @@
 local windline = require "windline"
-local helper = require "windline.helpers"
+local cache_utils = require "windline.cache_utils"
 local basic = require "windline.components.basic"
 local state = _G.WindLine.state
 local _, Job = pcall(require, "plenary.job")
@@ -30,8 +30,6 @@ local function relpath(P, start)
   return table.concat(rell, "/")
 end
 
-local repo_cache = {}
-
 local config = {}
 
 config.vi_mode = {
@@ -55,22 +53,19 @@ config.github_repo = {
   hl_colors = {
     blue = { "light_blue", "bg", "bold" },
   },
-  text = function()
-    local name = require("octo.utils").get_remote_name()
+  text = cache_utils.cache_on_buffer("BufEnter", "wl_github_repo", function()
+    local ok, outils = pcall(require, "octo.utils")
+    if not ok then
+      return { " " }
+    end
+    local name = outils.get_remote_name()
     if type(name) == "string" and name ~= "" then
-      local repo_name = ""
-      if repo_cache[vim.fn.getcwd()] then
-        repo_name = repo_cache[vim.fn.getcwd()]
-      else
-        repo_name = require("octo.utils").get_remote_name()
-        repo_cache[vim.fn.getcwd()] = repo_name
-      end
       return {
-        { "  " .. repo_name, "blue" },
+        { "  " .. name, "blue" },
       }
     end
     return ""
-  end,
+  end),
 }
 
 config.git_branch = {
@@ -78,7 +73,7 @@ config.git_branch = {
   hl_colors = {
     grey = { "grey", "bg", "bold" },
   },
-  text = function()
+  text = cache_utils.cache_on_buffer("BufEnter", "wl_git_branch", function()
     if not Job then
       return ""
     end
@@ -97,7 +92,7 @@ config.git_branch = {
         { "  " .. result, "grey" },
       }
     end
-  end,
+  end),
 }
 
 config.cwd = {
@@ -119,7 +114,7 @@ config.file = {
   hl_colors = {
     yellow = { "yellow", "bg", "bold" },
   },
-  text = function()
+  text = cache_utils.cache_on_buffer("BufEnter", "wl_file_name", function()
     local bufname = vim.fn.bufname()
     if vim.startswith(bufname, "octo:") or vim.startswith(bufname, "codeql:") or vim.startswith(bufname, "docker:") then
       return {
@@ -130,11 +125,11 @@ config.file = {
         { " " .. relpath(vim.fn.fnamemodify(bufname, ":p"), vim.fn.getcwd()), "yellow" },
       }
     end
-  end,
+  end),
 }
 
-config.location = {
-  name = "location",
+config.position = {
+  name = "position",
   hl_colors = {
     grey = { "grey", "bg", "bold" },
   },
@@ -172,25 +167,58 @@ local default = {
     config.cwd,
     config.divider,
     config.file,
-    config.location,
+    config.position,
     config.filetype,
   },
   inactive = {},
+  floatline_show_float = false,
+  floatline_show_both = false,
+  always_active = false,
+  show_last_status = false,
 }
 
 local special_buffers = {
   filetypes = g.special_buffers,
   active = {},
+  inactive = {},
   floatline_show_float = false,
   floatline_show_both = false,
-  always_active = true,
-  show_last_status = true,
+  always_active = false,
+  show_last_status = false,
 }
+
 local floatline_active = {
   filetypes = { "floatline" },
   active = {
-    -- { "%F", { "red", "blue" } },
-    -- { "%=", { "red", "blue" } },
+    {
+      function(_, _, width)
+        return string.rep("▁", math.floor(width - 1))
+      end,
+      { "dark_blue", "line_bg" },
+    },
+    {
+      "▁",
+      {
+        "dark_blue",
+        "line_bg",
+      },
+    },
+  },
+  inactive = {
+    {
+      function(_, _, width)
+        -- TODO: seems like the width passed here is the width of the active window, not the inactive one
+        return string.rep("▁", math.floor(width - 1))
+      end,
+      { "dark_blue", "line_bg" },
+    },
+    {
+      "▁",
+      {
+        "dark_blue",
+        "line_bg",
+      },
+    },
   },
 }
 
@@ -199,6 +227,7 @@ windline.setup {
     local theme = require("nautilus").theme "grey"
     local palette = {
       bg = tostring(theme.CursorColumn.bg),
+      dark_blue = tostring(theme.CursorLine.bg),
       line_bg = tostring(theme.Normal.bg),
       grey = tostring(theme.Normal.fg),
       yellow = tostring(theme.Identifier.fg),
@@ -223,9 +252,9 @@ require("wlfloatline").setup {
     active_color = "line_bg",
     active_hl = "Error",
   },
-  skip_filetypes = {
-    "NvimTree",
-  },
+  -- skip_filetypes = {
+  --   "NvimTree",
+  -- },
   -- by default it skip all floating window but you can change it
   --floating_show_filetypes = {},
 }

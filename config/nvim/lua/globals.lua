@@ -78,6 +78,54 @@ function g.onEnter()
   end
 end
 
+function g.setTimeout(delay, callback, ...)
+  local timer = vim.loop.new_timer()
+  local args = { ... }
+  vim.loop.timer_start(timer, delay, 0, function()
+    vim.loop.timer_stop(timer)
+    vim.loop.close(timer)
+    callback(unpack(args))
+  end)
+  return timer
+end
+
+function g.map(mappings, defaults, bufnr)
+  for k, v in pairs(mappings) do
+    local opts = vim.fn.deepcopy(defaults)
+    local mode = k:sub(1, 1)
+    if mode == "_" then
+      mode = ""
+    end
+    local lhs = k:sub(2)
+    local rhs = v[1]
+    --v[1] = nil
+
+    -- merge default options and individual ones
+    for i, j in pairs(v) do
+      if i ~= 1 then
+        opts[i] = j
+      end
+    end
+
+    -- for <expr> mappings, discard all options except `noremap`
+    -- probably needed for <script> or other modifiers that need to be first
+    if opts.expr then
+      local noremap_opt = opts["noremap"]
+      opts = { expr = true, noremap = noremap_opt }
+    end
+
+    if bufnr then
+      if type(rhs) == "string" then
+        vim.api.nvim_buf_set_keymap(bufnr, mode, lhs, rhs, opts)
+      else
+        print("g.map: rhs is not a string. " .. lhs)
+      end
+    else
+      vim.api.nvim_set_keymap(mode, lhs, rhs, opts)
+    end
+  end
+end
+
 -- ALIASES
 function g.alias(from, to, buffer)
   local cmd = string.format(
@@ -135,23 +183,6 @@ function g.VulnReports()
 end
 function g.BountySubmissions()
   require("octo.telescope.menu").issues { repo = "github/securitylab-bounties", states = "OPEN" }
-end
-
--- ZK FUNCTIONS
-vim.g.zk_notebook = "/Users/pwntester/bitacora"
-vim.g.zk_journal = "resources/daily\\ notes"
-function g.DailyNote()
-  vim.cmd("cd " .. vim.g.zk_notebook)
-  local cmd = string.format(
-    "zk new --no-input --group journal --working-dir=%s -p %s",
-    vim.g.zk_notebook,
-    vim.g.zk_journal
-  )
-  local path = vim.fn.system(cmd)
-  path = path:gsub("^%s*(.-)%s*$", "%1")
-  if vim.fn.filereadable(path) then
-    vim.cmd(string.format([[execute "edit %s"]], path))
-  end
 end
 
 --
