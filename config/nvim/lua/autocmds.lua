@@ -100,4 +100,11 @@ g.augroup("VimRC", {
       require("pwntester.markdown").asyncPush()
     end,
   },
+  {
+    events = { "BufWritePost" },
+    targets = { "plugins.lua" },
+    command = function()
+      vim.cmd [[source <afile> | PackerCompile ]]
+    end,
+  },
 })
