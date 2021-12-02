@@ -614,10 +614,9 @@ if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
   vim.fn.system { "mkdir", "-p", install_path }
   vim.fn.system { "git", "clone", "https://github.com/wbthomason/packer.nvim", install_path }
   vim.cmd "packadd! packer.nvim"
+  require("packer").sync()
+  require("packer").startup { spec, config = config }
 else
-  local start_path = vim.fn.stdpath "data" .. "/site/pack/packer/start/plenary.nvim"
-  if vim.fn.empty(vim.fn.glob(start_path)) == 0 then
-    vim.cmd "packadd! packer.nvim"
-    require("packer").startup { spec, config = config }
-  end
+  vim.cmd "packadd! packer.nvim"
+  require("packer").startup { spec, config = config }
 end
