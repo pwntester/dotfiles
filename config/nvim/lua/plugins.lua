@@ -612,6 +612,9 @@ local config = {
 local install_path = string.format("%s/site/pack/packer/opt/packer.nvim", vim.fn.stdpath "data")
 if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
   vim.fn.system { "git", "clone", "https://github.com/wbthomason/packer.nvim", install_path }
+  vim.cmd "packadd! packer.nvim"
+  require("packer").sync()
+else
+  vim.cmd "packadd! packer.nvim"
+  require("packer").startup { spec, config = config }
 end
-vim.cmd "packadd! packer.nvim"
-require("packer").startup { spec, config = config }
