@@ -609,12 +609,15 @@ local config = {
 }
 
 -- Bootstrap Packer
-local install_path = string.format("%s/site/pack/packer/opt/packer.nvim", vim.fn.stdpath "data")
+local install_path = vim.fn.stdpath "data" .. "/site/pack/packer/opt/packer.nvim"
 if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
+  vim.fn.system { "mkdir", "-p", install_path }
   vim.fn.system { "git", "clone", "https://github.com/wbthomason/packer.nvim", install_path }
   vim.cmd "packadd! packer.nvim"
-  require("packer").sync()
 else
-  vim.cmd "packadd! packer.nvim"
-  require("packer").startup { spec, config = config }
+  local start_path = vim.fn.stdpath "data" .. "/site/pack/packer/start/plenary.nvim"
+  if vim.fn.empty(vim.fn.glob(start_path)) == 0 then
+    vim.cmd "packadd! packer.nvim"
+    require("packer").startup { spec, config = config }
+  end
 end
