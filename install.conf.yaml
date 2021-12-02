@@ -27,5 +27,5 @@
   - sudo apt-get install -y fuse libfuse2
   - curl -L -o $HOME/bin/nvim https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage
   - chmod a+x $HOME/bin/nvim
-  - nvim --headless -c 'autocmd User PackerComplete quitall'
   - nvim --headless +"sleep 5" +"silent TSInstall python ql" +"sleep 60" +qa
+  - nvim --headless -c 'autocmd User PackerComplete quitall'
