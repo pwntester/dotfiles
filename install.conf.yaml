@@ -21,7 +21,12 @@
 
 # ZSH
 - shell:
-  - [sudo chsh -s `which zsh`, Making zsh the default shell]
+  -
+    command: sudo chsh -s `which zsh` `whoami`
+    stdout: true
+    stderr: true
+    description: Making zsh the default shell
+    quiet: false
 
 # Install NeoVim
 - shell:
