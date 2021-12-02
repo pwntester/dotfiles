@@ -24,6 +24,7 @@ alias tree='exa --tree'
 
 alias uao='python ~/bin/unzip-and-open.py'
 
+alias csssh="TERM=xterm-256color gh cs ssh"
 alias d='dirs -v'
 for index ({1..9}) alias "$index"="cd +${index}"; unset index
 
