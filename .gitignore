@@ -8,3 +8,4 @@ config/nvim/view/*
 config/nvim/.netrwhist
 config/nvim/spell/en.utf-8.spl
 config/nvim/spell/en.utf-8.sug
+config/nvim/plugin/packer_compiled.lua
