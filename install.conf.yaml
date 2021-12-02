@@ -2,14 +2,14 @@
     link:
       relink: true
 
+# Cleaning
 - clean: ['~']
-
-- create:
-    - ~/.config
-
 - shell:
   - rm ~/.zshrc
 
+# Links
+- create:
+    - ~/.config
 - link:
     ~/.config/nvim: config/nvim
     ~/.ideavimrc: home/ideavimrc
@@ -19,13 +19,38 @@
     ~/.zsh: home/zsh
     ~/bin: home/bin
 
+# ZSH
 - shell:
   - [sudo chsh -s `which zsh`, Making zsh the default shell]
 
-# Install neovim
+# Install NeoVim
 - shell:
-  - sudo apt-get install -y fuse libfuse2
-  - curl -L -o $HOME/bin/nvim https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage
-  - chmod a+x $HOME/bin/nvim
-  - nvim --headless +"sleep 5" +"autocmd User PackerComplete quitall" +"silent PackerSync"
-  - nvim --headless +"sleep 5" +"silent TSInstall python ql" +"sleep 60" +qa
+  -
+    command: sudo apt-get install -y fuse libfuse2
+    stdout: true
+    stderr: true
+    description: Install FUSE which is required to run AppImages
+    quiet: false
+  -
+    command: curl -L -o $HOME/bin/nvim https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage
+    stdout: true
+    stderr: true
+    description: Download nvim appimage
+    quiet: false
+  -
+    command: chmod a+x $HOME/bin/nvim
+    stdout: true
+    description: Make nvim executable 
+    quiet: false
+  -
+    command: nvim --headless +"sleep 5" +"autocmd User PackerComplete quitall" +"silent PackerSync"
+    stdout: true
+    stderr: true
+    description: Packer
+    quiet: false
+  -
+    command: nvim --headless +"sleep 5" +"silent TSInstall python ql" +"sleep 60" +qa
+    stdout: true
+    stderr: true
+    description: TreeSitter parsers 
+    quiet: false
