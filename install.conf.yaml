@@ -41,7 +41,7 @@
     command: chmod a+x $HOME/bin/nvim
   -
     description: Insall Neovim plugins
-    command: sudo nvim --headless +"sleep 5" +"autocmd User PackerComplete quitall" +"silent PackerSync"
+    command: nvim --headless +"sleep 5" +"autocmd User PackerComplete quitall" +"silent PackerSync"
   -
     description: Install TreeSitter parsers 
-    command: sudo nvim --headless +"sleep 5" +"silent TSInstall python ql" +"sleep 60" +qa
+    command: nvim --headless +"sleep 5" +"silent TSInstall python ql" +"sleep 60" +qa
