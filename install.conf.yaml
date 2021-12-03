@@ -22,7 +22,7 @@
 # ZSH
 - shell:
   -
-    command: sudo chsh -s `which zsh` `whoami`
+    command: chsh -s `which zsh` `whoami`
     description: Making zsh the default shell
   -
     command: zsh
@@ -32,7 +32,7 @@
 - shell:
   -
     description: Install FUSE which is required to run AppImages
-    command: sudo apt-get install -y fuse libfuse2
+    command: apt-get install -y fuse libfuse2
   -
     description: Download nvim appimage
     command: curl -L -o $HOME/bin/nvim https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage
@@ -41,7 +41,7 @@
     command: chmod a+x $HOME/bin/nvim
   -
     description: Insall Neovim plugins
-    command: nvim --headless +"sleep 5" +"autocmd User PackerComplete quitall" +"silent PackerSync"
+    command: $HOME/bin/nvim --headless +"sleep 5" +"autocmd User PackerComplete quitall" +"silent PackerSync"
   -
     description: Install TreeSitter parsers 
-    command: nvim --headless +"sleep 5" +"silent TSInstall python ql" +"sleep 60" +qa
+    command: $HOME/bin/nvim --headless +"sleep 5" +"silent TSInstall python ql" +"sleep 60" +qa
