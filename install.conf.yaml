@@ -27,6 +27,12 @@
     stderr: true
     description: Making zsh the default shell
     quiet: false
+  -
+    command: zsh
+    stdout: true
+    stderr: true
+    description: Starting zsh
+    quiet: false
 
 # Install NeoVim
 - shell:
