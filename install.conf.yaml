@@ -22,7 +22,7 @@
 # ZSH
 - shell:
   -
-    command: chsh -s `which zsh` `whoami`
+    command: sudo chsh -s `which zsh` `whoami`
     description: Making zsh the default shell
   -
     command: zsh
@@ -32,7 +32,7 @@
 - shell:
   -
     description: Install FUSE which is required to run AppImages
-    command: apt-get install -y fuse libfuse2
+    command: sudo apt-get install -y fuse libfuse2
   -
     description: Download nvim appimage
     command: curl -L -o $HOME/bin/nvim https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage

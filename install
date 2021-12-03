@@ -14,24 +14,3 @@ git submodule update --init --recursive
 # "${DOTBOT_DIR}"
 
 "${BASEDIR}/${DOTBOT_DIR}/${DOTBOT_BIN}" -vv -d "${BASEDIR}" -c "${CONFIG}" "${@}"
-
-# rm ~/.zshrc
-# mkdir ~/.config
-#
-# ln -s ~/.config/nvim config/nvim
-# ln -s ~/.ideavimrc home/ideavimrc
-# ln -s ~/.tmux.conf home/tmux.conf
-# ln -s ~/.zshrc home/zshrc
-# ln -s ~/.zshenv home/zshenv
-# ln -s ~/.zsh home/zsh
-# ln -s ~/bin home/bin
-#
-# chsh -s `which zsh` `whoami`
-# zsh
-#
-# apt-get install -y fuse libfuse2
-#
-# curl -L -o $HOME/bin/nvim https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage
-# chmod a+x $HOME/bin/nvim
-# $HOME/bin/nvim --headless +"sleep 5" +"autocmd User PackerComplete quitall" +"silent PackerSync"
-# nvim --headless +"sleep 5" +"silent TSInstall python ql" +"sleep 60" +qa
