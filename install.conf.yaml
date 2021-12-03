@@ -23,45 +23,25 @@
 - shell:
   -
     command: sudo chsh -s `which zsh` `whoami`
-    stdout: true
-    stderr: true
     description: Making zsh the default shell
-    quiet: false
   -
     command: zsh
-    stdout: true
-    stderr: true
     description: Starting zsh
-    quiet: false
 
 # Install NeoVim
 - shell:
   -
-    command: sudo apt-get install -y fuse libfuse2
-    stdout: true
-    stderr: true
     description: Install FUSE which is required to run AppImages
-    quiet: false
+    command: sudo apt-get install -y fuse libfuse2
   -
-    command: curl -L -o $HOME/bin/nvim https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage
-    stdout: true
-    stderr: true
     description: Download nvim appimage
-    quiet: false
+    command: curl -L -o $HOME/bin/nvim https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage
   -
-    command: chmod a+x $HOME/bin/nvim
-    stdout: true
     description: Make nvim executable 
-    quiet: false
+    command: chmod a+x $HOME/bin/nvim
   -
-    command: nvim --headless +"sleep 5" +"autocmd User PackerComplete quitall" +"silent PackerSync"
-    stdout: true
-    stderr: true
-    description: Packer
-    quiet: false
+    description: Insall Neovim plugins
+    command: sudo nvim --headless +"sleep 5" +"autocmd User PackerComplete quitall" +"silent PackerSync"
   -
-    command: nvim --headless +"sleep 5" +"silent TSInstall python ql" +"sleep 60" +qa
-    stdout: true
-    stderr: true
-    description: TreeSitter parsers 
-    quiet: false
+    description: Install TreeSitter parsers 
+    command: sudo nvim --headless +"sleep 5" +"silent TSInstall python ql" +"sleep 60" +qa
