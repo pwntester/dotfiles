@@ -131,7 +131,8 @@ return function()
       -- end,
       show_close_icon = false,
       ---based on https://github.com/kovidgoyal/kitty/issues/957
-      separator_style = os.getenv "KITTY_WINDOW_ID" and "slant" or "padded_slant",
+      --separator_style = os.getenv "KITTY_WINDOW_ID" and "slant" or "padded_slant",
+      separator_style = "slant",
       -- diagnostics = "nvim_lsp",
       -- diagnostics_indicator = diagnostics_indicator,
       -- custom_filter = custom_filter,
