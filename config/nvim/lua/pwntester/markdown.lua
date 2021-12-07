@@ -116,10 +116,16 @@ function M.markdownBlocks()
       -- continue placing signs, until the block stops
       continue = true
       -- place sign
-      vim.api.nvim_command("sign place " .. lnum .. " line=" .. lnum .. " name=codeblock file=" .. vim.fn.expand "%")
+      pcall(
+        vim.api.nvim_command,
+        "sign place " .. lnum .. " line=" .. lnum .. " name=codeblock file=" .. vim.fn.expand "%"
+      )
     elseif string.match(line, "^%s*```%s*") and continue then
       -- place sign
-      vim.api.nvim_command("sign place " .. lnum .. " line=" .. lnum .. " name=codeblock file=" .. vim.fn.expand "%")
+      pcall(
+        vim.api.nvim_command,
+        "sign place " .. lnum .. " line=" .. lnum .. " name=codeblock file=" .. vim.fn.expand "%"
+      )
       -- stop placing signs
       continue = false
     end
