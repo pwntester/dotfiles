@@ -39,11 +39,11 @@ _G.g = {
 
 function g.onFileType()
   if vim.tbl_contains({ "frecency", "TelescopePrompt" }, vim.bo.filetype) then
-    vim.api.nvim_win_set_option(0, "winhighlight", "Normal:Normal")
+    vim.api.nvim_win_set_option(0, "winhighlight", "Normal:NormalAlt")
   elseif vim.tbl_contains(g.special_buffers, vim.bo.filetype) then
-    vim.api.nvim_win_set_option(0, "winhighlight", "Normal:NormalDark")
+    vim.api.nvim_win_set_option(0, "winhighlight", "Normal:NormalAlt")
   elseif vim.bo.filetype == "" then
-    vim.api.nvim_win_set_option(0, "winhighlight", "Normal:NormalDark")
+    vim.api.nvim_win_set_option(0, "winhighlight", "Normal:NormalAlt")
   else
     vim.api.nvim_win_set_option(0, "winhighlight", "Normal:Normal")
   end
@@ -52,7 +52,7 @@ end
 
 function g.onEnter()
   if vim.tbl_contains(g.special_buffers, vim.bo.filetype) then
-    --vim.api.nvim_win_set_option(0, 'winhighlight', 'Normal:NormalDark')
+    --vim.api.nvim_win_set_option(0, 'winhighlight', 'Normal:NormalAlt')
 
     -- hide cursorline
     -- vim.wo.cursorline = false
@@ -477,7 +477,7 @@ function g.notify(lines, opts)
     return vim.split(line, "\n")
   end, lines))
   opts = opts or {}
-  local highlights = { "Normal:NormalDark" }
+  local highlights = { "Normal:NormalAlt" }
 
   local level = opts.log_level or 1
   local timeout = opts.timeout or 5000
