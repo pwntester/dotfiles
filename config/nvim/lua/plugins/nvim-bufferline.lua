@@ -1,40 +1,6 @@
 local lspconfig = require "pwntester.lsp"
 
 return function()
-  -- local function is_ft(b, ft)
-  --   return vim.bo[b].filetype == ft
-  -- end
-
-  -- local symbols = { error = " ", warning = " ", info = " " }
-
-  -- local function diagnostics_indicator(_, _, diagnostics)
-  --   local result = {}
-  --   for name, count in pairs(diagnostics) do
-  --     if symbols[name] and count > 0 then
-  --       table.insert(result, symbols[name] .. count)
-  --     end
-  --   end
-  --   result = table.concat(result, " ")
-  --   return #result > 0 and " " .. result or ""
-  -- end
-
-  -- local function custom_filter(buf, buf_nums)
-  --   local logs = vim.tbl_filter(function(b)
-  --     return is_ft(b, "log")
-  --   end, buf_nums)
-  --   if vim.tbl_isempty(logs) then
-  --     return true
-  --   end
-  --   local tab_num = vim.fn.tabpagenr()
-  --   local last_tab = vim.fn.tabpagenr "$"
-  --   local is_log = is_ft(buf, "log")
-  --   if last_tab == 1 then
-  --     return true
-  --   end
-  --   -- only show log buffers in secondary tabs
-  --   return (tab_num == last_tab and is_log) or (tab_num ~= last_tab and not is_log)
-  -- end
-
   local function get_lsp_client(msg)
     msg = msg or "No Active LSP"
     local clients = vim.lsp.get_active_clients()
@@ -54,68 +20,80 @@ return function()
     return msg
   end
 
+  local colors = {
+    accent = "#ffcc66",
+    background = "#1f283b",
+    dark_background = "#181e2e",
+    foreground = "#80b2d6",
+    red = "#f04c75",
+    green = "#98c379",
+    orange = "#ffae57",
+  }
   require("bufferline").setup {
     highlights = {
       background = {
-        guifg = "#80b2d6",
-        guibg = "#1f283b",
+        guifg = colors.foreground,
+        guibg = colors.background,
       },
       tab_selected = {
-        guifg = "#1f283b",
-        guibg = "#ffcc66",
+        guifg = colors.background,
+        guibg = colors.accent,
       },
       duplicate = {
-        guifg = "#80b2d6",
-        guibg = "#1f283b",
+        guifg = colors.foreground,
+        guibg = colors.background,
       },
       duplicate_visible = {
-        guifg = "#80b2d6",
-        guibg = "#1f283b",
+        guifg = colors.foreground,
+        guibg = colors.background,
       },
       duplicate_selected = {
-        guifg = "#1f283b",
-        guibg = "#ffcc66",
+        guifg = colors.background,
+        guibg = colors.accent,
       },
       buffer_visible = {
-        guifg = "#80b2d6",
-        guibg = "#1f283b",
+        guifg = colors.foreground,
+        guibg = colors.background,
       },
       buffer_selected = {
-        guifg = "#1f283b",
-        guibg = "#ffcc66",
+        guifg = colors.background,
+        guibg = colors.accent,
       },
       modified = {
-        guifg = "#f04c75",
-        guibg = "#1f283b",
+        guifg = colors.red,
+        guibg = colors.background,
       },
       modified_visible = {
-        guifg = "#f04c75",
-        guibg = "#1f283b",
+        guifg = colors.red,
+        guibg = colors.background,
       },
       modified_selected = {
-        guifg = "#f04c75",
-        guibg = "#ffcc66",
+        guifg = colors.red,
+        guibg = colors.accent,
       },
       separator = {
-        guibg = "#1f283b",
+        guifg = colors.dark_background,
+        guibg = colors.background,
       },
       separator_visible = {
-        guibg = "#1f283b",
+        guifg = colors.dark_background,
+        guibg = colors.background,
       },
       separator_selected = {
-        guibg = "#ffcc66",
+        guifg = colors.dark_background,
+        guibg = colors.accent,
       },
       close_button = {
-        guifg = "#abb2bf",
-        guibg = "#1f283b",
+        guifg = colors.foreground,
+        guibg = colors.background,
       },
       close_button_visible = {
-        guifg = "#abb2bf",
-        guibg = "#1f283b",
+        guifg = colors.foreground,
+        guibg = colors.background,
       },
       close_button_selected = {
-        guifg = "#1f283b",
-        guibg = "#ffcc66",
+        guifg = colors.background,
+        guibg = colors.accent,
       },
       indicator_selected = {
         guifg = "#0000ff",
@@ -170,19 +148,19 @@ return function()
 
           local client = get_lsp_client()
           if client == "No Active LSP" then
-            result[1] = { text = "  ", guifg = "#f04c75" }
-            result[2] = { text = "", guifg = "#98c379" }
+            result[1] = { text = "  ", guifg = colors.red }
+            result[2] = { text = "", guifg = colors.green }
           else
-            result[1] = { text = "  ", guifg = "#ffcc66" }
-            result[2] = { text = client .. " ", guifg = "#98c379" }
+            result[1] = { text = "  ", guifg = colors.accent }
+            result[2] = { text = client .. " ", guifg = colors.green }
           end
 
           if error ~= 0 then
-            result[3] = { text = " " .. error .. " ", guifg = "#f04c75" }
+            result[3] = { text = " " .. error .. " ", guifg = colors.red }
           end
 
           if warning ~= 0 then
-            result[4] = { text = " " .. warning .. " ", guifg = "#ffae57" }
+            result[4] = { text = " " .. warning .. " ", guifg = colors.orange }
           end
           return result
         end,
