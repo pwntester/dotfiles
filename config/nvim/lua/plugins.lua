@@ -91,14 +91,14 @@ return require("packer").startup {
         require("close_buffers").setup {
           filetype_ignore = {}, -- Filetype to ignore when running deletions
           preserve_window_layout = { "this" },
-          next_buffer_cmd = function(windows)
-            require("bufferline").cycle(1)
-            local bufnr = vim.api.nvim_get_current_buf()
-
-            for _, window in ipairs(windows) do
-              vim.api.nvim_win_set_buf(window, bufnr)
-            end
-          end,
+          -- next_buffer_cmd = function(windows)
+          --   require("bufferline").cycle(1)
+          --   local bufnr = vim.api.nvim_get_current_buf()
+          --
+          --   for _, window in ipairs(windows) do
+          --     vim.api.nvim_win_set_buf(window, bufnr)
+          --   end
+          -- end,
         }
       end,
       -- BDelete! all glob=*octo://*
@@ -409,12 +409,12 @@ return require("packer").startup {
         require "plugins.windline"
       end,
     }
-    use {
-      "akinsho/nvim-bufferline.lua",
-      config = function()
-        require "plugins.nvim-bufferline"()
-      end,
-    }
+    -- use {
+    --   "akinsho/nvim-bufferline.lua",
+    --   config = function()
+    --     require "plugins.nvim-bufferline"()
+    --   end,
+    -- }
 
     -- FILE EXPLORER
     use {
@@ -558,7 +558,7 @@ return require("packer").startup {
             --galaxyline = true,
             --tmux = true,
             gitsigns = true,
-            nvim_bufferline = true,
+            --nvim_bufferline = true,
             limelight = false,
             twilight = false,
             vim_airline = false,

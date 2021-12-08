@@ -222,6 +222,8 @@ local floatline_active = {
   },
 }
 
+--require "wlsample.bubble2"
+
 windline.setup {
   colors_name = function(colors)
     local theme = require("nautilus").theme "grey"
