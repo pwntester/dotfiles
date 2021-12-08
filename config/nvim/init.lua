@@ -206,7 +206,7 @@ vim.opt.wildignore = {
 -----------------------------------------------------------------------------//
 -- Display {{{1
 -----------------------------------------------------------------------------//
-vim.opt.showtabline = 2
+vim.opt.showtabline = 0 -- 2
 vim.opt.conceallevel = 2
 vim.opt.concealcursor = "nc"
 vim.opt.synmaxcol = 1024 -- don't syntax highlight long lines
