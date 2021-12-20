@@ -30,6 +30,7 @@ _G.g = {
     "TelescopeResults",
     "NeogitStatus",
     "notify",
+    "Yanil",
   },
 }
 
@@ -38,8 +39,7 @@ _G.g = {
 -----------------------------------------------------------------------------//
 
 function g.onFileType()
-  if vim.tbl_contains({ "frecency", "TelescopePrompt" }, vim.bo.filetype) then
-    vim.api.nvim_win_set_option(0, "winhighlight", "Normal:NormalAlt")
+  if vim.tbl_contains({ "frecency", "TelescopePrompt", "TelescopeResults" }, vim.bo.filetype) then
   elseif vim.tbl_contains(g.special_buffers, vim.bo.filetype) then
     vim.api.nvim_win_set_option(0, "winhighlight", "Normal:NormalAlt")
   elseif vim.bo.filetype == "" then

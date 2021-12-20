@@ -152,7 +152,8 @@ local mappings = {
     -- ['n<leader>['] = { ':BufferLineMovePrev<CR>', noremap = false; };
 
     -- NVIM-TREE
-    ["nge"] = { [[:NvimTreeFindFileToggle<CR>]] },
+    --["nge"] = { [[:NvimTreeFindFileToggle<CR>]] },
+    ["nge"] = { [[:YanilToggle<CR>]] },
 
     -- GIT-MESSANGER
     ["n<leader>gm"] = { [[<Plug>(git-messenger)]], noremap = false },

@@ -74,7 +74,7 @@ function M.asyncPush()
     end
   end
 
-  local cmd_str = 'git add %s ;git commit -m "Auto commit of %s" "%s";git push;'
+  local cmd_str = 'git add "%s" ;git commit -m "Auto commit of %s" "%s";git push;'
   local cmd = string.format(cmd_str, vim.fn.expand "%", vim.fn.expand "%:t", vim.fn.expand "%")
 
   --print('AutoCommiting changes ...')
@@ -269,7 +269,7 @@ function M.markdownEnter()
   elseif prefix then
     vim.api.nvim_put({ "", prefix }, "c", true, true)
   else
-    vim.api.nvim_put({ "", "" }, "c", true, true)
+    vim.api.nvim_put({ "", "" }, "c", false, true)
   end
 end
 

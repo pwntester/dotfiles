@@ -359,13 +359,13 @@ return require("packer").startup {
       "kyazdani42/nvim-web-devicons",
       module = "nvim-web-devicons",
     }
-    use {
-      "lukas-reineke/indent-blankline.nvim",
-      config = function()
-        vim.g.indent_blankline_char = "¦" -- ['|', '¦', '┆', '┊']
-        vim.g.indent_blankline_filetype_exclude = vim.list_extend(vim.fn.deepcopy(g.special_buffers), { "markdown" })
-      end,
-    }
+    -- use {
+    --   "lukas-reineke/indent-blankline.nvim",
+    --   config = function()
+    --     vim.g.indent_blankline_char = "¦" -- ['|', '¦', '┆', '┊']
+    --     vim.g.indent_blankline_filetype_exclude = vim.list_extend(vim.fn.deepcopy(g.special_buffers), { "markdown" })
+    --   end,
+    -- }
     use { "junegunn/rainbow_parentheses.vim" }
     use {
       "RRethy/vim-illuminate",
@@ -417,33 +417,56 @@ return require("packer").startup {
     -- }
 
     -- FILE EXPLORER
+    -- use {
+    --   "kyazdani42/nvim-tree.lua",
+    --   after = { "windline.nvim" },
+    --   config = function()
+    --     -- will change cwd of nvim-tree to that of new buffer's when opening nvim-tree.
+    --     vim.g.nvim_tree_respect_buf_cwd = 1
+    --     -- enable highligting for folders and both file icons and names.
+    --     vim.g.nvim_tree_show_icons = {
+    --       git = 0,
+    --       folders = 1,
+    --       files = 1,
+    --       folder_arrows = 1,
+    --     }
+    --     vim.g.nvim_tree_window_picker_exclude = {
+    --       ["filetype"] = g.special_buffers,
+    --       ["buftype"] = { "terminal" },
+    --     }
+    --     vim.g.nvim_tree_highlight_opened_files = 3
+    --     require("plugins.nvim-tree").setup()
+    --   end,
+    -- }
     use {
-      "kyazdani42/nvim-tree.lua",
-      after = { "windline.nvim" },
+      "Xuyuanp/yanil",
       config = function()
-        -- will change cwd of nvim-tree to that of new buffer's when opening nvim-tree.
-        vim.g.nvim_tree_respect_buf_cwd = 1
-        -- enable highligting for folders and both file icons and names.
-        vim.g.nvim_tree_show_icons = {
-          git = 0,
-          folders = 1,
-          files = 1,
-          folder_arrows = 1,
-        }
-        vim.g.nvim_tree_window_picker_exclude = {
-          ["filetype"] = g.special_buffers,
-          ["buftype"] = { "terminal" },
-        }
-        vim.g.nvim_tree_highlight_opened_files = 3
-        require("plugins.nvim-tree").setup()
+        require "plugins.yanil"
       end,
     }
 
     -- COMMENTS
+    use { "JoosepAlviste/nvim-ts-context-commentstring" }
     use {
       "numToStr/Comment.nvim",
       config = function()
-        require("Comment").setup()
+        require("Comment").setup {
+          pre_hook = function(ctx)
+            local U = require "Comment.utils"
+
+            local location = nil
+            if ctx.ctype == U.ctype.block then
+              location = require("ts_context_commentstring.utils").get_cursor_location()
+            elseif ctx.cmotion == U.cmotion.v or ctx.cmotion == U.cmotion.V then
+              location = require("ts_context_commentstring.utils").get_visual_start_location()
+            end
+
+            return require("ts_context_commentstring.internal").calculate_commentstring {
+              key = ctx.ctype == U.ctype.line and "__default" or "__multiline",
+              location = location,
+            }
+          end,
+        }
       end,
     }
     use {
@@ -586,15 +609,44 @@ return require("packer").startup {
     }
 
     -- HTTP Client
-    use { "nicwest/vim-http" } -- just for the syntax
+    -- use { "nicwest/vim-http" } -- just for the syntax
+    -- use {
+    --   "aquach/vim-http-client",
+    --   config = function()
+    --     vim.g.http_client_bind_hotkey = false
+    --     vim.g.http_client_json_ft = "javascript"
+    --     vim.g.http_client_focus_output_window = false
+    --     vim.g.http_client_preserve_responses = false
+    --     vim.cmd [[autocmd FileType http nnoremap <C-j> :HTTPClientDoRequest<CR>]]
+    --   end,
+    -- }
     use {
-      "aquach/vim-http-client",
+      "NTBBloodbath/rest.nvim",
+      requires = { "nvim-lua/plenary.nvim" },
       config = function()
-        vim.g.http_client_bind_hotkey = false
-        vim.g.http_client_json_ft = "javascript"
-        vim.g.http_client_focus_output_window = false
-        vim.g.http_client_preserve_responses = false
-        vim.cmd [[autocmd FileType http nnoremap <C-j> :HTTPClientDoRequest<CR>]]
+        require("rest-nvim").setup {
+          -- Open request results in a horizontal split
+          result_split_horizontal = false,
+          -- Skip SSL verification, useful for unknown certificates
+          skip_ssl_verification = false,
+          -- Highlight request on run
+          highlight = {
+            enabled = true,
+            timeout = 150,
+          },
+          result = {
+            -- toggle showing URL, HTTP info, headers at top the of result window
+            show_url = true,
+            show_http_info = true,
+            show_headers = true,
+          },
+          -- Jump to request line on run
+          jump_to_request = false,
+          env_file = ".env",
+          custom_dynamic_variables = {},
+          yank_dry_run = true,
+        }
+        vim.cmd [[autocmd FileType http nmap <C-j> <Plug>RestNvim]]
       end,
     }
 
@@ -610,6 +662,8 @@ return require("packer").startup {
     -- Try:
     -- ldelossa/calltree.nvim
     -- AckslD/nvim-neoclip.lua
+    -- https://github.com/lewis6991/spellsitter.nvim
+    -- https://www.reddit.com/r/neovim/comments/rgclni/jsonls_autocompletion_using_schemastore/
 
     if packer_bootstrap then
       require("packer").sync()
@@ -618,7 +672,11 @@ return require("packer").startup {
   config = {
     display = {
       open_fn = function()
-        local bufnr, winnr = require("window").floating_window { border = true, width_per = 0.8, height_per = 0.8 }
+        local bufnr, winnr = require("pwntester.window").floating_window {
+          border = true,
+          width_per = 0.8,
+          height_per = 0.8,
+        }
         vim.api.nvim_set_current_win(winnr)
         return bufnr, winnr
       end,
@@ -628,4 +686,5 @@ return require("packer").startup {
     --   threshold = 1,
     -- },
   },
+  plug,
 }

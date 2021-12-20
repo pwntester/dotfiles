@@ -20,11 +20,11 @@ setlocal breakindent
 setlocal breakindentopt=min:5,list:-1
 let &l:formatlistpat = '^\s*\d\+\.\s\+\|^\s*[-*+>]\s\+\|^\[^\ze[^\]]\+\]:'
 
-if &ft == 'octo'
-  setlocal foldcolumn=0
-  setlocal signcolumn=yes:1
-else
-  setlocal foldcolumn=9
-  setlocal signcolumn=yes:9
-endif
+" if &ft == 'octo'
+"   setlocal foldcolumn=0
+"   setlocal signcolumn=yes:1
+" else
+"   setlocal foldcolumn=9
+"   setlocal signcolumn=yes:9
+" endif
 
