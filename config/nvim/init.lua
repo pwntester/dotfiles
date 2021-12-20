@@ -206,6 +206,7 @@ vim.opt.wildignore = {
 -----------------------------------------------------------------------------//
 -- Display {{{1
 -----------------------------------------------------------------------------//
+vim.opt.cursorline = true
 vim.opt.showtabline = 0 -- 2
 vim.opt.conceallevel = 2
 vim.opt.concealcursor = "nc"
@@ -217,7 +218,7 @@ vim.opt.relativenumber = true
 -----------------------------------------------------------------------------//
 -- List chars {{{1
 -----------------------------------------------------------------------------//
-vim.opt.list = true -- invisible chars
+vim.opt.list = false -- invisible chars
 vim.opt.listchars = {
   nbsp = "%",
   extends = "›", -- Alternatives: … »

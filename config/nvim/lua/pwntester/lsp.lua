@@ -1,7 +1,7 @@
 local vim = vim
 local api = vim.api
 local nvim_lsp = require "lspconfig"
-local window = require "window"
+local window = require "pwntester.window"
 local configs = require "lspconfig/configs"
 local util = require "lspconfig/util"
 local jdtls = require "jdtls"
@@ -136,6 +136,12 @@ local function setup()
     flags = {
       debounce_text_changes = 150,
     },
+    root_dir = function(fname)
+      if vim.startswith(fname, "octo:") or vim.startswith(fname, "codeql:") or vim.startswith(fname, "docker:") then
+        return
+      end
+      nvim_lsp.gopls.default_config.root_dir(fname)
+    end,
   }
 
   --- Ruby
@@ -157,10 +163,15 @@ local function setup()
     flags = {
       debounce_text_changes = 150,
     },
+    root_dir = function(fname)
+      if vim.startswith(fname, "octo:") or vim.startswith(fname, "codeql:") or vim.startswith(fname, "docker:") then
+        return
+      end
+      nvim_lsp.omnisharp.default_config.root_dir(fname)
+    end,
   }
 
   --- CodeQL
-  --{"jsonrpc":"2.0","id":0,"result":{"capabilities":{"textDocumentSync":1,"hoverProvider":true,"completionProvider":{"resolveProvider":false,"triggerCharacters":[".",","]},"definitionProvider":true,"referencesProvider":true,"documentHighlightProvider":true,"documentSymbolProvider":true,"documentFormattingProvider":true,"workspace":{"workspaceFolders":{"supported":true,"changeNotifications":true}},"experimental":{"checkErrorsProvider":true,"guessLocationProvider":true}}}}
   nvim_lsp.codeqlls.setup {
     on_attach = on_attach_callback,
     capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities()),

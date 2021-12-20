@@ -80,12 +80,17 @@ local function setup()
         },
       },
     },
+    context_commentstring = {
+      enable = true,
+      enable_autocmd = false,
+    },
     playground = {
       enable = false,
       updatetime = 25, -- Debounced time for highlighting nodes in the playground from source code
       persist_queries = false, -- Whether the query persists across vim sessions
     },
     --ensure_installed = 'all', -- one of 'all', 'language', or a list of languages
+    ensure_installed = { "ruby", "lua", "ql", "http", "json" },
     ignore_install = { "haskell" },
   }
   require("nvim-treesitter").define_modules {

@@ -1,7 +1,8 @@
 local windline = require "windline"
 local cache_utils = require "windline.cache_utils"
 local basic = require "windline.components.basic"
-local state = _G.WindLine.state
+local lsp_comps = require "windline.components.lsp"
+local lspconfig = require "pwntester.lsp"
 local _, Job = pcall(require, "plenary.job")
 
 local function relpath(P, start)
@@ -32,18 +33,56 @@ end
 
 local config = {}
 
-config.vi_mode = {
-  name = "vi_mode",
+config.lsp = {
+  name = "lsp",
   hl_colors = {
-    Normal = { "bg", "yellow", "bold" },
-    Insert = { "bg", "yellow", "bold" },
-    Visual = { "bg", "yellow", "bold" },
-    Replace = { "bg", "yellow", "bold" },
-    Command = { "bg", "yellow", "bold" },
+    red = { "red", "line_bg" },
+    green = { "green", "line_bg" },
   },
   text = function()
+    local clients = vim.lsp.get_active_clients()
+    local bufnr = vim.api.nvim_get_current_buf()
+    local client_id = lspconfig.clients[bufnr]
+    if client_id then
+      for _, client in ipairs(clients) do
+        if client.id == client_id[1] then
+          return { " " .. client.name .. " (" .. client.id .. ") ", "green" }
+        end
+      end
+    end
     return {
-      { " " .. state.mode[1] .. " ", state.mode[2] },
+      { " ", "red" },
+    }
+  end,
+}
+
+config.lsp_name = {
+  name = "lsp_name",
+  hl_colors = {
+    red = { "red", "line_bg" },
+    green = { "green", "line_bg" },
+    orange = { "orange", "line_bg" },
+  },
+  text = function(bufnr)
+    if lsp_comps.check_lsp(bufnr) then
+      local error = vim.lsp.diagnostic.get_count(bufnr, [[Error]])
+      local warning = vim.lsp.diagnostic.get_count(bufnr, [[Warning]])
+      local components = {
+        { lsp_comps.lsp_name(), "green" },
+      }
+      if error > 0 then
+        table.insert(components, { "  ", "red" })
+        table.insert(components, { lsp_comps.lsp_error(), "red" })
+      end
+      if warning > 0 then
+        table.insert(components, { "  ", "orange" })
+        table.insert(components, { lsp_comps.lsp_warning(), "orange" })
+      end
+      table.insert(components, { " ", "orange" })
+      return components
+    end
+    return {
+      { " ", "red" },
     }
   end,
 }
@@ -51,7 +90,7 @@ config.vi_mode = {
 config.github_repo = {
   name = "github_repo",
   hl_colors = {
-    blue = { "light_blue", "bg", "bold" },
+    blue = { "light_blue", "bg" },
   },
   text = cache_utils.cache_on_buffer("BufEnter", "wl_github_repo", function()
     local ok, outils = pcall(require, "octo.utils")
@@ -71,7 +110,7 @@ config.github_repo = {
 config.git_branch = {
   name = "git_branch",
   hl_colors = {
-    grey = { "grey", "bg", "bold" },
+    grey = { "grey", "bg" },
   },
   text = cache_utils.cache_on_buffer("BufEnter", "wl_git_branch", function()
     if not Job then
@@ -98,7 +137,7 @@ config.git_branch = {
 config.cwd = {
   name = "cwd",
   hl_colors = {
-    yellow = { "yellow", "bg", "bold" },
+    yellow = { "yellow", "bg" },
   },
   text = function()
     return {
@@ -112,7 +151,7 @@ config.divider = { basic.divider, "" }
 config.file = {
   name = "file",
   hl_colors = {
-    yellow = { "yellow", "bg", "bold" },
+    yellow = { "yellow", "bg" },
   },
   text = cache_utils.cache_on_buffer("BufEnter", "wl_file_name", function()
     local bufname = vim.fn.bufname()
@@ -131,7 +170,7 @@ config.file = {
 config.position = {
   name = "position",
   hl_colors = {
-    grey = { "grey", "bg", "bold" },
+    grey = { "grey", "bg" },
   },
   text = function()
     return {
@@ -147,7 +186,7 @@ config.position = {
 config.filetype = {
   name = "filetype",
   hl_colors = {
-    blue = { "light_blue", "bg", "bold" },
+    blue = { "light_blue", "bg" },
   },
   text = function()
     return {
@@ -161,7 +200,6 @@ config.filetype = {
 local default = {
   filetypes = { "default" },
   active = {
-    config.vi_mode,
     config.github_repo,
     config.git_branch,
     config.cwd,
@@ -169,6 +207,7 @@ local default = {
     config.file,
     config.position,
     config.filetype,
+    config.lsp_name,
   },
   inactive = {},
   floatline_show_float = false,
@@ -194,12 +233,12 @@ local floatline_active = {
       function(_, _, width)
         return string.rep("▁", math.floor(width - 1))
       end,
-      { "dark_blue", "line_bg" },
+      { "vert_split", "line_bg" },
     },
     {
       "▁",
       {
-        "dark_blue",
+        "vert_split",
         "line_bg",
       },
     },
@@ -210,12 +249,12 @@ local floatline_active = {
         -- TODO: seems like the width passed here is the width of the active window, not the inactive one
         return string.rep("▁", math.floor(width - 1))
       end,
-      { "dark_blue", "line_bg" },
+      { "vert_split", "line_bg" },
     },
     {
       "▁",
       {
-        "dark_blue",
+        "vert_split",
         "line_bg",
       },
     },
@@ -229,7 +268,7 @@ windline.setup {
     local theme = require("nautilus").theme "grey"
     local palette = {
       bg = tostring(theme.CursorColumn.bg),
-      dark_blue = tostring(theme.CursorLine.bg),
+      dark_blue = tostring(theme.CursorColumn.bg),
       line_bg = tostring(theme.Normal.bg),
       grey = tostring(theme.Normal.fg),
       yellow = tostring(theme.Identifier.fg),
@@ -237,6 +276,7 @@ windline.setup {
       green = tostring(theme.String.fg),
       orange = tostring(theme.Constant.fg),
       red = tostring(theme.ErrorMsg.fg),
+      vert_split = tostring(theme.VertSplit.fg),
     }
     return vim.tbl_extend("force", colors, palette)
   end,
@@ -246,17 +286,16 @@ windline.setup {
     floatline_active,
   },
 }
-
 require("wlfloatline").setup {
   interval = 300,
-  ui = {
-    active_char = "▁",
-    active_color = "line_bg",
-    active_hl = "Error",
-  },
-  -- skip_filetypes = {
-  --   "NvimTree",
+  -- ui = {
+  --   active_char = "▁",
+  --   active_color = "red",
+  --   active_hl = "Error",
   -- },
+  skip_filetypes = {
+    "Yanil",
+  },
   -- by default it skip all floating window but you can change it
   --floating_show_filetypes = {},
 }
