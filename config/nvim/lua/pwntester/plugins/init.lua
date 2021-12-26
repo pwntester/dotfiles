@@ -58,7 +58,6 @@ return require("packer").startup {
 
     -- BASICS
     use { "jdhao/better-escape.vim" }
-    use { "monaqa/dial.nvim" }
     use {
       "abecodes/tabout.nvim",
       wants = { "nvim-treesitter" },
@@ -139,7 +138,7 @@ return require("packer").startup {
         },
       },
       config = function()
-        require("plugins.telescope").setup()
+        require("pwntester.plugins.telescope").setup()
       end,
     }
     use_local {
@@ -163,7 +162,7 @@ return require("packer").startup {
         { "dmitmel/cmp-cmdline-history" },
       },
       config = function()
-        require("plugins.nvim-cmp").setup()
+        require("pwntester.plugins.nvim-cmp").setup()
       end,
     }
 
@@ -231,7 +230,7 @@ return require("packer").startup {
         { "nvim-treesitter/nvim-treesitter-textobjects" },
       },
       config = function()
-        require("plugins.treesitter").setup()
+        require("pwntester.plugins.treesitter").setup()
       end,
     }
 
@@ -367,12 +366,12 @@ return require("packer").startup {
     --   end,
     -- }
     use { "junegunn/rainbow_parentheses.vim" }
-    use {
-      "RRethy/vim-illuminate",
-      config = function()
-        vim.g.Illuminate_ftblacklist = vim.list_extend(vim.fn.deepcopy(g.special_buffers), { "markdown" })
-      end,
-    }
+    -- use {
+    --   "RRethy/vim-illuminate",
+    --   config = function()
+    --     vim.g.Illuminate_ftblacklist = vim.list_extend(vim.fn.deepcopy(g.special_buffers), { "markdown" })
+    --   end,
+    -- }
     use {
       "folke/trouble.nvim",
       requires = "kyazdani42/nvim-web-devicons",
@@ -406,42 +405,21 @@ return require("packer").startup {
       "windwp/windline.nvim",
       requires = { "kyazdani42/nvim-web-devicons" },
       config = function()
-        require "plugins.windline"
+        require "pwntester.plugins.windline"
       end,
     }
     -- use {
     --   "akinsho/nvim-bufferline.lua",
     --   config = function()
-    --     require "plugins.nvim-bufferline"()
+    --     require "pwntester.plugins.nvim-bufferline"()
     --   end,
     -- }
 
     -- FILE EXPLORER
-    -- use {
-    --   "kyazdani42/nvim-tree.lua",
-    --   after = { "windline.nvim" },
-    --   config = function()
-    --     -- will change cwd of nvim-tree to that of new buffer's when opening nvim-tree.
-    --     vim.g.nvim_tree_respect_buf_cwd = 1
-    --     -- enable highligting for folders and both file icons and names.
-    --     vim.g.nvim_tree_show_icons = {
-    --       git = 0,
-    --       folders = 1,
-    --       files = 1,
-    --       folder_arrows = 1,
-    --     }
-    --     vim.g.nvim_tree_window_picker_exclude = {
-    --       ["filetype"] = g.special_buffers,
-    --       ["buftype"] = { "terminal" },
-    --     }
-    --     vim.g.nvim_tree_highlight_opened_files = 3
-    --     require("plugins.nvim-tree").setup()
-    --   end,
-    -- }
     use {
       "Xuyuanp/yanil",
       config = function()
-        require "plugins.yanil"
+        require("pwntester.plugins.yanil").setup()
       end,
     }
 
@@ -511,7 +489,7 @@ return require("packer").startup {
     -- use_local {
     --   'pwntester/fortify.nvim',
     --   config = function()
-    --     require'plugins.fortify'.setup()
+    --     require'pwntester.plugins.fortify'.setup()
     --   end,
     --   local_path = 'dev/personal',
     -- }
@@ -609,17 +587,6 @@ return require("packer").startup {
     }
 
     -- HTTP Client
-    -- use { "nicwest/vim-http" } -- just for the syntax
-    -- use {
-    --   "aquach/vim-http-client",
-    --   config = function()
-    --     vim.g.http_client_bind_hotkey = false
-    --     vim.g.http_client_json_ft = "javascript"
-    --     vim.g.http_client_focus_output_window = false
-    --     vim.g.http_client_preserve_responses = false
-    --     vim.cmd [[autocmd FileType http nnoremap <C-j> :HTTPClientDoRequest<CR>]]
-    --   end,
-    -- }
     use {
       "NTBBloodbath/rest.nvim",
       requires = { "nvim-lua/plenary.nvim" },
@@ -649,6 +616,9 @@ return require("packer").startup {
         vim.cmd [[autocmd FileType http nmap <C-j> <Plug>RestNvim]]
       end,
     }
+
+    -- use { "alexghergh/nvim-tmux-navigation" }
+    use { "nathom/tmux.nvim" }
 
     -- DOCKER
     -- use_local {
@@ -686,5 +656,4 @@ return require("packer").startup {
     --   threshold = 1,
     -- },
   },
-  plug,
 }

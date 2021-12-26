@@ -34,20 +34,15 @@ local mappings = {
     -- move between windows
     ["n<C-p>"] = { "<Plug>(choosewin)", noremap = false },
 
-    -- ['n<C-h>'] = {"<CMD>lua require('Navigator').left()<CR>" };
-    -- ['n<C-k>'] = {"<CMD>lua require('Navigator').up()<CR>" };
-    -- ['n<C-l>'] = {"<CMD>lua require('Navigator').right()<CR>" };
-    -- ['n<C-j>'] = {"<CMD>lua require('Navigator').down()<CR>" };
+    ["n<C-h>"] = { [[<cmd>lua require('tmux').move_left()<CR>]] },
+    ["n<C-j>"] = { [[<cmd>lua require('tmux').move_down()<CR>]] },
+    ["n<C-k>"] = { [[<cmd>lua require('tmux').move_up()<CR>]] },
+    ["n<C-l>"] = { [[<cmd>lua require('tmux').move_right()<CR>]] },
 
-    -- ['n<c-k>'] = { ':TmuxNavigateUp<CR>' };
-    -- ['n<c-j>'] = { ':TmuxNavigateDown<CR>' };
-    -- ['n<c-h>'] = { ':TmuxNavigateLeft<CR>' };
-    -- ['n<c-l>'] = { ':TmuxNavigateRight<CR>' };
-
-    ["n<c-k>"] = { ":wincmd k<CR>" },
-    ["n<c-j>"] = { ":wincmd j<CR>" },
-    ["n<c-h>"] = { ":wincmd h<CR>" },
-    ["n<c-l>"] = { ":wincmd l<CR>" },
+    -- ["n<c-k>"] = { ":wincmd k<CR>" },
+    -- ["n<c-j>"] = { ":wincmd j<CR>" },
+    -- ["n<c-h>"] = { ":wincmd h<CR>" },
+    -- ["n<c-l>"] = { ":wincmd l<CR>" },
 
     -- disable keys
     ["n<up>"] = { "<nop>" },
@@ -72,14 +67,14 @@ local mappings = {
     -- ['n]e'] = { [[:<c-u>execute 'move +'. v:count1<cr>]] };
 
     -- unimpaired like mappings
-    ["n[b"] = { [[:bprevious<cr>]] },
-    ["n]b"] = { [[:bnext<cr>]] },
-    ["n[q"] = { [[:cprevious<cr>]] },
-    ["n]q"] = { [[:cnext<cr>]] },
-    ["n[l"] = { [[:lprevious<cr>]] },
-    ["n]l"] = { [[:lnext<cr>]] },
-    ["n[t"] = { [[:tabprevious<cr>]] },
-    ["n]t"] = { [[:tabnext<cr>]] },
+    ["n[b"] = { [[:bprevious<CR>]] },
+    ["n]b"] = { [[:bnext<CR>]] },
+    ["n[q"] = { [[:cprevious<CR>]] },
+    ["n]q"] = { [[:cnext<CR>]] },
+    ["n[l"] = { [[:lprevious<CR>]] },
+    ["n]l"] = { [[:lnext<CR>]] },
+    ["n[t"] = { [[:tabprevious<CR>]] },
+    ["n]t"] = { [[:tabnext<CR>]] },
 
     -- paste keeping the default register
     ["v<leader>p"] = { '"_dP' },
@@ -93,15 +88,15 @@ local mappings = {
     ["ngp"] = { [['`[' . strpart(getregtype(), 0, 1) . '`]']], expr = true },
 
     -- these work like * and g*, but do not move the cursor and always set hls.
-    ["_*"] = { [[:let @/ = '\<'.expand('<cword>').'\>'<bar>set hlsearch<C-M>]] },
-    ["_g*"] = { [[:let @/ = expand('<cword>')<bar>set hlsearch<C-M>]] },
+    -- ["_*"] = { [[:let @/ = '\<'.expand('<cword>').'\>'<bar>set hlsearch<C-M>]] },
+    -- ["_g*"] = { [[:let @/ = expand('<cword>')<bar>set hlsearch<C-M>]] },
 
     -- goto URL
     ["ngx"] = { [[:call v:lua.g.openURL()<CR>]] },
     ["ngo"] = { "<Plug>(OctoOpenIssueAtCursor)", noremap = false },
 
     -- TELESCOPE
-    --['n<leader>m'] = { [[<cmd>lua require'plugins.telescope'.mru()<CR>]] };
+    --['n<leader>m'] = { [[<cmd>lua require'pwntester.plugins.telescope'.mru()<CR>]] };
     ["n<leader>m"] = {
       [[<cmd>lua require'telescope'.extensions.frecency.frecency({prompt_title=false,preview_title=false,results_title=false})<CR>]],
     },
@@ -114,7 +109,7 @@ local mappings = {
     ["n<leader>l"] = {
       [[<cmd>lua require'telescope'.extensions.live_grep_raw.live_grep_raw({prompt_title=false,preview_title=false,results_title=false})<CR>]],
     },
-    ["n<leader>r"] = { [[<cmd>lua require'plugins.telescope'.reloader()<CR>]] },
+    ["n<leader>r"] = { [[<cmd>lua require'pwntester.plugins.telescope'.reloader()<CR>]] },
     ["n<leader>o"] = {
       [[<cmd>lua require'telescope.builtin'.buffers({prompt_title=false,preview_title=false,results_title=false})<CR>]],
     },
@@ -146,10 +141,12 @@ local mappings = {
     ["n<leader>z"] = { ":TZAtaraxis<CR>" },
 
     -- NVIM-BUFFERLINE
-    ["n<s-l>"] = { ":BufferLineCycleNext<CR>", noremap = false },
-    ["n<s-h>"] = { ":BufferLineCyclePrev<CR>", noremap = false },
+    -- ["n<S-l>"] = { ":BufferLineCycleNext<CR>", noremap = false },
+    -- ["n<S-h>"] = { ":BufferLineCyclePrev<CR>", noremap = false },
     -- ['n<leader>]'] = { ':BufferLineMoveNext<CR>', noremap = false; };
     -- ['n<leader>['] = { ':BufferLineMovePrev<CR>', noremap = false; };
+    ["n<S-l>"] = { ":bn<CR>", noremap = false },
+    ["n<S-h>"] = { ":bp<CR>", noremap = false },
 
     -- NVIM-TREE
     --["nge"] = { [[:NvimTreeFindFileToggle<CR>]] },
@@ -205,12 +202,6 @@ local mappings = {
     ["n#"] = { [[#<CMD>lua require('hlslens').start()<CR>]] },
     ["ng*"] = { [[g*<CMD>lua require('hlslens').start()<CR>]] },
     ["ng#"] = { [[g#<CMD>lua require('hlslens').start()<CR>]] },
-    -- noremap <silent> n <Cmd>execute('normal! ' . v:count1 . 'n')<CR><Cmd>lua require('hlslens').start()<CR>
-    -- noremap <silent> N <Cmd>execute('normal! ' . v:count1 . 'N')<CR><Cmd>lua require('hlslens').start()<CR>
-    -- noremap * *<Cmd>lua require('hlslens').start()<CR>
-    -- noremap # #<Cmd>lua require('hlslens').start()<CR>
-    -- noremap g* g*<Cmd>lua require('hlslens').start()<CR>
-    -- noremap g# g#<Cmd>lua require('hlslens').start()<CR>
 
     -- CODEQL
     ["n<leader>c"] = { [[<Plug>(CodeQLGrepSource)]], noremap = false },
@@ -243,7 +234,7 @@ local mappings = {
     ["ngd"] = { [[<cmd>lua require"telescope.builtin.lsp".definitions()<CR>]] },
     ["ngr"] = { [[<cmd>lua require"telescope.builtin.lsp".references()<CR>]] },
     ["n<C-d>"] = { [[<cmd>lua require"telescope.builtin.lsp".document_symbols()<CR>]] },
-    ["n<C-o>"] = { [[<cmd>lua require"plugins.telescope".lsp_dynamic_symbols()<CR>]] },
+    ["n<C-o>"] = { [[<cmd>lua require"pwntester.plugins.telescope".lsp_dynamic_symbols()<CR>]] },
 
     -- RENAMER
     ["i<F2>"] = { [[<CMD>lua require("renamer").rename()<CR>]] },

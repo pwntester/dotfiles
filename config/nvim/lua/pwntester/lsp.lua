@@ -2,14 +2,12 @@ local vim = vim
 local api = vim.api
 local nvim_lsp = require "lspconfig"
 local window = require "pwntester.window"
-local configs = require "lspconfig/configs"
 local util = require "lspconfig/util"
 local jdtls = require "jdtls"
 
 local clients = {}
 
 local function on_init_callback(client)
-  --TODO:
   -- require('me.lsp.ext').setup()
   -- https://github.com/mfussenegger/dotfiles/blob/d04a4f1d7e338f946016bfc4f71d5ca98250da5e/vim/.config/nvim/lua/me/lsp/ext.lua
   if client.config.settings then
@@ -36,7 +34,7 @@ local function on_attach_callback(client, bufnr)
   g.map(require("pwntester.mappings").lsp, { silent = false, noremap = true }, bufnr)
 
   -- Extensions
-  require("illuminate").on_attach(client)
+  --require("illuminate").on_attach(client)
   --require 'aerial'.on_attach(client)
 end
 
