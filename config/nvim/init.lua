@@ -1,12 +1,12 @@
 -----------------------------------------------------------------------------//
 -- GLOBALS
 -----------------------------------------------------------------------------//
-require "globals"
+require "pwntester.globals"
 
 -----------------------------------------------------------------------------//
 -- PLUGINS
 -----------------------------------------------------------------------------//
-require "plugins"
+require "pwntester.plugins"
 
 -----------------------------------------------------------------------------//
 -- MAPPINGS
@@ -18,7 +18,7 @@ g.map(mappings, { silent = true, noremap = true })
 -----------------------------------------------------------------------------//
 -- AUTOCMDs
 -----------------------------------------------------------------------------//
-require "autocmds"
+require "pwntester.autocmds"
 
 vim.cmd [[autocmd BufEnter *.md set foldexpr=NestedMarkdownFolds()]]
 vim.cmd [[autocmd FileType octo set foldexpr=NestedMarkdownFolds()]]
@@ -244,7 +244,7 @@ vim.opt.joinspaces = false
 vim.opt.gdefault = true
 vim.opt.confirm = true -- make vim prompt me to save before doing destructive things
 vim.opt.completeopt = { "menuone", "noselect", "noselect" }
-vim.opt.hlsearch = false
+vim.opt.hlsearch = true
 vim.opt.autowriteall = true -- automatically :write before running commands and changing files
 --vim.opt.clipboard = { "unnamedplus" }
 vim.opt.termguicolors = true

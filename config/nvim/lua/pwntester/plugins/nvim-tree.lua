@@ -111,9 +111,9 @@ local function setup()
       mappings = {
         custom_only = false,
         list = {
-          { key = "m", mode = "n", cb = ":lua require'plugins.nvim-tree'.telescope_move()<CR>" },
+          { key = "m", mode = "n", cb = ":lua require'pwntester.plugins.nvim-tree'.telescope_move()<CR>" },
           { key = "h", mode = "n", cb = tree_cb "toggle_dotfiles" },
-          { key = "o", mode = "n", cb = ":lua require'plugins.nvim-tree'.open_collapse()<CR>" },
+          { key = "o", mode = "n", cb = ":lua require'pwntester.plugins.nvim-tree'.open_collapse()<CR>" },
         },
       },
     },
