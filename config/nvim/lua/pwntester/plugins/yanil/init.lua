@@ -102,14 +102,17 @@ local function setup()
       vim.cmd "hi YanilTreeFile guibg=none"
       vim.cmd "setl nowrap"
       vim.cmd "silent vertical resize 45"
+      vim.cmd "set winhl=Normal:NormalAlt"
 
       local path = vim.g.yanil_selected
-      local node = tree.root:find_node_by_path(path)
-      if node then
-        tree:go_to_node(node)
+      if tree.root and path then
+        local node = tree.root:find_node_by_path(path)
+        if node then
+          tree:go_to_node(node)
+        end
+        git.update(tree.cwd)
       end
 
-      git.update(tree.cwd)
       yanil_utils.buf_set_keymap(canvas.bufnr, "n", "q", function()
         vim.fn.execute "quit"
       end)

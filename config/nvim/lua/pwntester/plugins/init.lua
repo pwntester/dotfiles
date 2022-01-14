@@ -221,17 +221,28 @@ return require("packer").startup {
     }
 
     -- TREESITTER
-    use {
+    use_local {
       "nvim-treesitter/nvim-treesitter",
-      requires = {
-        { "nvim-treesitter/playground" },
-        { "nvim-treesitter/completion-treesitter" },
-        { "nvim-treesitter/nvim-treesitter-refactor" },
-        { "nvim-treesitter/nvim-treesitter-textobjects" },
-      },
+      local_path = "dev/nvim",
       config = function()
         require("pwntester.plugins.treesitter").setup()
       end,
+    }
+    use {
+      "nvim-treesitter/playground",
+      wants = { "nvim-treesitter" },
+    }
+    use {
+      "nvim-treesitter/completion-treesitter",
+      wants = { "nvim-treesitter" },
+    }
+    use {
+      "nvim-treesitter/nvim-treesitter-refactor",
+      wants = { "nvim-treesitter" },
+    }
+    use {
+      "nvim-treesitter/nvim-treesitter-textobjects",
+      wants = { "nvim-treesitter" },
     }
 
     -- ALIGNING
@@ -337,15 +348,27 @@ return require("packer").startup {
     }
 
     -- THEMES & COLORS
-    use {
-      "rktjmp/lush.nvim",
-    }
+    -- use {
+    --   "EdenEast/nightfox.nvim",
+    --   config = function()
+    --     local nightfox = require "nightfox"
+    --     nightfox.setup {
+    --       fox = "nightfox",
+    --       colors = {},
+    --       hlgroups = {
+    --         TelescopeBorder = { fg = "${border}" },
+    --       },
+    --     }
+    --     nightfox.load()
+    --   end,
+    -- }
     use_local {
       "pwntester/nautilus.nvim",
       local_path = "dev/personal",
-      requires = "rktjmp/lush.nvim",
       config = function()
-        require("nautilus").setup { mode = "grey" }
+        require("nautilus").load {
+          transparent = false,
+        }
       end,
     }
     use {
@@ -357,6 +380,10 @@ return require("packer").startup {
     use {
       "kyazdani42/nvim-web-devicons",
       module = "nvim-web-devicons",
+    }
+    use {
+      "MunifTanjim/nui.nvim",
+      module = "nui",
     }
     -- use {
     --   "lukas-reineke/indent-blankline.nvim",
@@ -422,9 +449,24 @@ return require("packer").startup {
         require("pwntester.plugins.yanil").setup()
       end,
     }
+    use {
+      "nvim-neo-tree/neo-tree.nvim",
+      branch = "v1.x",
+      requires = {
+        "nvim-lua/plenary.nvim",
+        "kyazdani42/nvim-web-devicons",
+        "MunifTanjim/nui.nvim",
+      },
+      config = function()
+        require("neo-tree").setup()
+      end,
+    }
 
     -- COMMENTS
-    use { "JoosepAlviste/nvim-ts-context-commentstring" }
+    use {
+      "JoosepAlviste/nvim-ts-context-commentstring",
+      wants = { "nvim-treesitter" },
+    }
     use {
       "numToStr/Comment.nvim",
       config = function()
@@ -474,14 +516,30 @@ return require("packer").startup {
     -- STATIC ANALYSIS
     use_local {
       "pwntester/codeql.nvim",
+      requires = {
+        "MunifTanjim/nui.nvim",
+        "nvim-lua/telescope.nvim",
+        "kyazdani42/nvim-web-devicons",
+      },
       config = function()
-        vim.g.codeql_group_by_sink = true
-        vim.g.codeql_max_ram = 32000
-        vim.g.codeql_search_path = {
-          "/Users/pwntester/codeql-home/codeql",
-          "/Users/pwntester/codeql-home/codeql-go",
-          "/Users/pwntester/codeql-home/codeql-ruby",
-          "./codeql",
+        require("codeql").setup {
+          results = {
+            max_paths = 10,
+            max_path_depth = nil,
+          },
+          panel = {
+            group_by = "sink",
+            show_filename = true,
+            long_filename = false,
+          },
+          max_ram = 32000,
+          format_on_save = true,
+          search_path = {
+            "/Users/pwntester/codeql-home/codeql",
+            "/Users/pwntester/codeql-home/codeql-go",
+            "/Users/pwntester/codeql-home/codeql-ruby",
+            "./codeql",
+          },
         }
       end,
       local_path = "dev/personal",
@@ -505,9 +563,6 @@ return require("packer").startup {
     use { "ii14/lsp-command" }
     use {
       "mfussenegger/nvim-jdtls",
-      config = function()
-        require("pwntester.lsp").setup_jdt()
-      end,
     }
     use {
       "onsails/lspkind-nvim",
@@ -582,7 +637,40 @@ return require("packer").startup {
           calm_down = true,
           nearest_only = true,
           -- nearest_float_when = "always",
+          build_position_cb = function(plist, bufnr, changedtick, pattern)
+            require("scrollbar.handlers.search").handler.show(plist.start_pos)
+          end,
         }
+      end,
+    }
+
+    -- Scrollbar
+    use {
+      "petertriho/nvim-scrollbar",
+      config = function()
+        local c = require("nautilus.theme").colors
+        require("scrollbar").setup {
+          excluded_filetypes = g.special_buffers,
+          handle = {
+            text = " ",
+            color = c.cobalt,
+            hide_if_all_visible = true, -- Hides handle if all lines are visible
+          },
+          marks = {
+            Search = { text = { "-", "=" }, priority = 0, color = "orange" },
+            Error = { text = { "-", "=" }, priority = 1, color = "red" },
+            Warn = { text = { "-", "=" }, priority = 2, color = "yellow" },
+            Info = { text = { "-", "=" }, priority = 3, color = "blue" },
+            Hint = { text = { "-", "=" }, priority = 4, color = "green" },
+            Misc = { text = { "-", "=" }, priority = 5, color = "purple" },
+          },
+        }
+        vim.cmd [[
+          augroup scrollbar_search_hide
+            autocmd!
+            autocmd CmdlineLeave : lua require('scrollbar.handlers.search').handler.hide()
+          augroup END
+        ]]
       end,
     }
 
