@@ -7,7 +7,7 @@ local function indent_decorator(node)
   -- --   return '  '
   -- -- end
   local text = string.rep("  ", node.depth)
-  return text
+  return text, "NormalSB"
 end
 
 local function icon_decorator(node)

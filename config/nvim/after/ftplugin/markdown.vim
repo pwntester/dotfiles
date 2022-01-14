@@ -1,9 +1,9 @@
-augroup markdown 
+augroup markdown
   au!
-  au BufEnter <buffer> syntax sync fromstart 
-  au BufEnter <buffer> lua require("pwntester.markdown").markdownBlocks() 
-  au TextChanged <buffer> lua require("pwntester.markdown").markdownBlocks() 
-  au TextChangedI <buffer> lua require("pwntester.markdown").markdownBlocks() 
+  au BufEnter <buffer> syntax sync fromstart
+  au BufEnter <buffer> lua require("pwntester.markdown").markdownBlocks()
+  au TextChanged <buffer> lua require("pwntester.markdown").markdownBlocks()
+  au TextChangedI <buffer> lua require("pwntester.markdown").markdownBlocks()
 augroup END
 
 sign define codeblock linehl=markdownCodeBlock

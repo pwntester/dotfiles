@@ -89,10 +89,10 @@ local function setup()
       updatetime = 25, -- Debounced time for highlighting nodes in the playground from source code
       persist_queries = false, -- Whether the query persists across vim sessions
     },
-    --ensure_installed = 'all', -- one of 'all', 'language', or a list of languages
-    ensure_installed = { "ruby", "lua", "ql", "http", "json" },
-    ignore_install = { "haskell" },
+    ensure_installed = "all",
+    ignore_install = { "haskell", "markdown" },
   }
+
   require("nvim-treesitter").define_modules {
     mappings = {
       enable = true, -- false will disable the whole extension
@@ -105,6 +105,9 @@ local function setup()
       end,
     },
   }
+
+  local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
+  parser_config.markdown.used_by = "octo"
 end
 
 return {

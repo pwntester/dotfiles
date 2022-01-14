@@ -65,16 +65,16 @@ config.lsp_name = {
   },
   text = function(bufnr)
     if lsp_comps.check_lsp(bufnr) then
-      local error = vim.lsp.diagnostic.get_count(bufnr, [[Error]])
-      local warning = vim.lsp.diagnostic.get_count(bufnr, [[Warning]])
+      local error = vim.diagnostic.get(bufnr, { severity = vim.diagnostic.severity.ERROR })
+      local warning = vim.diagnostic.get(bufnr, { severity = vim.diagnostic.severity.WARN })
       local components = {
         { lsp_comps.lsp_name(), "green" },
       }
-      if error > 0 then
+      if #error > 0 then
         table.insert(components, { "  ", "red" })
         table.insert(components, { lsp_comps.lsp_error(), "red" })
       end
-      if warning > 0 then
+      if #warning > 0 then
         table.insert(components, { "  ", "orange" })
         table.insert(components, { lsp_comps.lsp_warning(), "orange" })
       end
@@ -261,23 +261,34 @@ local floatline_active = {
   },
 }
 
---require "wlsample.bubble2"
-
 windline.setup {
   colors_name = function(colors)
-    local theme = require("nautilus").theme "grey"
+    local c = require("nautilus.theme").colors
     local palette = {
-      bg = tostring(theme.CursorColumn.bg),
-      dark_blue = tostring(theme.CursorColumn.bg),
-      line_bg = tostring(theme.Normal.bg),
-      grey = tostring(theme.Normal.fg),
-      yellow = tostring(theme.Identifier.fg),
-      light_blue = tostring(theme.NonText.fg),
-      green = tostring(theme.String.fg),
-      orange = tostring(theme.Constant.fg),
-      red = tostring(theme.ErrorMsg.fg),
-      vert_split = tostring(theme.VertSplit.fg),
+      bg = c.bg,
+      line_bg = c.bg,
+      grey = c.grey,
+      yellow = c.yellow,
+      light_blue = c.blue_dim,
+      dark_blue = c.bg,
+      green = c.green,
+      orange = c.orange,
+      red = c.red,
+      vert_split = c.base01,
     }
+    -- local c = require("nightfox.colors").load()
+    -- local palette = {
+    --   bg = c.bg,
+    --   line_bg = c.bg_statusline,
+    --   grey = c.fg_alt,
+    --   yellow = c.yellow,
+    --   light_blue = c.blue_br,
+    --   dark_blue = c.blue,
+    --   green = c.green,
+    --   orange = c.orange,
+    --   red = c.error,
+    --   vert_split = c.bg_alt,
+    -- }
     return vim.tbl_extend("force", colors, palette)
   end,
   statuslines = {

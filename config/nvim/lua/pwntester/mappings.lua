@@ -145,8 +145,8 @@ local mappings = {
     -- ["n<S-h>"] = { ":BufferLineCyclePrev<CR>", noremap = false },
     -- ['n<leader>]'] = { ':BufferLineMoveNext<CR>', noremap = false; };
     -- ['n<leader>['] = { ':BufferLineMovePrev<CR>', noremap = false; };
-    ["n<S-l>"] = { ":bn<CR>", noremap = false },
-    ["n<S-h>"] = { ":bp<CR>", noremap = false },
+    ["n<S-l>"] = { "<C-i>", noremap = false },
+    ["n<S-h>"] = { "<C-o>", noremap = false },
 
     -- NVIM-TREE
     --["nge"] = { [[:NvimTreeFindFileToggle<CR>]] },
@@ -234,7 +234,7 @@ local mappings = {
     ["ngd"] = { [[<cmd>lua require"telescope.builtin.lsp".definitions()<CR>]] },
     ["ngr"] = { [[<cmd>lua require"telescope.builtin.lsp".references()<CR>]] },
     ["n<C-d>"] = { [[<cmd>lua require"telescope.builtin.lsp".document_symbols()<CR>]] },
-    ["n<C-o>"] = { [[<cmd>lua require"pwntester.plugins.telescope".lsp_dynamic_symbols()<CR>]] },
+    --["n<C-o>"] = { [[<cmd>lua require"pwntester.plugins.telescope".lsp_dynamic_symbols()<CR>]] },
 
     -- RENAMER
     ["i<F2>"] = { [[<CMD>lua require("renamer").rename()<CR>]] },
@@ -248,6 +248,14 @@ local mappings = {
     -- ["n[e"] = { [[<Plug>(LspPrevDiagnostic)]], noremap = false },
     -- ["n<A-CR>"] = { [[<Plug>(LspCodeActions)]], noremap = false },
     -- ["v<A-CR>"] = { [[<Plug>(LspRangeCodeActions)]], noremap = false },
+  },
+  ["lsp_jdt"] = {
+    ["n<A-o>"] = { [[<Cmd>lua require'jdtls'.organize_imports()<CR>]] },
+    ["ncrv"] = { [[<Cmd>lua require'jdtls'.extract_variable()<CR>]] },
+    ["vcrv"] = { [[<Cmd>lua require'jdtls'.extract_variable()<CR>]] },
+    ["ncrc"] = { [[<Cmd>lua require'jdtls'.extract_constant()<CR>]] },
+    ["vcrc"] = { [[<Cmd>lua require'jdtls'.extract_constant()<CR>]] },
+    ["vcrm"] = { [[<Cmd>lua require'jdtls'.extract_method()<CR>]] },
   },
   ["treesitter"] = {
     ["n<CR>"] = { [[<Plug>(TsSelInit)]], noremap = false },
