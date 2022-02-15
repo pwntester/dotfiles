@@ -171,7 +171,7 @@ local function setup()
       return root_pattern(fname) or util.path.dirname(fname)
     end,
     settings = {
-      search_path = vim.g.codeql_search_path,
+      search_path = require("codeql.config").get_config().search_path,
     },
   }
 
