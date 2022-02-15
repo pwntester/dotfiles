@@ -123,6 +123,7 @@ function M.templateNote()
 end
 
 function M.dailyNote()
+  -- create a new note
   vim.cmd("cd " .. vim.g.zk_notebook)
   local cmd = 'zk new --no-input "resources/daily notes" --print-path'
   local path = vim.fn.system(cmd)
