@@ -174,12 +174,7 @@ return require("packer").startup {
         { "rafamadriz/friendly-snippets" },
       },
       config = function()
-        local ls = require "luasnip"
-        ls.config.set_config {
-          history = true,
-          updateevents = "TextChanged,TextChangedI",
-        }
-        require("luasnip/loaders/from_vscode").lazy_load()
+        require("pwntester.plugins.luasnip").setup()
       end,
     }
     use {
@@ -289,8 +284,9 @@ return require("packer").startup {
             noremap = true,
             buffer = true,
           },
-          watch_index = {
+          watch_gitdir = {
             interval = 1000,
+            follow_files = true,
           },
           sign_priority = 6,
           status_formatter = nil,
@@ -567,7 +563,7 @@ return require("packer").startup {
     use {
       "onsails/lspkind-nvim",
       config = function()
-        require("lspkind").init()
+        require("lspkind").init {}
       end,
     }
     use {
@@ -728,17 +724,17 @@ return require("packer").startup {
     end
   end,
   config = {
-    display = {
-      open_fn = function()
-        local bufnr, winnr = require("pwntester.window").floating_window {
-          border = true,
-          width_per = 0.8,
-          height_per = 0.8,
-        }
-        vim.api.nvim_set_current_win(winnr)
-        return bufnr, winnr
-      end,
-    },
+    -- display = {
+    --   open_fn = function()
+    --     local bufnr, winnr = require("pwntester.window").floating_window {
+    --       border = true,
+    --       width_per = 0.8,
+    --       height_per = 0.8,
+    --     }
+    --     vim.api.nvim_set_current_win(winnr)
+    --     return bufnr, winnr
+    --   end,
+    -- },
     -- profile = {
     --   enable = true,
     --   threshold = 1,

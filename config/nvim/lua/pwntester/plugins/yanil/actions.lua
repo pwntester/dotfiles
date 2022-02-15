@@ -138,7 +138,7 @@ end
 local function rename_node(tree, node)
   -- node = node:is_dir() and node or node.parent
   local msg_tag = "Enter the new path for the node:"
-  local msg = string.format("Rename/Move the current node \n%s \n%s", string.rep("=", 58), msg_tag)
+  local msg = string.format("Rename the current node \n%s \n%s", string.rep("=", 58), msg_tag)
 
   local original_location = node.abs_path
   local destination = vim.fn.input(msg, original_location, "file")
@@ -165,10 +165,10 @@ local function rename_node(tree, node)
   utils.create_dirs_if_needed(destination)
   vim.loop.fs_rename(original_location, destination, function(err)
     if err then
-      print "Could not move the files"
+      print "Could not rename the files"
       return
     else
-      print("Moved " .. node.name .. " successfully")
+      print("Renamed " .. node.name .. " successfully")
       refresh()
     end
   end)
@@ -252,6 +252,20 @@ local function create_node(tree, node)
   end
   refresh()
   print("Created " .. ans .. " successfully")
+end
+
+-- Open node
+local function open_node(tree, node)
+  local cmd = "e"
+  if node:is_dir() then
+    return
+  end
+
+  local yanil_winid = vim.api.nvim_get_current_win()
+  local target_id = utils.pick_window(yanil_winid)
+  vim.api.nvim_set_current_win(target_id)
+  --vim.api.nvim_command "wincmd p"
+  vim.api.nvim_command(cmd .. " " .. node.abs_path)
 end
 
 -- Delete node
@@ -359,6 +373,7 @@ end
 
 return {
   expand_collapase_node = expand_collapase_node,
+  open_node = open_node,
   create_node = create_node,
   delete_node = delete_node,
   rename_node = rename_node,

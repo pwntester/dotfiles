@@ -184,11 +184,42 @@ local mappings = {
     ["n<leader>t"] = { [[<CMD>lua require("pwntester.zk").dailyNote()<CR>]] },
 
     -- LUASNIP
-    --["i<C-k>"] = { [[luasnip#expand_or_jumpable() ? '<Plug>luasnip-expand-or-jump' : '<c-k>']], expr = true },
-    --["i<C-l>"] = { [[luasnip#choice_active() ? '<Plug>luasnip-next-choice' : '<C-l>']], expr = true },
-    ["i<C-j>"] = { [[<CMD>lua require("luasnip").jump(-1)<CR>]] },
-    ["s<C-k>"] = { [[<CMD>lua require("luasnip").jump(1)<CR>]] },
-    ["s<C-j>"] = { [[<CMD>lua require("luasnip").jump(-1)<CR>]] },
+    ["i<C-j>"] = {
+      function()
+        local ls = require "luasnip"
+        if ls.expand_or_jumpable() then
+          ls.expand_or_jump()
+        end
+      end,
+      silent = true,
+    },
+    ["s<C-j>"] = {
+      function()
+        local ls = require "luasnip"
+        if ls.expand_or_jumpable() then
+          ls.expand_or_jump()
+        end
+      end,
+      silent = true,
+    },
+    ["i<C-k>"] = {
+      function()
+        local ls = require "luasnip"
+        if ls.jumpable(-1) then
+          ls.jump(-1)
+        end
+      end,
+      silent = true,
+    },
+    ["s<C-k>"] = {
+      function()
+        local ls = require "luasnip"
+        if ls.jumpable(-1) then
+          ls.jump(-1)
+        end
+      end,
+      silent = true,
+    },
     -- imap <silent><expr> <C-k> luasnip#expand_or_jumpable() ? '<Plug>luasnip-expand-or-jump' : '<c-k>'
     -- imap <silent><expr> <C-l> luasnip#choice_active() ? '<Plug>luasnip-next-choice' : '<C-l>'
     -- inoremap <silent> <C-j> <cmd>lua require('luasnip').jump(-1)<CR>

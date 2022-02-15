@@ -87,7 +87,6 @@ function g.map(mappings, defaults, bufnr)
     end
     local lhs = k:sub(2)
     local rhs = v[1]
-    --v[1] = nil
 
     -- merge default options and individual ones
     for i, j in pairs(v) do
@@ -106,11 +105,16 @@ function g.map(mappings, defaults, bufnr)
     if bufnr then
       if type(rhs) == "string" then
         vim.api.nvim_buf_set_keymap(bufnr, mode, lhs, rhs, opts)
-      else
-        print("g.map: rhs is not a string. " .. lhs)
+      elseif type(rhs) == "function" then
+        print "Cannot use function as rhs for buffer only mappings"
+        --vim.keymap.set(bufnr, { mode }, lhs, rhs, opts)
       end
     else
-      vim.api.nvim_set_keymap(mode, lhs, rhs, opts)
+      if type(rhs) == "string" then
+        vim.api.nvim_set_keymap(mode, lhs, rhs, opts)
+      elseif type(rhs) == "function" then
+        vim.keymap.set({ mode }, lhs, rhs, opts)
+      end
     end
   end
 end
