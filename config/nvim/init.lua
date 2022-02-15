@@ -27,7 +27,8 @@ vim.cmd [[autocmd FileType octo set foldexpr=NestedMarkdownFolds()]]
 -- ALIASES
 -----------------------------------------------------------------------------//
 --g.alias("bd", "lua require('bufdelete').bufdelete(0, true)")
-g.alias("bd", "lua require('close_buffers').delete({type = 'this'})")
+--g.alias("bd", "lua require('close_buffers').delete({type = 'this'})")
+g.alias("bd", "lua MiniBufremove.delete()")
 
 -----------------------------------------------------------------------------//
 -- COMMANDS

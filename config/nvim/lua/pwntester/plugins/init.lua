@@ -84,24 +84,24 @@ return require("packer").startup {
         require("neoscroll").setup()
       end,
     }
-    use {
-      "kazhala/close-buffers.nvim",
-      config = function()
-        require("close_buffers").setup {
-          filetype_ignore = {}, -- Filetype to ignore when running deletions
-          preserve_window_layout = { "this" },
-          -- next_buffer_cmd = function(windows)
-          --   require("bufferline").cycle(1)
-          --   local bufnr = vim.api.nvim_get_current_buf()
-          --
-          --   for _, window in ipairs(windows) do
-          --     vim.api.nvim_win_set_buf(window, bufnr)
-          --   end
-          -- end,
-        }
-      end,
-      -- BDelete! all glob=*octo://*
-    }
+    -- use {
+    --   "kazhala/close-buffers.nvim",
+    --   config = function()
+    --     require("close_buffers").setup {
+    --       filetype_ignore = {}, -- Filetype to ignore when running deletions
+    --       preserve_window_layout = { "this" },
+    --       -- next_buffer_cmd = function(windows)
+    --       --   require("bufferline").cycle(1)
+    --       --   local bufnr = vim.api.nvim_get_current_buf()
+    --       --
+    --       --   for _, window in ipairs(windows) do
+    --       --     vim.api.nvim_win_set_buf(window, bufnr)
+    --       --   end
+    --       -- end,
+    --     }
+    --   end,
+    --   -- BDelete! all glob=*octo://*
+    -- }
 
     -- TELESCOPE.NVIM
     use {
@@ -197,23 +197,23 @@ return require("packer").startup {
     }
 
     -- PAIRS
-    use {
-      "windwp/nvim-autopairs",
-      after = "nvim-cmp",
-      config = function()
-        local npairs = require "nvim-autopairs"
-        local cmp_autopairs = require "nvim-autopairs.completion.cmp"
-        local Rule = require "nvim-autopairs.rule"
-        npairs.setup {
-          disable_filetype = { "TelescopePrompt", "octo" },
-          --ignored_next_char = [[ [%w%%%{%(%[%'%'%.] ]]
-          ignored_next_char = "[%w%.%(%{%[]",
-        }
-        npairs.add_rule(Rule("|", "", "ql"))
-        local cmp = require "cmp"
-        cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
-      end,
-    }
+    -- use {
+    --   "windwp/nvim-autopairs",
+    --   after = "nvim-cmp",
+    --   config = function()
+    --     local npairs = require "nvim-autopairs"
+    --     local cmp_autopairs = require "nvim-autopairs.completion.cmp"
+    --     local Rule = require "nvim-autopairs.rule"
+    --     npairs.setup {
+    --       disable_filetype = { "TelescopePrompt", "octo" },
+    --       --ignored_next_char = [[ [%w%%%{%(%[%'%'%.] ]]
+    --       ignored_next_char = "[%w%.%(%{%[]",
+    --     }
+    --     npairs.add_rule(Rule("|", "", "ql"))
+    --     local cmp = require "cmp"
+    --     cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
+    --   end,
+    -- }
 
     -- TREESITTER
     use_local {
@@ -249,14 +249,113 @@ return require("packer").startup {
 
     -- TEXT OBJECTS/MOTIONS/OPERATORS
     use {
-      "blackCauldron7/surround.nvim",
+      "echasnovski/mini.nvim",
       config = function()
-        require("surround").setup { mappings_style = "sandwich" }
+        -- cursorword
+        require("mini.cursorword").setup {
+          delay = 100,
+        }
+        -- pairs
+        require("mini.pairs").setup {
+          -- In which modes mappings from this `config` should be created
+          modes = { insert = true, command = false, terminal = false },
+
+          -- Global mappings. Each right hand side should be a pair information, a
+          -- table with at least these fields (see more in |MiniPairs.map|):
+          -- - <action> - one of 'open', 'close', 'closeopen'.
+          -- - <pair> - two character string for pair to be used.
+          -- By default pair is not inserted after `\`, quotes are not recognized by
+          -- `<CR>`, `'` does not insert pair after a letter.
+          -- Only parts of tables can be tweaked (others will use these defaults).
+          mappings = {
+            ["("] = { action = "open", pair = "()", neigh_pattern = "[^\\]." },
+            ["["] = { action = "open", pair = "[]", neigh_pattern = "[^\\]." },
+            ["{"] = { action = "open", pair = "{}", neigh_pattern = "[^\\]." },
+
+            [")"] = { action = "close", pair = "()", neigh_pattern = "[^\\]." },
+            ["]"] = { action = "close", pair = "[]", neigh_pattern = "[^\\]." },
+            ["}"] = { action = "close", pair = "{}", neigh_pattern = "[^\\]." },
+
+            ['"'] = { action = "closeopen", pair = '""', neigh_pattern = "[^\\].", register = { cr = false } },
+            ["'"] = { action = "closeopen", pair = "''", neigh_pattern = "[^%a\\].", register = { cr = false } },
+            ["`"] = { action = "closeopen", pair = "``", neigh_pattern = "[^\\].", register = { cr = false } },
+          },
+        }
+
+        -- surround
+        require("mini.surround").setup {
+          -- Number of lines within which surrounding is searched
+          n_lines = 20,
+
+          -- Duration (in ms) of highlight when calling `MiniSurround.highlight()`
+          highlight_duration = 500,
+
+          -- Pattern to match function name in 'function call' surrounding
+          -- By default it is a string of letters, '_' or '.'
+          funname_pattern = "[%w_%.]+",
+
+          -- Module mappings. Use `''` (empty string) to disable one.
+          mappings = {
+            add = "sa", -- sa{motion/textobject}{delimiter}
+            delete = "sd", -- sd{delimiter}
+            find = "sf", -- Find surrounding (to the right)
+            find_left = "sF", -- Find surrounding (to the left)
+            highlight = "sh", -- Highlight surrounding
+            replace = "sr", --- sr{old}{new}
+            update_n_lines = "sn", -- Update `n_lines`
+          },
+        }
+        -- bufremove
+        -- MiniBufremove.unshow|delete|wipeout
+        require("mini.bufremove").setup {
+          -- Whether to set Vim's settings for buffers (allow hidden buffers)
+          set_vim_settings = true,
+        }
+        -- indentscope
+        require("mini.indentscope").setup {
+          draw = {
+            -- Delay (in ms) between event and start of drawing scope indicator
+            delay = 200,
+
+            -- Animation rule for scope's first drawing. A function which, given next
+            -- and total step numbers, returns wait time (in ms). See
+            -- |MiniIndentscope.gen_animation()| for builtin options. To not use
+            -- animation, supply `require('mini.indentscope').gen_animation('none')`.
+            animation = require("mini.indentscope").gen_animation "none",
+          },
+
+          -- Module mappings. Use `''` (empty string) to disable one.
+          mappings = {
+            -- Textobjects
+            object_scope = "ii",
+            object_scope_with_border = "ai",
+
+            -- Motions (jump to respective border line; if not present - body line)
+            goto_top = "[i",
+            goto_bottom = "]i",
+          },
+
+          -- Options which control computation of scope. Buffer local values can be
+          -- supplied in buffer variable `vim.b.miniindentscope_options`.
+          options = {
+            -- Type of scope's border: which line(s) with smaller indent to
+            -- categorize as border. Can be one of: 'both', 'top', 'bottom', 'none'.
+            border = "both",
+
+            -- Whether to use cursor column when computing reference indent. Useful to
+            -- see incremental scopes with horizontal cursor movements.
+            indent_at_cursor = true,
+
+            -- Whether to first check input line to be a border of adjacent scope.
+            -- Use it if you want to place cursor on function header to get scope of
+            -- its body.
+            try_as_border = false,
+          },
+
+          -- Which character to use for drawing scope indicator
+          symbol = "╎",
+        }
       end,
-      --- add: sa{motion/textobject}{delimiter}
-      --- delete: sd{delimiter}
-      --- replace: sr{old}{new}
-      --- ss repeats last surround command.
     }
     use {
       "chaoren/vim-wordmotion",
@@ -381,13 +480,6 @@ return require("packer").startup {
       "MunifTanjim/nui.nvim",
       module = "nui",
     }
-    -- use {
-    --   "lukas-reineke/indent-blankline.nvim",
-    --   config = function()
-    --     vim.g.indent_blankline_char = "¦" -- ['|', '¦', '┆', '┊']
-    --     vim.g.indent_blankline_filetype_exclude = vim.list_extend(vim.fn.deepcopy(g.special_buffers), { "markdown" })
-    --   end,
-    -- }
     use { "junegunn/rainbow_parentheses.vim" }
     -- use {
     --   "RRethy/vim-illuminate",
