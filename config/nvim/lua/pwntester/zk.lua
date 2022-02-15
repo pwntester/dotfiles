@@ -32,6 +32,13 @@ local notes_templates = {
     prefix_date = true,
   },
   {
+    ordinal = 3,
+    label = "Product sync meeting",
+    directory = "resources/meeting notes",
+    ask_for_title = false,
+    prefix_date = true,
+  },
+  {
     ordinal = 4,
     label = "CodeQL sync meeting",
     directory = "resources/meeting notes",
@@ -40,7 +47,7 @@ local notes_templates = {
   },
   {
     ordinal = 5,
-    label = "1-on-1 with Bas",
+    label = "1-on-1 with Xavier",
     directory = "resources/meeting notes",
     ask_for_title = false,
     prefix_date = true,
@@ -118,6 +125,29 @@ end
 function M.dailyNote()
   vim.cmd("cd " .. vim.g.zk_notebook)
   local cmd = 'zk new --no-input "resources/daily notes" --print-path'
+  local path = vim.fn.system(cmd)
+  path = path:gsub("^%s*(.-)%s*$", "%1")
+  if vim.fn.filereadable(path) then
+    vim.cmd(string.format([[execute "edit %s"]], path))
+  end
+end
+
+function M.createProject(kind, title)
+  -- create the project folder
+  if not kind then
+    kind = vim.fn.input "Type (AUDIT, SHIFT, POST, INCIDENT, TALK, ...): "
+  end
+  kind = string.upper(kind)
+  if not title then
+    title = vim.fn.input "Title: "
+  end
+  local date = vim.fn.strftime "%Y-%m-%d"
+  local name = string.format("%s - %s - %s", date, kind, title)
+  vim.fn.system(string.format('mkdir "%s/projects/%s"', vim.g.zk_notebook, name))
+
+  -- create the project note
+  vim.cmd("cd " .. vim.g.zk_notebook)
+  local cmd = string.format('zk new --title "%s" --no-input "projects/%s" --print-path', name, name)
   local path = vim.fn.system(cmd)
   path = path:gsub("^%s*(.-)%s*$", "%1")
   if vim.fn.filereadable(path) then

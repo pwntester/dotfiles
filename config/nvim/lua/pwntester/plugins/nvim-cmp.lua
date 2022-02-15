@@ -104,6 +104,7 @@ local function setup()
 
   cmp.setup {
     completion = {
+      keyword_pattern = [[\%(-\?\d\+\%(\.\d\+\)\?\|\h\w*\%(-\w*\)*\)]], -- default one
       --autocomplete = false,
     },
     experimental = {
@@ -119,7 +120,10 @@ local function setup()
     formatting = formatting,
     sources = cmp.config.sources({
       --{ name = "copilot" },
-      { name = "nvim_lsp" },
+      {
+        name = "nvim_lsp",
+        keyword_pattern = [[\k\+]],
+      },
       { name = "luasnip" },
       { name = "nvim_lua" },
       --{ name = "spell" },

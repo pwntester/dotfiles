@@ -76,9 +76,7 @@ local function setup()
   --- Lua
   nvim_lsp.sumneko_lua.setup {
     cmd = {
-      "/Users/pwntester/repos/lua-language-server/bin/macOS/lua-language-server",
-      "-E",
-      "/Users/pwntester/repos/lua-language-server/main.lua",
+      "/usr/local/bin/lua-language-server",
     },
     on_attach = on_attach_callback,
     capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities()),

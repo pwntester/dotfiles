@@ -107,7 +107,7 @@ local function setup()
   }
 
   local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
-  parser_config.markdown.used_by = "octo"
+  parser_config.markdown.filetype_to_parsername = "octo"
 end
 
 return {

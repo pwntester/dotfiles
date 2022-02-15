@@ -72,6 +72,7 @@ local function setup()
       end,
     },
     keymaps = {
+      ["<CR>"] = actions.open_node,
       ["]c"] = actions.git_next,
       ["[c"] = actions.git_prev,
       ["o"] = actions.expand_collapase_node,
