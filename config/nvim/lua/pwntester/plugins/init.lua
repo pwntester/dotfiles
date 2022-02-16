@@ -626,7 +626,7 @@ return require("packer").startup {
             "/Users/pwntester/codeql-home/codeql",
             "/Users/pwntester/codeql-home/codeql-go",
             "/Users/pwntester/codeql-home/codeql-ruby",
-            "./codeql",
+            "../codeql",
           },
         }
       end,
