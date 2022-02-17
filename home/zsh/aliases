@@ -21,6 +21,7 @@ alias sca='sourceanalyzer'
 alias vi='nvim'
 alias ls='gls --color=auto --group-directories-first'
 alias tree='exa --tree'
+alias ql='codeql'
 
 alias uao='python ~/bin/unzip-and-open.py'
 

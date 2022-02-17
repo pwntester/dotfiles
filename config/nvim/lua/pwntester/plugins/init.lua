@@ -518,7 +518,7 @@ return require("packer").startup {
     -- STATUSLINE & TABLINE
     use {
       "windwp/windline.nvim",
-      requires = { "kyazdani42/nvim-web-devicons" },
+      requires = { "kyazdani42/nvim-web-devicons", "nvim-lspconfig" },
       config = function()
         require "pwntester.plugins.windline"
       end,
@@ -626,7 +626,6 @@ return require("packer").startup {
             "/Users/pwntester/codeql-home/codeql",
             "/Users/pwntester/codeql-home/codeql-go",
             "/Users/pwntester/codeql-home/codeql-ruby",
-            "../codeql",
           },
         }
       end,
@@ -643,7 +642,7 @@ return require("packer").startup {
     -- LSP
     use {
       "neovim/nvim-lspconfig",
-      requires = { "cmp-nvim-lsp" },
+      requires = { "cmp-nvim-lsp", "codeql.nvim" },
       config = function()
         require("pwntester.lsp").setup()
       end,

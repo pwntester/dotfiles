@@ -68,8 +68,15 @@ local notes_templates = {
   },
   {
     ordinal = 8,
-    label = "Other",
+    label = "Other note",
     directory = "areas/inbox",
+    ask_for_title = true,
+    prefix_date = false,
+  },
+  {
+    ordinal = 9,
+    label = "New project",
+    directory = "projects",
     ask_for_title = true,
     prefix_date = false,
   },
@@ -95,14 +102,21 @@ function M.templateNote()
         actions.close(prompt_bufnr)
         local selection = action_state.get_selected_entry()
 
+        -- create project
+        if selection.value.label == "New project" then
+          local name = M.createProject()
+          -- insert link
+          vim.api.nvim_put({ "[[" .. name .. "]]" }, "c", true, true)
+          return
+        end
+
+        -- create note
         local title = ""
         if selection.value.ask_for_title then
           title = vim.fn.input "Title: "
         else
           title = selection.value.label
         end
-
-        -- create note
         vim.cmd("cd " .. vim.g.zk_notebook)
         local cmd = string.format('zk new --no-input --title "%s" "%s" --print-path', title, selection.value.directory)
         local path = vim.fn.system(cmd)
@@ -148,12 +162,9 @@ function M.createProject(kind, title)
 
   -- create the project note
   vim.cmd("cd " .. vim.g.zk_notebook)
-  local cmd = string.format('zk new --title "%s" --no-input "projects/%s" --print-path', name, name)
-  local path = vim.fn.system(cmd)
-  path = path:gsub("^%s*(.-)%s*$", "%1")
-  if vim.fn.filereadable(path) then
-    vim.cmd(string.format([[execute "edit %s"]], path))
-  end
+  vim.fn.system(string.format('zk new --title "%s" --no-input "projects/%s" --print-path', name, name))
+
+  return name
 end
 
 return M
