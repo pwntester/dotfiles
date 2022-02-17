@@ -625,7 +625,7 @@ return require("packer").startup {
           search_path = {
             "/Users/pwntester/codeql-home/codeql",
             "/Users/pwntester/codeql-home/codeql-go",
-            "/Users/pwntester/codeql-home/codeql-ruby",
+            --"/Users/pwntester/codeql-home/codeql-ruby",
           },
         }
       end,
