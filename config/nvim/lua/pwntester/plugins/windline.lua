@@ -209,56 +209,15 @@ local default = {
     config.filetype,
     config.lsp_name,
   },
-  inactive = {},
-  floatline_show_float = false,
-  floatline_show_both = false,
-  always_active = false,
-  show_last_status = false,
+  inactive = {
+    config.filetype,
+  },
 }
 
 local special_buffers = {
   filetypes = g.special_buffers,
   active = {},
   inactive = {},
-  floatline_show_float = false,
-  floatline_show_both = false,
-  always_active = false,
-  show_last_status = false,
-}
-
-local floatline_active = {
-  filetypes = { "floatline" },
-  active = {
-    {
-      function(_, _, width)
-        return string.rep("▁", math.floor(width - 1))
-      end,
-      { "vert_split", "line_bg" },
-    },
-    {
-      "▁",
-      {
-        "vert_split",
-        "line_bg",
-      },
-    },
-  },
-  inactive = {
-    {
-      function(_, _, width)
-        -- TODO: seems like the width passed here is the width of the active window, not the inactive one
-        return string.rep("▁", math.floor(width - 1))
-      end,
-      { "vert_split", "line_bg" },
-    },
-    {
-      "▁",
-      {
-        "vert_split",
-        "line_bg",
-      },
-    },
-  },
 }
 
 windline.setup {
@@ -276,37 +235,10 @@ windline.setup {
       red = c.red,
       vert_split = c.base01,
     }
-    -- local c = require("nightfox.colors").load()
-    -- local palette = {
-    --   bg = c.bg,
-    --   line_bg = c.bg_statusline,
-    --   grey = c.fg_alt,
-    --   yellow = c.yellow,
-    --   light_blue = c.blue_br,
-    --   dark_blue = c.blue,
-    --   green = c.green,
-    --   orange = c.orange,
-    --   red = c.error,
-    --   vert_split = c.bg_alt,
-    -- }
     return vim.tbl_extend("force", colors, palette)
   end,
   statuslines = {
     default,
     special_buffers,
-    floatline_active,
   },
-}
-require("wlfloatline").setup {
-  interval = 300,
-  -- ui = {
-  --   active_char = "▁",
-  --   active_color = "red",
-  --   active_hl = "Error",
-  -- },
-  skip_filetypes = {
-    "Yanil",
-  },
-  -- by default it skip all floating window but you can change it
-  --floating_show_filetypes = {},
 }

@@ -11,70 +11,66 @@ local M = {}
 
 local notes_templates = {
   {
-    ordinal = 1,
     label = "SecLab team meeting",
     directory = "resources/meeting notes",
     ask_for_title = false,
     prefix_date = true,
   },
   {
-    ordinal = 2,
     label = "SecLab research targeting meeting",
     directory = "resources/meeting notes",
     ask_for_title = false,
     prefix_date = true,
   },
   {
-    ordinal = 3,
     label = "PSE sync meeting",
     directory = "resources/meeting notes",
     ask_for_title = false,
     prefix_date = true,
   },
   {
-    ordinal = 3,
     label = "Product sync meeting",
     directory = "resources/meeting notes",
     ask_for_title = false,
     prefix_date = true,
   },
   {
-    ordinal = 4,
     label = "CodeQL sync meeting",
     directory = "resources/meeting notes",
     ask_for_title = false,
     prefix_date = true,
   },
   {
-    ordinal = 5,
+    label = "CodeScanning sync meeting",
+    directory = "resources/meeting notes",
+    ask_for_title = false,
+    prefix_date = true,
+  },
+  {
     label = "1-on-1 with Xavier",
     directory = "resources/meeting notes",
     ask_for_title = false,
     prefix_date = true,
   },
   {
-    ordinal = 6,
     label = "Other meeting",
     directory = "resources/meeting notes",
     ask_for_title = true,
     prefix_date = true,
   },
   {
-    ordinal = 7,
     label = "Literature note",
     directory = "resources/literature notes",
     ask_for_title = true,
     prefix_date = true,
   },
   {
-    ordinal = 8,
     label = "Other note",
     directory = "areas/inbox",
     ask_for_title = true,
     prefix_date = false,
   },
   {
-    ordinal = 9,
     label = "New project",
     directory = "projects",
     ask_for_title = true,
@@ -90,7 +86,7 @@ function M.templateNote()
       results = notes_templates,
       entry_maker = function(entry)
         return {
-          ordinal = entry.ordinal,
+          ordinal = entry.label,
           display = entry.label,
           value = entry,
         }
@@ -143,7 +139,7 @@ function M.dailyNote()
   local path = vim.fn.system(cmd)
   path = path:gsub("^%s*(.-)%s*$", "%1")
   if vim.fn.filereadable(path) then
-    vim.cmd(string.format([[execute "edit %s"]], path))
+    vim.cmd("edit " .. path)
   end
 end
 

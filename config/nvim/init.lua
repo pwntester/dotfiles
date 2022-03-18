@@ -144,10 +144,10 @@ vim.opt.formatoptions = {
 -- Grepprg {{{1
 -----------------------------------------------------------------------------//
 -- Use faster grep alternatives if possible
-if g.executable "rg" then
+if vim.fn.executable "rg" > 0 then
   vim.o.grepprg = [[rg --hidden --glob "!.git" --no-heading --smart-case --vimgrep --follow $*]]
   vim.opt.grepformat = vim.opt.grepformat ^ { "%f:%l:%c:%m" }
-elseif g.executable "ag" then
+elseif vim.fn.executable "ag" > 0 then
   vim.o.grepprg = [[ag --nogroup --nocolor --vimgrep]]
   vim.opt.grepformat = vim.opt.grepformat ^ { "%f:%l:%c:%m" }
 end
@@ -186,7 +186,6 @@ vim.opt.wildignore = {
   "*.woff",
   "*.doc",
   "*.pdf",
-  "*.zip",
   "*.tar.gz",
   "*.tar.bz2",
   "*.rar",
@@ -210,6 +209,7 @@ vim.opt.wildignore = {
 -- Display {{{1
 -----------------------------------------------------------------------------//
 vim.opt.cursorline = true
+vim.go.laststatus = 3
 vim.opt.showtabline = 0 -- 2
 vim.opt.conceallevel = 2
 vim.opt.concealcursor = "nc"

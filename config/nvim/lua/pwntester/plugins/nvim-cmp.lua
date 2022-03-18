@@ -2,7 +2,7 @@ local lspkind = require "lspkind"
 local api = vim.api
 local cmp = require "cmp"
 
-local ok, luasnip = g.safe_require("luasnip", { silent = true })
+local ok, luasnip = pcall(require, "luasnip", { silent = true })
 if not ok then
   luasnip = nil
 end

@@ -1,110 +1,101 @@
-g.augroup("VimRC", {
-  -- au TermEnter,WinEnter,BufEnter * nested lua util.onEnter()
-  {
-    events = { "TermEnter", "WinEnter", "BufEnter" },
-    targets = { "*" },
-    command = function()
-      g.onEnter()
-    end,
-  },
-  -- au FileType * nested lua util.onFileType()
-  {
-    events = { "FileType" },
-    targets = { "*" },
-    command = function()
-      g.onFileType()
-    end,
-  },
-  -- au FocusGained,BufEnter * checktime
-  {
-    events = { "FocusGained", "BufEnter" },
-    targets = { "*" },
-    command = function()
-      vim.cmd [[checktime]]
-    end,
-  },
-  -- au TextYankPost * silent! lua vim.highlight.on_yank {on_visual=false, higroup="IncSearch", timeout=500}
-  {
-    events = { "TextYankPost" },
-    targets = { "*" },
-    command = function()
-      vim.highlight.on_yank { on_visual = false, higroup = "IncSearch", timeout = 500 }
-    end,
-  },
-  -- au TermOpen * set ft=terminal
-  {
-    events = { "TermOpen" },
-    targets = { "term://*" },
-    command = function()
-      vim.bo.ft = "terminal"
-    end,
-  },
-  -- au TermOpen term://* startinsert
-  {
-    events = { "TermOpen" },
-    targets = { "term://*" },
-    command = function()
-      vim.fn.startinsert()
-    end,
-  },
-  -- au TermLeave term://* stopinsert
-  {
-    events = { "TermLeave" },
-    targets = { "term://*" },
-    command = function()
-      vim.fn.stopinsert()
-    end,
-  },
-  -- au TermClose term://* if (expand('<afile>') !~ "fzf") | call nvim_input('<CR>') | endif
-  {
-    events = { "TermClose" },
-    targets = { "term://*" },
-    command = function()
-      vim.api.nvim_input "<CR>"
-    end,
-  },
-  -- au BufEnter *.txt if &buftype == 'help' | wincmd L | endif
-  {
-    events = { "BufEnter" },
-    targets = { "*.txt" },
-    command = function()
-      if vim.opt.buftype._value == "help" then
-        vim.cmd [[wincmd L]]
-      end
-    end,
-  },
+local create = vim.api.nvim_create_augroup
+local define = vim.api.nvim_create_autocmd
 
-  {
-    events = { "BufEnter" },
-    targets = { "*" },
-    command = function()
-      if vim.bo.ft == "markdown" then
-        vim.lsp.handlers["textDocument/publishDiagnostics"] = function() end
-      else
-        vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
-          signs = true,
-          update_in_insert = false,
-          underline = true,
-          virtual_text = {
-            spacing = 4,
-            prefix = "»",
-          },
-        })
-      end
-    end,
-  },
-  {
-    events = { "BufWritePost" },
-    targets = { "*/bitacora/*" },
-    command = function()
-      require("pwntester.markdown").asyncPush()
-    end,
-  },
-  {
-    events = { "BufWritePost" },
-    targets = { "plugins.lua" },
-    command = function()
-      vim.cmd [[source <afile> | PackerCompile ]]
-    end,
-  },
+create("bitacora", { clear = true })
+
+-- au TermEnter,WinEnter,BufEnter * nested lua util.onEnter()
+define({ "TermEnter", "WinEnter", "BufEnter" }, {
+  pattern = { "*" },
+  callback = function()
+    g.onEnter()
+  end,
+})
+-- au FileType * nested lua util.onFileType()
+define({ "FileType" }, {
+  pattern = { "*" },
+  callback = function()
+    g.onFileType()
+  end,
+})
+-- au FocusGained,BufEnter * checktime
+define({ "FocusGained", "BufEnter" }, {
+  pattern = { "*" },
+  callback = function()
+    vim.cmd [[checktime]]
+  end,
+})
+-- au TextYankPost * silent! lua vim.highlight.on_yank {on_visual=false, higroup="IncSearch", timeout=500}
+define({ "TextYankPost" }, {
+  pattern = { "*" },
+  callback = function()
+    vim.highlight.on_yank { on_visual = false, higroup = "IncSearch", timeout = 500 }
+  end,
+})
+-- au TermOpen * set ft=terminal
+define({ "TermOpen" }, {
+  pattern = { "term://*" },
+  callback = function()
+    vim.bo.ft = "terminal"
+  end,
+})
+-- au TermOpen term://* startinsert
+define({ "TermOpen" }, {
+  pattern = { "term://*" },
+  callback = function()
+    vim.fn.startinsert()
+  end,
+})
+-- au TermLeave term://* stopinsert
+define({ "TermLeave" }, {
+  pattern = { "term://*" },
+  callback = function()
+    vim.fn.stopinsert()
+  end,
+})
+-- au TermClose term://* if (expand('<afile>') !~ "fzf") | call nvim_input('<CR>') | endif
+define({ "TermClose" }, {
+  pattern = { "term://*" },
+  callback = function()
+    vim.api.nvim_input "<CR>"
+  end,
+})
+-- au BufEnter *.txt if &buftype == 'help' | wincmd L | endif
+define({ "BufEnter" }, {
+  pattern = { "*.txt" },
+  callback = function()
+    if vim.opt.buftype._value == "help" then
+      vim.cmd [[wincmd L]]
+    end
+  end,
+})
+define({ "BufEnter" }, {
+  pattern = { "*" },
+  callback = function()
+    if vim.bo.ft == "markdown" then
+      vim.lsp.handlers["textDocument/publishDiagnostics"] = function() end
+    else
+      vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
+        signs = true,
+        update_in_insert = false,
+        underline = true,
+        virtual_text = {
+          spacing = 4,
+          prefix = "»",
+        },
+      })
+    end
+  end,
+})
+define({ "BufWritePost" }, {
+  pattern = { "plugins.lua" },
+  callback = function()
+    vim.cmd [[source <afile> | PackerCompile ]]
+  end,
+})
+define({ "BufWritePost" }, {
+  group = "bitacora",
+  pattern = { "*/bitacora/*" },
+  callback = function()
+    require("pwntester.markdown").asyncPush()
+  end,
 })

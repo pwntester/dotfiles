@@ -265,9 +265,9 @@ function M.markdownEnter()
   if prefix and exact then
     local line = vim.fn.line "."
     vim.api.nvim_buf_set_lines(0, line - 1, line, true, {})
-    return ""
+    --return ""
   elseif prefix then
-    vim.api.nvim_put({ "", prefix }, "c", true, true)
+    vim.api.nvim_put({ "", prefix }, "c", false, true)
   else
     vim.api.nvim_put({ "", "" }, "c", false, true)
   end
