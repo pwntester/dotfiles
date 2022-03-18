@@ -150,7 +150,9 @@ local mappings = {
 
     -- NVIM-TREE
     --["nge"] = { [[:NvimTreeFindFileToggle<CR>]] },
-    ["nge"] = { [[:YanilToggle<CR>]] },
+    --["nge"] = { [[:YanilToggle<CR>]] },
+    ["nge"] = { [[:NeoTreeRevealToggle<CR>]] },
+    ["n<C-o>"] = { [[:NeoTreeShow buffers<CR>]] },
 
     -- GIT-MESSANGER
     ["n<leader>gm"] = { [[<Plug>(git-messenger)]], noremap = false },

@@ -110,13 +110,6 @@ return require("packer").startup {
       module_pattern = "telescope.*",
       requires = {
         {
-          "nvim-telescope/telescope-fzf-native.nvim",
-          run = "make",
-          config = function()
-            require("telescope").load_extension "fzf"
-          end,
-        },
-        {
           "nvim-telescope/telescope-frecency.nvim",
           requires = "tami5/sqlite.lua",
           config = function()
@@ -186,6 +179,7 @@ return require("packer").startup {
         vim.g.copilot_filetypes = {
           ["*"] = false,
           python = true,
+          sh = true,
           lua = true,
           go = true,
           ql = true,
@@ -216,9 +210,8 @@ return require("packer").startup {
     -- }
 
     -- TREESITTER
-    use_local {
+    use {
       "nvim-treesitter/nvim-treesitter",
-      local_path = "dev/nvim",
       config = function()
         require("pwntester.plugins.treesitter").setup()
       end,
@@ -531,12 +524,12 @@ return require("packer").startup {
     -- }
 
     -- FILE EXPLORER
-    use {
-      "Xuyuanp/yanil",
-      config = function()
-        require("pwntester.plugins.yanil").setup()
-      end,
-    }
+    -- use {
+    --   "Xuyuanp/yanil",
+    --   config = function()
+    --     require("pwntester.plugins.yanil").setup()
+    --   end,
+    -- }
     use {
       "nvim-neo-tree/neo-tree.nvim",
       branch = "v1.x",
@@ -546,7 +539,7 @@ return require("packer").startup {
         "MunifTanjim/nui.nvim",
       },
       config = function()
-        require("neo-tree").setup()
+        require("pwntester.plugins.neo-tree").setup()
       end,
     }
 
@@ -619,12 +612,13 @@ return require("packer").startup {
             group_by = "sink",
             show_filename = true,
             long_filename = false,
+            context_lines = 3,
           },
           max_ram = 32000,
           format_on_save = true,
           search_path = {
-            "/Users/pwntester/codeql-home/codeql",
-            "/Users/pwntester/codeql-home/codeql-go",
+            "/Users/pwntester/codeql-home/codeql-patched",
+            --"/Users/pwntester/codeql-home/codeql-go",
             --"/Users/pwntester/codeql-home/codeql-ruby",
           },
         }
