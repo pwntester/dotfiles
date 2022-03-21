@@ -263,9 +263,8 @@ function M.markdownEnter()
   local prefix = current_line:match "^%s*%-%s"
   local exact = current_line:match "^%s*%-%s$"
   if prefix and exact then
-    local line = vim.fn.line "."
-    vim.api.nvim_buf_set_lines(0, line - 1, line, true, {})
-    --return ""
+    local lineno = vim.fn.line "."
+    vim.api.nvim_buf_set_lines(0, lineno - 1, lineno, true, { "" })
   elseif prefix then
     vim.api.nvim_put({ "", prefix }, "c", false, true)
   else

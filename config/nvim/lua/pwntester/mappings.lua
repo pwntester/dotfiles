@@ -96,37 +96,36 @@ local mappings = {
     ["ngo"] = { "<Plug>(OctoOpenIssueAtCursor)", noremap = false },
 
     -- TELESCOPE
-    --['n<leader>m'] = { [[<cmd>lua require'pwntester.plugins.telescope'.mru()<CR>]] };
-    ["n<leader>m"] = {
-      [[<cmd>lua require'telescope'.extensions.frecency.frecency({prompt_title=false,preview_title=false,results_title=false})<CR>]],
-    },
-    ["n<leader>e"] = {
-      [[<cmd>lua require'telescope.builtin'.file_browser({prompt_title=false,preview_title=false,results_title=false})<CR>]],
-    },
     ["n<leader>f"] = {
-      [[<cmd>lua require'telescope.builtin'.find_files({prompt_title=false,preview_title=false,results_title=false})<CR>]],
+      [[<cmd>lua require'telescope.builtin'.find_files()<CR>]],
     },
     ["n<leader>l"] = {
-      [[<cmd>lua require'telescope'.extensions.live_grep_raw.live_grep_raw({prompt_title=false,preview_title=false,results_title=false})<CR>]],
+      [[<cmd>lua require'telescope.builtin'.live_grep()<CR>]],
     },
-    ["n<leader>r"] = { [[<cmd>lua require'pwntester.plugins.telescope'.reloader()<CR>]] },
+    ["n<leader>r"] = { [[<cmd>lua require'telescope.builtin'.reloader()<CR>]] },
     ["n<leader>o"] = {
-      [[<cmd>lua require'telescope.builtin'.buffers({prompt_title=false,preview_title=false,results_title=false})<CR>]],
+      [[<cmd>lua require'telescope.builtin'.buffers()<CR>]],
     },
     ["n<leader>s"] = {
-      [[<cmd>lua require'telescope.builtin'.grep_string({prompt_title=false,preview_title=false,results_title=false})<CR>]],
+      [[<cmd>lua require'telescope.builtin'.grep_string({ word_match = '-w' })<CR>]],
     },
     ["n<leader>gc"] = {
-      [[<cmd>lua require'telescope.builtin'.git_commits({prompt_title=false,preview_title=false,results_title=false})<CR>]],
+      [[<cmd>lua require'telescope.builtin'.git_commits()<CR>]],
     },
     ["n<leader>gf"] = {
-      [[<cmd>lua require'telescope.builtin'.git_files({prompt_title=false,preview_title=false,results_title=false})<CR>]],
+      [[<cmd>lua require'telescope.builtin'.git_files()<CR>]],
     },
     ["n<leader>gb"] = {
-      [[<cmd>lua require'telescope.builtin'.git_branches({prompt_title=false,preview_title=false,results_title=false})<CR>]],
+      [[<cmd>lua require'telescope.builtin'.git_branches()<CR>]],
+    },
+    ["n<leader>bs"] = {
+      [[<cmd>lua require'telescope.builtin'.current_buffer_fuzzy_find{}<CR>]],
     },
     ["n<leader>p"] = {
-      [[<cmd>lua require'telescope'.extensions.projects.projects({prompt_title=false,preview_title=false,results_title=false})<CR>]],
+      [[<cmd>lua require'telescope'.extensions.projects.projects()<CR>]],
+    },
+    ["n<leader>m"] = {
+      [[<cmd>lua require'telescope'.extensions.frecency.frecency()<CR>]],
     },
 
     -- GITSIGNS

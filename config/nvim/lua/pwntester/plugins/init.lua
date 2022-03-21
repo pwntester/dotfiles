@@ -112,23 +112,15 @@ return require("packer").startup {
         {
           "nvim-telescope/telescope-frecency.nvim",
           requires = "tami5/sqlite.lua",
-          config = function()
-            require("telescope").load_extension "frecency"
-          end,
         },
         {
-          "nvim-telescope/telescope-live-grep-raw.nvim",
-        },
-        --- to search `foo` on java files use: `-tjava foo`
-        {
-          "camgraff/telescope-tmux.nvim",
-          config = function()
-            require("telescope").load_extension "tmux"
-          end,
+          "nvim-telescope/telescope-fzf-native.nvim",
+          run = "make",
         },
         {
           "nvim-telescope/telescope-symbols.nvim",
         },
+        { "nvim-telescope/telescope-ui-select.nvim" },
       },
       config = function()
         require("pwntester.plugins.telescope").setup()
@@ -474,6 +466,15 @@ return require("packer").startup {
       module = "nui",
     }
     use { "junegunn/rainbow_parentheses.vim" }
+    -- use {
+    --   "sunjon/shade.nvim",
+    --   config = function()
+    --     require("shade").setup {
+    --       overlay_opacity = 70,
+    --       opacity_step = 1,
+    --     }
+    --   end,
+    -- }
     -- use {
     --   "RRethy/vim-illuminate",
     --   config = function()

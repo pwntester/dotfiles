@@ -1,37 +1,51 @@
-local uv = vim.loop
-local deepcopy = vim.deepcopy
-local make_entry = require "telescope.make_entry"
+local telescope = require "telescope"
 local actions = require "telescope.actions"
 local _, trouble = pcall(require, "trouble.providers.telescope")
-local finders = require "telescope.finders"
-local pickers = require "telescope.pickers"
 local sorters = require "telescope.sorters"
 local window = require "pwntester.window"
 
-local dropdown_theme = require("telescope.themes").get_dropdown {
-  layout_config = {
-    width = 0.8,
-    height = 20,
-  },
-  prompt_title = false,
-  results_title = false,
-  previewer = false,
-  file_sorter = sorters.get_fzy_sorter,
-  borderchars = {
-    results = { "▔", "▕", "▁", "▏", "🭽", "🭾", "🭿", "🭼" },
-    prompt = { "▔", "▕", "▁", "▏", "🭽", "🭾", "🭿", "🭼" },
-  },
+local dropdown_borderchars = {
+  results = { "▔", "▕", "▁", "▏", "🭽", "🭾", "🭿", "🭼" },
+  prompt = { "▔", "▕", "▁", "▏", "🭽", "🭾", "🭿", "🭼" },
+}
+local dropdown_layout_config = {
+  width = 0.8,
+  height = 20,
 }
 
 local function setup()
-  require("telescope").setup {
+  telescope.setup {
     defaults = {
+      prompt_title = false,
+      results_title = false,
+      preview_title = false,
+      multi_icon = "",
+      layout_strategy = "flex",
+      scroll_strategy = "cycle",
+      selection_strategy = "reset",
+      winblend = 0,
+      dynamic_preview_title = true,
+      color_devicons = true,
+      layout_config = {
+        vertical = {
+          mirror = true,
+        },
+        center = {
+          mirror = true,
+        },
+      },
+      file_ignore_patterns = { "build", "tags", "src/parser.c" },
+      hl_result_eol = false,
+      preview = false,
+      -- {
+      --   msg_bg_fillchar = " ",
+      -- },
+      cache = false,
       borderchars = {
         results = { "▔", "▕", "▁", "▏", "🭽", "🭾", "🭿", "🭼" },
         prompt = { " ", "▕", "▁", "▏", "▏", "▕", "🭿", "🭼" },
         preview = { "▔", "▕", "▁", "▏", "🭽", "🭾", "🭿", "🭼" },
       },
-      color_devicons = false,
       mappings = {
         i = {
           ["<C-j>"] = actions.move_selection_next,
@@ -46,12 +60,83 @@ local function setup()
           ["<c-t>"] = trouble.open_with_trouble,
         },
       },
-      prompt_title = false,
-      results_title = false,
-      preview_title = false,
+    },
+    pickers = {
+      buffers = {
+        sort_mru = true,
+        theme = "dropdown",
+        previewer = false,
+        prompt_title = false,
+        results_title = false,
+        mappings = {
+          i = { ["<c-d>"] = actions.delete_buffer },
+        },
+        borderchars = dropdown_borderchars,
+        layout_config = dropdown_layout_config,
+      },
+      frecency = {
+        previewer = false,
+        prompt_title = "",
+        results_title = "",
+      },
+      projects = {
+        theme = "dropdown",
+        previewer = false,
+        prompt_title = false,
+        results_title = false,
+        borderchars = dropdown_borderchars,
+        layout_config = dropdown_layout_config,
+      },
+      find_files = {
+        theme = "dropdown",
+        previewer = false,
+        prompt_title = false,
+        results_title = false,
+        borderchars = dropdown_borderchars,
+        layout_config = dropdown_layout_config,
+      },
+      grep_string = {
+        theme = "dropdown",
+        previewer = false,
+        prompt_title = false,
+        results_title = false,
+        borderchars = dropdown_borderchars,
+        layout_config = dropdown_layout_config,
+      },
+      git_files = {
+        theme = "dropdown",
+        previewer = false,
+        prompt_title = false,
+        results_title = false,
+        borderchars = dropdown_borderchars,
+        layout_config = dropdown_layout_config,
+      },
+      reloader = {
+        theme = "dropdown",
+        previewer = false,
+        prompt_title = false,
+        results_title = false,
+        borderchars = dropdown_borderchars,
+        layout_config = dropdown_layout_config,
+      },
+      man_pages = { sections = { "2", "3" } },
+      lsp_references = { path_display = { "shorten" } },
+      lsp_document_symbols = { path_display = { "hidden" } },
+      lsp_workspace_symbols = { path_display = { "shorten" } },
+      lsp_code_actions = {
+        theme = "dropdown",
+        borderchars = dropdown_borderchars,
+        layout_config = dropdown_layout_config,
+      },
+      current_buffer_fuzzy_find = {
+        theme = "dropdown",
+        borderchars = dropdown_borderchars,
+        layout_config = dropdown_layout_config,
+      },
     },
     extensions = {
       frecency = {
+        persistent_filter = false,
         show_scores = true,
         show_unindexed = true,
         ignore_patterns = { ".*codeql_db.*", "*.git/*", "*/tmp/*" },
@@ -64,6 +149,11 @@ local function setup()
       },
     },
   }
+
+  telescope.load_extension "fzf"
+  telescope.load_extension "frecency"
+  telescope.load_extension "octo"
+  telescope.load_extension "ui-select"
 end
 
 -- LSP workspace symbols
@@ -84,70 +174,7 @@ local function lsp_dynamic_symbols()
   require("telescope.builtin.lsp").dynamic_workspace_symbols(opts)
 end
 
--- cwd files
-local function files()
-  local function list_files(dir, exclude)
-    local _files = {}
-    local function scan(dir)
-      local req = uv.fs_scandir(dir)
-      local function iter()
-        return uv.fs_scandir_next(req)
-      end
-      for name, ftype in iter do
-        local absname = dir .. "/" .. name
-        local ext = vim.fn.fnamemodify(name, ":e")
-        if
-          ftype == "file"
-          and not vim.tbl_contains(exclude.files, name)
-          and not vim.tbl_contains(exclude.exts, ext)
-        then
-          table.insert(_files, absname)
-        elseif ftype == "directory" and not vim.tbl_contains(exclude.dirs, name) then
-          scan(absname)
-        end
-      end
-    end
-    scan(dir or vim.fn.getcwd())
-    return _files
-  end
-
-  local _files = list_files(nil, {
-    exts = { "png" },
-    files = { ".DS_Store" },
-    dirs = { ".git" },
-  })
-
-  local opts = deepcopy(dropdown_theme)
-  opts.prompt_prefix = "Files>"
-  pickers.new(opts, {
-    prompt_title = "",
-    finder = finders.new_table {
-      results = _files,
-      entry_maker = make_entry.gen_from_file(opts),
-    },
-    --sorter = sorters.get_fuzzy_file();
-    sorter = sorters.get_fzy_sorter(),
-  }):find()
-end
-
--- buffers
-local function buffers()
-  local opts = deepcopy(dropdown_theme)
-  opts.prompt_title = ""
-  require("telescope.builtin").buffers(opts)
-end
-
--- module reloader
-local function reloader()
-  local opts = deepcopy(dropdown_theme)
-  opts.prompt_prefix = "Modules>"
-  require("telescope.builtin").reloader(opts)
-end
-
 return {
   setup = setup,
-  files = files,
-  buffers = buffers,
-  reloader = reloader,
   lsp_dynamic_symbols = lsp_dynamic_symbols,
 }
