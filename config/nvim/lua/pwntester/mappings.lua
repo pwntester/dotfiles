@@ -38,11 +38,42 @@ local mappings = {
     ["n<C-j>"] = { [[<cmd>lua require('tmux').move_down()<CR>]] },
     ["n<C-k>"] = { [[<cmd>lua require('tmux').move_up()<CR>]] },
     ["n<C-l>"] = { [[<cmd>lua require('tmux').move_right()<CR>]] },
-
     -- ["n<c-k>"] = { ":wincmd k<CR>" },
     -- ["n<c-j>"] = { ":wincmd j<CR>" },
     -- ["n<c-h>"] = { ":wincmd h<CR>" },
     -- ["n<c-l>"] = { ":wincmd l<CR>" },
+
+    -- switch window orientation
+    -- windo wincmd K (switch to horizontal)
+    -- :ball
+    -- windo wincmd H (switch to vertical)
+    -- :vertical ball
+
+    -- resize splits
+    ["n>"] = { ':execute "vertical resize +5"<CR>' },
+    ["n<"] = { ':execute "vertical resize -5"<CR>' },
+    ["n+"] = { ':execute "resize +5"<CR>' },
+    ["n-"] = { ':execute "resize -5"<CR>' },
+    ["n<A-h>"] = {
+      function()
+        require("smart-splits").resize_left()
+      end,
+    },
+    ["n<A-j>"] = {
+      function()
+        require("smart-splits").resize_down()
+      end,
+    },
+    ["n<A-k>"] = {
+      function()
+        require("smart-splits").resize_up()
+      end,
+    },
+    ["n<A-l>"] = {
+      function()
+        require("smart-splits").resize_right()
+      end,
+    },
 
     -- disable keys
     ["n<up>"] = { "<nop>" },
@@ -55,12 +86,6 @@ local mappings = {
     --["i<right>"] = { "<nop>" },
     ["n<space>"] = { "<nop>" },
     ["n<esc>"] = { "<nop>" },
-
-    -- resize splits
-    ["n>"] = { ':execute "vertical resize +5"<CR>' },
-    ["n<"] = { ':execute "vertical resize -5"<CR>' },
-    ["n+"] = { ':execute "resize +5"<CR>' },
-    ["n-"] = { ':execute "resize -5"<CR>' },
 
     -- swap lines
     -- ['n[e'] = { [[:<c-u>execute 'move -1-'. v:count1<cr>]] };
@@ -139,17 +164,10 @@ local mappings = {
     -- TRUE-ZEN
     ["n<leader>z"] = { ":TZAtaraxis<CR>" },
 
-    -- NVIM-BUFFERLINE
-    -- ["n<S-l>"] = { ":BufferLineCycleNext<CR>", noremap = false },
-    -- ["n<S-h>"] = { ":BufferLineCyclePrev<CR>", noremap = false },
-    -- ['n<leader>]'] = { ':BufferLineMoveNext<CR>', noremap = false; };
-    -- ['n<leader>['] = { ':BufferLineMovePrev<CR>', noremap = false; };
     ["n<S-l>"] = { "<C-i>", noremap = false },
     ["n<S-h>"] = { "<C-o>", noremap = false },
 
-    -- NVIM-TREE
-    --["nge"] = { [[:NvimTreeFindFileToggle<CR>]] },
-    --["nge"] = { [[:YanilToggle<CR>]] },
+    -- NEOTREE
     ["nge"] = { [[:NeoTreeRevealToggle<CR>]] },
     ["n<C-o>"] = { [[:NeoTreeShow buffers<CR>]] },
 

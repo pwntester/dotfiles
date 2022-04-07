@@ -3,8 +3,22 @@ local api = vim.api
 local nvim_lsp = require "lspconfig"
 local window = require "pwntester.window"
 local util = require "lspconfig/util"
+local lsp_installer = require "nvim-lsp-installer"
 
 local clients = {}
+
+local servers = {
+  "bashls",
+  "pyright",
+  "sumneko_lua",
+  "tsserver",
+  "gopls",
+  "solargraph",
+  "codeqlls",
+  "zk",
+  "yamlls",
+  "dockerls",
+}
 
 local function register_buffer(bufnr, client_id)
   if not clients[bufnr] then
@@ -14,17 +28,26 @@ local function register_buffer(bufnr, client_id)
   end
 end
 
+local capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities())
+
 local function on_attach_callback(client, bufnr)
   bufnr = bufnr or api.nvim_get_current_buf()
+
+  -- extensions
+  require("lsp-format").on_attach(client)
+  require("lsp_signature").on_attach {
+    hint_enable = false,
+    hi_parameter = "QuickFixLine",
+    handler_opts = {
+      border = vim.g.floating_window_border,
+    },
+  }
 
   -- register client/buffer relation
   register_buffer(bufnr, client.id)
 
   -- mappings
   g.map(require("pwntester.mappings").lsp, { silent = false, noremap = true }, bufnr)
-
-  -- Extensions
-  --require("illuminate").on_attach(client)
 end
 
 local function setup()
@@ -46,6 +69,129 @@ local function setup()
     texthl = "LspDiagnosticsSignHint",
   })
 
+  -- install servers
+  for _, name in pairs(servers) do
+    local server_is_found, server = lsp_installer.get_server(name)
+    if server_is_found and not server:is_installed() then
+      print("Installing " .. name)
+      server:install()
+    end
+  end
+
+  -- configure servers
+  local server_opts = {
+    ["sumneko_lua"] = function(opts)
+      opts.settings = {
+        Lua = {
+          completion = { keywordSnippet = "Disable" },
+          diagnostics = {
+            enable = true,
+            globals = {
+              -- neovim
+              "vim",
+              -- busted
+              "describe",
+              "it",
+              "before_each",
+              "after_each",
+              -- packer
+              "use",
+            },
+          },
+          runtime = { version = "LuaJIT", path = vim.split(package.path, ";") },
+          workspace = {
+            library = {
+              [vim.fn.expand "$VIMRUNTIME/lua"] = true,
+              [vim.fn.expand "$VIMRUNTIME/lua/vim/lsp"] = true,
+            },
+          },
+        },
+      }
+    end,
+    ["tsserver"] = function(opts)
+      opts.root_dir = util.root_pattern("package.json", "tsconfig.json", ".git") or vim.loop.cwd()
+    end,
+    ["gopls"] = function(opts)
+      opts.root_dir = function(fname)
+        if vim.startswith(fname, "octo:") or vim.startswith(fname, "codeql:") or vim.startswith(fname, "docker:") then
+          return
+        end
+        nvim_lsp.gopls.default_config.root_dir(fname)
+      end
+    end,
+    ["codeqlls"] = function(opts)
+      opts.root_dir = function(fname)
+        if vim.startswith(fname, "octo:") or vim.startswith(fname, "codeql:") or vim.startswith(fname, "docker:") then
+          return
+        end
+        local root_pattern = util.root_pattern "qlpack.yml"
+        return root_pattern(fname) or util.path.dirname(fname)
+      end
+      opts.settings = {
+        search_path = require("codeql.config").get_config().search_path,
+      }
+    end,
+    ["zk"] = function(opts)
+      opts.on_attach = function(client, bufnr)
+        on_attach_callback(client, bufnr)
+        g.map(require("pwntester.mappings").zk, { silent = true, noremap = true }, bufnr)
+      end
+    end,
+    ["efm"] = function(opts)
+      local stylua = require "pwntester.plugins.efm.stylua"
+      local luacheck = require "pwntester.plugins.efm.luacheck"
+      local staticcheck = require "pwntester.plugins.efm.staticcheck"
+      local go_vet = require "pwntester.plugins.efm.go_vet"
+      local goimports = require "pwntester.plugins.efm.goimports"
+      local black = require "pwntester.plugins.efm.black"
+      local isort = require "pwntester.plugins.efm.isort"
+      local flake8 = require "pwntester.plugins.efm.flake8"
+      local mypy = require "pwntester.plugins.efm.mypy"
+      local prettier = require "pwntester.plugins.efm.prettier"
+      local eslint = require "pwntester.plugins.efm.eslint"
+      local shellcheck = require "pwntester.plugins.efm.shellcheck"
+      local shfmt = require "pwntester.plugins.efm.shfmt"
+      local misspell = require "pwntester.plugins.efm.misspell"
+      opts.init_options = { documentFormatting = true, codeAction = true }
+      opts.filetypes = { "lua", "python", "yaml", "json", "typescript", "javascript", "markdown" },
+      opts.settings = {
+        log_level = 1,
+        log_file = "/tmp/efm.log",
+        rootMarkers = { ".git/" },
+        languages = {
+          lua = { stylua, luacheck },
+          python = { black, isort, flake8, mypy },
+          yaml = { prettier },
+          json = { prettier },
+          markdown = { prettier },
+          typescript = { prettier, eslint },
+          javascript = { prettier, eslint },
+          sh = { shellcheck, shfmt },
+          go = { staticcheck, goimports, go_vet },
+          ["="] = { misspell },
+        },
+      }
+    end,
+  }
+
+  -- setup servers
+  lsp_installer.on_server_ready(function(server)
+    local opts = {
+      on_attach = on_attach_callback,
+      capabilities = capabilites,
+      flags = {
+        debounce_text_changes = 150,
+      },
+    }
+
+    if server_opts[server.name] then
+      server_opts[server.name](opts)
+    end
+
+    server:setup(opts)
+  end)
+
+  -- custom handlers
   vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
     signs = true,
     update_in_insert = false,
@@ -56,14 +202,13 @@ local function setup()
     },
   })
 
-  -- custom handlers
   vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
     border = window.window_border_chars,
   })
 
-  vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
-    border = window.window_border_chars,
-  })
+  -- vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
+  --   border = window.window_border_chars,
+  -- })
   -- vim.lsp.handlers['textDocument/references'] = function(_, _, result)
   --   if not result then return end
   --   util.set_qflist(util.locations_to_items(result))
@@ -71,133 +216,26 @@ local function setup()
   --   api.nvim_command("wincmd p")
   -- end
 
-  -- language servers
-
-  --- bash
-  -- npm i -g bash-language-server
-  nvim_lsp.bashls.setup {
-    on_attach = on_attach_callback,
-    capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities()),
-  }
-
-  --- Lua
-  nvim_lsp.sumneko_lua.setup {
-    cmd = {
-      "/usr/local/bin/lua-language-server",
-    },
-    on_attach = on_attach_callback,
-    capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities()),
-    settings = {
-      Lua = {
-        completion = { keywordSnippet = "Disable" },
-        diagnostics = {
-          enable = true,
-          globals = {
-            "vim",
-            "describe",
-            "it",
-            "before_each",
-            "after_each",
-          },
-        },
-        runtime = { version = "LuaJIT", path = vim.split(package.path, ";") },
-        workspace = {
-          library = {
-            [vim.fn.expand "$VIMRUNTIME/lua"] = true,
-            [vim.fn.expand "$VIMRUNTIME/lua/vim/lsp"] = true,
-          },
-        },
-      },
-    },
-  }
-
-  --- JavaScript
-  nvim_lsp.tsserver.setup {
-    on_attach = on_attach_callback,
-    root_dir = util.root_pattern("package.json", "tsconfig.json", ".git") or vim.loop.cwd(),
-    capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities()),
-    flags = {
-      debounce_text_changes = 150,
-    },
-  }
-
-  --- Go
-  nvim_lsp.gopls.setup {
-    on_attach = on_attach_callback,
-    capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities()),
-    flags = {
-      debounce_text_changes = 150,
-    },
-    root_dir = function(fname)
-      if vim.startswith(fname, "octo:") or vim.startswith(fname, "codeql:") or vim.startswith(fname, "docker:") then
-        return
-      end
-      nvim_lsp.gopls.default_config.root_dir(fname)
-    end,
-  }
-
-  --- Ruby
-  nvim_lsp.solargraph.setup {
-    on_attach = on_attach_callback,
-    capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities()),
-    flags = {
-      debounce_text_changes = 150,
-    },
-  }
-
-  --- .NET
-  local pid = vim.fn.getpid()
-  local omnisharp_bin = "/Users/pwntester/repos/omnisharp-osx/run"
-  nvim_lsp.omnisharp.setup {
-    cmd = { omnisharp_bin, "--languageserver", "--hostPID", tostring(pid) },
-    capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities()),
-    on_attach = on_attach_callback,
-    flags = {
-      debounce_text_changes = 150,
-    },
-    root_dir = function(fname)
-      if vim.startswith(fname, "octo:") or vim.startswith(fname, "codeql:") or vim.startswith(fname, "docker:") then
-        return
-      end
-      nvim_lsp.omnisharp.default_config.root_dir(fname)
-    end,
-  }
-
-  --- CodeQL
-  nvim_lsp.codeqlls.setup {
-    on_attach = on_attach_callback,
-    capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities()),
-    flags = {
-      debounce_text_changes = 150,
-    },
-    root_dir = function(fname)
-      if vim.startswith(fname, "octo:") or vim.startswith(fname, "codeql:") or vim.startswith(fname, "docker:") then
-        return
-      end
-      local root_pattern = util.root_pattern "qlpack.yml"
-      return root_pattern(fname) or util.path.dirname(fname)
-    end,
-    settings = {
-      search_path = require("codeql.config").get_config().search_path,
-    },
-  }
-
-  --- ZK
-  nvim_lsp.zk.setup {
-    capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities()),
-    root_dir = function()
-      return vim.loop.cwd()
-    end,
-    --root_dir = function() return vim.g.zk_notebook end;
-    on_attach = function(client, bufnr)
-      on_attach_callback(client, bufnr)
-      g.map(require("pwntester.mappings").zk, { silent = true, noremap = true }, bufnr)
-    end,
-  }
-
-  --- Fortify Language Server
-  -- if not configs.fortify_lsp then
-  --   configs.fortify_lsp = {
+  -- .NET
+  -- local pid = vim.fn.getpid()
+  -- local omnisharp_bin = "/Users/pwntester/repos/omnisharp-osx/run"
+  -- nvim_lsp.omnisharp.setup {
+  --   cmd = { omnisharp_bin, "--languageserver", "--hostPID", tostring(pid) },
+  --   capabilities = capabilities,
+  --   on_attach = on_attach_callback,
+  --   flags = {
+  --     debounce_text_changes = 150,
+  --   },
+  --   root_dir = function(fname)
+  --     if vim.startswith(fname, "octo:") or vim.startswith(fname, "codeql:") or vim.startswith(fname, "docker:") then
+  --       return
+  --     end
+  --     nvim_lsp.omnisharp.default_config.root_dir(fname)
+  --   end,
+  -- }
+  -- Fortify Language Server
+  -- if not nvim_lsp.fortify_lsp then
+  --   nvim_lsp.fortify_lsp = {
   --     default_config = {
   --       cmd = { "fls" },
   --       filetypes = { "fortifyrulepack" },

@@ -20,7 +20,6 @@ _G.g = {
     "codeql_explorer",
     "terminal",
     "packer",
-    "NvimTree",
     "octo",
     "octo_panel",
     "aerieal",
@@ -31,7 +30,9 @@ _G.g = {
     "TelescopeResults",
     "NeogitStatus",
     "notify",
+    "NvimTree",
     "Yanil",
+    "neo-tree",
   },
 }
 

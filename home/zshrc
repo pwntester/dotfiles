@@ -54,9 +54,8 @@ setopt share_history
 
 fpath=(~/.zsh/plugins $fpath)
 autoload -Uz cursor_mode; cursor_mode
-#source ~/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-#source ~/.zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
 source ~/.zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
+source ~/.zsh/plugins/cdr/cdr.zsh
 
 #############
 # COMPLETION
@@ -70,17 +69,20 @@ if type brew &>/dev/null; then
 fi
 
 # Speed up completion init, see: https://htr3n.github.io/2018/07/faster-zsh/
-autoload -Uz compinit
+# autoload -Uz compinit
+#
+# if [[ $OSTYPE = darwin* ]]; then
+#   if [ $(date +'%j') != $(/usr/bin/stat -f '%Sm' -t '%j' ${ZDOTDIR:-$HOME}/.zcompdump) ]; then
+#     compinit
+#   else
+#     compinit -C
+#   fi
+# else
+#   compinit
+# fi
 
-if [[ $OSTYPE = darwin* ]]; then
-  if [ $(date +'%j') != $(/usr/bin/stat -f '%Sm' -t '%j' ${ZDOTDIR:-$HOME}/.zcompdump) ]; then
-    compinit
-  else
-    compinit -C
-  fi
-else
-  compinit
-fi
+autoload -U +X compinit && compinit
+autoload -U +X bashcompinit && bashcompinit
 
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'  # partial completion
 zstyle ':completion:*' list-colors ''
@@ -89,6 +91,9 @@ zstyle ':completion:*:cd:*' tag-order local-directories directory-stack path-dir
 zstyle ':completion:*:*:*:*:*' menu select
 zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#) ([0-9a-z-]#)*=01;34=0=01'
 zstyle ':completion:*:*:*:*:processes' command "ps -u `whoami` -o pid,user,comm -w -w"
+
+# bash completion for jdxcode/gh
+source ~/.zsh/plugins/cdr/cdr.bash
 
 ###############
 # KEY BINDINGS
@@ -181,6 +186,7 @@ function load_pyenv(){
       eval "$(pyenv init -)"
   fi
 }
+load_pyenv
 
 function load_rbenv(){
   eval "$(rbenv init -)"
@@ -213,7 +219,3 @@ setopt PUSHD_SILENT         # Do not print the directory stack after pushd or po
 # PROFILER
 ###########
 #zprof
-
-# tabtab source for jhipster package
-# uninstall by removing these lines or running `tabtab uninstall jhipster`
-[[ -f /Users/pwntester/research/projects/audits/jHipster/microservices/jhipster-microservices-example/blog/node_modules/tabtab/.completions/jhipster.zsh ]] && . /Users/pwntester/research/projects/audits/jHipster/microservices/jhipster-microservices-example/blog/node_modules/tabtab/.completions/jhipster.zsh
