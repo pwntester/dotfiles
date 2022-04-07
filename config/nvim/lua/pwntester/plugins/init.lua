@@ -26,7 +26,7 @@ local function use_local(spec)
     local_spec.local_disable = nil
     local_spec.local_name = nil
     require("packer").use(local_spec)
-  end
+     end
 end
 
 -- Bootstrap Packer
@@ -84,24 +84,24 @@ return require("packer").startup {
         require("neoscroll").setup()
       end,
     }
-    -- use {
-    --   "kazhala/close-buffers.nvim",
-    --   config = function()
-    --     require("close_buffers").setup {
-    --       filetype_ignore = {}, -- Filetype to ignore when running deletions
-    --       preserve_window_layout = { "this" },
-    --       -- next_buffer_cmd = function(windows)
-    --       --   require("bufferline").cycle(1)
-    --       --   local bufnr = vim.api.nvim_get_current_buf()
-    --       --
-    --       --   for _, window in ipairs(windows) do
-    --       --     vim.api.nvim_win_set_buf(window, bufnr)
-    --       --   end
-    --       -- end,
-    --     }
-    --   end,
-    --   -- BDelete! all glob=*octo://*
-    -- }
+    use {
+      "kazhala/close-buffers.nvim",
+      config = function()
+        require("close_buffers").setup {
+          filetype_ignore = {}, -- Filetype to ignore when running deletions
+          preserve_window_layout = { "this" },
+          -- next_buffer_cmd = function(windows)
+          --   require("bufferline").cycle(1)
+          --   local bufnr = vim.api.nvim_get_current_buf()
+          --
+          --   for _, window in ipairs(windows) do
+          --     vim.api.nvim_win_set_buf(window, bufnr)
+          --   end
+          -- end,
+        }
+      end,
+      -- BDelete! all glob=*octo://*
+    }
 
     -- TELESCOPE.NVIM
     use {
@@ -183,23 +183,23 @@ return require("packer").startup {
     }
 
     -- PAIRS
-    -- use {
-    --   "windwp/nvim-autopairs",
-    --   after = "nvim-cmp",
-    --   config = function()
-    --     local npairs = require "nvim-autopairs"
-    --     local cmp_autopairs = require "nvim-autopairs.completion.cmp"
-    --     local Rule = require "nvim-autopairs.rule"
-    --     npairs.setup {
-    --       disable_filetype = { "TelescopePrompt", "octo" },
-    --       --ignored_next_char = [[ [%w%%%{%(%[%'%'%.] ]]
-    --       ignored_next_char = "[%w%.%(%{%[]",
-    --     }
-    --     npairs.add_rule(Rule("|", "", "ql"))
-    --     local cmp = require "cmp"
-    --     cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
-    --   end,
-    -- }
+    use {
+      "windwp/nvim-autopairs",
+      after = "nvim-cmp",
+      config = function()
+        local npairs = require "nvim-autopairs"
+        local cmp_autopairs = require "nvim-autopairs.completion.cmp"
+        local Rule = require "nvim-autopairs.rule"
+        npairs.setup {
+          disable_filetype = { "TelescopePrompt", "octo" },
+          --ignored_next_char = [[ [%w%%%{%(%[%'%'%.] ]]
+          ignored_next_char = "[%w%.%(%{%[]",
+        }
+        npairs.add_rule(Rule("|", "", "ql"))
+        local cmp = require "cmp"
+        cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
+      end,
+    }
 
     -- TREESITTER
     use {
@@ -240,32 +240,6 @@ return require("packer").startup {
         require("mini.cursorword").setup {
           delay = 100,
         }
-        -- pairs
-        require("mini.pairs").setup {
-          -- In which modes mappings from this `config` should be created
-          modes = { insert = true, command = false, terminal = false },
-
-          -- Global mappings. Each right hand side should be a pair information, a
-          -- table with at least these fields (see more in |MiniPairs.map|):
-          -- - <action> - one of 'open', 'close', 'closeopen'.
-          -- - <pair> - two character string for pair to be used.
-          -- By default pair is not inserted after `\`, quotes are not recognized by
-          -- `<CR>`, `'` does not insert pair after a letter.
-          -- Only parts of tables can be tweaked (others will use these defaults).
-          mappings = {
-            ["("] = { action = "open", pair = "()", neigh_pattern = "[^\\]." },
-            ["["] = { action = "open", pair = "[]", neigh_pattern = "[^\\]." },
-            ["{"] = { action = "open", pair = "{}", neigh_pattern = "[^\\]." },
-
-            [")"] = { action = "close", pair = "()", neigh_pattern = "[^\\]." },
-            ["]"] = { action = "close", pair = "[]", neigh_pattern = "[^\\]." },
-            ["}"] = { action = "close", pair = "{}", neigh_pattern = "[^\\]." },
-
-            ['"'] = { action = "closeopen", pair = '""', neigh_pattern = "[^\\].", register = { cr = false } },
-            ["'"] = { action = "closeopen", pair = "''", neigh_pattern = "[^%a\\].", register = { cr = false } },
-            ["`"] = { action = "closeopen", pair = "``", neigh_pattern = "[^\\].", register = { cr = false } },
-          },
-        }
 
         -- surround
         require("mini.surround").setup {
@@ -289,12 +263,6 @@ return require("packer").startup {
             replace = "sr", --- sr{old}{new}
             update_n_lines = "sn", -- Update `n_lines`
           },
-        }
-        -- bufremove
-        -- MiniBufremove.unshow|delete|wipeout
-        require("mini.bufremove").setup {
-          -- Whether to set Vim's settings for buffers (allow hidden buffers)
-          set_vim_settings = true,
         }
         -- indentscope
         require("mini.indentscope").setup {
@@ -397,13 +365,13 @@ return require("packer").startup {
           reaction_viewer_hint_icon = "",
         }
       end,
-      local_path = "dev/personal",
+      local_path = "src/github.com/pwntester",
       requires = { "nvim-telescope/telescope.nvim" },
     }
     -- use_local {
     --   "pwntester/octo-notifications.nvim",
     --   requires = "pwntester/octo.nvim",
-    --   local_path = "dev/personal",
+    --   local_path = "src/github.com/pwntester",
     -- }
     use { "sindrets/diffview.nvim" }
     use {
@@ -428,23 +396,9 @@ return require("packer").startup {
     }
 
     -- THEMES & COLORS
-    -- use {
-    --   "EdenEast/nightfox.nvim",
-    --   config = function()
-    --     local nightfox = require "nightfox"
-    --     nightfox.setup {
-    --       fox = "nightfox",
-    --       colors = {},
-    --       hlgroups = {
-    --         TelescopeBorder = { fg = "${border}" },
-    --       },
-    --     }
-    --     nightfox.load()
-    --   end,
-    -- }
     use_local {
       "pwntester/nautilus.nvim",
-      local_path = "dev/personal",
+      local_path = "src/github.com/pwntester",
       config = function()
         require("nautilus").load {
           transparent = false,
@@ -462,19 +416,21 @@ return require("packer").startup {
       module = "nvim-web-devicons",
     }
     use {
+      "mrjones2014/smart-splits.nvim",
+      config = function()
+        require("smart-splits").ignored_buftypes = g.special_buffers
+        require("smart-splits").ignored_filetypes = {
+          "nofile",
+          "quickfix",
+          "prompt",
+        }
+      end,
+    }
+    use {
       "MunifTanjim/nui.nvim",
       module = "nui",
     }
     use { "junegunn/rainbow_parentheses.vim" }
-    -- use {
-    --   "sunjon/shade.nvim",
-    --   config = function()
-    --     require("shade").setup {
-    --       overlay_opacity = 70,
-    --       opacity_step = 1,
-    --     }
-    --   end,
-    -- }
     -- use {
     --   "RRethy/vim-illuminate",
     --   config = function()
@@ -517,20 +473,8 @@ return require("packer").startup {
         require "pwntester.plugins.windline"
       end,
     }
-    -- use {
-    --   "akinsho/nvim-bufferline.lua",
-    --   config = function()
-    --     require "pwntester.plugins.nvim-bufferline"()
-    --   end,
-    -- }
 
     -- FILE EXPLORER
-    -- use {
-    --   "Xuyuanp/yanil",
-    --   config = function()
-    --     require("pwntester.plugins.yanil").setup()
-    --   end,
-    -- }
     use {
       "nvim-neo-tree/neo-tree.nvim",
       branch = "v1.x",
@@ -598,6 +542,7 @@ return require("packer").startup {
     -- STATIC ANALYSIS
     use_local {
       "pwntester/codeql.nvim",
+      local_path = "src/github.com/pwntester",
       requires = {
         "MunifTanjim/nui.nvim",
         "nvim-lua/telescope.nvim",
@@ -618,20 +563,18 @@ return require("packer").startup {
           max_ram = 32000,
           format_on_save = true,
           search_path = {
-            "/Users/pwntester/codeql-home/codeql-patched",
+            "/Users/pwntester/codeql-home/codeql",
             --"/Users/pwntester/codeql-home/codeql-go",
-            --"/Users/pwntester/codeql-home/codeql-ruby",
           },
         }
       end,
-      local_path = "dev/personal",
     }
     -- use_local {
     --   'pwntester/fortify.nvim',
     --   config = function()
     --     require'pwntester.plugins.fortify'.setup()
     --   end,
-    --   local_path = 'dev/personal',
+    --   local_path = "src/github.com/pwntester",
     -- }
 
     -- LSP
@@ -673,6 +616,9 @@ return require("packer").startup {
         require("renamer").setup {}
       end,
     }
+    use { "lukas-reineke/lsp-format.nvim" }
+    use { "ray-x/lsp_signature.nvim" }
+    use { "williamboman/nvim-lsp-installer" }
 
     -- MARKDOWN
     use {
@@ -693,10 +639,7 @@ return require("packer").startup {
         require("true-zen").setup {
           integrations = {
             vim_gitgutter = false,
-            --galaxyline = true,
-            --tmux = true,
             gitsigns = true,
-            --nvim_bufferline = true,
             limelight = false,
             twilight = false,
             vim_airline = false,

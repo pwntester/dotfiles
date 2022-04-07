@@ -27,8 +27,8 @@ vim.cmd [[autocmd FileType octo set foldexpr=NestedMarkdownFolds()]]
 -- ALIASES
 -----------------------------------------------------------------------------//
 --g.alias("bd", "lua require('bufdelete').bufdelete(0, true)")
---g.alias("bd", "lua require('close_buffers').delete({type = 'this'})")
-g.alias("bd", "lua MiniBufremove.delete()")
+g.alias("bd", "lua require('close_buffers').delete({type = 'this'})")
+--g.alias("bd", "lua MiniBufremove.delete()")
 
 -----------------------------------------------------------------------------//
 -- COMMANDS
@@ -231,11 +231,12 @@ vim.opt.listchars = {
 -----------------------------------------------------------------------------//
 -- Indentation
 -----------------------------------------------------------------------------//
-vim.opt.wrap = true
-vim.opt.linebreak = true
 vim.opt.autoindent = false
 vim.opt.cindent = false
 vim.opt.smartindent = false
+
+vim.opt.wrap = true
+vim.opt.linebreak = true
 vim.opt.shiftround = false
 vim.opt.shiftwidth = 2
 vim.opt.tabstop = 2
