@@ -17,6 +17,7 @@ local servers = {
   "codeqlls",
   "zk",
   "yamlls",
+  "jsonls",
   "dockerls",
 }
 
@@ -27,8 +28,6 @@ local function register_buffer(bufnr, client_id)
     table.insert(clients[bufnr], client_id)
   end
 end
-
-local capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities())
 
 local function on_attach_callback(client, bufnr)
   bufnr = bufnr or api.nvim_get_current_buf()
@@ -139,7 +138,6 @@ local function setup()
     end,
     ["efm"] = function(opts)
       local stylua = require "pwntester.plugins.efm.stylua"
-      local luacheck = require "pwntester.plugins.efm.luacheck"
       local staticcheck = require "pwntester.plugins.efm.staticcheck"
       local go_vet = require "pwntester.plugins.efm.go_vet"
       local goimports = require "pwntester.plugins.efm.goimports"
@@ -159,7 +157,7 @@ local function setup()
         log_file = "/tmp/efm.log",
         rootMarkers = { ".git/" },
         languages = {
-          lua = { stylua, luacheck },
+          lua = { stylua },
           python = { black, isort, flake8, mypy },
           yaml = { prettier },
           json = { prettier },
@@ -178,7 +176,7 @@ local function setup()
   lsp_installer.on_server_ready(function(server)
     local opts = {
       on_attach = on_attach_callback,
-      capabilities = capabilites,
+      capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities()),
       flags = {
         debounce_text_changes = 150,
       },
