@@ -1,4 +1,4 @@
-# go install honnef.co/go/tools/cmd/staticcheck@latest
+-- go install honnef.co/go/tools/cmd/staticcheck@latest
 return {
     lintCommand = "staticcheck",
     lintIgnoreExitCode = true,

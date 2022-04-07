@@ -1,4 +1,4 @@
-# go get -u github.com/client9/misspell/cmd/misspell
+-- go get -u github.com/client9/misspell/cmd/misspell
 return {
     lintCommand = "misspell",
     lintIgnoreExitCode = true,

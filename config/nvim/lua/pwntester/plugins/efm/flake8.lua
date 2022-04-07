@@ -1,4 +1,4 @@
-# pip install black
+-- pip install black
 return {
     lintCommand = "flake8 --max-line-length 160 --format '%(path)s:%(row)d:%(col)d: %(code)s %(code)s %(text)s' --stdin-display-name ${INPUT} -",
     lintStdin = true,

@@ -2,7 +2,6 @@
 ---local variant of packer's `use` function that specifies both a local and upstream version of a plugin
 ---@param spec table|string
 local function use_local(spec)
-  local path = ""
   if type(spec) ~= "table" then
     return g.echomsg(string.format("spec must be a table", spec[1]))
   end
@@ -11,7 +10,7 @@ local function use_local(spec)
     return g.echomsg(string.format("%s has no specified local path", spec[1]))
   end
   local name = vim.split(spec[1], "/")[2]
-  path = os.getenv "HOME" .. "/" .. local_spec.local_path .. "/" .. name
+  local path = os.getenv "HOME" .. "/" .. local_spec.local_path .. "/" .. name
   if vim.fn.isdirectory(vim.fn.expand(path)) < 1 then
     -- remote spec
     require("packer").use(spec)
