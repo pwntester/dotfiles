@@ -153,7 +153,7 @@ local function setup()
       local shfmt = require "pwntester.plugins.efm.shfmt"
       local misspell = require "pwntester.plugins.efm.misspell"
       opts.init_options = { documentFormatting = true, codeAction = true }
-      opts.filetypes = { "lua", "python", "yaml", "json", "typescript", "javascript", "markdown" },
+      opts.filetypes = { "lua", "python", "yaml", "json", "typescript", "javascript", "markdown" }
       opts.settings = {
         log_level = 1,
         log_file = "/tmp/efm.log",

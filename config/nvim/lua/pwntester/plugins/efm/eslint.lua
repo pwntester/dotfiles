@@ -1,4 +1,4 @@
-# npm install eslint
+-- npm install eslint
 return {
     lintCommand = "eslint_d -f visualstudio --stdin --stdin-filename ${INPUT}",
     lintIgnoreExitCode = true,

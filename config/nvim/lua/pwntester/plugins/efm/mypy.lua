@@ -1,4 +1,4 @@
-# pip install mypy
+-- pip install mypy
 return {
     lintCommand = "mypy --show-column-numbers --ignore-missing-imports --show-error-codes",
     lintFormats = {

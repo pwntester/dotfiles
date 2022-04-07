@@ -1,4 +1,4 @@
-# brew install shellcheck
+-- brew install shellcheck
 return {
     lintCommand = "shellcheck -f gcc -x -",
     lintStdin = true,
