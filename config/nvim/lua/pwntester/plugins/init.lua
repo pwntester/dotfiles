@@ -559,7 +559,7 @@ return require("packer").startup {
             context_lines = 3,
           },
           max_ram = 32000,
-          format_on_save = true,
+          format_on_save = false,
           search_path = {
             "/Users/pwntester/codeql-home/codeql",
             --"/Users/pwntester/codeql-home/codeql-go",
