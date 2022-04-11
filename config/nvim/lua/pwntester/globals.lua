@@ -160,23 +160,23 @@ function g.TODO()
 end
 
 function g.Bitacora()
-  require("octo.telescope.menu").issues { repo = "pwntester/bitacora", states = "OPEN" }
+  require("octo.pickers.telescope.provider").issues { repo = "pwntester/bitacora", states = "OPEN" }
 end
 function g.LabIssues()
-  require("octo.telescope.menu").issues { repo = "github/pe-security-lab" }
+  require("octo.pickers.telescope.provider").issues { repo = "github/pe-security-lab" }
 end
 function g.HubberReports()
-  require("octo.telescope.menu").issues {
+  require("octo.pickers.telescope.provider").issues {
     repo = "github/pe-security-lab",
     labels = "Vulnerability report",
     states = "OPEN",
   }
 end
 function g.VulnReports()
-  require("octo.telescope.menu").issues { repo = "github/securitylab_vulnerabilities" }
+  require("octo.pickers.telescope.provider").issues { repo = "github/securitylab_vulnerabilities" }
 end
 function g.BountySubmissions()
-  require("octo.telescope.menu").issues { repo = "github/securitylab-bounties", states = "OPEN" }
+  require("octo.pickers.telescope.provider").issues { repo = "github/securitylab-bounties", states = "OPEN" }
 end
 
 -----------------------------------------------------------------------------//
