@@ -12,3 +12,5 @@ aliases:
     url: "!gh $([[ $@ == *\"pull\"* ]] && echo pr || echo issue) view $@ --json url -q '.url'"
     vimpr: "!nvim +\"Octo `gh pr view --json url -q '.url'`\""
     vim: "!nvim +\"Octo `gh url $@`\""
+    needmyreview: search prs --review-requested=@me --state=open
+    waitingforreview: search prs --author @me --state open --review none
