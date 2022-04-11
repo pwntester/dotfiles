@@ -154,6 +154,7 @@ local function setup()
   telescope.load_extension "frecency"
   telescope.load_extension "octo"
   telescope.load_extension "ui-select"
+  telescope.load_extension "projects"
 end
 
 -- LSP workspace symbols
