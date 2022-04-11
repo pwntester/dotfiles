@@ -131,6 +131,9 @@ local function setup()
       }
     end,
     ["zk"] = function(opts)
+      opts.root_dir = function()
+        return vim.loop.cwd()
+      end
       opts.on_attach = function(client, bufnr)
         on_attach_callback(client, bufnr)
         g.map(require("pwntester.mappings").zk, { silent = true, noremap = true }, bufnr)
@@ -151,7 +154,7 @@ local function setup()
       local shfmt = require "pwntester.plugins.efm.shfmt"
       local misspell = require "pwntester.plugins.efm.misspell"
       opts.init_options = { documentFormatting = true, codeAction = true }
-      opts.filetypes = { "lua", "python", "yaml", "json", "typescript", "javascript", "markdown" }
+      opts.filetypes = { "lua", "python", "yaml", "json", "typescript", "javascript" }
       opts.settings = {
         log_level = 1,
         log_file = "/tmp/efm.log",
@@ -161,7 +164,7 @@ local function setup()
           python = { black, isort, flake8, mypy },
           yaml = { prettier },
           json = { prettier },
-          markdown = { prettier },
+          --markdown = { prettier },
           typescript = { prettier, eslint },
           javascript = { prettier, eslint },
           sh = { shellcheck, shfmt },
