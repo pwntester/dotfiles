@@ -16,19 +16,14 @@ alias grs='git remote show'
 alias glo='git log --pretty="oneline"'
 alias glol='git log --graph --oneline --decorate'
 
-alias awb='auditworkbench'
-alias sca='sourceanalyzer'
 alias vi='nvim'
-alias ls='gls --color=auto --group-directories-first'
 alias tree='exa --tree'
 alias ql='codeql'
 
-alias uao='python ~/bin/unzip-and-open.py'
+if command -v gls &> /dev/null then
+  alias ls='gls --color=auto --group-directories-first'
+fi
 
 alias csssh="TERM=xterm-256color gh cs ssh"
-alias d='dirs -v'
-for index ({1..9}) alias "$index"="cd +${index}"; unset index
-
-alias layout='tmux select-layout b0a6,301x59,0,0\{90x59,0,0\[90x29,0,0,1,90x29,0,30,6\],210x59,91,0,5\}'
 
 alias icat="kitty +kitten icat"
