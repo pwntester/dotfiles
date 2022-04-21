@@ -15,32 +15,16 @@ local function tab(fallback)
     }
   elseif luasnip and luasnip.expand_or_jumpable() then
     luasnip.expand_or_jump()
-  elseif api.nvim_get_mode().mode == "c" then
-    fallback()
   else
-    local tc = api.nvim_replace_termcodes("<Plug>(Tabout)", true, true, true)
-    -- local copilot_keys = vim.fn["copilot#Accept"](tc)
-    -- if copilot_keys ~= "" then
-    --   api.nvim_feedkeys(copilot_keys, "i", true)
-    -- else
-    api.nvim_feedkeys(tc, "i", true)
-    -- end
+    fallback()
   end
 end
 
 local function shift_tab(fallback)
   if luasnip and luasnip.jumpable(-1) then
     luasnip.jump(-1)
-  elseif api.nvim_get_mode().mode == "c" then
-    fallback()
   else
-    -- local copilot_keys = vim.fn["copilot#Accept"]()
-    -- if copilot_keys ~= "" then
-    --   feed(copilot_keys, "i")
-    -- else
-    local tc = api.nvim_replace_termcodes("<Plug>(Tabout)", true, true, true)
-    api.nvim_feedkeys(tc, "i", true)
-    -- end
+    fallback()
   end
 end
 
@@ -74,8 +58,8 @@ local function setup()
   }
 
   local mappings = {
-    ["<Tab>"] = cmp.mapping(tab, { "i", "c" }),
-    ["<S-Tab>"] = cmp.mapping(shift_tab, { "i", "c" }),
+    ["<Tab>"] = cmp.mapping(tab, { "i", "s" }),
+    ["<S-Tab>"] = cmp.mapping(shift_tab, { "i", "s" }),
     ["<C-d>"] = cmp.mapping(cmp.mapping.scroll_docs(-4), { "i", "c" }),
     ["<C-f>"] = cmp.mapping(cmp.mapping.scroll_docs(4), { "i", "c" }),
     ["<C-y>"] = cmp.mapping(cmp.mapping.complete(), { "i", "c" }),
