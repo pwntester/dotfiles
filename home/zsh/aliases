@@ -20,7 +20,8 @@ alias vi='nvim'
 alias tree='exa --tree'
 alias ql='codeql'
 
-if command -v gls &> /dev/null then
+if command -v gls &> /dev/null
+then
   alias ls='gls --color=auto --group-directories-first'
 fi
 
