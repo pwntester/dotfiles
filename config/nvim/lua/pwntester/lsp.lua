@@ -126,9 +126,9 @@ local function setup()
         local root_pattern = util.root_pattern "qlpack.yml"
         return root_pattern(fname) or util.path.dirname(fname)
       end
-      opts.settings = {
-        search_path = require("codeql.config").get_config().search_path,
-      }
+      -- opts.settings = {
+      --   search_path = require("codeql.config").get_config().search_path,
+      -- }
     end,
     ["zk"] = function(opts)
       opts.root_dir = function()
