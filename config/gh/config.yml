@@ -14,3 +14,4 @@ aliases:
     vim: "!nvim +\"Octo `gh url $@`\""
     needmyreview: search prs --review-requested=@me --state=open
     waitingforreview: search prs --author @me --state open --review none
+extensions.codeql.version: v2.8.5
