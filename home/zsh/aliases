@@ -18,8 +18,6 @@ alias glol='git log --graph --oneline --decorate'
 
 alias vi='nvim'
 alias tree='exa --tree'
-alias ql='gh codeql'
-alias codeql='gh codeql'
 
 if command -v gls &> /dev/null
 then
