@@ -19,13 +19,13 @@ export ANT_OPTS="-XX:MaxPermSize=256m"
 export ZSH_GIT_PROMPT_SHOW_UPSTREAM=full
 
 # path
-export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"
-export PATH=$HOME/bin:/usr/local/bin:/usr/local/sbin:$PATH
-export PATH=$PATH:~/codeql-home/cli
+export PATH=$PATH:/usr/local/opt/gnu-sed/libexec/gnubin
+export PATH=$PATH:/usr/local/bin
+export PATH=$PATH:/usr/local/sbin
 export PATH=$PATH:/usr/local/share/npm/bin
-export PATH=$PATH:/Applications/Fortify/Fortify_SCA_and_Apps_19.2.0/bin
-export PATH=$PATH:/Users/pwntester/.gem/ruby/3.0.0/bin
-export PATH=$PATH:/Users/pwntester/.cargo/bin
+export PATH=$PATH:$HOME/bin
+export PATH=$PATH:$HOME/.gem/ruby/3.0.0/bin
+export PATH=$PATH:$HOME/.cargo/bin
 
 # mvn
 # export MAVEN_DEBUG_OPTS="-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005"
