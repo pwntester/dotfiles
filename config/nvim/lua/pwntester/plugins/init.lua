@@ -58,26 +58,6 @@ return require("packer").startup {
     -- BASICS
     use { "jdhao/better-escape.vim" }
     use {
-      "abecodes/tabout.nvim",
-      wants = { "nvim-treesitter" },
-      after = { "nvim-cmp", "copilot.vim" },
-      config = function()
-        require("tabout").setup {
-          completion = false,
-          ignore_beginning = false,
-          exclude = {},
-          tabouts = {
-            { open = "'", close = "'" },
-            { open = '"', close = '"' },
-            { open = "`", close = "`" },
-            { open = "(", close = ")" },
-            { open = "[", close = "]" },
-            { open = "{", close = "}" },
-          },
-        }
-      end,
-    }
-    use {
       "karb94/neoscroll.nvim",
       config = function()
         require("neoscroll").setup()
@@ -136,14 +116,10 @@ return require("packer").startup {
       "hrsh7th/nvim-cmp",
       requires = {
         { "hrsh7th/cmp-nvim-lsp" },
-        { "hrsh7th/cmp-nvim-lsp-document-symbol" },
-        { "hrsh7th/cmp-cmdline" },
-        { "hrsh7th/cmp-path" },
         { "hrsh7th/cmp-buffer" },
-        --{ "hrsh7th/cmp-copilot" },
-        { "f3fora/cmp-spell" },
+        { "hrsh7th/cmp-path" },
+        { "hrsh7th/cmp-cmdline" },
         { "saadparwaiz1/cmp_luasnip" },
-        { "dmitmel/cmp-cmdline-history" },
       },
       config = function()
         require("pwntester.plugins.nvim-cmp").setup()
@@ -166,7 +142,6 @@ return require("packer").startup {
       config = function()
         vim.g.copilot_no_tab_map = true
         vim.g.copilot_assume_mapped = true
-        vim.g.copilot_tab_fallback = "<Plug>(Tabout)"
         vim.g.copilot_filetypes = {
           ["*"] = false,
           python = true,
