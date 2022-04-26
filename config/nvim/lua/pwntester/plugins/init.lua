@@ -25,8 +25,9 @@ local function use_local(spec)
     local_spec.local_disable = nil
     local_spec.local_name = nil
     require("packer").use(local_spec)
-     end
+  end
 end
+
 -- Bootstrap Packer
 local fn = vim.fn
 local install_path = fn.stdpath "data" .. "/site/pack/packer/opt/packer.nvim"

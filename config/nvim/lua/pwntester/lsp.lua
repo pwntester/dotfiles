@@ -81,6 +81,12 @@ local function setup()
   -- configure servers
   local server_opts = {
     ["sumneko_lua"] = function(opts)
+      opts.on_attach = function(client, bufnr)
+        on_attach_callback(client, bufnr)
+        -- Disable `sumneko`'s formatting capability so that efm is registered as the only compatible formatter.
+        client.resolved_capabilities.document_formatting = false
+        client.resolved_capabilities.document_range_formatting = false
+      end
       opts.settings = {
         Lua = {
           completion = { keywordSnippet = "Disable" },
@@ -141,19 +147,7 @@ local function setup()
       end
     end,
     ["efm"] = function(opts)
-      local stylua = require "pwntester.plugins.efm.stylua"
-      local staticcheck = require "pwntester.plugins.efm.staticcheck"
-      local go_vet = require "pwntester.plugins.efm.go_vet"
-      local goimports = require "pwntester.plugins.efm.goimports"
-      local black = require "pwntester.plugins.efm.black"
-      local isort = require "pwntester.plugins.efm.isort"
-      local flake8 = require "pwntester.plugins.efm.flake8"
-      local mypy = require "pwntester.plugins.efm.mypy"
-      local prettier = require "pwntester.plugins.efm.prettier"
-      local eslint = require "pwntester.plugins.efm.eslint"
-      local shellcheck = require "pwntester.plugins.efm.shellcheck"
-      local shfmt = require "pwntester.plugins.efm.shfmt"
-      local misspell = require "pwntester.plugins.efm.misspell"
+      local efm = require "pwntester.plugins.efm"
       opts.init_options = { documentFormatting = true, codeAction = true }
       opts.filetypes = { "lua", "python", "yaml", "json", "typescript", "javascript" }
       opts.settings = {
@@ -161,16 +155,15 @@ local function setup()
         log_file = "/tmp/efm.log",
         rootMarkers = { ".git/" },
         languages = {
-          lua = { stylua },
-          python = { black, isort, flake8, mypy },
-          yaml = { prettier },
-          json = { prettier },
-          --markdown = { prettier },
-          typescript = { prettier, eslint },
-          javascript = { prettier, eslint },
-          sh = { shellcheck, shfmt },
-          go = { staticcheck, goimports, go_vet },
-          ["="] = { misspell },
+          lua = { efm.stylua },
+          python = { efm.black, efm.isort, efm.flake8, efm.mypy },
+          yaml = { efm.prettier },
+          json = { efm.prettier },
+          typescript = { efm.prettier, efm.eslint },
+          javascript = { efm.prettier, efm.eslint },
+          sh = { efm.shellcheck, efm.shfmt },
+          go = { efm.staticcheck, efm.goimports, efm.govet },
+          ["="] = { efm.misspell },
         },
       }
     end,
