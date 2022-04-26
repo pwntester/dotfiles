@@ -28,6 +28,35 @@ local function shift_tab(fallback)
 end
 
 local function setup()
+
+  require("cmp_git").setup({
+    -- defaults
+    filetypes = { "gitcommit", "octo" },
+    trigger_actions = {
+      {
+        debug_name = "git_commits",
+        trigger_character = ":",
+        action = function(sources, trigger_char, callback, params)
+          return sources.git:get_commits(callback, params, trigger_char)
+        end,
+      },
+      {
+        debug_name = "github_issues_and_pr",
+        trigger_character = "#",
+        action = function(sources, trigger_char, callback, _, git_info)
+          return sources.github:get_issues_and_prs(callback, git_info, trigger_char)
+        end,
+      },
+      {
+        debug_name = "github_mentions",
+        trigger_character = "@",
+        action = function(sources, trigger_char, callback, _, git_info)
+          return sources.github:get_mentions(callback, git_info, trigger_char)
+        end,
+      },
+    },
+  })
+
   cmp.setup {
     snippet = {
       expand = function(args)
@@ -35,8 +64,8 @@ local function setup()
       end,
     },
     window = {
-      completion = cmp.config.window.bordered(),
-      documentation = cmp.config.window.bordered(),
+      completion = cmp.config.window.bordered({winhighlight = 'Normal:Normal,FloatBorder:LineNr,CursorLine:CursorLineNr,Search:ErroMsg'}),
+      documentation = cmp.config.window.bordered({winhighlight = 'Normal:Normal,FloatBorder:LineNr,CursorLine:CursorLineNr,Search:ErroMsg'}),
     },
     mapping = {
       ["<Tab>"] = cmp.mapping(tab, { "i", "s" }),
@@ -71,6 +100,8 @@ local function setup()
       { name = "luasnip" },
       { name = "nvim_lua" },
       { name = "path" },
+      { name = 'emoji' },
+      { name = "git" },
     }, {
       { name = "buffer" },
     }),
@@ -98,23 +129,23 @@ local function setup()
     },
   }
 
-  -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
   cmp.setup.cmdline(':', {
     mapping = cmp.mapping.preset.cmdline(),
     sources = cmp.config.sources({
-      { name = 'path' }
-    }, {
+      { name = 'cmdline_history', max_item_count=5 },
+      { name = 'path', max_item_count=5 },
       { name = 'cmdline' },
     })
   })
 
-  -- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
-  cmp.setup.cmdline('/', {
-    mapping = cmp.mapping.preset.cmdline(),
-    sources = {
-      { name = 'buffer' }
-    }
-  })
+  for _, cmd_type in ipairs({'/', '?', '@'}) do
+    cmp.setup.cmdline(cmd_type, {
+      sources = {
+        { name = 'buffer' },
+        { name = 'cmdline_history', max_item_count=5 },
+      },
+    })
+  end
 
 end
 

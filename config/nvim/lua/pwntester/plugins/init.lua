@@ -27,7 +27,6 @@ local function use_local(spec)
     require("packer").use(local_spec)
      end
 end
-
 -- Bootstrap Packer
 local fn = vim.fn
 local install_path = fn.stdpath "data" .. "/site/pack/packer/opt/packer.nvim"
@@ -67,16 +66,8 @@ return require("packer").startup {
       "kazhala/close-buffers.nvim",
       config = function()
         require("close_buffers").setup {
-          filetype_ignore = {}, -- Filetype to ignore when running deletions
+          filetype_ignore = {},
           preserve_window_layout = { "this" },
-          -- next_buffer_cmd = function(windows)
-          --   require("bufferline").cycle(1)
-          --   local bufnr = vim.api.nvim_get_current_buf()
-          --
-          --   for _, window in ipairs(windows) do
-          --     vim.api.nvim_win_set_buf(window, bufnr)
-          --   end
-          -- end,
         }
       end,
       -- BDelete! all glob=*octo://*
@@ -120,6 +111,9 @@ return require("packer").startup {
         { "hrsh7th/cmp-path" },
         { "hrsh7th/cmp-cmdline" },
         { "saadparwaiz1/cmp_luasnip" },
+        { "petertriho/cmp-git" },
+        { "hrsh7th/cmp-emoji" },
+        { "dmitmel/cmp-cmdline-history" },
       },
       config = function()
         require("pwntester.plugins.nvim-cmp").setup()
@@ -344,6 +338,31 @@ return require("packer").startup {
     --   requires = "pwntester/octo.nvim",
     --   local_path = "src/github.com/pwntester",
     -- }
+    use {
+      'rlch/github-notifications.nvim',
+      requires = {
+        'nvim-lua/plenary.nvim',
+        'nvim-telescope/telescope.nvim',
+      },
+      config = function()
+        require('github-notifications').setup({
+          icon = '',
+          hide_statusline_on_all_read = true,
+          hide_entry_on_read = false, -- Whether to hide the Telescope entry after reading (buggy)
+          debounce_duration = 60,
+          cache = false,
+          sort_unread_first = true,
+          mappings = {
+            mark_read = '<CR>',
+            hide = 'd', -- remove from Telescope picker, but don't mark as read
+            open_in_browser = 'o',
+          },
+          prompt_mappings = {
+            mark_all_read = '<C-r>'
+          }
+        })
+      end,
+    }
     use { "sindrets/diffview.nvim" }
     use {
       "TimUntersberger/neogit",
@@ -437,18 +456,24 @@ return require("packer").startup {
     }
 
     -- STATUSLINE & TABLINE
+    -- use {
+    --   "windwp/windline.nvim",
+    --   requires = { "kyazdani42/nvim-web-devicons", "nvim-lspconfig" },
+    --   config = function()
+    --     require "pwntester.plugins.windline"
+    --   end,
+    -- }
     use {
-      "windwp/windline.nvim",
-      requires = { "kyazdani42/nvim-web-devicons", "nvim-lspconfig" },
+      'nvim-lualine/lualine.nvim',
+      requires = { 'kyazdani42/nvim-web-devicons', opt = true },
       config = function()
-        require "pwntester.plugins.windline"
+        require("pwntester.plugins.lualine").setup()
       end,
     }
 
     -- FILE EXPLORER
     use {
       "nvim-neo-tree/neo-tree.nvim",
-      branch = "v1.x",
       requires = {
         "nvim-lua/plenary.nvim",
         "kyazdani42/nvim-web-devicons",
@@ -559,6 +584,9 @@ return require("packer").startup {
       config = function()
         require("lspkind").init {}
       end,
+    }
+    use {
+      "doums/lsp_spinner.nvim"
     }
     use {
       "rmagatti/goto-preview",

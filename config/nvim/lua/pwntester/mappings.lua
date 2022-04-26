@@ -34,20 +34,17 @@ local mappings = {
     -- move between windows
     ["n<C-p>"] = { "<Plug>(choosewin)", noremap = false },
 
-    ["n<C-h>"] = { [[<cmd>lua require('tmux').move_left()<CR>]] },
-    ["n<C-j>"] = { [[<cmd>lua require('tmux').move_down()<CR>]] },
-    ["n<C-k>"] = { [[<cmd>lua require('tmux').move_up()<CR>]] },
-    ["n<C-l>"] = { [[<cmd>lua require('tmux').move_right()<CR>]] },
-    -- ["n<c-k>"] = { ":wincmd k<CR>" },
-    -- ["n<c-j>"] = { ":wincmd j<CR>" },
-    -- ["n<c-h>"] = { ":wincmd h<CR>" },
-    -- ["n<c-l>"] = { ":wincmd l<CR>" },
+    -- ["n<C-h>"] = { [[<cmd>lua require('tmux').move_left()<CR>]] },
+    -- ["n<C-j>"] = { [[<cmd>lua require('tmux').move_down()<CR>]] },
+    -- ["n<C-k>"] = { [[<cmd>lua require('tmux').move_up()<CR>]] },
+    -- ["n<C-l>"] = { [[<cmd>lua require('tmux').move_right()<CR>]] },
+    ["n<c-k>"] = { ":wincmd k<CR>" },
+    ["n<c-j>"] = { ":wincmd j<CR>" },
+    ["n<c-h>"] = { ":wincmd h<CR>" },
+    ["n<c-l>"] = { ":wincmd l<CR>" },
 
-    -- switch window orientation
-    -- windo wincmd K (switch to horizontal)
-    -- :ball
-    -- windo wincmd H (switch to vertical)
-    -- :vertical ball
+    -- wincmd K (switch to horizontal)
+    -- wincmd H (switch to vertical)
 
     -- resize splits
     ["n>"] = { ':execute "vertical resize +5"<CR>' },
@@ -121,6 +118,9 @@ local mappings = {
     ["ngo"] = { "<Plug>(OctoOpenIssueAtCursor)", noremap = false },
 
     -- TELESCOPE
+    ["n<leader>n"] = {
+      [[<cmd>lua require('github-notifications.menu').notifications()<CR>]],
+    },
     ["n<leader>f"] = {
       [[<cmd>lua require'telescope.builtin'.find_files()<CR>]],
     },
@@ -168,8 +168,8 @@ local mappings = {
     ["n<S-h>"] = { "<C-o>", noremap = false },
 
     -- NEOTREE
-    ["nge"] = { [[:NeoTreeRevealToggle<CR>]] },
-    ["n<C-o>"] = { [[:NeoTreeShow buffers<CR>]] },
+    ["nge"] = { [[:Neotree action=show source=filesystem position=left toggle=true reveal=true reveal_force_cwd=true<CR>]] },
+    ["n<C-o>"] = { [[:Neotree action=show source=buffers position=right toggle=true<CR>]] },
 
     -- GIT-MESSANGER
     ["n<leader>gm"] = { [[<Plug>(git-messenger)]], noremap = false },

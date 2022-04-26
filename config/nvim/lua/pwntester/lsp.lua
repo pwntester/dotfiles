@@ -34,6 +34,7 @@ local function on_attach_callback(client, bufnr)
 
   -- extensions
   require("lsp-format").on_attach(client)
+  require('lsp_spinner').on_attach(client, bufnr)
   require("lsp_signature").on_attach {
     hint_enable = false,
     hi_parameter = "QuickFixLine",
