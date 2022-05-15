@@ -94,6 +94,9 @@ function M.setup()
       },
       window = {
         mappings = {
+          ["<CR>"] = "open_with_window_picker",
+          ["S"] = "split_with_window_picker",
+          ["s"] = "vsplit_with_window_picker",
           ["o"] = function(state)
             local node = state.tree:get_node()
             if node.type == "directory" then

@@ -103,15 +103,15 @@ vim.opt.fillchars = {
 -----------------------------------------------------------------------------//
 -- Use in vertical diff mode, blank lines to keep sides aligned, Ignore whitespace changes
 vim.opt.diffopt = vim.opt.diffopt
-  + {
-    "vertical",
-    "iwhite",
-    "hiddenoff",
-    "foldcolumn:0",
-    "context:1000000",
-    "algorithm:histogram", -- "algorithm:patience"
-    "indent-heuristic",
-  }
+    + {
+      "vertical",
+      "iwhite",
+      "hiddenoff",
+      "foldcolumn:0",
+      "context:1000000",
+      "algorithm:histogram", -- "algorithm:patience"
+      "indent-heuristic",
+    }
 -----------------------------------------------------------------------------//
 -- Format Options {{{1
 -----------------------------------------------------------------------------//
@@ -156,7 +156,7 @@ end
 -----------------------------------------------------------------------------//
 vim.opt.wildmode = { "full", "longest" }
 vim.opt.wildoptions = "pum"
-vim.opt.pumblend = 15 -- Make popup window translucent
+vim.opt.pumblend = 0
 vim.opt.pumheight = 15
 vim.opt.pumwidth = 20
 vim.opt.wildignorecase = true -- Ignore case when completing file names and directories
@@ -208,7 +208,7 @@ vim.opt.wildignore = {
 -----------------------------------------------------------------------------//
 -- Display {{{1
 -----------------------------------------------------------------------------//
-vim.opt.cursorline = true
+vim.opt.cursorline = false
 vim.go.laststatus = 3
 vim.opt.showtabline = 0 -- 2
 vim.opt.conceallevel = 2

@@ -57,6 +57,17 @@ local function setup()
     },
   })
 
+  local window_border_chars_thick = {
+    { "▛", "CmpBorder" },
+    { "▀", "CmpBorder" },
+    { "▜", "CmpBorder" },
+    { "▐", "CmpBorder" },
+    { "▟", "CmpBorder" },
+    { "▄", "CmpBorder" },
+    { "▙", "CmpBorder" },
+    { "▌", "CmpBorder" },
+  }
+
   cmp.setup {
     snippet = {
       expand = function(args)
@@ -64,8 +75,16 @@ local function setup()
       end,
     },
     window = {
-      completion = cmp.config.window.bordered({winhighlight = 'Normal:Normal,FloatBorder:LineNr,CursorLine:CursorLineNr,Search:ErroMsg'}),
-      documentation = cmp.config.window.bordered({winhighlight = 'Normal:Normal,FloatBorder:LineNr,CursorLine:CursorLineNr,Search:ErroMsg'}),
+      completion = {
+        winhighlight = 'Normal:CmpFloat,FloatBorder:CmpBorder,CursorLine:CursorLineNr,Search:ErroMsg',
+        border = window_border_chars_thick,
+        zindex = 1001
+      },
+      documentation = {
+        winhighlight = 'Normal:CmpFloat,FloatBorder:CmpBorder,CursorLine:CursorLineNr,Search:ErroMsg',
+        border = window_border_chars_thick,
+        zindex = 1001
+      },
     },
     mapping = {
       ["<Tab>"] = cmp.mapping(tab, { "i", "s" }),
@@ -132,17 +151,17 @@ local function setup()
   cmp.setup.cmdline(':', {
     mapping = cmp.mapping.preset.cmdline(),
     sources = cmp.config.sources({
-      { name = 'cmdline_history', max_item_count=5 },
-      { name = 'path', max_item_count=5 },
+      { name = 'cmdline_history', max_item_count = 15 },
+      { name = 'path', max_item_count = 15 },
       { name = 'cmdline' },
     })
   })
 
-  for _, cmd_type in ipairs({'/', '?', '@'}) do
+  for _, cmd_type in ipairs({ '/', '?', '@' }) do
     cmp.setup.cmdline(cmd_type, {
       sources = {
         { name = 'buffer' },
-        { name = 'cmdline_history', max_item_count=5 },
+        { name = 'cmdline_history', max_item_count = 15 },
       },
     })
   end

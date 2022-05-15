@@ -1,7 +1,6 @@
 local telescope = require "telescope"
 local actions = require "telescope.actions"
 local _, trouble = pcall(require, "trouble.providers.telescope")
-local sorters = require "telescope.sorters"
 local window = require "pwntester.window"
 
 local dropdown_borderchars = {
