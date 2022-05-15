@@ -60,59 +60,67 @@ local function file()
   local bufname = vim.fn.bufname()
   if vim.startswith(bufname, "octo:") or vim.startswith(bufname, "codeql:") or vim.startswith(bufname, "docker:") then
     return bufname
+  elseif vim.bo.filetype == "toggleterm" then
+    return "terminal (" .. vim.api.nvim_buf_get_var(0, "toggle_number") .. ")"
   else
     return relpath(vim.fn.fnamemodify(bufname, ":p"), vim.fn.getcwd())
   end
 end
 
 local function position()
-    return vim.fn.col "." .. ":" .. vim.fn.line "." .. " " .. tostring(math.floor(vim.fn.line "." / vim.fn.line "$" * 100)) .. "%%"
+  return vim.fn.col "." .. ":" .. vim.fn.line "." .. " " .. tostring(math.floor(vim.fn.line "." / vim.fn.line "$" * 100)) .. "%%"
 end
 
 local function lsp()
   local lsp_servers = require('lsp_spinner').status()
   if lsp_servers then
-    return " " .. lsp_servers
+    return lsp_servers
   else
-    return " "
+    return ""
   end
 end
 
 local M = {}
 
+
+local custom_onenord = require 'lualine.themes.onenord'
+local onenord_colors = require("onenord.colors.onenord")
+custom_onenord.normal.c.bg = onenord_colors.bg
+
 function M.setup()
   ll.setup {
     options = {
       icons_enabled = true,
-      theme = "auto",
+      --theme = "auto",
+      theme = custom_onenord,
       section_separators = '',
       component_separators = '',
       disabled_filetypes = {},
       always_divide_middle = true,
-      globalstatus = false,
+      globalstatus = true,
     },
     sections = {
       lualine_a = {
         {
           function() return " " end,
-          padding = { left = 0, right = 0},
+          padding = { left = 0, right = 0 },
           color = 'Comment',
         },
         {
           github,
-          padding = { left = 0, right = 1},
-          color = 'Comment',
+          padding = { left = 0, right = 1 },
+          color = 'MoreMsg',
         }
       },
       lualine_b = {
         {
           require('github-notifications').statusline_notification_count,
-          padding = { left = 0, right = 1},
-          color = 'CursorLineNr',
+          padding = { left = 0, right = 1 },
+          color = 'Statement',
         },
         {
           "branch",
-          padding = { left = 0, right = 1},
+          padding = { left = 0, right = 1 },
           color = 'Normal',
           icon = ""
         }
@@ -120,32 +128,37 @@ function M.setup()
       lualine_c = {
         {
           cwd,
-          padding = { left = 0, right = 1},
-          color = 'CursorLineNr',
+          padding = { left = 0, right = 1 },
+          color = 'WildMenu',
         }
       },
       lualine_x = {
         {
           file,
-          padding = { left = 0, right = 1},
-          color = 'CursorLineNr',
+          padding = { left = 0, right = 1 },
+          color = 'WildMenu',
         },
         {
           position,
-          padding = { left = 0, right = 1},
+          padding = { left = 0, right = 1 },
           color = 'Normal',
         }
       },
       lualine_y = {
         {
           "filetype",
-          padding = { left = 0, right = 1},
+          padding = { left = 0, right = 1 },
+          icons_enabled = true,
+          icon = { color = 'WildMenu' },
+          color = 'WildMenu',
         },
       },
       lualine_z = {
         {
           lsp,
-          padding = { left = 0, right = 1},
+          padding = { left = 0, right = 1 },
+          icons_enabled = true,
+          icon = { "", color = 'WildMenu' },
           color = function()
             local servers = require('lsp_spinner').status()
             if #servers > 0 then
@@ -157,10 +170,10 @@ function M.setup()
         },
         {
           "diagnostics",
-          padding = { left = 0, right = 1},
+          padding = { left = 0, right = 1 },
           sources = { 'nvim_lsp' },
           sections = { 'error', 'warn' },
-          symbols = {error = ' ', warn = ' '},
+          symbols = { error = ' ', warn = ' ' },
           colored = true,
           diagnostics_color = {
             error = 'DiagnosticError',

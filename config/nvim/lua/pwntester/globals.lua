@@ -18,7 +18,6 @@ _G.g = {
     "goterm",
     "codeql_panel",
     "codeql_explorer",
-    "terminal",
     "packer",
     "octo",
     "octo_panel",
@@ -33,6 +32,7 @@ _G.g = {
     "NvimTree",
     "Yanil",
     "neo-tree",
+    "toggleterm"
   },
 }
 
@@ -41,30 +41,34 @@ _G.g = {
 -----------------------------------------------------------------------------//
 
 function g.onFileType()
-  if vim.tbl_contains({ "octo", "frecency", "TelescopePrompt", "TelescopeResults" }, vim.bo.filetype) then
-  elseif vim.tbl_contains(g.special_buffers, vim.bo.filetype) then
-    vim.api.nvim_win_set_option(0, "winhighlight", "Normal:NormalAlt")
-  elseif vim.bo.filetype == "" then
-    vim.api.nvim_win_set_option(0, "winhighlight", "Normal:NormalAlt")
-  else
-    vim.api.nvim_win_set_option(0, "winhighlight", "Normal:Normal")
-  end
-  vim.cmd [[au FileType * set fo-=c fo-=r fo-=o]]
+  -- if vim.tbl_contains({ "octo", "frecency", "TelescopePrompt", "TelescopeResults" }, vim.bo.filetype) then
+  -- elseif vim.tbl_contains(g.special_buffers, vim.bo.filetype) then
+  --   vim.api.nvim_win_set_option(0, "winhighlight", "Normal:NormalAlt")
+  -- elseif vim.bo.filetype == "" or vim.bo.buftype == "terminal" then
+  --   vim.api.nvim_win_set_option(0, "winhighlight", "Normal:NormalAlt")
+  -- else
+  --   vim.api.nvim_win_set_option(0, "winhighlight", "Normal:Normal")
+  -- end
+  vim.api.nvim_command [[au FileType * set fo-=c fo-=r fo-=o]]
+  -- if vim.bo.buftype == "terminal" then
+  -- vim.api.nvim_win_set_option(0, "winhighlight", "Normal:NormalAlt")
+  -- end
 end
 
 function g.onEnter()
-  if vim.tbl_contains(g.special_buffers, vim.bo.filetype) then
-    if not vim.tbl_contains({ "octo", "dashboard" }, vim.bo.filetype) then
-      -- prevent changing buffer
-      vim.cmd [[ nnoremap <silent><buffer><s-l> <nop> ]]
-      vim.cmd [[ nnoremap <silent><buffer><s-h> <nop> ]]
-      vim.cmd [[ nnoremap <silent><buffer><leader>m <nop> ]]
-      vim.cmd [[ nnoremap <silent><buffer><leader>f <nop> ]]
-      vim.cmd [[ cmap <silent><buffer><expr>e<Space> (getcmdtype()==':' && getcmdpos()==1? "<Space>": "e<Space>") ]]
-      vim.cmd [[ cmap <silent><buffer><expr>bd<Return> (getcmdtype()==':' && getcmdpos()==1? "<Space>": "bd<Return>") ]]
-      vim.cmd [[ cmap <silent><buffer><expr>bp<Return> (getcmdtype()==':' && getcmdpos()==1? "<Space>": "bp<Return>") ]]
-      vim.cmd [[ cmap <silent><buffer><expr>bn<Return> (getcmdtype()==':' && getcmdpos()==1? "<Space>": "bn<Return>") ]]
-    end
+  --if vim.tbl_contains(g.special_buffers, vim.bo.filetype) and not vim.tbl_contains({ "octo", "dashboard" }, vim.bo.filetype) then
+  -- prevent changing buffer
+  -- vim.cmd [[ nnoremap <silent><buffer><s-l> <nop> ]]
+  -- vim.cmd [[ nnoremap <silent><buffer><s-h> <nop> ]]
+  -- vim.cmd [[ nnoremap <silent><buffer><leader>m <nop> ]]
+  -- vim.cmd [[ nnoremap <silent><buffer><leader>f <nop> ]]
+  -- vim.cmd [[ cmap <silent><buffer><expr>e<Space> (getcmdtype()==':' && getcmdpos()==1? "<Space>": "e<Space>") ]]
+  -- vim.cmd [[ cmap <silent><buffer><expr>bd<Return> (getcmdtype()==':' && getcmdpos()==1? "<Space>": "bd<Return>") ]]
+  -- vim.cmd [[ cmap <silent><buffer><expr>bp<Return> (getcmdtype()==':' && getcmdpos()==1? "<Space>": "bp<Return>") ]]
+  -- vim.cmd [[ cmap <silent><buffer><expr>bn<Return> (getcmdtype()==':' && getcmdpos()==1? "<Space>": "bn<Return>") ]]
+  --end
+  if vim.bo.buftype == "terminal" then
+    vim.wo.cursorline = false
   end
 end
 
@@ -162,9 +166,11 @@ end
 function g.Bitacora()
   require("octo.pickers.telescope.provider").issues { repo = "pwntester/bitacora", states = "OPEN" }
 end
+
 function g.LabIssues()
   require("octo.pickers.telescope.provider").issues { repo = "github/pe-security-lab" }
 end
+
 function g.HubberReports()
   require("octo.pickers.telescope.provider").issues {
     repo = "github/pe-security-lab",
@@ -172,9 +178,11 @@ function g.HubberReports()
     states = "OPEN",
   }
 end
+
 function g.VulnReports()
   require("octo.pickers.telescope.provider").issues { repo = "github/securitylab_vulnerabilities" }
 end
+
 function g.BountySubmissions()
   require("octo.pickers.telescope.provider").issues { repo = "github/securitylab-bounties", states = "OPEN" }
 end

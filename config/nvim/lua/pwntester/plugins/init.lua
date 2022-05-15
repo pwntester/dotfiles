@@ -43,7 +43,7 @@ if fn.empty(fn.glob(install_path)) > 0 then
   }
 end
 
-vim.cmd "packadd! packer.nvim"
+vim.cmd("packadd packer.nvim")
 return require("packer").startup {
   function(use)
     use {
@@ -107,6 +107,16 @@ return require("packer").startup {
     use {
       "hrsh7th/nvim-cmp",
       requires = {
+        {
+          "L3MON4D3/LuaSnip",
+          after = "nvim-cmp",
+          requires = {
+            { "rafamadriz/friendly-snippets" },
+          },
+          config = function()
+            require("pwntester.plugins.luasnip").setup()
+          end,
+        },
         { "hrsh7th/cmp-nvim-lsp" },
         { "hrsh7th/cmp-buffer" },
         { "hrsh7th/cmp-path" },
@@ -122,16 +132,6 @@ return require("packer").startup {
     }
 
     -- SNIPPETS
-    use {
-      "L3MON4D3/LuaSnip",
-      after = "nvim-cmp",
-      requires = {
-        { "rafamadriz/friendly-snippets" },
-      },
-      config = function()
-        require("pwntester.plugins.luasnip").setup()
-      end,
-    }
     use {
       "github/copilot.vim",
       config = function()
@@ -173,25 +173,16 @@ return require("packer").startup {
     -- TREESITTER
     use {
       "nvim-treesitter/nvim-treesitter",
+      run = ':TSUpdate',
+      requires = {
+        "nvim-treesitter/playground",
+        "nvim-treesitter/completion-treesitter",
+        "nvim-treesitter/nvim-treesitter-refactor",
+        "nvim-treesitter/nvim-treesitter-textobjects",
+      },
       config = function()
         require("pwntester.plugins.treesitter").setup()
       end,
-    }
-    use {
-      "nvim-treesitter/playground",
-      wants = { "nvim-treesitter" },
-    }
-    use {
-      "nvim-treesitter/completion-treesitter",
-      wants = { "nvim-treesitter" },
-    }
-    use {
-      "nvim-treesitter/nvim-treesitter-refactor",
-      wants = { "nvim-treesitter" },
-    }
-    use {
-      "nvim-treesitter/nvim-treesitter-textobjects",
-      wants = { "nvim-treesitter" },
     }
 
     -- ALIGNING
@@ -217,7 +208,6 @@ return require("packer").startup {
 
           -- Duration (in ms) of highlight when calling `MiniSurround.highlight()`
           highlight_duration = 500,
-
 
           -- Module mappings. Use `''` (empty string) to disable one.
           mappings = {
@@ -340,28 +330,28 @@ return require("packer").startup {
     --   local_path = "src/github.com/pwntester",
     -- }
     use {
-      'rlch/github-notifications.nvim',
+      "rlch/github-notifications.nvim",
       requires = {
-        'nvim-lua/plenary.nvim',
-        'nvim-telescope/telescope.nvim',
+        "nvim-lua/plenary.nvim",
+        "nvim-telescope/telescope.nvim",
       },
       config = function()
-        require('github-notifications').setup({
-          icon = '',
+        require("github-notifications").setup {
+          icon = "",
           hide_statusline_on_all_read = true,
           hide_entry_on_read = false, -- Whether to hide the Telescope entry after reading (buggy)
           debounce_duration = 60,
           cache = false,
           sort_unread_first = true,
           mappings = {
-            mark_read = '<CR>',
-            hide = 'd', -- remove from Telescope picker, but don't mark as read
-            open_in_browser = 'o',
+            mark_read = "<CR>",
+            hide = "d", -- remove from Telescope picker, but don't mark as read
+            open_in_browser = "o",
           },
           prompt_mappings = {
-            mark_all_read = '<C-r>'
-          }
-        })
+            mark_all_read = "<C-r>",
+          },
+        }
       end,
     }
     use { "sindrets/diffview.nvim" }
@@ -387,14 +377,20 @@ return require("packer").startup {
     }
 
     -- THEMES & COLORS
+    use {
+      'rmehri01/onenord.nvim',
+      config = function()
+        require('pwntester.plugins.onenord').setup()
+      end,
+    }
     use_local {
       "pwntester/nautilus.nvim",
       local_path = "src/github.com/pwntester",
-      config = function()
-        require("nautilus").load {
-          transparent = false,
-        }
-      end,
+      -- config = function()
+      --   require("nautilus").load {
+      --     transparent = false,
+      --   }
+      -- end,
     }
     use {
       "norcalli/nvim-colorizer.lua",
@@ -421,13 +417,24 @@ return require("packer").startup {
       "MunifTanjim/nui.nvim",
       module = "nui",
     }
-    use { "junegunn/rainbow_parentheses.vim" }
-    -- use {
-    --   "RRethy/vim-illuminate",
-    --   config = function()
-    --     vim.g.Illuminate_ftblacklist = vim.list_extend(vim.fn.deepcopy(g.special_buffers), { "markdown" })
-    --   end,
-    -- }
+    use {
+      's1n7ax/nvim-window-picker',
+      tag = "1.*",
+      config = function()
+        require 'window-picker'.setup({
+          autoselect_one = true,
+          include_current = false,
+          filter_rules = {
+            bo = {
+              filetype = g.special_buffers,
+              buftype = { 'terminal' },
+            },
+          },
+          current_win_hl_color = '#e35e4f',
+          other_win_hl_color = '#44cc41',
+        })
+      end,
+    }
     use {
       "folke/trouble.nvim",
       requires = "kyazdani42/nvim-web-devicons",
@@ -455,18 +462,26 @@ return require("packer").startup {
       --- :Telescope notify
       --- :lua require('telescope').extensions.notify.notify(<opts>)
     }
+    use { "junegunn/rainbow_parentheses.vim" }
+    use { "akinsho/toggleterm.nvim",
+      tag = 'v1.*',
+      config = function()
+        require("toggleterm").setup({
+          open_mapping = [[<c-\>]],
+          highlights = {
+            Normal = {
+              link = 'NormalActive'
+            }
+          }
+        })
+      end
+    }
+
 
     -- STATUSLINE & TABLINE
-    -- use {
-    --   "windwp/windline.nvim",
-    --   requires = { "kyazdani42/nvim-web-devicons", "nvim-lspconfig" },
-    --   config = function()
-    --     require "pwntester.plugins.windline"
-    --   end,
-    -- }
     use {
-      'nvim-lualine/lualine.nvim',
-      requires = { 'kyazdani42/nvim-web-devicons', opt = true },
+      "nvim-lualine/lualine.nvim",
+      requires = { "kyazdani42/nvim-web-devicons", opt = true },
       config = function()
         require("pwntester.plugins.lualine").setup()
       end,
@@ -479,6 +494,7 @@ return require("packer").startup {
         "nvim-lua/plenary.nvim",
         "kyazdani42/nvim-web-devicons",
         "MunifTanjim/nui.nvim",
+        "s1n7ax/nvim-window-picker",
       },
       config = function()
         require("pwntester.plugins.neo-tree").setup()
@@ -587,7 +603,7 @@ return require("packer").startup {
       end,
     }
     use {
-      "doums/lsp_spinner.nvim"
+      "doums/lsp_spinner.nvim",
     }
     use {
       "rmagatti/goto-preview",
@@ -626,6 +642,12 @@ return require("packer").startup {
           },
         }
       end,
+    }
+    use {
+      "edluffy/hologram.nvim",
+      config = function()
+        require("hologram").setup {}
+      end
     }
     use {
       "Pocco81/TrueZen.nvim",
@@ -667,12 +689,13 @@ return require("packer").startup {
     use {
       "petertriho/nvim-scrollbar",
       config = function()
-        local c = require("nautilus.theme").colors
+        --local c = require("nautilus.theme").colors
         require("scrollbar").setup {
           excluded_filetypes = g.special_buffers,
           handle = {
             text = " ",
-            color = c.cobalt,
+            color = "#354360",
+            --color = c.cobalt,
             hide_if_all_visible = true, -- Hides handle if all lines are visible
           },
           marks = {
@@ -694,6 +717,10 @@ return require("packer").startup {
     }
 
     -- HTTP Client
+    use {
+      "diepm/vim-rest-console"
+      -- set ft=rest
+    }
     use {
       "NTBBloodbath/rest.nvim",
       requires = { "nvim-lua/plenary.nvim" },

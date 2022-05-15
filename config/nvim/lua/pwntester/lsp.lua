@@ -2,11 +2,10 @@ local vim = vim
 local api = vim.api
 local nvim_lsp = require "lspconfig"
 local window = require "pwntester.window"
-local util = require "lspconfig/util"
-local lsp_installer = require "nvim-lsp-installer"
+local util = require "lspconfig.util"
+local efm = require "pwntester.plugins.efm"
 
-local clients = {}
-
+--local clients = {}
 local servers = {
   "bashls",
   "pyright",
@@ -21,20 +20,26 @@ local servers = {
   "dockerls",
 }
 
-local function register_buffer(bufnr, client_id)
-  if not clients[bufnr] then
-    clients[bufnr] = { client_id }
-  else
-    table.insert(clients[bufnr], client_id)
-  end
-end
+require("nvim-lsp-installer").setup {
+  ensure_installed = servers,
+}
+
+-- local function register_buffer(bufnr, client_id)
+--   if not clients[bufnr] then
+--     clients[bufnr] = { client_id }
+--   else
+--     table.insert(clients[bufnr], client_id)
+--   end
+-- end
+
+local capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities())
 
 local function on_attach_callback(client, bufnr)
   bufnr = bufnr or api.nvim_get_current_buf()
 
   -- extensions
   require("lsp-format").on_attach(client)
-  require('lsp_spinner').on_attach(client, bufnr)
+  require("lsp_spinner").on_attach(client, bufnr)
   require("lsp_signature").on_attach {
     hint_enable = false,
     hi_parameter = "QuickFixLine",
@@ -44,7 +49,7 @@ local function on_attach_callback(client, bufnr)
   }
 
   -- register client/buffer relation
-  register_buffer(bufnr, client.id)
+  --register_buffer(bufnr, client.id)
 
   -- mappings
   g.map(require("pwntester.mappings").lsp, { silent = false, noremap = true }, bufnr)
@@ -69,25 +74,16 @@ local function setup()
     texthl = "LspDiagnosticsSignHint",
   })
 
-  -- install servers
-  for _, name in pairs(servers) do
-    local server_is_found, server = lsp_installer.get_server(name)
-    if server_is_found and not server:is_installed() then
-      print("Installing " .. name)
-      server:install()
-    end
-  end
-
   -- configure servers
   local server_opts = {
-    ["sumneko_lua"] = function(opts)
-      opts.on_attach = function(client, bufnr)
+    ["sumneko_lua"] = {
+      on_attach = function(client, bufnr)
         on_attach_callback(client, bufnr)
         -- Disable `sumneko`'s formatting capability so that efm is registered as the only compatible formatter.
-        client.resolved_capabilities.document_formatting = false
-        client.resolved_capabilities.document_range_formatting = false
-      end
-      opts.settings = {
+        client.server_capabilities.document_formatting = false
+        client.server_capabilities.document_range_formatting = false
+      end,
+      settings = {
         Lua = {
           completion = { keywordSnippet = "Disable" },
           diagnostics = {
@@ -112,45 +108,44 @@ local function setup()
             },
           },
         },
-      }
-    end,
-    ["tsserver"] = function(opts)
-      opts.root_dir = util.root_pattern("package.json", "tsconfig.json", ".git") or vim.loop.cwd()
-    end,
-    ["gopls"] = function(opts)
-      opts.root_dir = function(fname)
+      },
+    },
+    ["tsserver"] = {
+      root_dir = util.root_pattern("package.json", "tsconfig.json", ".git") or vim.loop.cwd(),
+    },
+    ["gopls"] = {
+      root_dir = function(fname)
         if vim.startswith(fname, "octo:") or vim.startswith(fname, "codeql:") or vim.startswith(fname, "docker:") then
           return
         end
         nvim_lsp.gopls.default_config.root_dir(fname)
-      end
-    end,
-    ["codeqlls"] = function(opts)
-      opts.root_dir = function(fname)
+      end,
+    },
+    ["codeqlls"] = {
+      root_dir = function(fname)
         if vim.startswith(fname, "octo:") or vim.startswith(fname, "codeql:") or vim.startswith(fname, "docker:") then
           return
         end
         local root_pattern = util.root_pattern "qlpack.yml"
         return root_pattern(fname) or util.path.dirname(fname)
-      end
+      end,
       -- opts.settings = {
       --   search_path = require("codeql.config").get_config().search_path,
       -- }
-    end,
-    ["zk"] = function(opts)
-      opts.root_dir = function()
+    },
+    ["zk"] = {
+      root_dir = function()
         return vim.loop.cwd()
-      end
-      opts.on_attach = function(client, bufnr)
+      end,
+      on_attach = function(client, bufnr)
         on_attach_callback(client, bufnr)
         g.map(require("pwntester.mappings").zk, { silent = true, noremap = true }, bufnr)
-      end
-    end,
-    ["efm"] = function(opts)
-      local efm = require "pwntester.plugins.efm"
-      opts.init_options = { documentFormatting = true, codeAction = true }
-      opts.filetypes = { "lua", "python", "yaml", "json", "typescript", "javascript" }
-      opts.settings = {
+      end,
+    },
+    ["efm"] = {
+      init_options = { documentFormatting = true, codeAction = true },
+      filetypes = { "lua", "python", "yaml", "json", "typescript", "javascript" },
+      settings = {
         log_level = 1,
         log_file = "/tmp/efm.log",
         rootMarkers = { ".git/" },
@@ -165,26 +160,18 @@ local function setup()
           go = { efm.staticcheck, efm.goimports, efm.govet },
           ["="] = { efm.misspell },
         },
-      }
-    end,
+      },
+    },
   }
 
   -- setup servers
-  lsp_installer.on_server_ready(function(server)
-    local opts = {
-      on_attach = on_attach_callback,
-      capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities()),
-      flags = {
-        debounce_text_changes = 150,
-      },
-    }
-
-    if server_opts[server.name] then
-      server_opts[server.name](opts)
-    end
-
-    server:setup(opts)
-  end)
+  for _, lsp in pairs(servers) do
+    local opts = server_opts[lsp] or {}
+    opts.capabilities = opts.capabilities or capabilities
+    opts.on_attach = opts.on_attach or on_attach_callback
+    opts.flags = opts.flags or { debounce_text_changes = 150 }
+    require("lspconfig")[lsp].setup(opts)
+  end
 
   -- custom handlers
   vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
@@ -247,6 +234,6 @@ end
 
 return {
   setup = setup,
-  clients = clients,
+  --clients = clients,
   on_attach_callback = on_attach_callback,
 }

@@ -3,63 +3,50 @@ local define = vim.api.nvim_create_autocmd
 
 create("bitacora", { clear = true })
 
--- au TermEnter,WinEnter,BufEnter * nested lua util.onEnter()
 define({ "TermEnter", "WinEnter", "BufEnter" }, {
   pattern = { "*" },
   callback = function()
     g.onEnter()
   end,
 })
--- au FileType * nested lua util.onFileType()
 define({ "FileType" }, {
   pattern = { "*" },
   callback = function()
     g.onFileType()
   end,
 })
--- au FocusGained,BufEnter * checktime
 define({ "FocusGained", "BufEnter" }, {
   pattern = { "*" },
   callback = function()
+    -- check if file was changed externally
     vim.cmd [[checktime]]
   end,
 })
--- au TextYankPost * silent! lua vim.highlight.on_yank {on_visual=false, higroup="IncSearch", timeout=500}
 define({ "TextYankPost" }, {
   pattern = { "*" },
   callback = function()
     vim.highlight.on_yank { on_visual = false, higroup = "IncSearch", timeout = 500 }
   end,
 })
--- au TermOpen * set ft=terminal
-define({ "TermOpen" }, {
-  pattern = { "term://*" },
-  callback = function()
-    vim.bo.ft = "terminal"
-  end,
-})
--- au TermOpen term://* startinsert
-define({ "TermOpen" }, {
-  pattern = { "term://*" },
-  callback = function()
-    vim.fn.startinsert()
-  end,
-})
--- au TermLeave term://* stopinsert
-define({ "TermLeave" }, {
-  pattern = { "term://*" },
-  callback = function()
-    vim.fn.stopinsert()
-  end,
-})
--- au TermClose term://* if (expand('<afile>') !~ "fzf") | call nvim_input('<CR>') | endif
-define({ "TermClose" }, {
-  pattern = { "term://*" },
-  callback = function()
-    vim.api.nvim_input "<CR>"
-  end,
-})
--- au BufEnter *.txt if &buftype == 'help' | wincmd L | endif
+-- define({ "TermOpen" }, {
+--   pattern = { "term://*" },
+--   callback = function()
+--     vim.wo.winhl = "Normal:NormalAlt"
+--     vim.cmd("startinsert")
+--   end,
+-- })
+-- define({ "TermLeave" }, {
+--   pattern = { "term://*" },
+--   callback = function()
+--     vim.cmd("stopinsert")
+--   end,
+-- })
+-- define({ "TermClose" }, {
+--   pattern = { "term://*" },
+--   callback = function()
+--     vim.api.nvim_input "<CR>"
+--   end,
+-- })
 define({ "BufEnter" }, {
   pattern = { "*.txt" },
   callback = function()

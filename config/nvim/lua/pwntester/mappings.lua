@@ -43,6 +43,11 @@ local mappings = {
     ["n<c-h>"] = { ":wincmd h<CR>" },
     ["n<c-l>"] = { ":wincmd l<CR>" },
 
+    ["t<c-k>"] = { "<C-\\><C-n><C-w>k" },
+    ["t<c-j>"] = { "<C-\\><C-n><C-w>j" },
+    ["t<c-h>"] = { "<C-\\><C-n><C-w>h" },
+    ["t<c-l>"] = { "<C-\\><C-n><C-w>l" },
+
     -- wincmd K (switch to horizontal)
     -- wincmd H (switch to vertical)
 
@@ -239,6 +244,42 @@ local mappings = {
       end,
       silent = true,
     },
+    ["i<a-j>"] = {
+      function()
+        local ls = require "luasnip"
+        if ls.choice_active() then
+          ls.change_choice(-1)
+        end
+      end,
+      silent = true,
+    },
+    ["s<a-j>"] = {
+      function()
+        local ls = require "luasnip"
+        if ls.choice_active() then
+          ls.change_choice(-1)
+        end
+      end,
+      silent = true,
+    },
+    ["i<a-k>"] = {
+      function()
+        local ls = require "luasnip"
+        if ls.choice_active() then
+          ls.change_choice(1)
+        end
+      end,
+      silent = true,
+    },
+    ["s<a-k>"] = {
+      function()
+        local ls = require "luasnip"
+        if ls.choice_active() then
+          ls.change_choice(1)
+        end
+      end,
+      silent = true,
+    },
     -- imap <silent><expr> <C-k> luasnip#expand_or_jumpable() ? '<Plug>luasnip-expand-or-jump' : '<c-k>'
     -- imap <silent><expr> <C-l> luasnip#choice_active() ? '<Plug>luasnip-next-choice' : '<C-l>'
     -- inoremap <silent> <C-j> <cmd>lua require('luasnip').jump(-1)<CR>
@@ -283,7 +324,7 @@ local mappings = {
     ["ngD"] = { [[<cmd>lua vim.diagnostic.open_float(0, { scope = "line", border = "single" })<CR>]] },
     ["ngd"] = { [[<cmd>lua require"telescope.builtin.lsp".definitions()<CR>]] },
     ["ngr"] = { [[<cmd>lua require"telescope.builtin.lsp".references()<CR>]] },
-    ["n<C-d>"] = { [[<cmd>lua require"telescope.builtin.lsp".document_symbols()<CR>]] },
+    --["n<C-d>"] = { [[<cmd>lua require"telescope.builtin.lsp".document_symbols()<CR>]] },
     --["n<C-o>"] = { [[<cmd>lua require"pwntester.plugins.telescope".lsp_dynamic_symbols()<CR>]] },
 
     -- RENAMER
