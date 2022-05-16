@@ -12,6 +12,8 @@
     - ~/.config
 - link:
     ~/.config/nvim: config/nvim
+    ~/.config/gh: config/gh
+    ~/.config/codeql: config/codeql
     ~/.ideavimrc: home/ideavimrc
     ~/.tmux.conf: home/tmux.conf
     ~/.zshrc: home/zshrc
