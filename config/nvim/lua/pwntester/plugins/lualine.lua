@@ -83,16 +83,16 @@ end
 local M = {}
 
 
-local custom_onenord = require 'lualine.themes.onenord'
-local onenord_colors = require("onenord.colors.onenord")
-custom_onenord.normal.c.bg = onenord_colors.bg
+-- local custom_onenord = require 'lualine.themes.onenord'
+-- local onenord_colors = require("onenord.colors.onenord")
+-- custom_onenord.normal.c.bg = onenord_colors.bg
 
 function M.setup()
   ll.setup {
     options = {
       icons_enabled = true,
-      --theme = "auto",
-      theme = custom_onenord,
+      theme = "nautilus_octonauts",
+      --theme = custom_onenord,
       section_separators = '',
       component_separators = '',
       disabled_filetypes = {},
@@ -129,14 +129,14 @@ function M.setup()
         {
           cwd,
           padding = { left = 0, right = 1 },
-          color = 'WildMenu',
+          color = 'CursorLineNr',
         }
       },
       lualine_x = {
         {
           file,
           padding = { left = 0, right = 1 },
-          color = 'WildMenu',
+          color = 'CursorLineNr',
         },
         {
           position,
@@ -149,8 +149,8 @@ function M.setup()
           "filetype",
           padding = { left = 0, right = 1 },
           icons_enabled = true,
-          icon = { color = 'WildMenu' },
-          color = 'WildMenu',
+          icon = { color = 'CursorLineNr' },
+          color = 'CursorLineNr',
         },
       },
       lualine_z = {
@@ -158,7 +158,7 @@ function M.setup()
           lsp,
           padding = { left = 0, right = 1 },
           icons_enabled = true,
-          icon = { "", color = 'WildMenu' },
+          icon = { "", color = 'CursorLineNr' },
           color = function()
             local servers = require('lsp_spinner').status()
             if #servers > 0 then

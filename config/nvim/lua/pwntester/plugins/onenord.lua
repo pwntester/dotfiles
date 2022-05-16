@@ -92,7 +92,8 @@ M.setup = function()
       strings = "NONE",
       keywords = "NONE",
       functions = "italic",
-      variables = "bold",
+      --variables = "bold",
+      variables = "NONE",
       diagnostics = "underline",
     },
     disable = {

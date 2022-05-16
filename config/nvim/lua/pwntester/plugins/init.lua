@@ -379,18 +379,19 @@ return require("packer").startup {
     -- THEMES & COLORS
     use {
       'rmehri01/onenord.nvim',
-      config = function()
-        require('pwntester.plugins.onenord').setup()
-      end,
+      -- config = function()
+      --   require('pwntester.plugins.onenord').setup()
+      -- end,
     }
     use_local {
       "pwntester/nautilus.nvim",
       local_path = "src/github.com/pwntester",
-      -- config = function()
-      --   require("nautilus").load {
-      --     transparent = false,
-      --   }
-      -- end,
+      config = function()
+        require("nautilus").load {
+          transparent = false,
+          mode = "octonauts"
+        }
+      end,
     }
     use {
       "norcalli/nvim-colorizer.lua",
@@ -470,7 +471,8 @@ return require("packer").startup {
           open_mapping = [[<c-\>]],
           highlights = {
             Normal = {
-              link = 'NormalActive'
+              link = 'NormalAlt'
+              --link = 'NormalActitve'
             }
           }
         })
