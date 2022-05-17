@@ -38,18 +38,18 @@ _G.g = {
 -----------------------------------------------------------------------------//
 
 function g.onFileType()
-  -- if vim.tbl_contains({ "octo", "frecency", "TelescopePrompt", "TelescopeResults" }, vim.bo.filetype) then
-  -- elseif vim.tbl_contains(g.special_buffers, vim.bo.filetype) then
-  --   vim.api.nvim_win_set_option(0, "winhighlight", "Normal:NormalAlt")
-  -- elseif vim.bo.filetype == "" or vim.bo.buftype == "terminal" then
-  --   vim.api.nvim_win_set_option(0, "winhighlight", "Normal:NormalAlt")
-  -- else
-  --   vim.api.nvim_win_set_option(0, "winhighlight", "Normal:Normal")
-  -- end
+  if vim.tbl_contains({ "octo", "frecency", "TelescopePrompt", "TelescopeResults" }, vim.bo.filetype) then
+  elseif vim.tbl_contains(g.special_buffers, vim.bo.filetype) then
+    vim.api.nvim_win_set_option(0, "winhighlight", "Normal:NormalAlt")
+  elseif vim.bo.filetype == "" or vim.bo.buftype == "terminal" then
+    vim.api.nvim_win_set_option(0, "winhighlight", "Normal:NormalAlt")
+  else
+    vim.api.nvim_win_set_option(0, "winhighlight", "Normal:Normal")
+  end
   vim.api.nvim_command [[au FileType * set fo-=c fo-=r fo-=o]]
-  -- if vim.bo.buftype == "terminal" then
-  -- vim.api.nvim_win_set_option(0, "winhighlight", "Normal:NormalAlt")
-  -- end
+  if vim.bo.buftype == "terminal" then
+    vim.api.nvim_win_set_option(0, "winhighlight", "Normal:NormalAlt")
+  end
 end
 
 function g.onEnter()
@@ -182,4 +182,19 @@ end
 
 function g.BountySubmissions()
   require("octo.pickers.telescope.provider").issues { repo = "github/securitylab-bounties", states = "OPEN" }
+end
+
+---Reload lua modules
+function g.R(path, recursive)
+  if recursive then
+    for key, value in pairs(package.loaded) do
+      if key ~= '_G' and value and vim.fn.match(key, path) ~= -1 then
+        package.loaded[key] = nil
+        require(key)
+      end
+    end
+  else
+    package.loaded[path] = nil
+    require(path)
+  end
 end
