@@ -6,6 +6,9 @@ local tactions = require "telescope.actions"
 local taction_state = require "telescope.actions.state"
 local conf = require("telescope.config").values
 local manager = require "neo-tree.sources.manager"
+local cc = require("neo-tree.sources.common.commands")
+local fs = require("neo-tree.sources.filesystem")
+local utils = require("neo-tree.utils")
 
 local M = {}
 
@@ -94,7 +97,14 @@ function M.setup()
       },
       window = {
         mappings = {
-          ["<CR>"] = "open_with_window_picker",
+          ["<CR>"] = function(state)
+            local node = state.tree:get_node()
+            if vim.endswith(node.path, ".sarif") then
+              vim.api.nvim_command("LoadSarif " .. node.path)
+            else
+              cc.open_with_window_picker(state, utils.wrap(fs.toggle_directory, state))
+            end
+          end,
           ["S"] = "split_with_window_picker",
           ["s"] = "vsplit_with_window_picker",
           ["o"] = function(state)
