@@ -1,8 +1,6 @@
-local lspkind = require "lspkind"
 local cmp = require "cmp"
-
-local ok, luasnip = pcall(require, "luasnip", { silent = true })
-if not ok then
+local status, luasnip = pcall(require, "luasnip")
+if not status then
   luasnip = nil
 end
 
@@ -67,6 +65,8 @@ local function setup()
     { "▙", "CmpBorder" },
     { "▌", "CmpBorder" },
   }
+  local icons = require "pwntester.icons"
+  local kind_icons = icons.kind
 
   cmp.setup {
     snippet = {
@@ -74,6 +74,9 @@ local function setup()
         require("luasnip").lsp_expand(args.body)
       end,
     },
+    enabled = function()
+      return vim.api.nvim_buf_get_option(0, "buftype") ~= "prompt"
+    end,
     window = {
       completion = {
         winhighlight = 'Normal:CmpFloat,FloatBorder:CmpBorder,CursorLine:CursorLineNr,Search:ErroMsg',
@@ -85,6 +88,53 @@ local function setup()
         border = window_border_chars_thick,
         zindex = 1001
       },
+    },
+    sources = {
+      { name = "nvim_lsp", keyword_pattern = [[\k\+]] },
+      { name = "nvim_lua" },
+      { name = "luasnip" },
+      { name = "buffer" },
+      { name = "path" },
+      { name = 'emoji' },
+      { name = "git" },
+    },
+    formatting = {
+      deprecated = true,
+      fields = { "kind", "abbr", "menu" },
+      format = function(entry, item)
+
+        -- Kind icons
+        item.kind = string.format("%s", kind_icons[item.kind])
+
+        if entry.source.name == "cmp_tabnine" then
+          -- if entry.completion_item.data ~= nil and entry.completion_item.data.detail ~= nil then
+          -- menu = entry.completion_item.data.detail .. " " .. menu
+          -- end
+          item.kind = icons.misc.Robot
+        end
+        -- vim_item.kind = string.format('%s %s', kind_icons[vim_item.kind], vim_item.kind) -- This concatonates the icons with the name of the item kind
+        item.menu = ({
+          -- nvim_lsp = "[lsp]",
+          -- luasnip = "[snip]",
+          -- nvim_lua = "[lua]",
+          -- buffer = "[buf]",
+          -- path = "[path]",
+          -- cmdline = "[cmd]",
+          -- cmdline_history = "[history]",
+          nvim_lsp = "",
+          luasnip = "",
+          nvim_lua = "",
+          buffer = "",
+          path = "",
+          cmdline = "",
+          cmdline_history = "",
+        })[entry.source.name]
+        return item
+      end,
+    },
+    confirm_opts = {
+      behavior = cmp.ConfirmBehavior.Replace,
+      select = false,
     },
     mapping = {
       ["<Tab>"] = cmp.mapping(tab, { "i", "s" }),
@@ -114,55 +164,24 @@ local function setup()
       }),
       ["<C-e>"] = cmp.mapping.close(),
     },
-    sources = cmp.config.sources({
-      { name = "nvim_lsp", keyword_pattern = [[\k\+]] },
-      { name = "luasnip" },
-      { name = "nvim_lua" },
-      { name = "path" },
-      { name = 'emoji' },
-      { name = "git" },
-    }, {
-      { name = "buffer" },
-    }),
-    formatting = {
-      deprecated = true,
-      fields = { "abbr", "menu" },
-      format = function(entry, item)
-        local lspkind_formatter = lspkind.cmp_format {
-          with_text = true,
-          maxwidth = 50,
-          menu = {
-            nvim_lsp = "[lsp]",
-            luasnip = "[snip]",
-            nvim_lua = "[lua]",
-            buffer = "[buf]",
-            path = "[path]",
-            cmdline = "[cmd]",
-            ["cmdline_history"] = "[history]",
-          },
-        }
-        item = lspkind_formatter(entry, item)
-        --item.abbr = item.abbr:gsub("~", "")
-        return item
-      end,
-    },
   }
 
   cmp.setup.cmdline(':', {
-    mapping = cmp.mapping.preset.cmdline(),
     sources = cmp.config.sources({
-      { name = 'cmdline_history', max_item_count = 15 },
-      { name = 'path', max_item_count = 15 },
-      { name = 'cmdline' },
+      { name = 'cmdline', keyword_pattern = [=[[^[:blank:]\!]*]=] },
+      { name = 'cmdline_history' },
+      { name = 'path' },
     })
   })
 
   for _, cmd_type in ipairs({ '/', '?', '@' }) do
     cmp.setup.cmdline(cmd_type, {
-      sources = {
+      view = { entries = { name = 'custom', selection_order = 'near_cursor' } },
+      sources = cmp.config.sources({
+        { name = 'nvim_lsp_document_symbol' },
+      }, {
         { name = 'buffer' },
-        { name = 'cmdline_history', max_item_count = 15 },
-      },
+      }),
     })
   end
 

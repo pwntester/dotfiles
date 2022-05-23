@@ -53,6 +53,12 @@ local notes_templates = {
     prefix_date = true,
   },
   {
+    label = "1-on-1 with Jorge",
+    directory = "resources/meeting notes",
+    ask_for_title = false,
+    prefix_date = true,
+  },
+  {
     label = "Other meeting",
     directory = "resources/meeting notes",
     ask_for_title = true,

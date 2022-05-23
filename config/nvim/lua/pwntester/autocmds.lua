@@ -6,15 +6,26 @@ create("bitacora", { clear = true })
 define({ "TermEnter", "WinEnter", "BufEnter" }, {
   pattern = { "*" },
   callback = function()
-    g.onEnter()
+    if vim.tbl_contains({ "octo", "frecency", "TelescopePrompt", "TelescopeResults" }, vim.bo.filetype) then
+    elseif vim.tbl_contains(g.special_buffers, vim.bo.filetype) then
+      vim.api.nvim_win_set_option(0, "winhighlight", "Normal:NormalAlt")
+    elseif vim.bo.filetype == "" or vim.bo.buftype == "terminal" then
+      vim.api.nvim_win_set_option(0, "winhighlight", "Normal:NormalAlt")
+    else
+      vim.api.nvim_win_set_option(0, "winhighlight", "Normal:Normal")
+    end
+    vim.api.nvim_command [[au FileType * set fo-=c fo-=r fo-=o]]
+    if vim.bo.buftype == "terminal" then
+      vim.api.nvim_win_set_option(0, "winhighlight", "Normal:NormalAlt")
+      vim.wo.cursorline = false
+    end
   end,
 })
-define({ "FileType" }, {
-  pattern = { "*" },
-  callback = function()
-    g.onFileType()
-  end,
-})
+-- define({ "FileType" }, {
+--   pattern = { "*" },
+--   callback = function()
+--   end,
+-- })
 define({ "FocusGained", "BufEnter" }, {
   pattern = { "*" },
   callback = function()
@@ -28,29 +39,10 @@ define({ "TextYankPost" }, {
     vim.highlight.on_yank { on_visual = false, higroup = "IncSearch", timeout = 500 }
   end,
 })
--- define({ "TermOpen" }, {
---   pattern = { "term://*" },
---   callback = function()
---     vim.wo.winhl = "Normal:NormalAlt"
---     vim.cmd("startinsert")
---   end,
--- })
--- define({ "TermLeave" }, {
---   pattern = { "term://*" },
---   callback = function()
---     vim.cmd("stopinsert")
---   end,
--- })
--- define({ "TermClose" }, {
---   pattern = { "term://*" },
---   callback = function()
---     vim.api.nvim_input "<CR>"
---   end,
--- })
 define({ "BufEnter" }, {
   pattern = { "*.txt" },
   callback = function()
-    if vim.opt.buftype._value == "help" then
+    if vim.api.nvim_buf_get_option(0, "buftype") == "help" then
       vim.cmd [[wincmd L]]
     end
   end,
@@ -84,5 +76,21 @@ define({ "BufWritePost" }, {
   pattern = { "*/bitacora/*" },
   callback = function()
     require("pwntester.markdown").asyncPush()
+  end,
+})
+-- winbar
+define({ "CursorMoved", "BufWinEnter", "BufFilePost" }, {
+  pattern = { "*" },
+  callback = function()
+    if vim.tbl_contains(g.special_buffers, vim.bo.filetype) or
+        vim.tbl_contains({ "prompt", "nofile" }, vim.api.nvim_buf_get_option(0, "buftype")) then
+      vim.opt_local.winbar = nil
+      return
+    end
+    local value = require("pwntester.winbar").gps()
+    if not value then
+      value = "%f"
+    end
+    vim.opt_local.winbar = value
   end,
 })
