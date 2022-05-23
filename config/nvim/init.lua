@@ -53,7 +53,6 @@ vim.opt.shortmess = {
   s = true,
   c = true,
   W = true, -- Dont show [w] or written when writing
-
   T = true, -- truncate non-file messages in middle
   f = true, -- (file x of x) instead of just (x of x
   F = true, -- Don't give file info when editing a file, NOTE: this breaks autocommand messages
@@ -63,7 +62,7 @@ vim.opt.shortmess = {
 -----------------------------------------------------------------------------//
 vim.opt.updatetime = 750
 vim.opt.timeout = true
-vim.opt.timeoutlen = 500
+vim.opt.timeoutlen = 100
 vim.opt.ttimeoutlen = 10
 -----------------------------------------------------------------------------//
 --Shada {{{1
@@ -282,18 +281,18 @@ vim.opt.virtualedit = "block" -- allow cursor to move where there is no text in 
 -------------------------------------------------------------------------------
 vim.opt.backup = false
 vim.opt.writebackup = false
-if vim.fn.isdirectory(vim.o.undodir) == 0 then
-  vim.fn.mkdir(vim.o.undodir, "p")
-end
+-- if vim.fn.isdirectory(vim.o.undodir) == 0 then
+--   vim.fn.mkdir(vim.o.undodir, "p")
+-- end
 vim.opt.undofile = true
 vim.opt.swapfile = false
 -- The // at the end tells Vim to use the absolute path to the file to create the swap file.
 -- This will ensure that swap file name is unique, so there are no collisions between files
 -- with the same name from different directories.
-vim.opt.directory = vim.fn.stdpath "data" .. "/swap//"
-if vim.fn.isdirectory(vim.o.directory) == 0 then
-  vim.fn.mkdir(vim.o.directory, "p")
-end
+vim.opt.directory = vim.fn.stdpath "data" .. "/swap/"
+-- if vim.fn.isdirectory(vim.o.directory) == 0 then
+--   vim.fn.mkdir(vim.o.directory, "p")
+-- end
 --}}}
 -----------------------------------------------------------------------------//
 -- Match and search {{{1
@@ -304,6 +303,7 @@ vim.opt.wrapscan = true -- Searches wrap around the end of the file
 vim.opt.scrolloff = 9
 vim.opt.sidescrolloff = 10
 vim.opt.sidescroll = 5
+vim.opt.guifont = "monospace:h17"
 -----------------------------------------------------------------------------//
 -- Spelling {{{1
 -----------------------------------------------------------------------------//

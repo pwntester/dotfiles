@@ -1,6 +1,3 @@
---- from https://github.com/akinsho/dotfiles/blob/main/.config/nvim/lua/as/plugins/init.lua#L64-L113
----local variant of packer's `use` function that specifies both a local and upstream version of a plugin
----@param spec table|string
 local function use_local(spec)
   if type(spec) ~= "table" then
     return g.echomsg(string.format("spec must be a table", spec[1]))
@@ -280,30 +277,7 @@ return require("packer").startup {
     use {
       "lewis6991/gitsigns.nvim",
       config = function()
-        require("gitsigns").setup {
-          signs = {
-            add = { hl = "GitSignsAdd", text = "+" },
-            change = { hl = "GitSignsChange", text = "~" },
-            delete = { hl = "GitSignsDelete", text = "_" },
-            topdelete = { hl = "GitSignsDelete", text = "‾" },
-            changedelete = { hl = "GitSignsChange", text = "~" },
-          },
-          keymaps = {
-            noremap = true,
-            buffer = true,
-          },
-          watch_gitdir = {
-            interval = 1000,
-            follow_files = true,
-          },
-          sign_priority = 6,
-          status_formatter = nil,
-          on_attach = function()
-            if vim.bo.ft == "markdown" then
-              return false
-            end
-          end,
-        }
+        require("pwntester.plugins.gitsigns").setup()
       end,
     }
     use {
@@ -369,7 +343,7 @@ return require("packer").startup {
           disable_commit_confirmation = true,
           mappings = {
             status = {
-              [">"] = "Toggle",
+              ["o"] = "Toggle",
             },
           },
         }
@@ -399,6 +373,21 @@ return require("packer").startup {
     }
 
     -- UI
+    use {
+      "ChristianChiarulli/nvim-gps",
+      branch = "text_hl",
+      --"SmiteshP/nvim-gps",
+      requires = "nvim-treesitter/nvim-treesitter",
+      config = function()
+        require("pwntester.plugins.gps").setup()
+      end
+    }
+    use {
+      "folke/which-key.nvim",
+      config = function()
+        require("pwntester.plugins.which-key").setup()
+      end
+    }
     use {
       "kyazdani42/nvim-web-devicons",
       module = "nvim-web-devicons",
@@ -597,12 +586,6 @@ return require("packer").startup {
     use { "ii14/lsp-command" }
     use {
       "mfussenegger/nvim-jdtls",
-    }
-    use {
-      "onsails/lspkind-nvim",
-      config = function()
-        require("lspkind").init {}
-      end,
     }
     use {
       "doums/lsp_spinner.nvim",
