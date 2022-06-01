@@ -13,7 +13,7 @@ require "pwntester.plugins"
 -----------------------------------------------------------------------------//
 vim.cmd [[let mapleader = "\<Space>"]]
 local mappings = require("pwntester.mappings").all
-g.map(mappings, { silent = true, noremap = true })
+g.map(mappings, { silent = true })
 
 -----------------------------------------------------------------------------//
 -- AUTOCMDs
@@ -62,7 +62,7 @@ vim.opt.shortmess = {
 -----------------------------------------------------------------------------//
 vim.opt.updatetime = 750
 vim.opt.timeout = true
-vim.opt.timeoutlen = 100
+vim.opt.timeoutlen = 400
 vim.opt.ttimeoutlen = 10
 -----------------------------------------------------------------------------//
 --Shada {{{1

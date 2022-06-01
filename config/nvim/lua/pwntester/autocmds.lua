@@ -87,10 +87,11 @@ define({ "CursorMoved", "BufWinEnter", "BufFilePost" }, {
       vim.opt_local.winbar = nil
       return
     end
-    local value = require("pwntester.winbar").gps()
-    if not value then
-      value = "%f"
+    local value = require("pwntester.winbar").winbar()
+    if value then
+      vim.opt_local.winbar = value
+    else
+      vim.opt_local.winbar = nil
     end
-    vim.opt_local.winbar = value
   end,
 })

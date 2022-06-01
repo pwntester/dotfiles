@@ -12,9 +12,9 @@ if not vim.startswith(bufname, "codeql:") and not vim.startswith(bufname, "octo:
   local JDTLS_HOME = HOME .. "/jdt_ws"
   local JAVA_HOME = HOME .. "/.sdkman/candidates/java/11.0.6.hs-adpt/"
   local LAUNCHER = JDTLS_HOME
-    .. "/jdt-language-server-latest/plugins/org.eclipse.equinox.launcher_"
-    .. VERSION
-    .. ".jar"
+      .. "/jdt-language-server-latest/plugins/org.eclipse.equinox.launcher_"
+      .. VERSION
+      .. ".jar"
   local CONFIGURATION = JDTLS_HOME .. "/jdt-language-server-latest/config_mac"
   local DATA = JDTLS_HOME .. "/workspace-root/" .. vim.fn.fnamemodify(root_dir, ":p:h:t")
 
@@ -61,8 +61,8 @@ if not vim.startswith(bufname, "codeql:") and not vim.startswith(bufname, "octo:
     on_attach = function(_, bufnr)
       require("jdtls.setup").add_commands()
       local mappings = require "pwned.mappings"
-      g.map(mappings.lsp, { silent = false, noremap = true }, bufnr)
-      g.map(mappings.lsp_jdt, { silent = false, noremap = true }, bufnr)
+      g.map(mappings.lsp, { silent = false }, bufnr)
+      g.map(mappings.lsp_jdt, { silent = false }, bufnr)
     end,
     root_dir = root_dir,
     settings = {

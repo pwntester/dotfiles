@@ -10,6 +10,14 @@ function M.setup()
       },
     },
   })
+  wk.register({
+    ['<leader>'] = {
+      b = {
+        name = 'TEST PREFIX',
+      },
+    }
+  })
+
   -- wk.register({
   --   ['<leader>'] = {
   --     d = {

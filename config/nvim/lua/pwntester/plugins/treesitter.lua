@@ -93,7 +93,7 @@ local function setup()
     mappings = {
       enable = true, -- false will disable the whole extension
       attach = function(bufnr)
-        g.map(require("pwntester.mappings").treesitter, { silent = false, noremap = true }, bufnr)
+        g.map(require("pwntester.mappings").treesitter, { silent = false }, bufnr)
       end,
       detach = function() end,
       is_supported = function()
