@@ -1,3 +1,5 @@
+local icons = require("pwntester.icons")
+
 local M = {}
 
 local status_gps_ok, gps = pcall(require, "nvim-gps")
@@ -7,6 +9,25 @@ end
 
 local function isempty(s)
   return s == nil or s == ""
+end
+
+M.diagnostics = function()
+  local diagnostics = vim.diagnostic.get(0)
+  local count = {}
+  count[vim.diagnostic.severity.ERROR] = 0
+  count[vim.diagnostic.severity.WARN] = 0
+  count[vim.diagnostic.severity.HINT] = 0
+  count[vim.diagnostic.severity.INFO] = 0
+  for _, diagnostic in ipairs(diagnostics) do
+    count[diagnostic.severity] = count[diagnostic.severity] + 1
+  end
+  return string.format(
+    "%%#DiagnosticError#%s %%*%s %%#DiagnosticWarn#%s %%*%s",
+    icons.diagnostics.Error,
+    count[vim.diagnostic.severity.ERROR],
+    icons.diagnostics.Warning,
+    count[vim.diagnostic.severity.WARN]
+  )
 end
 
 M.filename = function()
@@ -41,28 +62,19 @@ M.filename = function()
   end
 end
 
-M.gps = function()
+M.winbar = function()
+  local filename = M.filename()
   local status_ok, gps_location = pcall(gps.get_location, {})
-  if not status_ok then
-    return
-  end
 
-  if not gps.is_available() then -- Returns boolean value indicating whether a output can be provided
-    return
+  local left = ""
+  if status_ok and gps.is_available() and gps_location ~= "error" and not isempty(gps_location) then
+    left = filename .. " " .. icons.ui.ChevronRight .. " " .. gps_location
+  elseif filename then
+    left = filename
   end
+  local right = M.diagnostics()
 
-  local icons = require("pwntester.icons")
-  local retval = M.filename()
-
-  if gps_location == "error" then
-    return ""
-  else
-    if not isempty(gps_location) then
-      return retval .. " " .. icons.ui.ChevronRight .. " " .. gps_location
-    else
-      return retval
-    end
-  end
+  return left .. "%=" .. right
 end
 
 return M

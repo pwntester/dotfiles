@@ -58,35 +58,22 @@ function g.map(mappings, defaults, bufnr)
     end
     local lhs = k:sub(2)
     local rhs = v[1]
-
     -- merge default options and individual ones
     for i, j in pairs(v) do
       if i ~= 1 then
         opts[i] = j
       end
     end
-
     -- for <expr> mappings, discard all options except `noremap`
     -- probably needed for <script> or other modifiers that need to be first
     if opts.expr then
-      local noremap_opt = opts["noremap"]
+      local noremap_opt = opts.noremap
       opts = { expr = true, noremap = noremap_opt }
     end
-
     if bufnr then
-      if type(rhs) == "string" then
-        vim.api.nvim_buf_set_keymap(bufnr, mode, lhs, rhs, opts)
-      elseif type(rhs) == "function" then
-        print "Cannot use function as rhs for buffer only mappings"
-        --vim.keymap.set(bufnr, { mode }, lhs, rhs, opts)
-      end
-    else
-      if type(rhs) == "string" then
-        vim.api.nvim_set_keymap(mode, lhs, rhs, opts)
-      elseif type(rhs) == "function" then
-        vim.keymap.set({ mode }, lhs, rhs, opts)
-      end
+      opts.buffer = bufnr
     end
+    vim.keymap.set(mode, lhs, rhs, opts)
   end
 end
 

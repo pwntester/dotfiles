@@ -1,123 +1,179 @@
-local function setup()
-  local status_ok, lualine = pcall(require, "lualine")
-  if not status_ok then
-    return
-  end
+local ll = require("lualine")
 
-  local status_gps_ok, gps = pcall(require, "nvim-gps")
-  if not status_gps_ok then
-    return
-  end
+local cache = {}
 
-  local hide_in_width = function()
-    return vim.fn.winwidth(0) > 80
-  end
+-- local function relpath(P, start)
+--   local split, min, append = vim.split, math.min, table.insert
+--   local compare = function(v)
+--     return v
+--   end
+--   local startl, Pl = split(start, "/"), split(P, "/")
+--   local n = min(#startl, #Pl)
+--   local k = n + 1 -- default value if this loop doesn't bail out!
+--   for i = 1, n do
+--     if compare(startl[i]) ~= compare(Pl[i]) then
+--       k = i
+--       break
+--     end
+--   end
+--   local rell = {}
+--   for i = 1, #startl - k + 1 do
+--     rell[i] = ".."
+--   end
+--   if k <= #Pl then
+--     for i = k, #Pl do
+--       append(rell, Pl[i])
+--     end
+--   end
+--   return table.concat(rell, "/")
+-- end
 
-  local icons = require "pwntester.icons"
+-- local function file()
+--   local bufname = vim.fn.bufname()
+--   if vim.startswith(bufname, "octo:") or vim.startswith(bufname, "codeql:") or vim.startswith(bufname, "docker:") then
+--     return bufname
+--   elseif vim.bo.filetype == "toggleterm" then
+--     return "terminal (" .. vim.api.nvim_buf_get_var(0, "toggle_number") .. ")"
+--   else
+--     return relpath(vim.fn.fnamemodify(bufname, ":p"), vim.fn.getcwd())
+--   end
+-- end
 
-  local diagnostics = {
-    "diagnostics",
-    sources = { "nvim_diagnostic" },
-    sections = { "error", "warn" },
-    symbols = { error = icons.diagnostics.Error .. " ", warn = icons.diagnostics.Warning .. " " },
-    colored = false,
-    update_in_insert = false,
-    always_visible = true,
-  }
 
-  local diff = {
-    "diff",
-    colored = false,
-    symbols = { added = icons.git.Add .. " ", modified = icons.git.Mod .. " ", removed = icons.git.Remove .. " " }, -- changes diff symbols
-    cond = hide_in_width,
-  }
+local hide_in_width = function()
+  return vim.fn.winwidth(0) > 80
+end
 
-  local mode = {
-    "mode",
-    fmt = function(str)
-      return "-- " .. str .. " --"
-    end,
-  }
+local icons = require "pwntester.icons"
 
-  local filetype = {
-    "filetype",
-    icons_enabled = false,
-    icon = nil,
-  }
+local branch = {
+  "branch",
+  icons_enabled = true,
+  icon = "",
+}
 
-  local branch = {
-    "branch",
-    icons_enabled = true,
-    icon = "",
-  }
+local github = {
+  function()
+    local cwd = vim.fn.getcwd()
 
-  local location = {
-    "location",
-    padding = 0,
-  }
+    if cache[cwd] then
+      return cache[cwd]
+    end
 
-  -- cool function for progress
-  local progress = function()
-    local current_line = vim.fn.line "."
-    local total_lines = vim.fn.line "$"
-    local chars = { "__", "▁▁", "▂▂", "▃▃", "▄▄", "▅▅", "▆▆", "▇▇", "██" }
-    local line_ratio = current_line / total_lines
-    local index = math.ceil(line_ratio * #chars)
-    return chars[index]
-  end
+    local ok, outils = pcall(require, "octo.utils")
+    if not ok then
+      cache[cwd] = ""
+      return ""
+    end
 
-  local spaces = function()
+    local name = outils.get_remote_name()
+
+    if type(name) == "string" and name ~= "" then
+      cache[cwd] = " " .. name
+      return cache[cwd]
+    else
+      cache[cwd] = ""
+      return ""
+    end
+  end,
+  padding = { left = 0, right = 1 },
+  --color = 'MoreMsg',
+}
+
+local diagnostics = {
+  "diagnostics",
+  sources = { "nvim_diagnostic" }, --{ 'nvim_lsp' },
+  sections = { "error", "warn" },
+  symbols = { error = icons.diagnostics.Error .. " ", warn = icons.diagnostics.Warning .. " " },
+  colored = false,
+  update_in_insert = false,
+  always_visible = true,
+  --padding = { left = 0, right = 1 },
+  -- diagnostics_color = {
+  --   error = 'DiagnosticError',
+  --   warn  = 'DiagnosticWarn',
+  -- },
+}
+
+local cwd = {
+  function()
+    return vim.fn.getcwd()
+  end,
+  padding = { left = 0, right = 1 },
+  --color = 'CursorLineNr',
+}
+
+local location = {
+  function()
+    return vim.fn.col "." .. ":" .. vim.fn.line "." .. " " .. tostring(math.floor(vim.fn.line "." / vim.fn.line "$" * 100)) .. "%%"
+  end,
+  padding = { left = 0, right = 1 },
+  --color = 'Normal',
+}
+
+local diff = {
+  "diff",
+  colored = false,
+  symbols = { added = icons.git.Add .. " ", modified = icons.git.Mod .. " ", removed = icons.git.Remove .. " " }, -- changes diff symbols
+  cond = hide_in_width,
+}
+
+local filetype = {
+  "filetype",
+  padding = { left = 0, right = 1 },
+  icons_enabled = true,
+  icon = { color = 'CursorLineNr' },
+  --color = 'CursorLineNr',
+}
+
+local spaces = {
+  function()
     return "spaces: " .. vim.api.nvim_buf_get_option(0, "shiftwidth")
   end
+}
 
-  local nvim_gps = function()
-    local gps_location = gps.get_location()
-    if gps_location == "error" then
-      return ""
+local lsp = {
+  function()
+    local lsp_servers = require('lsp_spinner').status()
+    if lsp_servers then
+      return lsp_servers
     else
-      return gps.get_location()
+      return ""
     end
-  end
+  end,
+  padding = { left = 0, right = 1 },
+  icons_enabled = true,
+  icon = { "" },
+  -- icon = { "", color = 'CursorLineNr' },
+  -- color = function()
+  --   local servers = require('lsp_spinner').status()
+  --   if #servers > 0 then
+  --     return 'MoreMsg'
+  --   else
+  --     return 'ErrorMsg'
+  --   end
+  -- end
+}
 
-  lualine.setup {
+local M = {}
+
+function M.setup()
+  ll.setup {
     options = {
       globalstatus = true,
       icons_enabled = true,
-      theme = "nautilus_blue",
+      theme = "nautilus_vscode",
       component_separators = { left = "", right = "" },
       section_separators = { left = "", right = "" },
-      -- disabled_filetypes = { "alpha", "dashboard", "NvimTree", "Outline", "toggleterm" },
-      disabled_filetypes = { "alpha", "dashboard", "toggleterm" },
+      disabled_filetypes = g.special_buffers,
       always_divide_middle = true,
     },
     sections = {
-      -- lualine_a = { branch, diagnostics },
-      lualine_a = { branch },
+      lualine_a = { branch, github },
       lualine_b = { diagnostics },
-      lualine_c = {
-        {
-          function()
-            local fg = "#228b22" -- not modified
-            if vim.bo.modified then
-              fg = "#c70039" -- unsaved
-            elseif not vim.bo.modifiable then
-              fg = "#a70089"
-            end -- readonly
-            vim.cmd("hi! lualine_filename_status guifg=" .. fg)
-            -- return "%t %m"
-            return "%m"
-          end,
-          -- color = "lualine_filename_status",
-        },
-      },
-      -- lualine_c = {},
-      -- lualine_c = {
-      --   { nvim_gps, cond = hide_in_width },
-      -- },
-      -- lualine_x = { "encoding", "fileformat", "filetype" },
-      lualine_x = { diff, spaces, "encoding", filetype },
+      lualine_x = { cwd, diff, spaces, "encoding", filetype },
       lualine_y = { location },
-      lualine_z = { progress },
+      lualine_z = { lsp },
     },
     inactive_sections = {
       lualine_a = {},
@@ -125,11 +181,11 @@ local function setup()
       lualine_c = {},
       lualine_x = { "location" },
       lualine_y = {},
-      lualine_z = {},
+      lualine_z = {}
     },
     tabline = {},
-    extensions = {},
+    extensions = {}
   }
 end
 
-return { setup = setup }
+return M

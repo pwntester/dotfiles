@@ -117,11 +117,11 @@ return require("packer").startup {
         { "hrsh7th/cmp-nvim-lsp" },
         { "hrsh7th/cmp-buffer" },
         { "hrsh7th/cmp-path" },
-        { "hrsh7th/cmp-cmdline" },
         { "saadparwaiz1/cmp_luasnip" },
         { "petertriho/cmp-git" },
         { "hrsh7th/cmp-emoji" },
-        { "dmitmel/cmp-cmdline-history" },
+        --{ "hrsh7th/cmp-cmdline" },
+        --{ "dmitmel/cmp-cmdline-history" },
       },
       config = function()
         require("pwntester.plugins.nvim-cmp").setup()
@@ -269,9 +269,6 @@ return require("packer").startup {
         vim.g.wordmotion_prefix = "_"
       end,
     }
-    use {
-      "ggandor/lightspeed.nvim",
-    }
 
     -- GIT
     use {
@@ -280,14 +277,6 @@ return require("packer").startup {
         require("pwntester.plugins.gitsigns").setup()
       end,
     }
-    use {
-      "ruifm/gitlinker.nvim",
-      requires = "nvim-lua/plenary.nvim",
-      config = function()
-        require("gitlinker").setup()
-      end,
-    }
-    --- <leader>gy
     use_local {
       "pwntester/octo.nvim",
       config = function()
@@ -373,6 +362,14 @@ return require("packer").startup {
     }
 
     -- UI
+    use {
+      "iamcco/markdown-preview.nvim",
+      run = "cd app && npm install",
+      setup = function()
+        vim.g.mkdp_filetypes = { "markdown" }
+      end,
+      ft = { "markdown" },
+    }
     use {
       "ChristianChiarulli/nvim-gps",
       branch = "text_hl",
@@ -577,6 +574,17 @@ return require("packer").startup {
 
     -- LSP
     use {
+      "folke/lsp-colors.nvim",
+      config = function()
+        require("lsp-colors").setup({
+          Error = "#d38391",
+          Warning = "#ffae57",
+          Information = "#9bbdcb",
+          Hint = "#98c379"
+        })
+      end
+    }
+    use {
       "neovim/nvim-lspconfig",
       requires = { "cmp-nvim-lsp", "codeql.nvim" },
       config = function()
@@ -612,7 +620,6 @@ return require("packer").startup {
       end,
     }
     use { "lukas-reineke/lsp-format.nvim" }
-    use { "ray-x/lsp_signature.nvim" }
     use { "williamboman/nvim-lsp-installer" }
 
     -- MARKDOWN
@@ -623,7 +630,7 @@ return require("packer").startup {
           markdown = {
             img_dir = "resources/attachments",
             img_dir_txt = "resources/attachments",
-            affix = "![](%s)",
+            affix = "![image](/%s)",
           },
         }
       end,
@@ -758,21 +765,4 @@ return require("packer").startup {
       require("packer").sync()
     end
   end,
-  config = {
-    -- display = {
-    --   open_fn = function()
-    --     local bufnr, winnr = require("pwntester.window").floating_window {
-    --       border = true,
-    --       width_per = 0.8,
-    --       height_per = 0.8,
-    --     }
-    --     vim.api.nvim_set_current_win(winnr)
-    --     return bufnr, winnr
-    --   end,
-    -- },
-    -- profile = {
-    --   enable = true,
-    --   threshold = 1,
-    -- },
-  },
 }

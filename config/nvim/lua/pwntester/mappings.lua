@@ -1,81 +1,5 @@
 local mappings = {
   ["all"] = {
-    -- terminal
-    ["t<Esc>"] = { [[<C-\><C-n>]] },
-
-    -- * for visual selected text
-    ["v*"] = { [[y/\V<C-R>=escape(@",'/\')<CR><CR>]] },
-
-    -- escape to normal mode
-    ["ijk"] = { "<ESC>" },
-    ["tjk"] = { [[<C-\><C-n>]] },
-
-    -- shifting visual block should keep it selected
-    ["v<"] = { "<gv" },
-    ["v>"] = { ">gv|" },
-
-    -- automatically jump to end of text you pasted
-    ["vy"] = { "y`]" },
-    ["vp"] = { "p`]" },
-    ["np"] = { "p`]" },
-
-    -- go up/down on visual line
-    ["vj"] = { "gj", noremap = false },
-    ["vk"] = { "gk", noremap = false },
-    ["nj"] = { [[ (v:count? 'j' : 'gj') ]], expr = true },
-    ["nk"] = { [[ (v:count? 'k' : 'gk') ]], expr = true },
-
-    -- go to begining or end of line
-    ["nB"] = { "^" },
-    ["nE"] = { "$" },
-    ["c<C-a>"] = { "<home>" },
-    ["c<C-e>"] = { "<end>" },
-
-    -- move between windows
-    ["n<C-p>"] = { "<Plug>(choosewin)", noremap = false },
-
-    -- ["n<C-h>"] = { [[<cmd>lua require('tmux').move_left()<CR>]] },
-    -- ["n<C-j>"] = { [[<cmd>lua require('tmux').move_down()<CR>]] },
-    -- ["n<C-k>"] = { [[<cmd>lua require('tmux').move_up()<CR>]] },
-    -- ["n<C-l>"] = { [[<cmd>lua require('tmux').move_right()<CR>]] },
-    ["n<c-k>"] = { ":wincmd k<CR>" },
-    ["n<c-j>"] = { ":wincmd j<CR>" },
-    ["n<c-h>"] = { ":wincmd h<CR>" },
-    ["n<c-l>"] = { ":wincmd l<CR>" },
-
-    ["t<c-k>"] = { "<C-\\><C-n><C-w>k" },
-    ["t<c-j>"] = { "<C-\\><C-n><C-w>j" },
-    ["t<c-h>"] = { "<C-\\><C-n><C-w>h" },
-    ["t<c-l>"] = { "<C-\\><C-n><C-w>l" },
-
-    -- wincmd K (switch to horizontal)
-    -- wincmd H (switch to vertical)
-
-    -- resize splits
-    ["n>"] = { ':execute "vertical resize +5"<CR>' },
-    ["n<"] = { ':execute "vertical resize -5"<CR>' },
-    ["n+"] = { ':execute "resize +5"<CR>' },
-    ["n-"] = { ':execute "resize -5"<CR>' },
-    ["n<A-h>"] = {
-      function()
-        require("smart-splits").resize_left()
-      end,
-    },
-    ["n<A-j>"] = {
-      function()
-        require("smart-splits").resize_down()
-      end,
-    },
-    ["n<A-k>"] = {
-      function()
-        require("smart-splits").resize_up()
-      end,
-    },
-    ["n<A-l>"] = {
-      function()
-        require("smart-splits").resize_right()
-      end,
-    },
 
     -- disable keys
     ["n<up>"] = { "<nop>" },
@@ -89,123 +13,380 @@ local mappings = {
     ["n<space>"] = { "<nop>" },
     ["n<esc>"] = { "<nop>" },
 
-    -- swap lines
-    -- ['n[e'] = { [[:<c-u>execute 'move -1-'. v:count1<cr>]] };
-    -- ['n]e'] = { [[:<c-u>execute 'move +'. v:count1<cr>]] };
+    -- terminal
+    --["t<Esc>"] = { [[<C-\><C-n>]] },
+
+    ["v*"] = {
+      [[y/\V<C-R>=escape(@",'/\')<CR><CR>]],
+      desc = "Search visual selection"
+    },
+
+    -- escape to normal mode
+    ["ijk"] = {
+      "<ESC>",
+      desc = "Escape to normal mode"
+    },
+    ["tjk"] = {
+      [[<C-\><C-n>]],
+      desc = "Escape to normal mode"
+    },
+
+    -- shifting visual block should keep it selected
+    ["v<"] = {
+      "<gv",
+      desc = "Shift visual block left"
+    },
+    ["v>"] = {
+      ">gv|",
+      desc = "Shift visual block right"
+    },
+
+    -- automatically jump to end of text you pasted
+    --["vy"] = { "y`]" },
+    ["vp"] = {
+      "p`]",
+      desc = "Paste and jump to end of text"
+    },
+    ["np"] = {
+      "p`]",
+      desc = "Paste and jump to end of text"
+    },
+
+    -- go up/down on visual line
+    ["vj"] = {
+      "gj",
+      noremap = false,
+      desc = "Go down on visual mode"
+    },
+    ["vk"] = {
+      "gk",
+      noremap = false,
+      desc = "Go up on visual mode"
+    },
+    ["nj"] = {
+      [[ (v:count? 'j' : 'gj') ]],
+      expr = true,
+      desc = "Go down on normal mode"
+    },
+    ["nk"] = {
+      [[ (v:count? 'k' : 'gk') ]],
+      expr = true,
+      desc = "Go up on normal mode"
+    },
+
+    -- go to begining or end of line
+    ["nB"] = {
+      "^",
+      desc = "Go to begining of line"
+    },
+    ["nE"] = {
+      "$",
+      desc = "Go to end of line"
+    },
+
+    -- move between windows
+
+    -- ["n<C-h>"] = { [[<cmd>lua require('tmux').move_left()<CR>]] },
+    -- ["n<C-j>"] = { [[<cmd>lua require('tmux').move_down()<CR>]] },
+    -- ["n<C-k>"] = { [[<cmd>lua require('tmux').move_up()<CR>]] },
+    -- ["n<C-l>"] = { [[<cmd>lua require('tmux').move_right()<CR>]] },
+    ["n<c-k>"] = {
+      ":wincmd k<CR>",
+      desc = "Move to window above"
+    },
+    ["n<c-j>"] = {
+      ":wincmd j<CR>",
+      desc = "Move to window below"
+    },
+    ["n<c-h>"] = {
+      ":wincmd h<CR>",
+      desc = "Move to window at left"
+    },
+    ["n<c-l>"] = {
+      ":wincmd l<CR>",
+      desc = "Move to window at right"
+    },
+    ["t<c-k>"] = {
+      "<C-\\><C-n><C-w>k",
+      desc = "Move to window above"
+    },
+    ["t<c-j>"] = {
+      "<C-\\><C-n><C-w>j",
+      desc = "Move to window below"
+    },
+    ["t<c-h>"] = {
+      "<C-\\><C-n><C-w>h",
+      desc = "Move to window at left"
+    },
+    ["t<c-l>"] = {
+      "<C-\\><C-n><C-w>l",
+      desc = "Move to window at right"
+    },
+    -- wincmd K (switch to horizontal)
+    -- wincmd H (switch to vertical)
+
+    -- resize splits
+    ["n<A-h>"] = {
+      require("smart-splits").resize_left,
+      desc = "Resize split left"
+    },
+    ["n<A-j>"] = {
+      require("smart-splits").resize_down,
+      desc = "Resize split down"
+    },
+    ["n<A-k>"] = {
+      require("smart-splits").resize_up,
+      desc = "Resize split up"
+    },
+    ["n<A-l>"] = {
+      require("smart-splits").resize_right,
+      desc = "Resize split right"
+    },
 
     -- unimpaired like mappings
-    ["n[b"] = { [[:bprevious<CR>]] },
-    ["n]b"] = { [[:bnext<CR>]] },
-    ["n[q"] = { [[:cprevious<CR>]] },
-    ["n]q"] = { [[:cnext<CR>]] },
-    ["n[l"] = { [[:lprevious<CR>]] },
-    ["n]l"] = { [[:lnext<CR>]] },
-    ["n[t"] = { [[:tabprevious<CR>]] },
-    ["n]t"] = { [[:tabnext<CR>]] },
+    ["n[b"] = {
+      [[:bprevious<CR>]],
+      desc = "Previous buffer"
+    },
+    ["n]b"] = {
+      [[:bnext<CR>]],
+      desc = "Next buffer"
+    },
+    ["n[q"] = {
+      [[:cprevious<CR>]],
+      desc = "Previous QF entry"
+    },
+    ["n]q"] = {
+      [[:cnext<CR>]],
+      desc = "Next QF entry"
+    },
+    ["n[l"] = {
+      [[:lprevious<CR>]],
+      desc = "Previous LOC entry"
+    },
+    ["n]l"] = {
+      [[:lnext<CR>]],
+      desc = "Next LOC entry"
+    },
+    ["n[t"] = {
+      [[:tabprevious<CR>]],
+      desc = "Previous tab"
+    },
+    ["n]t"] = {
+      [[:tabnext<CR>]],
+      desc = "Next tab"
+    },
 
     -- paste keeping the default register
-    ["v<leader>p"] = { '"_dP' },
-    ["v<leader>x"] = { '"_d' },
-    ["n<leader>x"] = { '"_x' },
+    ["v<leader>p"] = {
+      '"_dP',
+      desc = "Paste keeping the default register"
+    },
+    ["v<leader>x"] = {
+      '"_d',
+      desc = "Cut keeping the default register"
+    },
+    ["n<leader>x"] = {
+      '"_x',
+      desc = "Cut keeping the default register"
+    },
 
     -- copy & paste to system clipboad
-    ["v<leader>y"] = { '"*y', noremap = false },
+    ["v<leader>y"] = {
+      '"*y',
+      noremap = false,
+      desc = "Copy to system clipboard"
+    },
 
     -- quickly select text you pasted
-    ["ngp"] = { [['`[' . strpart(getregtype(), 0, 1) . '`]']], expr = true },
-
-    -- these work like * and g*, but do not move the cursor and always set hls.
-    -- ["_*"] = { [[:let @/ = '\<'.expand('<cword>').'\>'<bar>set hlsearch<C-M>]] },
-    -- ["_g*"] = { [[:let @/ = expand('<cword>')<bar>set hlsearch<C-M>]] },
+    ["ngp"] = {
+      [['`[' . strpart(getregtype(), 0, 1) . '`]']],
+      expr = true,
+      desc = "Select text pasted"
+    },
 
     -- goto URL
-    ["ngx"] = { [[:call v:lua.g.openURL()<CR>]] },
-    ["ngo"] = { "<Plug>(OctoOpenIssueAtCursor)", noremap = false },
+    ["ngx"] = {
+      g.openURL,
+      desc = "Go to URL"
+    },
+    ["ngo"] = {
+      "<Plug>(OctoOpenIssueAtCursor)",
+      noremap = false,
+      desc = "Open URL in Octo"
+    },
+
+    -- COMMENT.NVIM
+    ["ngc"] = {
+      "<Plug>(comment_toggle_linewise_visual)",
+      noremap = false,
+      desc = "Coment linewise"
+    },
+    ["ngb"] = {
+      "<Plug>(comment_toggle_blockwise)",
+      noremap = false,
+      desc = "Coment blockwise"
+    },
 
     -- TELESCOPE
-    ["n<leader>n"] = {
-      [[<cmd>lua require('github-notifications.menu').notifications()<CR>]],
-    },
+    -- ["n<leader>n"] = {
+    --   require('github-notifications.menu').notifications,
+    --   desc = "GitHub notifications",
+    -- },
     ["n<leader>f"] = {
-      [[<cmd>lua require'telescope.builtin'.find_files()<CR>]],
+      function() require('telescope.builtin').find_files() end,
+      desc = "Find files",
     },
     ["n<leader>l"] = {
-      [[<cmd>lua require'telescope.builtin'.live_grep()<CR>]],
+      function() require 'telescope.builtin'.live_grep() end,
+      desc = "Live grep",
     },
-    ["n<leader>r"] = { [[<cmd>lua require'telescope.builtin'.reloader()<CR>]] },
+    ["n<leader>r"] = {
+      function() require 'telescope.builtin'.reloader() end,
+      desc = "Reload module",
+    },
     ["n<leader>o"] = {
-      [[<cmd>lua require'telescope.builtin'.buffers()<CR>]],
+      function() require 'telescope.builtin'.buffers() end,
+      desc = "Open buffers",
     },
     ["n<leader>s"] = {
-      [[<cmd>lua require'telescope.builtin'.grep_string({ word_match = '-w' })<CR>]],
+      function() require 'telescope.builtin'.grep_string({ word_match = '-w' }) end,
+      desc = "Grep string",
     },
     ["n<leader>gc"] = {
-      [[<cmd>lua require'telescope.builtin'.git_commits()<CR>]],
+      function() require 'telescope.builtin'.git_commits() end,
+      desc = "Git commits",
     },
     ["n<leader>gf"] = {
-      [[<cmd>lua require'telescope.builtin'.git_files()<CR>]],
+      function() require 'telescope.builtin'.git_files() end,
+      desc = "Git files",
     },
     ["n<leader>gb"] = {
-      [[<cmd>lua require'telescope.builtin'.git_branches()<CR>]],
+      function() require 'telescope.builtin'.git_branches() end,
+      desc = "Git branches",
     },
     ["n<leader>bs"] = {
-      [[<cmd>lua require'telescope.builtin'.current_buffer_fuzzy_find{}<CR>]],
+      function() require 'telescope.builtin'.current_buffer_fuzzy_find() end,
+      desc = "Current buffer fuzzy find",
     },
     ["n<leader>p"] = {
-      [[<cmd>lua require'telescope'.extensions.projects.projects()<CR>]],
+      function() require 'telescope'.extensions.projects.projects() end,
+      desc = "Projects",
     },
     ["n<leader>m"] = {
-      [[<cmd>lua require'telescope'.extensions.frecency.frecency()<CR>]],
+      function() require 'telescope'.extensions.frecency.frecency() end,
+      desc = "Most Recently Used",
     },
 
     -- GITSIGNS
-    ["n[h"] = { "<Plug>(GitGutterPrevHunk)", noremap = false },
-    ["n]h"] = { "<Plug>(GitGutterNextHunk)", noremap = false },
+    ["n[h"] = {
+      "<Plug>(GitGutterPrevHunk)",
+      noremap = false,
+      desc = "Previous hunk"
+    },
+    ["n]h"] = {
+      "<Plug>(GitGutterNextHunk)",
+      noremap = false,
+      desc = "Next Hunk"
+    },
 
     -- VIM-SMOOTHIE
-    ["n<c-d>"] = { "<Plug>(SmoothieDownwards)", noremap = false },
-    ["n<c-e>"] = { "<Plug>(SmoothieUpwards)", noremap = false },
+    ["n<c-d>"] = {
+      "<Plug>(SmoothieDownwards)",
+      noremap = false,
+      desc = "Scroll down"
+    },
+    ["n<c-e>"] = {
+      "<Plug>(SmoothieUpwards)",
+      noremap = false,
+      desc = "Scroll up"
+    },
 
     -- TRUE-ZEN
-    ["n<leader>z"] = { ":TZAtaraxis<CR>" },
+    ["n<leader>z"] = {
+      ":TZAtaraxis<CR>",
+      desc = "Zen mode"
+    },
 
-    ["n<S-l>"] = { "<C-i>", noremap = false },
-    ["n<S-h>"] = { "<C-o>", noremap = false },
-
-    -- NEOTREE
-    ["nge"] = { [[:Neotree action=show source=filesystem position=left toggle=true reveal=true reveal_force_cwd=true<CR>]] },
-    ["n<C-o>"] = { [[:Neotree action=show source=buffers position=right toggle=true<CR>]] },
-
-    -- GIT-MESSANGER
-    ["n<leader>gm"] = { [[<Plug>(git-messenger)]], noremap = false },
+    -- NEO-TREE
+    ["nge"] = {
+      [[:Neotree action=show source=filesystem position=left toggle=true reveal=true reveal_force_cwd=true<CR>]],
+      desc = "NeoTree files"
+    },
+    ["n<C-o>"] = {
+      [[:Neotree action=show source=buffers position=right toggle=true<CR>]],
+      desc = "NeoTree buffers"
+    },
 
     -- DIAL
-    ["n<C-a>"] = { [[<Plug>(dial-increment)]] },
-    ["n<C-x>"] = { [[<Plug>(dial-decrement)]] },
-    ["v<C-a>"] = { [[<Plug>(dial-increment)]] },
-    ["v<C-x>"] = { [[<Plug>(dial-decrement)]] },
+    ["n<C-a>"] = {
+      [[<Plug>(dial-increment)]],
+      desc = "Increment"
+    },
+    ["n<C-x>"] = {
+      [[<Plug>(dial-decrement)]],
+      desc = "Decrement"
+    },
+    ["v<C-a>"] = {
+      [[<Plug>(dial-increment)]],
+      desc = "Increment"
+    },
+    ["v<C-x>"] = {
+      [[<Plug>(dial-decrement)]],
+      desc = "Decrement"
+    },
 
     -- TROUBLE
-    -- ['n<leader>xx'] = { [[<cmd>LspTroubleToggle<cr>]] };
-    -- ['n<leader>xw'] = { [[<cmd>LspTroubleToggle lsp_workspace_diagnostics<cr>]] };
-    -- ['n<leader>xd'] = { [[<cmd>LspTroubleToggle lsp_document_diagnostics<cr>]] };
-    -- ['n<leader>xl'] = { [[<cmd>LspTroubleToggle loclist<cr>]] };
-    -- ['n<leader>xq'] = { [[<cmd>LspTroubleToggle quickfix<cr>]] };
-    -- ['n<leader>xr'] = { [[<cmd>LspTrouble lsp_references<cr>]] };
+    ['n<leader>xx'] = {
+      [[<cmd>LspTroubleToggle<cr>]],
+      desc = "Toggle LSP trouble"
+    },
+    ['n<leader>xw'] = {
+      [[<cmd>LspTroubleToggle lsp_workspace_diagnostics<cr>]],
+      desc = "Toggle LSP workspace diagnostics"
+    },
+    ['n<leader>xd'] = {
+      [[<cmd>LspTroubleToggle lsp_document_diagnostics<cr>]],
+      desc = "Toggle LSP document diagnostics"
+    },
+    ['n<leader>xl'] = {
+      [[<cmd>LspTroubleToggle loclist<cr>]],
+      desc = "Toggle LSP loclist"
+    },
+    ['n<leader>xq'] = {
+      [[<cmd>LspTroubleToggle quickfix<cr>]],
+      desc = "Toggle LSP quickfix"
+    },
+    ['n<leader>xr'] = {
+      [[<cmd>LspTrouble lsp_references<cr>]],
+      desc = "LSP references"
+    },
 
     -- GOTO-PREVIEW
-    ["ngP"] = { "<cmd>lua require('goto-preview').goto_preview_definition()<CR>" },
-
-    -- LIGHTSPEED
-    ["nr"] = { [[<Plug>Lightspeed_s]], noremap = false },
-    ["nR"] = { [[<Plug>Lightspeed_A]], noremap = false },
+    ["ngP"] = {
+      require('goto-preview').goto_preview_definition,
+      desc = "Goto preview"
+    },
 
     -- COPILOT
-    ["i<C-l>"] = { [[copilot#Accept("\<right>")]], script = true, expr = true },
-    ["i<Right>"] = { [[copilot#Accept("\<right>")]], script = true, expr = true },
+    ["i<C-l>"] = {
+      [[copilot#Accept("\<right>")]],
+      script = true,
+      expr = true,
+      desc = "Accept Copilot suggestion"
+    },
+    ["i<Right>"] = {
+      [[copilot#Accept("\<right>")]],
+      script = true,
+      expr = true,
+      desc = "Accept Copilot suggestion"
+    },
 
     -- ZK
-    ["n<leader>t"] = { [[<CMD>lua require("pwntester.zk").dailyNote()<CR>]] },
+    ["n<leader>t"] = {
+      function() require("pwntester.zk").dailyNote() end,
+      desc = "ZK Journal"
+    },
 
     -- LUASNIP
     ["i<C-j>"] = {
@@ -216,6 +397,7 @@ local mappings = {
         end
       end,
       silent = true,
+      desc = "Expand or jump"
     },
     ["s<C-j>"] = {
       function()
@@ -225,6 +407,7 @@ local mappings = {
         end
       end,
       silent = true,
+      desc = "Expand or jump"
     },
     ["i<C-k>"] = {
       function()
@@ -234,6 +417,7 @@ local mappings = {
         end
       end,
       silent = true,
+      desc = "Jump back"
     },
     ["s<C-k>"] = {
       function()
@@ -243,6 +427,7 @@ local mappings = {
         end
       end,
       silent = true,
+      desc = "Jump back"
     },
     ["i<a-j>"] = {
       function()
@@ -252,6 +437,7 @@ local mappings = {
         end
       end,
       silent = true,
+      desc = "Change choice"
     },
     ["s<a-j>"] = {
       function()
@@ -261,6 +447,7 @@ local mappings = {
         end
       end,
       silent = true,
+      desc = "Change choice"
     },
     ["i<a-k>"] = {
       function()
@@ -270,6 +457,7 @@ local mappings = {
         end
       end,
       silent = true,
+      desc = "Change choice"
     },
     ["s<a-k>"] = {
       function()
@@ -279,58 +467,141 @@ local mappings = {
         end
       end,
       silent = true,
+      desc = "Change choice"
     },
-    -- imap <silent><expr> <C-k> luasnip#expand_or_jumpable() ? '<Plug>luasnip-expand-or-jump' : '<c-k>'
-    -- imap <silent><expr> <C-l> luasnip#choice_active() ? '<Plug>luasnip-next-choice' : '<C-l>'
-    -- inoremap <silent> <C-j> <cmd>lua require('luasnip').jump(-1)<CR>
-    -- snoremap <silent> <C-k> <cmd>lua require('luasnip').jump(1)<CR>
-    -- snoremap <silent> <C-j> <cmd>lua require('luasnip').jump(-1)<CR>
 
-    -- NVIM-HLSLENS()
-    ["nn"] = { [[<CMD>execute('normal! ' . v:count1 . 'n')<CR><CMD>lua require('hlslens').start()<CR>]] },
-    ["nN"] = { [[<CMD>execute('normal! ' . v:count1 . 'N')<CR><CMD>lua require('hlslens').start()<CR>]] },
-    ["n*"] = { [[*<CMD>lua require('hlslens').start()<CR>]] },
-    ["n#"] = { [[#<CMD>lua require('hlslens').start()<CR>]] },
-    ["ng*"] = { [[g*<CMD>lua require('hlslens').start()<CR>]] },
-    ["ng#"] = { [[g#<CMD>lua require('hlslens').start()<CR>]] },
+    -- NVIM-HLSLENS
+    ["nn"] = {
+      [[<CMD>execute('normal! ' . v:count1 . 'n')<CR><CMD>lua require('hlslens').start()<CR>]],
+      desc = "Next match"
+    },
+    ["nN"] = {
+      [[<CMD>execute('normal! ' . v:count1 . 'N')<CR><CMD>lua require('hlslens').start()<CR>]],
+      desc = "Previous match"
+    },
+    ["n*"] = {
+      [[*<CMD>lua require('hlslens').start()<CR>]],
+      desc = "Next match"
+    },
+    ["n#"] = {
+      [[#<CMD>lua require('hlslens').start()<CR>]],
+      desc = "Previous match"
+    },
+    ["ng*"] = {
+      [[g*<CMD>lua require('hlslens').start()<CR>]],
+      desc = "Next match"
+    },
+    ["ng#"] = {
+      [[g#<CMD>lua require('hlslens').start()<CR>]],
+      desc = "Previous match"
+    },
 
     -- CODEQL
-    ["n<leader>c"] = { [[<Plug>(CodeQLGrepSource)]], noremap = false },
+    ["n<leader>c"] = {
+      [[<Plug>(CodeQLGrepSource)]],
+      noremap = false,
+      desc = "Grep CodeQL archive"
+    },
   },
   ["markdown"] = {
-    ["i<C-u>"] = { [[<CMD>lua require("pwntester.markdown").pasteLink()<CR>]] },
-    ["i<C-b>"] = { [[<CMD>lua require("pwntester.markdown").insertCheckbox()<CR>]] },
-    ["i<CR>"] = { [[<CMD>lua require("pwntester.markdown").markdownEnter()<CR>]] },
-    ["no"] = { [[<CMD>lua require("pwntester.markdown").markdownO()<CR>]] },
-    ["nO"] = { [[<CMD>lua require("pwntester.markdown").markdownShiftO()<CR>]] },
-    ["n<leader>i"] = { [[<CMD>lua require("pwntester.markdown").toggleEntries()<CR>]] },
-    ["v<leader>i"] = { [[:'<,'>lua require("pwntester.markdown").toggleEntries()<CR>]] },
+    ["i<C-u>"] = {
+      require("pwntester.markdown").pasteLink,
+      desc = "Paste link"
+    },
+    ["i<C-b>"] = {
+      require("pwntester.markdown").insertCheckbox,
+      desc = "Insert checkbox"
+    },
+    ["i<CR>"] = {
+      require("pwntester.markdown").markdownEnter,
+      desc = "Markdown enter"
+    },
+    ["no"] = {
+      require("pwntester.markdown").markdownO,
+      desc = "Markdown o"
+    },
+    ["nO"] = {
+      require("pwntester.markdown").markdownShiftO,
+      desc = "Markdown O"
+    },
+    ["n<leader>i"] = {
+      require("pwntester.markdown").toggleEntries,
+      desc = "Toggle entries"
+    },
+    ["v<leader>i"] = {
+      [[:'<,'>lua require("pwntester.markdown").toggleEntries()<CR>]],
+      desc = "Toggle entries"
+    },
   },
   ["zk"] = {
-    ["n<leader>zi"] = { [[<CMD>lua require("lspconfig").zk.index()<CR>]] },
-    ["i<C-n>"] = { [[<CMD>lua require("pwntester.zk").templateNote()<CR>]] },
+    ["n<leader>zi"] = {
+      function() require("lspconfig").zk.index() end,
+      desc = "ZK index"
+    },
+    ["i<C-n>"] = {
+      function() require("pwntester.zk").templateNote() end,
+      desc = "ZK new note"
+    },
     ["n<leader>zn"] = {
       [[<CMD>lua require'lspconfig'.zk.new({title = vim.fn.input('Title: '), dir = 'areas/inbox'})<CR>]],
+      desc = "ZK new note",
     },
   },
   ["lsp"] = {
-    ["ngdc"] = { [[<cmd>lua vim.lsp.buf.declaration()<CR>]] },
-    ["ngi"] = { [[<cmd>lua vim.lsp.buf.implementation()<CR>]] },
-    ["ngtt"] = { [[<cmd>lua vim.lsp.buf.type_definition()<CR>]] },
-    ["ng="] = { [[<cmd>lua vim.lsp.buf.formatting()<CR>]] },
-    ["ngic"] = { [[<cmd>lua vim.lsp.buf.incoming_calls()<CR>]] },
-    ["ngoc"] = { [[<cmd>lua vim.lsp.buf.outgoing_calls()<CR>]] },
-    ["ngK"] = { [[<cmd>lua vim.lsp.buf.hover()<CR>]] },
-    ["ngD"] = { [[<cmd>lua vim.diagnostic.open_float(0, { scope = "line", border = "single" })<CR>]] },
-    ["ngd"] = { [[<cmd>lua require"telescope.builtin.lsp".definitions()<CR>]] },
-    ["ngr"] = { [[<cmd>lua require"telescope.builtin.lsp".references()<CR>]] },
-    --["n<C-d>"] = { [[<cmd>lua require"telescope.builtin.lsp".document_symbols()<CR>]] },
-    --["n<C-o>"] = { [[<cmd>lua require"pwntester.plugins.telescope".lsp_dynamic_symbols()<CR>]] },
+    ["ngdc"] = {
+      vim.lsp.buf.declaration,
+      desc = "Goto declaration"
+    },
+    ["ngi"] = {
+      vim.lsp.buf.implementation,
+      desc = "Goto implementation"
+    },
+    ["ngtt"] = {
+      vim.lsp.buf.type_definition,
+      desc = "Goto type definition"
+    },
+    ["ng="] = {
+      vim.lsp.buf.formatting,
+      desc = "Format document"
+    },
+    ["ngic"] = {
+      vim.lsp.buf.incoming_calls,
+      desc = "Incoming calls"
+    },
+    ["ngoc"] = {
+      vim.lsp.buf.outgoing_calls,
+      desc = "Outcoming calls"
+    },
+    ["ngK"] = {
+      vim.lsp.buf.hover,
+      desc = "Hover"
+    },
+    ["ngD"] = {
+      function() vim.diagnostic.open_float(0, { scope = "line", border = "single" }) end,
+      desc = "Show diagnostics"
+    },
+    ["ngd"] = {
+      function() require "telescope.builtin.lsp".definitions() end,
+      desc = "Goto definition"
+    },
+    ["ngr"] = {
+      function() require "telescope.builtin.lsp".references() end,
+      desc = "Goto references"
+    },
 
     -- RENAMER
-    ["i<F2>"] = { [[<CMD>lua require("renamer").rename()<CR>]] },
-    ["n<leader>rn"] = { [[<CMD>lua require("renamer").rename()<CR>]] },
-    ["v<leader>rn"] = { [[<CMD>lua require("renamer").rename()<CR>]] },
+    ["i<F2>"] = {
+      function() require("renamer").rename() end,
+      desc = "Rename"
+    },
+    ["n<leader>rn"] = {
+      function() require("renamer").rename() end,
+      desc = "Rename"
+    },
+    ["v<leader>rn"] = {
+      function() require("renamer").rename() end,
+      desc = "Rename"
+    },
 
     -- ['ngP']     = { [[<Plug>(LspPreviewDefinition)]], noremap = false};
     -- ["ngf"] = { [[<Plug>(LspFinder)]], noremap = false },
@@ -341,18 +612,34 @@ local mappings = {
     -- ["v<A-CR>"] = { [[<Plug>(LspRangeCodeActions)]], noremap = false },
   },
   ["lsp_jdt"] = {
-    ["n<A-o>"] = { [[<Cmd>lua require'jdtls'.organize_imports()<CR>]] },
-    ["ncrv"] = { [[<Cmd>lua require'jdtls'.extract_variable()<CR>]] },
-    ["vcrv"] = { [[<Cmd>lua require'jdtls'.extract_variable()<CR>]] },
-    ["ncrc"] = { [[<Cmd>lua require'jdtls'.extract_constant()<CR>]] },
-    ["vcrc"] = { [[<Cmd>lua require'jdtls'.extract_constant()<CR>]] },
-    ["vcrm"] = { [[<Cmd>lua require'jdtls'.extract_method()<CR>]] },
+    ["n<A-o>"] = { function() require 'jdtls'.organize_imports() end },
+    ["ncrv"] = { function() require 'jdtls'.extract_variable() end },
+    ["vcrv"] = { function() require 'jdtls'.extract_variable() end },
+    ["ncrc"] = { function() require 'jdtls'.extract_constant() end },
+    ["vcrc"] = { function() require 'jdtls'.extract_constant() end },
+    ["vcrm"] = { function() require 'jdtls'.extract_method() end },
   },
   ["treesitter"] = {
-    ["n<CR>"] = { [[<Plug>(TsSelInit)]], noremap = false },
-    ["x<CR>"] = { [[<Plug>(TsSelScopeIncr)]], noremap = false },
-    ["x<Tab>"] = { [[<Plug>(TsSelNodeIncr)]], noremap = false },
-    ["x<S-Tab>"] = { [[<Plug>(TsSelNodeDecr)]], noremap = false },
+    ["n<CR>"] = {
+      [[<Plug>(TsSelInit)]],
+      noremap = false,
+      desc = "Select context incrementally"
+    },
+    ["x<CR>"] = {
+      [[<Plug>(TsSelScopeIncr)]],
+      noremap = false,
+      desc = "Select context incrementally"
+    },
+    ["x<Tab>"] = {
+      [[<Plug>(TsSelNodeIncr)]],
+      noremap = false,
+      desc = "Select node incrementally"
+    },
+    ["x<S-Tab>"] = {
+      [[<Plug>(TsSelNodeDecr)]],
+      noremap = false,
+      desc = "Select node incrementally"
+    },
     -- ['xgrd'] = { [[<Plug>(TsSelScopeDecr)]], noremap = false};
     -- ['ngrr'] = { [[<Plug>(TsRename)]]      , noremap = false};
     -- ['ngtd'] = { [[<Plug>(TsGotoDef)]]     , noremap = false};

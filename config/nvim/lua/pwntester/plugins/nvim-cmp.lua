@@ -126,8 +126,8 @@ local function setup()
           nvim_lua = "",
           buffer = "",
           path = "",
-          cmdline = "",
-          cmdline_history = "",
+          -- cmdline = "",
+          -- cmdline_history = "",
         })[entry.source.name]
         return item
       end,
@@ -166,24 +166,24 @@ local function setup()
     },
   }
 
-  cmp.setup.cmdline(':', {
-    sources = cmp.config.sources({
-      { name = 'cmdline', keyword_pattern = [=[[^[:blank:]\!]*]=] },
-      { name = 'cmdline_history' },
-      { name = 'path' },
-    })
-  })
+  -- cmp.setup.cmdline(':', {
+  --   sources = cmp.config.sources({
+  --     { name = 'cmdline', keyword_pattern = [=[[^[:blank:]\!]*]=] },
+  --     { name = 'cmdline_history' },
+  --     { name = 'path' },
+  --   })
+  -- })
 
-  for _, cmd_type in ipairs({ '/', '?', '@' }) do
-    cmp.setup.cmdline(cmd_type, {
-      view = { entries = { name = 'custom', selection_order = 'near_cursor' } },
-      sources = cmp.config.sources({
-        { name = 'nvim_lsp_document_symbol' },
-      }, {
-        { name = 'buffer' },
-      }),
-    })
-  end
+  -- for _, cmd_type in ipairs({ '/', '?', '@' }) do
+  --   cmp.setup.cmdline(cmd_type, {
+  --     view = { entries = { name = 'custom', selection_order = 'near_cursor' } },
+  --     sources = cmp.config.sources({
+  --       { name = 'nvim_lsp_document_symbol' },
+  --     }, {
+  --       { name = 'buffer' },
+  --     }),
+  --   })
+  -- end
 
 end
 

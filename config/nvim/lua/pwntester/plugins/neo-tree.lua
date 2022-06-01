@@ -105,6 +105,10 @@ function M.setup()
               cc.open_with_window_picker(state, utils.wrap(fs.toggle_directory, state))
             end
           end,
+          ["q"] = function(state)
+            local node = state.tree:get_node()
+            vim.api.nvim_command("SetDatabase " .. node.path)
+          end,
           ["S"] = "split_with_window_picker",
           ["s"] = "vsplit_with_window_picker",
           ["o"] = function(state)

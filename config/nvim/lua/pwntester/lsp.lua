@@ -1,11 +1,8 @@
-local vim = vim
-local api = vim.api
 local nvim_lsp = require "lspconfig"
 local window = require "pwntester.window"
 local util = require "lspconfig.util"
 local efm = require "pwntester.plugins.efm"
 
---local clients = {}
 local servers = {
   "bashls",
   "pyright",
@@ -24,35 +21,17 @@ require("nvim-lsp-installer").setup {
   ensure_installed = servers,
 }
 
--- local function register_buffer(bufnr, client_id)
---   if not clients[bufnr] then
---     clients[bufnr] = { client_id }
---   else
---     table.insert(clients[bufnr], client_id)
---   end
--- end
-
 local capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities())
 
 local function on_attach_callback(client, bufnr)
-  bufnr = bufnr or api.nvim_get_current_buf()
+  bufnr = bufnr or vim.api.nvim_get_current_buf()
 
   -- extensions
   require("lsp-format").on_attach(client)
   require("lsp_spinner").on_attach(client, bufnr)
-  require("lsp_signature").on_attach {
-    hint_enable = false,
-    hi_parameter = "QuickFixLine",
-    handler_opts = {
-      border = vim.g.floating_window_border,
-    },
-  }
-
-  -- register client/buffer relation
-  --register_buffer(bufnr, client.id)
 
   -- mappings
-  g.map(require("pwntester.mappings").lsp, { silent = false, noremap = true }, bufnr)
+  g.map(require("pwntester.mappings").lsp, { silent = false }, bufnr)
 end
 
 local function setup()
@@ -139,7 +118,7 @@ local function setup()
       end,
       on_attach = function(client, bufnr)
         on_attach_callback(client, bufnr)
-        g.map(require("pwntester.mappings").zk, { silent = true, noremap = true }, bufnr)
+        g.map(require("pwntester.mappings").zk, { silent = true }, bufnr)
       end,
     },
     ["efm"] = {
