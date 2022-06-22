@@ -228,6 +228,18 @@ local mappings = {
       desc = "Coment blockwise"
     },
 
+    -- TOGGLETERM
+    ["n<C-\\>"] = {
+      "<Plug>(ToggleTerm)",
+      noremap = false,
+      desc = "Toggle terminal"
+    },
+    ["n<leader>gg"] = {
+      "<Plug>(LazyGit)",
+      noremap = false,
+      desc = "Lazygit"
+    },
+
     -- TELESCOPE
     -- ["n<leader>n"] = {
     --   require('github-notifications.menu').notifications,
@@ -303,10 +315,10 @@ local mappings = {
     },
 
     -- TRUE-ZEN
-    ["n<leader>z"] = {
-      ":TZAtaraxis<CR>",
-      desc = "Zen mode"
-    },
+    -- ["n<leader>z"] = {
+    --   ":TZAtaraxis<CR>",
+    --   desc = "Zen mode"
+    -- },
 
     -- NEO-TREE
     ["nge"] = {
@@ -383,9 +395,25 @@ local mappings = {
     },
 
     -- ZK
-    ["n<leader>t"] = {
+    ["n<leader>zt"] = {
       function() require("pwntester.zk").dailyNote() end,
-      desc = "ZK Journal"
+      desc = "Open journal note"
+    },
+    ["n<leader>zn"] = {
+      "<Cmd>ZkNew { title = vim.fn.input('Title: '), dir = 'areas/inbox' }<CR>",
+      desc = "Create a new note after asking for its title"
+    },
+    ["n<leader>zo"] = {
+      "<Cmd>ZkNotes { sort = { 'modified' } }<CR>",
+      desc = "Open notes"
+    },
+    ["n<leader>zf"] = {
+      "<Cmd>ZkNotes { sort = { 'modified' }, match = vim.fn.input('Search: ') }<CR>",
+      desc = "Search for the notes matching a given query"
+    },
+    ["v<leader>zf"] = {
+      ":'<,'>ZkMatch<CR>",
+      desc = "Search for the notes matching the current visual selection"
     },
 
     -- LUASNIP
@@ -497,11 +525,11 @@ local mappings = {
     },
 
     -- CODEQL
-    ["n<leader>c"] = {
-      [[<Plug>(CodeQLGrepSource)]],
-      noremap = false,
-      desc = "Grep CodeQL archive"
-    },
+    -- ["n<leader>c"] = {
+    --   [[<Plug>(CodeQLGrepSource)]],
+    --   noremap = false,
+    --   desc = "Grep CodeQL archive"
+    -- },
   },
   ["markdown"] = {
     ["i<C-u>"] = {
@@ -534,17 +562,41 @@ local mappings = {
     },
   },
   ["zk"] = {
-    ["n<leader>zi"] = {
-      function() require("lspconfig").zk.index() end,
-      desc = "ZK index"
+    ["n<CR>"] = {
+      function() vim.lsp.buf.definition() end,
+      desc = "Open the link under the caret"
+    },
+    ["n<leader>zb"] = {
+      "<Cmd>ZkBacklinks<CR>",
+      desc = "Open notes linking to the current buffer"
+    },
+    ["n<leader>zl"] = {
+      "<Cmd>ZkLinks<CR>",
+      desc = "Open notes linked by the current buffer"
+    },
+    ["nK"] = {
+      function() vim.lsp.buf.hover() end,
+      desc = "Preview a linked note"
+    },
+    ["v<leader>za"] = {
+      ":'<,'>lua vim.lsp.buf.range_code_action()<CR>",
+      desc = "Open the code actions for a visual selection"
+    },
+    ["n<leader>zn"] = {
+      "<Cmd>ZkNew { dir = 'areas/inbox', title = vim.fn.input('Title: ') }<CR>",
+      desc = "Create new note"
+    },
+    ["v<leader>znt"] = {
+      ":'<,'>ZkNewFromTitleSelection { dir = 'areas/inbox' }<CR>",
+      desc = "Create a new note using the current selection for title."
+    },
+    ["v<leader>znc"] = {
+      ":'<,'>ZkNewFromContentSelection { dir = 'areas/inbox', title = vim.fn.input('Title: ') }<CR>",
+      desc = "Create a new note using the current selection for note content and asking for its title"
     },
     ["i<C-n>"] = {
       function() require("pwntester.zk").templateNote() end,
-      desc = "ZK new note"
-    },
-    ["n<leader>zn"] = {
-      [[<CMD>lua require'lspconfig'.zk.new({title = vim.fn.input('Title: '), dir = 'areas/inbox'})<CR>]],
-      desc = "ZK new note",
+      desc = "Create new templated note"
     },
   },
   ["lsp"] = {

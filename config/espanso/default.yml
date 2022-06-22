@@ -11,6 +11,9 @@ matches:
   - trigger: ":espanso"
     replace: "Hi there!"
 
+  - trigger: ":br"
+    replace: "Best Regards,\nJon Snow"
+
   # Dates
   - trigger: ":date"
     replace: "{{mydate}}"
@@ -28,3 +31,23 @@ matches:
         type: shell
         params:
           cmd: "echo Hello from your shell"
+
+  # - trigger: "::qv"
+  #   replace: "
+  #     #+BEGIN_QUERY\n
+  #     {:title [:b \"$|$\"]\n
+  #     :query [:find (pull ?b [*])\n
+  #     :where\n
+  #     [task ?b #{\"LATER\"}]\n
+  #     ]}\n
+  #     #+END_QUERY"
+  #   force_clipboard: true
+ 
+  # Or pull urls from Chrome or Safari:
+  # - trigger: "llcb"
+  #   replace: "{{mdurl}} #bookmark"
+  #   vars:
+  #     - name: mdurl
+  #   type: shell
+  #   params:
+  #   cmd: "osascript $HOME/Library/Mobile\\ Documents/com\\~apple\\~ScriptEditor2/Documents/getUrl.scpt"

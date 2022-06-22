@@ -11,9 +11,15 @@
 # Links
 - create:
     - ~/.config
+    - ~/.config/gh
+    - ~/.config/github-copilot
+
 - link:
+    ~/.config/gh/config.yml: config/gh/config.yml
+    ~/.config/github-copilot/terms.json: config/github-copilot/terms.json
+    ~/.config/kitty: config/kitty
+    ~/.config/karabiner: config/karabiner
     ~/.config/nvim: config/nvim
-    ~/.config/gh: config/gh
     ~/.config/codeql: config/codeql
     ~/.ideavimrc: home/ideavimrc
     ~/.tmux.conf: home/tmux.conf
@@ -44,7 +50,11 @@
     command: chmod a+x $HOME/bin/nvim
   -
     description: Insall Neovim plugins
-    command: $HOME/bin/nvim --headless +"sleep 5" +"autocmd User PackerComplete quitall" +"silent PackerSync"
+    command: $HOME/bin/nvim --headless +"sleep 5" +"autocmd User PackerComplete quitall" +"silent PackerSync" +qa
   -
     description: Install TreeSitter parsers 
     command: $HOME/bin/nvim --headless +"sleep 5" +"silent TSInstall python ql" +"sleep 60" +qa
+
+  - description: Accept Copilot terms
+    command: $HOME/bin/nvim --headless +"sleep 5" +"Copilot setup" +qa
+

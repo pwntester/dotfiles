@@ -107,7 +107,12 @@ function M.setup()
           end,
           ["q"] = function(state)
             local node = state.tree:get_node()
-            vim.api.nvim_command("SetDatabase " .. node.path)
+            if node.type == "directory" or node.ext == "zip" then
+              local ok, codeql = pcall(require, "codeql")
+              if ok then
+                codeql.set_database(node.path)
+              end
+            end
           end,
           ["S"] = "split_with_window_picker",
           ["s"] = "vsplit_with_window_picker",
