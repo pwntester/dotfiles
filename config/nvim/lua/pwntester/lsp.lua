@@ -29,6 +29,9 @@ local function on_attach_callback(client, bufnr)
   -- extensions
   require("lsp-format").on_attach(client)
   require("lsp_spinner").on_attach(client, bufnr)
+  if client.server_capabilities.documentSymbolProvider and not client.name == "codeqlls" then
+    require("nvim-navic").attach(client, bufnr)
+  end
 
   -- mappings
   g.map(require("pwntester.mappings").lsp, { silent = false }, bufnr)

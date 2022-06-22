@@ -2,8 +2,12 @@ local icons = require("pwntester.icons")
 
 local M = {}
 
-local status_gps_ok, gps = pcall(require, "nvim-gps")
-if not status_gps_ok then
+-- local status_gps_ok, gps = pcall(require, "nvim-gps")
+-- if not status_gps_ok then
+--   return
+-- end
+local status_ok, navic = pcall(require, "nvim-navic")
+if not status_ok then
   return
 end
 
@@ -64,11 +68,12 @@ end
 
 M.winbar = function()
   local filename = M.filename()
-  local status_ok, gps_location = pcall(gps.get_location, {})
+  --local ok, location = pcall(gps.get_location, {})
+  local ok, location = pcall(navic.get_location, {})
 
   local left = ""
-  if status_ok and gps.is_available() and gps_location ~= "error" and not isempty(gps_location) then
-    left = filename .. " " .. icons.ui.ChevronRight .. " " .. gps_location
+  if ok and navic.is_available() and location ~= "error" and not isempty(location) then
+    left = filename .. " " .. "%#NavicSeparator#" .. icons.ui.ChevronRight .. "%* " .. location
   elseif filename then
     left = filename
   end

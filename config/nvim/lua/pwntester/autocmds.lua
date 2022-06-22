@@ -71,13 +71,13 @@ define({ "BufWritePost" }, {
     vim.cmd [[source <afile> | PackerCompile ]]
   end,
 })
-define({ "BufWritePost" }, {
-  group = "bitacora",
-  pattern = { "*/bitacora/*" },
-  callback = function()
-    require("pwntester.markdown").asyncPush()
-  end,
-})
+-- define({ "BufWritePost" }, {
+--   group = "bitacora",
+--   pattern = { "*/bitacora/*" },
+--   callback = function()
+--     require("pwntester.markdown").asyncPush()
+--   end,
+-- })
 -- winbar
 define({ "CursorMoved", "BufWinEnter", "BufFilePost" }, {
   pattern = { "*" },

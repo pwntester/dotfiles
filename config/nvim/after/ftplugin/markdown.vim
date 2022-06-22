@@ -8,11 +8,11 @@ augroup END
 
 sign define codeblock linehl=markdownCodeBlock
 
-setlocal conceallevel=2 
-setlocal concealcursor=c 
+setlocal conceallevel=2
+setlocal concealcursor=c
 setlocal nonumber
 setlocal norelativenumber
-setlocal spell complete+=kspell 
+setlocal spell complete+=kspell
 setlocal iskeyword+=-
 setlocal iskeyword+=@-@
 setlocal wrap

@@ -48,6 +48,22 @@ return require("packer").startup {
       opt = true,
     }
 
+    -- THEMES & COLORS
+    use_local {
+      "pwntester/nautilus.nvim",
+      local_path = "src/github.com/pwntester",
+      config = function()
+        require("nautilus").load {
+          transparent = false,
+          mode = "octonauts"
+        }
+      end,
+    }
+    use {
+      "norcalli/nvim-colorizer.lua",
+      branch = "color-editor",
+    }
+
     -- DEPS
     use { "nvim-lua/popup.nvim" }
     use { "nvim-lua/plenary.nvim" }
@@ -270,98 +286,40 @@ return require("packer").startup {
       end,
     }
 
-    -- GIT
-    use {
-      "lewis6991/gitsigns.nvim",
-      config = function()
-        require("pwntester.plugins.gitsigns").setup()
-      end,
-    }
-    use_local {
-      "pwntester/octo.nvim",
-      config = function()
-        require("octo").setup {
-          reaction_viewer_hint_icon = "",
-        }
-      end,
-      local_path = "src/github.com/pwntester",
-      requires = { "nvim-telescope/telescope.nvim" },
-    }
-    -- use_local {
-    --   "pwntester/octo-notifications.nvim",
-    --   requires = "pwntester/octo.nvim",
-    --   local_path = "src/github.com/pwntester",
+    -- UI
+    -- use {
+    --   "renerocksai/telekasten.nvim",
+    --   requires = "renerocksai/calendar-vim",
+    --   config = function()
+    --     local home = vim.fn.expand("~/bitacora")
+    --     require('telekasten').setup({
+    --       home              = home,
+    --       take_over_my_home = true,
+    --       auto_set_filetype = true,
+    --       dailies           = home .. '/resources/daily notes',
+    --       templates         = home .. '/.zk/templates',
+    --       extension    = ".md",
+    --
+    --     })
+    --   end
     -- }
     use {
-      "rlch/github-notifications.nvim",
-      requires = {
-        "nvim-lua/plenary.nvim",
-        "nvim-telescope/telescope.nvim",
-      },
+      "mickael-menu/zk-nvim",
       config = function()
-        require("github-notifications").setup {
-          icon = "",
-          hide_statusline_on_all_read = true,
-          hide_entry_on_read = false, -- Whether to hide the Telescope entry after reading (buggy)
-          debounce_duration = 60,
-          cache = false,
-          sort_unread_first = true,
-          mappings = {
-            mark_read = "<CR>",
-            hide = "d", -- remove from Telescope picker, but don't mark as read
-            open_in_browser = "o",
-          },
-          prompt_mappings = {
-            mark_all_read = "<C-r>",
-          },
-        }
-      end,
+        require("zk").setup({
+          picker = "telescope",
+        })
+      end
+      -- :ZkNew { dir = "daily", date = "yesterday" }
+      -- require("zk.commands").get("ZkNew")({ dir = "daily" })
+      -- :ZkNotes { createdAfter = "3 days ago", tags = { "work" } }
+      -- require("zk.commands").get("ZkNotes")({ createdAfter = "3 days ago", tags = { "work" } })
+      -- :ZkBacklinks [{}] Opens a notes picker for the backlinks of the current buffer
+      -- :ZkLinks [{options}] Opens a notes picker for the outbound links of the current buffer
+      -- :'<,'>ZkNewFromTitleSelection [{options}] Creates a new note and uses the last visual selection as the title
+      -- :'<,'>ZkNewFromContentSelection [{options}] Creates a new note and uses the last visual selection as the content
+      -- :'<,'>ZkMatch Opens a notes picker, filters for notes that match the text in the last visual selection
     }
-    use { "sindrets/diffview.nvim" }
-    use {
-      "TimUntersberger/neogit",
-      requires = {
-        "nvim-lua/plenary.nvim",
-        "sindrets/diffview.nvim",
-      },
-      config = function()
-        require("neogit").setup {
-          integrations = {
-            diffview = true,
-          },
-          disable_commit_confirmation = true,
-          mappings = {
-            status = {
-              ["o"] = "Toggle",
-            },
-          },
-        }
-      end,
-    }
-
-    -- THEMES & COLORS
-    use {
-      'rmehri01/onenord.nvim',
-      -- config = function()
-      --   require('pwntester.plugins.onenord').setup()
-      -- end,
-    }
-    use_local {
-      "pwntester/nautilus.nvim",
-      local_path = "src/github.com/pwntester",
-      config = function()
-        require("nautilus").load {
-          transparent = false,
-          mode = "octonauts"
-        }
-      end,
-    }
-    use {
-      "norcalli/nvim-colorizer.lua",
-      branch = "color-editor",
-    }
-
-    -- UI
     use {
       "iamcco/markdown-preview.nvim",
       run = "cd app && npm install",
@@ -369,6 +327,18 @@ return require("packer").startup {
         vim.g.mkdp_filetypes = { "markdown" }
       end,
       ft = { "markdown" },
+    }
+    use {
+      "SmiteshP/nvim-navic",
+      requires = "neovim/nvim-lspconfig",
+      config = function()
+        require("nvim-navic").setup {
+          highlight = true,
+          separator = " > ",
+          depth_limit = 0,
+          depth_limit_indicator = "..",
+        }
+      end
     }
     use {
       "ChristianChiarulli/nvim-gps",
@@ -379,12 +349,12 @@ return require("packer").startup {
         require("pwntester.plugins.gps").setup()
       end
     }
-    use {
-      "folke/which-key.nvim",
-      config = function()
-        require("pwntester.plugins.which-key").setup()
-      end
-    }
+    -- use {
+    --   "folke/which-key.nvim",
+    --   config = function()
+    --     require("pwntester.plugins.which-key").setup()
+    --   end
+    -- }
     use {
       "kyazdani42/nvim-web-devicons",
       module = "nvim-web-devicons",
@@ -426,7 +396,12 @@ return require("packer").startup {
       "folke/trouble.nvim",
       requires = "kyazdani42/nvim-web-devicons",
       config = function()
-        require("trouble").setup {}
+        require("trouble").setup {
+          action_keys = {
+            jump_close = {},
+            jump = { "<cr>", "<tab>", "o" },
+          }
+        }
       end,
     }
     use {
@@ -454,7 +429,19 @@ return require("packer").startup {
       tag = 'v1.*',
       config = function()
         require("toggleterm").setup({
-          open_mapping = [[<c-\>]],
+          open_mapping = [[<Plug>(ToggleTerm)]],
+          shade_filetypes = { 'none' },
+          direction = 'horizontal',
+          insert_mappings = false,
+          start_in_insert = true,
+          float_opts = { border = 'rounded', winblend = 3 },
+          size = function(term)
+            if term.direction == 'horizontal' then
+              return 15
+            elseif term.direction == 'vertical' then
+              return math.floor(vim.o.columns * 0.4)
+            end
+          end,
           highlights = {
             Normal = {
               link = 'NormalAlt'
@@ -462,6 +449,20 @@ return require("packer").startup {
             }
           }
         })
+        local Terminal = require('toggleterm.terminal').Terminal
+        local lazygit = Terminal:new({
+          cmd = 'lazygit',
+          dir = 'git_dir',
+          hidden = true,
+          direction = 'float',
+          -- on_open = function(term)
+          --   if vim.fn.mapcheck('jk', 't') ~= '' then
+          --     vim.api.nvim_buf_del_keymap(term.bufnr, 't', 'jk')
+          --     vim.api.nvim_buf_del_keymap(term.bufnr, 't', '<esc>')
+          --   end
+          -- end
+        })
+        vim.keymap.set('n', '<Plug>(LazyGit)', function() lazygit:toggle() end)
       end
     }
 
@@ -760,6 +761,78 @@ return require("packer").startup {
     -- AckslD/nvim-neoclip.lua
     -- https://github.com/lewis6991/spellsitter.nvim
     -- https://www.reddit.com/r/neovim/comments/rgclni/jsonls_autocompletion_using_schemastore/
+
+    -- GIT
+    use {
+      "lewis6991/gitsigns.nvim",
+      config = function()
+        require("pwntester.plugins.gitsigns").setup()
+      end,
+    }
+    use_local {
+      "pwntester/octo.nvim",
+      config = function()
+        require("octo").setup {
+          reaction_viewer_hint_icon = "",
+          ssh_aliases = {
+            ["hub.com"] = "github.com"
+          }
+        }
+      end,
+      local_path = "src/github.com/pwntester",
+      requires = { "nvim-telescope/telescope.nvim" },
+    }
+    -- use_local {
+    --   "pwntester/octo-notifications.nvim",
+    --   requires = "pwntester/octo.nvim",
+    --   local_path = "src/github.com/pwntester",
+    -- }
+    use {
+      "rlch/github-notifications.nvim",
+      requires = {
+        "nvim-lua/plenary.nvim",
+        "nvim-telescope/telescope.nvim",
+      },
+      config = function()
+        require("github-notifications").setup {
+          icon = "",
+          hide_statusline_on_all_read = true,
+          hide_entry_on_read = false, -- Whether to hide the Telescope entry after reading (buggy)
+          debounce_duration = 60,
+          cache = false,
+          sort_unread_first = true,
+          mappings = {
+            mark_read = "<CR>",
+            hide = "d", -- remove from Telescope picker, but don't mark as read
+            open_in_browser = "o",
+          },
+          prompt_mappings = {
+            mark_all_read = "<C-r>",
+          },
+        }
+      end,
+    }
+    use { "sindrets/diffview.nvim" }
+    use {
+      "TimUntersberger/neogit",
+      requires = {
+        "nvim-lua/plenary.nvim",
+        "sindrets/diffview.nvim",
+      },
+      config = function()
+        require("neogit").setup {
+          integrations = {
+            diffview = true,
+          },
+          disable_commit_confirmation = true,
+          mappings = {
+            status = {
+              ["o"] = "Toggle",
+            },
+          },
+        }
+      end,
+    }
 
     if packer_bootstrap then
       require("packer").sync()
