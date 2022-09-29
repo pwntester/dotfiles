@@ -381,18 +381,8 @@ local mappings = {
     },
 
     -- COPILOT
-    ["i<C-l>"] = {
-      [[copilot#Accept("\<right>")]],
-      script = true,
-      expr = true,
-      desc = "Accept Copilot suggestion"
-    },
-    ["i<Right>"] = {
-      [[copilot#Accept("\<right>")]],
-      script = true,
-      expr = true,
-      desc = "Accept Copilot suggestion"
-    },
+    --["i<C-l>"] = { [[copilot#Accept("<CR>")]], silent = true, script = true, expr = true, desc = "Accept Copilot suggestion" },
+    --["i<Right>"] = { [[copilot#Accept("<CR>")]], silent = true, script = true, expr = true, desc = "Accept Copilot suggestion" },
 
     -- ZK
     ["n<leader>zt"] = {
@@ -633,11 +623,11 @@ local mappings = {
       desc = "Show diagnostics"
     },
     ["ngd"] = {
-      function() require "telescope.builtin.lsp".definitions() end,
+      function() require "telescope.builtin".lsp_definitions() end,
       desc = "Goto definition"
     },
     ["ngr"] = {
-      function() require "telescope.builtin.lsp".references() end,
+      function() require "telescope.builtin".lsp_references() end,
       desc = "Goto references"
     },
 

@@ -149,7 +149,7 @@ return require("packer").startup {
       "github/copilot.vim",
       config = function()
         vim.g.copilot_no_tab_map = true
-        vim.g.copilot_assume_mapped = true
+        vim.cmd([[imap <expr> <Plug>(vimrc:copilot-dummy-map) copilot#Accept("\<Tab>")]])
         vim.g.copilot_filetypes = {
           ["*"] = false,
           python = true,
@@ -426,10 +426,9 @@ return require("packer").startup {
     }
     use { "junegunn/rainbow_parentheses.vim" }
     use { "akinsho/toggleterm.nvim",
-      tag = 'v1.*',
       config = function()
         require("toggleterm").setup({
-          open_mapping = [[<Plug>(ToggleTerm)]],
+          open_mapping = "<Plug>(ToggleTerm)",
           shade_filetypes = { 'none' },
           direction = 'horizontal',
           insert_mappings = false,
@@ -517,13 +516,13 @@ return require("packer").startup {
         }
       end,
     }
-    use {
-      "folke/todo-comments.nvim",
-      requires = "nvim-lua/plenary.nvim",
-      config = function()
-        require("todo-comments").setup {}
-      end,
-    }
+    --[[ use { ]]
+    --[[   "folke/todo-comments.nvim", ]]
+    --[[   requires = "nvim-lua/plenary.nvim", ]]
+    --[[   config = function() ]]
+    --[[     require("todo-comments").setup {} ]]
+    --[[   end, ]]
+    --[[ } ]]
 
     -- ROOTER
     use {
@@ -636,32 +635,32 @@ return require("packer").startup {
         }
       end,
     }
-    use {
-      "edluffy/hologram.nvim",
-      config = function()
-        require("hologram").setup {}
-      end
-    }
-    use {
-      "Pocco81/TrueZen.nvim",
-      config = function()
-        require("true-zen").setup {
-          integrations = {
-            vim_gitgutter = false,
-            gitsigns = true,
-            limelight = false,
-            twilight = false,
-            vim_airline = false,
-            vim_powerline = false,
-            vim_signify = false,
-            express_line = false,
-            lualine = false,
-            lightline = false,
-            feline = false,
-          },
-        }
-      end,
-    }
+    --[[ use { ]]
+    --[[   "edluffy/hologram.nvim", ]]
+    --[[   config = function() ]]
+    --[[     require("hologram").setup {} ]]
+    --[[   end ]]
+    --[[ } ]]
+    --[[ use { ]]
+    --[[   "Pocco81/TrueZen.nvim", ]]
+    --[[   config = function() ]]
+    --[[     require("true-zen").setup { ]]
+    --[[       integrations = { ]]
+    --[[         vim_gitgutter = false, ]]
+    --[[         gitsigns = true, ]]
+    --[[         limelight = false, ]]
+    --[[         twilight = false, ]]
+    --[[         vim_airline = false, ]]
+    --[[         vim_powerline = false, ]]
+    --[[         vim_signify = false, ]]
+    --[[         express_line = false, ]]
+    --[[         lualine = false, ]]
+    --[[         lightline = false, ]]
+    --[[         feline = false, ]]
+    --[[       }, ]]
+    --[[     } ]]
+    --[[   end, ]]
+    --[[ } ]]
 
     -- SEARCH
     use {

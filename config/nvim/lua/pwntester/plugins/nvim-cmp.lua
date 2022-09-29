@@ -90,6 +90,7 @@ local function setup()
       },
     },
     sources = {
+      --{ name = "copilot" },
       { name = "nvim_lsp", keyword_pattern = [[\k\+]] },
       { name = "nvim_lua" },
       { name = "luasnip" },
@@ -106,28 +107,25 @@ local function setup()
         -- Kind icons
         item.kind = string.format("%s", kind_icons[item.kind])
 
-        if entry.source.name == "cmp_tabnine" then
-          -- if entry.completion_item.data ~= nil and entry.completion_item.data.detail ~= nil then
-          -- menu = entry.completion_item.data.detail .. " " .. menu
-          -- end
-          item.kind = icons.misc.Robot
+        -- if entry.source.name == "copilot" then
+        --   item.kind = icons.git.Octoface
+        --   item.kind_hl_group = "CmpItemKindCopilot"
+        -- end
+        if entry.source.name == "emoji" then
+          item.kind = icons.misc.Smiley
         end
-        -- vim_item.kind = string.format('%s %s', kind_icons[vim_item.kind], vim_item.kind) -- This concatonates the icons with the name of the item kind
         item.menu = ({
           -- nvim_lsp = "[lsp]",
           -- luasnip = "[snip]",
           -- nvim_lua = "[lua]",
           -- buffer = "[buf]",
           -- path = "[path]",
-          -- cmdline = "[cmd]",
-          -- cmdline_history = "[history]",
           nvim_lsp = "",
-          luasnip = "",
           nvim_lua = "",
+          luasnip = "",
           buffer = "",
           path = "",
-          -- cmdline = "",
-          -- cmdline_history = "",
+          emoji = "",
         })[entry.source.name]
         return item
       end,
@@ -163,6 +161,12 @@ local function setup()
         "c",
       }),
       ["<C-e>"] = cmp.mapping.close(),
+      ['<C-l>'] = cmp.mapping(function(fallback)
+        vim.api.nvim_feedkeys(vim.fn['copilot#Accept'](vim.api.nvim_replace_termcodes('<Tab>', true, true, true)), 'n', true)
+      end),
+      ['<Right>'] = cmp.mapping(function(fallback)
+        vim.api.nvim_feedkeys(vim.fn['copilot#Accept'](vim.api.nvim_replace_termcodes('<Tab>', true, true, true)), 'n', true)
+      end)
     },
   }
 

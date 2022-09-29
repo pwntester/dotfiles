@@ -1,1 +1,1 @@
---search-path /Users/pwntester/codeql-home/codeql-patched:/home/codespace/codeql-home/codeql
+--additional-packs /Users/pwntester/codeql-home/codeql

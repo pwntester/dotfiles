@@ -60,6 +60,7 @@ if vim.fn.has "mac" == 1 then
       Rename = "",
       Diff = "",
       Repo = "",
+      Octoface = " ",
     },
     ui = {
       Lock = "",
@@ -186,6 +187,7 @@ else
       ChevronRight = "",
       Table = " ",
       Calendar = " ",
+      CloudDownload = " ",
     },
     diagnostics = {
       Error = " ",
@@ -199,6 +201,7 @@ else
       Squirrel = " ",
       Tag = " ",
       Watch = " ",
+      Smiley = " "
     },
   }
 end
