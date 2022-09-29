@@ -219,3 +219,7 @@ setopt PUSHD_SILENT         # Do not print the directory stack after pushd or po
 # PROFILER
 ###########
 #zprof
+
+# Created by `pipx` on 2022-06-29 20:58:51
+export PATH="$PATH:/Users/pwntester/.local/bin"
+export PATH="/usr/local/opt/node@16/bin:$PATH"

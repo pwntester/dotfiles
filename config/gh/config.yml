@@ -2,7 +2,7 @@ git_protocol: https
 editor:
 prompt: enabled
 pager:
-extensions.codeql.version: v2.8.5
+extensions.codeql.version: v2.10.5
 aliases:
     co: pr checkout
     url: "!gh $([[ $@ == *\"pull\"* ]] && echo pr || echo issue) view $@ --json url -q '.url'"
@@ -12,3 +12,6 @@ aliases:
     waitingforreview: search prs --author @me --state open --review none
     cd: ghq-cd
     clone: q
+    startcs: '!gh cs code -c $(gh cs list --json "name" | jq -r ".[].name" | grep -i "$1" -m 1)'
+    stopcs: '!gh cs stop -c $(gh cs list --json "name" | jq -r ".[].name" | grep -i "$1" -m 1)'
+    dockerlogs: '!gh cs ssh "docker ps -q | xargs -I@ -P4 docker logs -f @"'

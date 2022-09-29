@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -e
+
+export LOGFILE=/tmp/codeql
+echo "$@" >> $LOGFILE-arguments
+exec -a codeql gh codeql "$@"
+
+# if [ "$2" == "query-server" ]; then
+#   cat - | tee -a $LOGFILE-stdin | exec -a codeql gh codeql "$@" 2>&1 | tee -a $LOGFILE-stdouterr
+# else
+#   exec -a codeql gh codeql "$@"
+# fi

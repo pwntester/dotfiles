@@ -45,18 +45,18 @@ vim.cmd [[command! TODO :call v:lua.g.TODO()]]
 -- Message output on vim actions {{{1
 -----------------------------------------------------------------------------//
 vim.opt.shortmess = {
-  t = true, -- truncate file messages at start
-  a = true, -- abbreviate messages
-  A = true, -- ignore annoying swap file messages
-  o = true, -- file-read message overwrites previous
-  O = true, -- file-read message overwrites previous
-  I = true, -- don't give the intro message when starting :intro
-  s = true,
-  c = true,
-  W = true, -- Dont show [w] or written when writing
-  T = true, -- truncate non-file messages in middle
-  f = true, -- (file x of x) instead of just (x of x
-  F = true, -- Don't give file info when editing a file, NOTE: this breaks autocommand messages
+	t = true, -- truncate file messages at start
+	a = true, -- abbreviate messages
+	A = true, -- ignore annoying swap file messages
+	o = true, -- file-read message overwrites previous
+	O = true, -- file-read message overwrites previous
+	I = true, -- don't give the intro message when starting :intro
+	s = true,
+	c = true,
+	W = true, -- Dont show [w] or written when writing
+	T = true, -- truncate non-file messages in middle
+	f = true, -- (file x of x) instead of just (x of x
+	F = true, -- Don't give file info when editing a file, NOTE: this breaks autocommand messages
 }
 -----------------------------------------------------------------------------//
 -- Timings {{{1
@@ -69,12 +69,12 @@ vim.opt.ttimeoutlen = 10
 --Shada {{{1
 -----------------------------------------------------------------------------//
 vim.opt.shada = {
-  "'1000", -- previously edited files
-  "/1000", -- search history items
-  ":1000", -- command-line history items
-  "<1000", -- lines for each saved registry
-  "s100", -- max size of item in KiB
-  "h", -- no hlsearch when loading shada
+	"'1000", -- previously edited files
+	"/1000", -- search history items
+	":1000", -- command-line history items
+	"<1000", -- lines for each saved registry
+	"s100", -- max size of item in KiB
+	"h", -- no hlsearch when loading shada
 }
 -----------------------------------------------------------------------------//
 --Window splitting and buffers {{{1
@@ -87,16 +87,16 @@ vim.opt.eadirection = "hor"
 -- do not use split or vsplit to ensure we don't open any new windows
 vim.o.switchbuf = "useopen,uselast" -- "uselast"
 vim.opt.fillchars = {
-  stl = " ",
-  stlnc = " ",
-  vert = "│",
-  fold = "⠀",
-  eob = " ", -- suppress ~ at EndOfBuffer
-  --diff = "⣿", -- alternatives = ⣿ ░ ─ ╱
-  msgsep = "‾",
-  foldopen = "▾",
-  foldsep = "│",
-  foldclose = "▸",
+	stl = " ",
+	stlnc = " ",
+	vert = "│",
+	fold = "⠀",
+	eob = " ", -- suppress ~ at EndOfBuffer
+	--diff = "⣿", -- alternatives = ⣿ ░ ─ ╱
+	msgsep = "‾",
+	foldopen = "▾",
+	foldsep = "│",
+	foldclose = "▸",
 }
 -----------------------------------------------------------------------------//
 -- Diff {{{1
@@ -104,33 +104,33 @@ vim.opt.fillchars = {
 -- Use in vertical diff mode, blank lines to keep sides aligned, Ignore whitespace changes
 vim.opt.diffopt = vim.opt.diffopt
     + {
-      "vertical",
-      "iwhite",
-      "hiddenoff",
-      "foldcolumn:0",
-      "context:1000000",
-      "algorithm:histogram", -- "algorithm:patience"
-      "indent-heuristic",
+            "vertical",
+            "iwhite",
+            "hiddenoff",
+            "foldcolumn:0",
+            "context:1000000",
+            "algorithm:histogram", -- "algorithm:patience"
+            "indent-heuristic",
     }
 -----------------------------------------------------------------------------//
 -- Format Options {{{1
 -----------------------------------------------------------------------------//
 vim.opt.formatoptions = {
-  ["1"] = false,
-  ["2"] = false, -- Use indent from 2nd line of a paragraph
-  a = false, -- Auto formatting is BAD.
-  q = true, -- continue comments with gq"
-  c = false, -- Auto-wrap comments using textwidth
-  r = false, -- Continue comments when pressing Enter
-  o = false, -- Automatically insert the current comment leader after hitting 'o' or 'O'
-  n = true, -- Recognize numbered lists
-  t = false, -- autowrap lines using text width value
-  j = true, -- remove a comment leader when joining lines.
-  -- Only break if the line was not longer than 'textwidth' when the insert
-  -- started and only at a white character that has been entered during the
-  -- current insert command.
-  l = false,
-  v = false,
+	["1"] = false,
+	["2"] = false, -- Use indent from 2nd line of a paragraph
+	a = false, -- Auto formatting is BAD.
+	q = true, -- continue comments with gq"
+	c = false, -- Auto-wrap comments using textwidth
+	r = false, -- Continue comments when pressing Enter
+	o = false, -- Automatically insert the current comment leader after hitting 'o' or 'O'
+	n = true, -- Recognize numbered lists
+	t = false, -- autowrap lines using text width value
+	j = true, -- remove a comment leader when joining lines.
+	-- Only break if the line was not longer than 'textwidth' when the insert
+	-- started and only at a white character that has been entered during the
+	-- current insert command.
+	l = false,
+	v = false,
 }
 -- vim.cmd [[set formatoptions=qnj]]
 ---------------------------------------------------------------------------//
@@ -145,11 +145,11 @@ vim.opt.formatoptions = {
 -----------------------------------------------------------------------------//
 -- Use faster grep alternatives if possible
 if vim.fn.executable "rg" > 0 then
-  vim.o.grepprg = [[rg --hidden --glob "!.git" --no-heading --smart-case --vimgrep --follow $*]]
-  vim.opt.grepformat = vim.opt.grepformat ^ { "%f:%l:%c:%m" }
+	vim.o.grepprg = [[rg --hidden --glob "!.git" --no-heading --smart-case --vimgrep --follow $*]]
+	vim.opt.grepformat = vim.opt.grepformat ^ { "%f:%l:%c:%m" }
 elseif vim.fn.executable "ag" > 0 then
-  vim.o.grepprg = [[ag --nogroup --nocolor --vimgrep]]
-  vim.opt.grepformat = vim.opt.grepformat ^ { "%f:%l:%c:%m" }
+	vim.o.grepprg = [[ag --nogroup --nocolor --vimgrep]]
+	vim.opt.grepformat = vim.opt.grepformat ^ { "%f:%l:%c:%m" }
 end
 -----------------------------------------------------------------------------//
 -- Wild and file globbing stuff in command mode {{{1
@@ -162,48 +162,48 @@ vim.opt.pumwidth = 20
 vim.opt.wildignorecase = true -- Ignore case when completing file names and directories
 -- Binary
 vim.opt.wildignore = {
-  "*.aux",
-  "*.out",
-  "*.toc",
-  "*.o",
-  "*.obj",
-  "*.dll",
-  "*.jar",
-  "*.pyc",
-  "*.rbc",
-  "*.class",
-  "*.gif",
-  "*.ico",
-  "*.jpg",
-  "*.jpeg",
-  "*.png",
-  "*.avi",
-  "*.wav",
-  "*.webm",
-  "*.eot",
-  "*.otf",
-  "*.ttf",
-  "*.woff",
-  "*.doc",
-  "*.pdf",
-  "*.tar.gz",
-  "*.tar.bz2",
-  "*.rar",
-  "*.tar.xz",
-  -- Cache
-  ".sass-cache",
-  "*/vendor/gems/*",
-  "*/vendor/cache/*",
-  "*/.bundle/*",
-  "*.gem",
-  -- Temp/System
-  "*.*~",
-  "*~ ",
-  "*.swp",
-  ".lock",
-  ".DS_Store",
-  "._*",
-  "tags.lock",
+	"*.aux",
+	"*.out",
+	"*.toc",
+	"*.o",
+	"*.obj",
+	"*.dll",
+	"*.jar",
+	"*.pyc",
+	"*.rbc",
+	"*.class",
+	"*.gif",
+	"*.ico",
+	"*.jpg",
+	"*.jpeg",
+	"*.png",
+	"*.avi",
+	"*.wav",
+	"*.webm",
+	"*.eot",
+	"*.otf",
+	"*.ttf",
+	"*.woff",
+	"*.doc",
+	"*.pdf",
+	"*.tar.gz",
+	"*.tar.bz2",
+	"*.rar",
+	"*.tar.xz",
+	-- Cache
+	".sass-cache",
+	"*/vendor/gems/*",
+	"*/vendor/cache/*",
+	"*/.bundle/*",
+	"*.gem",
+	-- Temp/System
+	"*.*~",
+	"*~ ",
+	"*.swp",
+	".lock",
+	".DS_Store",
+	"._*",
+	"tags.lock",
 }
 -----------------------------------------------------------------------------//
 -- Display {{{1
@@ -218,15 +218,16 @@ vim.opt.signcolumn = "yes:2"
 vim.opt.ruler = false
 vim.opt.number = true
 vim.opt.relativenumber = true
+vim.opt.mouse = ""
 -----------------------------------------------------------------------------//
 -- List chars {{{1
 -----------------------------------------------------------------------------//
 vim.opt.list = false -- invisible chars
 vim.opt.listchars = {
-  nbsp = "%",
-  extends = "›", -- Alternatives: … »
-  precedes = "‹", -- Alternatives: … «
-  --trail = "•", -- BULLET (U+2022, UTF-8: E2 80 A2)
+	nbsp = "%",
+	extends = "›", -- Alternatives: … »
+	precedes = "‹", -- Alternatives: … «
+	--trail = "•", -- BULLET (U+2022, UTF-8: E2 80 A2)
 }
 -----------------------------------------------------------------------------//
 -- Indentation
@@ -268,12 +269,12 @@ vim.opt.inccommand = "nosplit"
 vim.opt.jumpoptions = { "stack" }
 vim.opt.showmode = false
 vim.opt.sessionoptions = {
-  "globals",
-  "buffers",
-  "curdir",
-  "help",
-  "winpos",
-  -- "tabpages",
+	"globals",
+	"buffers",
+	"curdir",
+	"help",
+	"winpos",
+	-- "tabpages",
 }
 vim.opt.viewoptions = { "cursor", "folds" } -- save/restore just these (with `:{mk,load}view`)
 vim.opt.virtualedit = "block" -- allow cursor to move where there is no text in visual block mode

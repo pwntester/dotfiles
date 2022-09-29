@@ -6,6 +6,7 @@
 
 # Matches are the substitution rules, when you type the "trigger" string
 # it gets replaced by the "replace" string.
+secure_input_notification: false
 matches:
   # Simple text replacement
   - trigger: ":espanso"

@@ -83,7 +83,8 @@ define({ "CursorMoved", "BufWinEnter", "BufFilePost" }, {
   pattern = { "*" },
   callback = function()
     if vim.tbl_contains(g.special_buffers, vim.bo.filetype) or
-        vim.tbl_contains({ "prompt", "nofile" }, vim.api.nvim_buf_get_option(0, "buftype")) then
+        vim.tbl_contains({ "prompt", "nofile" }, vim.api.nvim_buf_get_option(0, "buftype")) or
+        vim.bo.filetype == "markdown" then
       vim.opt_local.winbar = nil
       return
     end

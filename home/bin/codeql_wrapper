@@ -1,10 +1,11 @@
 #!/bin/bash
-export LOGFILE=/tmp/codeql
+export LOGFILE=/tmp/codeql_cli_server.log
 echo `env` > $LOGFILE-env
 echo "$@" >> $LOGFILE-arguments
 
-if [ "$2" == "language-server" ]; then
-  cat - | tee -a $LOGFILE-stdin | ~/codeql-home/cli/codeql $@ 2>&1 | tee -a $LOGFILE-stdouterr
+if [ "$2" == "cli-server" ]; then
+  cat - | tee -a $LOGFILE-stdin | /usr/local/bin/codeql $@ | tee -a $LOGFILE-stdouterr
+  #cat - | tee -a $LOGFILE-stdin | /usr/local/bin/codeql $@ 2>&1 | tee -a $LOGFILE-stdouterr
 else
-  ~/codeql-home/cli/codeql $@
+  /usr/local/bin/codeql $@
 fi
