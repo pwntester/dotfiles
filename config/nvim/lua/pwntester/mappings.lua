@@ -14,7 +14,7 @@ local mappings = {
     ["n<esc>"] = { "<nop>" },
 
     -- terminal
-    --["t<Esc>"] = { [[<C-\><C-n>]] },
+    ["t<Esc>"] = { [[<C-\><C-n>]] },
 
     ["v*"] = {
       [[y/\V<C-R>=escape(@",'/\')<CR><CR>]],
@@ -697,6 +697,12 @@ local mappings = {
     -- ['n[cs'] = { [[<Plug>(TsGotoPrevClassStart)]], noremap = false};
     -- ['n[ce'] = { [[<Plug>(TsGotoPrevClassEnd)]],   noremap = false};
   },
+  ["gitconflict"] = {
+    ["n[n"] = { [[<Plug>(git-conflict-prev-conflict)]], noremap = false, desc = "Previous conflict" },
+    ["n]n"] = { [[<Plug>(git-conflict-next-conflict)]], noremap = false, desc = "Next conflict" },
+    ["n<leader>co"] = { [[<Plug>(git-conflict-ours)]], noremap = false, desc = "Choose ours" },
+    ["n<leader>ct"] = { [[<Plug>(git-conflict-theirs)]], noremap = false, desc = "Choose theirs" },
+  }
 }
 
 return mappings

@@ -63,6 +63,12 @@ return require("packer").startup {
       "norcalli/nvim-colorizer.lua",
       branch = "color-editor",
     }
+    use {
+      "uga-rosa/ccc.nvim",
+      config = function()
+        require("ccc").setup({})
+      end
+    }
 
     -- DEPS
     use { "nvim-lua/popup.nvim" }
@@ -112,7 +118,7 @@ return require("packer").startup {
     }
     use_local {
       "pwntester/telescope-zip.nvim",
-      local_path = "dev/personal",
+      local_path = "src/github.com/pwntester",
     }
 
     -- COMPLETION
@@ -134,7 +140,7 @@ return require("packer").startup {
         { "hrsh7th/cmp-buffer" },
         { "hrsh7th/cmp-path" },
         { "saadparwaiz1/cmp_luasnip" },
-        { "petertriho/cmp-git" },
+        --{ "petertriho/cmp-git" },
         { "hrsh7th/cmp-emoji" },
         --{ "hrsh7th/cmp-cmdline" },
         --{ "dmitmel/cmp-cmdline-history" },
@@ -164,6 +170,13 @@ return require("packer").startup {
       end,
     }
 
+    -- LISTS
+    use {
+      "gaoDean/autolist.nvim",
+      config = function()
+        require('autolist').setup({})
+      end,
+    }
     -- PAIRS
     use {
       "windwp/nvim-autopairs",
@@ -340,15 +353,15 @@ return require("packer").startup {
         }
       end
     }
-    use {
-      "ChristianChiarulli/nvim-gps",
-      branch = "text_hl",
-      --"SmiteshP/nvim-gps",
-      requires = "nvim-treesitter/nvim-treesitter",
-      config = function()
-        require("pwntester.plugins.gps").setup()
-      end
-    }
+    --[[ use { ]]
+    --[[   "ChristianChiarulli/nvim-gps", ]]
+    --[[   branch = "text_hl", ]]
+    --[[   --"SmiteshP/nvim-gps", ]]
+    --[[   requires = "nvim-treesitter/nvim-treesitter", ]]
+    --[[   config = function() ]]
+    --[[     require("pwntester.plugins.gps").setup() ]]
+    --[[   end ]]
+    --[[ } ]]
     -- use {
     --   "folke/which-key.nvim",
     --   config = function()
@@ -405,10 +418,39 @@ return require("packer").startup {
       end,
     }
     use {
+      "folke/noice.nvim",
+      requires = { "MunifTanjim/nui.nvim", "rcarriga/nvim-notify" },
+      event = "VimEnter",
+      config = function()
+        require("noice").setup({
+          views = {
+            cmdline_popup = {
+              position = {
+                row = "10%",
+                col = "50%",
+              },
+              size = {
+                min_width = 150,
+                width = "auto",
+                height = "auto",
+              },
+              --[[ win_options = { ]]
+              --[[   winhighlight = { ]]
+              --[[     Normal = "Error", ]]
+              --[[   }, ]]
+              --[[ } ]]
+            }
+          }
+        })
+      end
+    }
+    use {
       "rcarriga/nvim-notify",
       config = function()
         vim.notify = require "notify"
         require("notify").setup {
+          render = "minimal",
+          top_down = false,
           stages = "fade_in_slide_out",
           timeout = 5000,
           background_colour = "#ffcc66",
@@ -424,7 +466,7 @@ return require("packer").startup {
       --- :Telescope notify
       --- :lua require('telescope').extensions.notify.notify(<opts>)
     }
-    use { "junegunn/rainbow_parentheses.vim" }
+    use { "p00f/nvim-ts-rainbow" }
     use { "akinsho/toggleterm.nvim",
       config = function()
         require("toggleterm").setup({
@@ -444,7 +486,6 @@ return require("packer").startup {
           highlights = {
             Normal = {
               link = 'NormalAlt'
-              --link = 'NormalActitve'
             }
           }
         })
@@ -454,12 +495,12 @@ return require("packer").startup {
           dir = 'git_dir',
           hidden = true,
           direction = 'float',
-          -- on_open = function(term)
-          --   if vim.fn.mapcheck('jk', 't') ~= '' then
-          --     vim.api.nvim_buf_del_keymap(term.bufnr, 't', 'jk')
-          --     vim.api.nvim_buf_del_keymap(term.bufnr, 't', '<esc>')
-          --   end
-          -- end
+          --[[ on_open = function(term) ]]
+          --[[   if vim.fn.mapcheck('jk', 't') ~= '' then ]]
+          --[[     vim.api.nvim_buf_del_keymap(term.bufnr, 't', 'jk') ]]
+          --[[     vim.api.nvim_buf_del_keymap(term.bufnr, 't', '<esc>') ]]
+          --[[   end ]]
+          --[[ end ]]
         })
         vim.keymap.set('n', '<Plug>(LazyGit)', function() lazygit:toggle() end)
       end
@@ -471,7 +512,7 @@ return require("packer").startup {
       "nvim-lualine/lualine.nvim",
       requires = { "kyazdani42/nvim-web-devicons", opt = true },
       config = function()
-        require("pwntester.plugins.lualine").setup()
+        require("pwntester.plugins.lualine_vscode").setup()
       end,
     }
 
@@ -516,13 +557,6 @@ return require("packer").startup {
         }
       end,
     }
-    --[[ use { ]]
-    --[[   "folke/todo-comments.nvim", ]]
-    --[[   requires = "nvim-lua/plenary.nvim", ]]
-    --[[   config = function() ]]
-    --[[     require("todo-comments").setup {} ]]
-    --[[   end, ]]
-    --[[ } ]]
 
     -- ROOTER
     use {
@@ -573,6 +607,25 @@ return require("packer").startup {
     -- }
 
     -- LSP
+    use({
+      'weilbith/nvim-code-action-menu',
+      cmd = 'CodeActionMenu',
+      -- CodeActionMenu
+    })
+    use {
+      'kosayoda/nvim-lightbulb',
+      requires = 'antoinemadec/FixCursorHold.nvim',
+      config = function()
+        require('nvim-lightbulb').setup({
+          -- LSP client names to ignore
+          -- Example: {"sumneko_lua", "null-ls"}
+          ignore = {},
+
+          autocmd = { enabled = true }
+        })
+
+      end
+    }
     use {
       "folke/lsp-colors.nvim",
       config = function()
@@ -586,12 +639,23 @@ return require("packer").startup {
     }
     use {
       "neovim/nvim-lspconfig",
-      requires = { "cmp-nvim-lsp", "codeql.nvim" },
+      wants = { "mason.nvim", "cmp-nvim-lsp", "null-ls.nvim" },
+      requires = {
+        "williamboman/mason.nvim",
+        "jose-elias-alvarez/null-ls.nvim",
+      },
       config = function()
         require("pwntester.lsp").setup()
       end,
     }
     use { "ii14/lsp-command" }
+    use { "jose-elias-alvarez/null-ls.nvim",
+      config = function()
+        require("pwntester.plugins.null-ls").setup({
+          --debug = true,
+        })
+      end
+    }
     use {
       "mfussenegger/nvim-jdtls",
     }
@@ -620,7 +684,18 @@ return require("packer").startup {
       end,
     }
     use { "lukas-reineke/lsp-format.nvim" }
-    use { "williamboman/nvim-lsp-installer" }
+    use {
+      "williamboman/mason.nvim",
+      requires = {
+        "williamboman/mason-lspconfig.nvim",
+        "neovim/nvim-lspconfig"
+      },
+      config = function()
+        local servers = require("pwntester.lsp").servers
+        require("mason").setup()
+        require("mason-lspconfig").setup({ ensure_installed = servers })
+      end
+    }
 
     -- MARKDOWN
     use {
@@ -812,8 +887,21 @@ return require("packer").startup {
       end,
     }
     use { "sindrets/diffview.nvim" }
+    use { 'akinsho/git-conflict.nvim', tag = "*", config = function()
+      require('git-conflict').setup({
+        disable_diagnostics = true,
+      })
+      vim.api.nvim_create_autocmd('User', {
+        pattern = 'GitConflictDetected',
+        callback = function()
+          vim.notify("Conflicts detected! Enabling git conflict mappings...")
+          g.map(require("pwntester.mappings").gitconflict, { silent = false }, 0)
+        end
+      })
+    end }
     use {
       "TimUntersberger/neogit",
+      disable = true,
       requires = {
         "nvim-lua/plenary.nvim",
         "sindrets/diffview.nvim",

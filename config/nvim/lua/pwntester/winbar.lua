@@ -2,11 +2,8 @@ local icons = require("pwntester.icons")
 
 local M = {}
 
--- local status_gps_ok, gps = pcall(require, "nvim-gps")
--- if not status_gps_ok then
---   return
--- end
-local status_ok, navic = pcall(require, "nvim-navic")
+local status_ok, locator = pcall(require, "nvim-navic")
+--local status_ok, locator = pcall(require, "nvim-gps")
 if not status_ok then
   return
 end
@@ -26,7 +23,7 @@ M.diagnostics = function()
     count[diagnostic.severity] = count[diagnostic.severity] + 1
   end
   return string.format(
-    "%%#DiagnosticError#%s %%*%s %%#DiagnosticWarn#%s %%*%s",
+    "%%#DiagnosticError#%s %%*%s %%#DiagnosticWarn#%s %%*%s ",
     icons.diagnostics.Error,
     count[vim.diagnostic.severity.ERROR],
     icons.diagnostics.Warning,
@@ -35,13 +32,17 @@ M.diagnostics = function()
 end
 
 M.filename = function()
+  local bufname = vim.fn.bufname()
+  local codeql_archive = false
+  if string.sub(bufname, 1, 8) == "codeql:/" then
+    codeql_archive = true
+  end
   local filename = vim.fn.expand "%:t"
   local extension = ""
   local file_icon = ""
   local file_icon_color = ""
   local default_file_icon = ""
   local default_file_icon_color = ""
-
   if not isempty(filename) then
     extension = vim.fn.expand "%:e"
 
@@ -61,18 +62,18 @@ M.filename = function()
       file_icon = default_file_icon
       file_icon_color = default_file_icon_color
     end
-
+    if codeql_archive then
+      filename = "[CODEQL] " .. filename
+    end
     return " " .. "%#" .. icon_hl .. "#" .. file_icon .. "%*" .. " " .. "%#WinbarFilename#" .. filename .. "%*"
   end
 end
 
 M.winbar = function()
   local filename = M.filename()
-  --local ok, location = pcall(gps.get_location, {})
-  local ok, location = pcall(navic.get_location, {})
-
+  local ok, location = pcall(locator.get_location, {})
   local left = ""
-  if ok and navic.is_available() and location ~= "error" and not isempty(location) then
+  if ok and locator.is_available() and location ~= "error" and not isempty(location) then
     left = filename .. " " .. "%#NavicSeparator#" .. icons.ui.ChevronRight .. "%* " .. location
   elseif filename then
     left = filename

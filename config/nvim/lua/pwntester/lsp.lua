@@ -1,24 +1,20 @@
 local nvim_lsp = require "lspconfig"
 local window = require "pwntester.window"
 local util = require "lspconfig.util"
-local efm = require "pwntester.plugins.efm"
+--local efm = require "pwntester.plugins.efm"
 
 local servers = {
-  "bashls",
   "pyright",
+  "bashls",
   "sumneko_lua",
   "tsserver",
   "gopls",
   "solargraph",
   "codeqlls",
-  "zk",
   "yamlls",
   "jsonls",
   "dockerls",
-}
-
-require("nvim-lsp-installer").setup {
-  ensure_installed = servers,
+  --"zk",
 }
 
 local capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities())
@@ -26,14 +22,21 @@ local capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protoco
 local function on_attach_callback(client, bufnr)
   bufnr = bufnr or vim.api.nvim_get_current_buf()
 
-  -- extensions
+  -- Configure Extensions
   require("lsp-format").on_attach(client)
   require("lsp_spinner").on_attach(client, bufnr)
-  if client.server_capabilities.documentSymbolProvider and not client.name == "codeqlls" then
+  if client.server_capabilities.documentSymbolProvider then
     require("nvim-navic").attach(client, bufnr)
   end
 
-  -- mappings
+  -- Use LSP as the handler for formatexpr.
+  -- See `:help formatexpr` for more information.
+  vim.api.nvim_buf_set_option(0, "formatexpr", "v:lua.vim.lsp.formatexpr()")
+
+  -- Configure formatting
+  require("pwntester.plugins.null-ls.formatters").setup(client, bufnr)
+
+  -- Configure key mappings
   g.map(require("pwntester.mappings").lsp, { silent = false }, bufnr)
 end
 
@@ -59,12 +62,12 @@ local function setup()
   -- configure servers
   local server_opts = {
     ["sumneko_lua"] = {
-      on_attach = function(client, bufnr)
-        on_attach_callback(client, bufnr)
-        -- Disable `sumneko`'s formatting capability so that efm is registered as the only compatible formatter.
-        client.server_capabilities.document_formatting = false
-        client.server_capabilities.document_range_formatting = false
-      end,
+      --[[ on_attach = function(client, bufnr) ]]
+      --[[   on_attach_callback(client, bufnr) ]]
+      --[[   -- Disable `sumneko`'s formatting capability so that null-ls is registered as the only compatible formatter. ]]
+      --[[   client.server_capabilities.document_formatting = false ]]
+      --[[   client.server_capabilities.document_range_formatting = false ]]
+      --[[ end, ]]
       settings = {
         Lua = {
           completion = { keywordSnippet = "Disable" },
@@ -115,35 +118,37 @@ local function setup()
         search_path = { "/Users/pwntester/codeql-home/codeql" }
       }
     },
-    ["zk"] = {
-      root_dir = function()
-        return vim.loop.cwd()
-      end,
-      on_attach = function(client, bufnr)
-        on_attach_callback(client, bufnr)
-        g.map(require("pwntester.mappings").zk, { silent = true }, bufnr)
-      end,
-    },
-    ["efm"] = {
-      init_options = { documentFormatting = true, codeAction = true },
-      filetypes = { "lua", "python", "yaml", "json", "typescript", "javascript" },
-      settings = {
-        log_level = 1,
-        log_file = "/tmp/efm.log",
-        rootMarkers = { ".git/" },
-        languages = {
-          lua = { efm.stylua },
-          python = { efm.black, efm.isort, efm.flake8, efm.mypy },
-          yaml = { efm.prettier },
-          json = { efm.prettier },
-          typescript = { efm.prettier, efm.eslint },
-          javascript = { efm.prettier, efm.eslint },
-          sh = { efm.shellcheck, efm.shfmt },
-          go = { efm.staticcheck, efm.goimports, efm.govet },
-          ["="] = { efm.misspell },
-        },
-      },
-    },
+    --[[ ["zk"] = { ]]
+    --[[   root_dir = function() ]]
+    --[[     return vim.loop.cwd() ]]
+    --[[   end, ]]
+    --[[   on_attach = function(client, bufnr) ]]
+    --[[     on_attach_callback(client, bufnr) ]]
+    --[[     g.map(require("pwntester.mappings").zk, { silent = true }, bufnr) ]]
+    --[[   end, ]]
+    --[[ }, ]]
+    ["null-ls"] = {},
+    ["pyright"] = {},
+    --[[ ["efm"] = { ]]
+    --[[   init_options = { documentFormatting = true, codeAction = true }, ]]
+    --[[   filetypes = { "lua", "python", "yaml", "json", "typescript", "javascript" }, ]]
+    --[[   settings = { ]]
+    --[[     log_level = 1, ]]
+    --[[     log_file = "/tmp/efm.log", ]]
+    --[[     rootMarkers = { ".git/" }, ]]
+    --[[     languages = { ]]
+    --[[       lua = { efm.stylua }, ]]
+    --[[       python = { efm.black, efm.isort, efm.flake8, efm.mypy }, ]]
+    --[[       yaml = { efm.prettier }, ]]
+    --[[       json = { efm.prettier }, ]]
+    --[[       typescript = { efm.prettier, efm.eslint }, ]]
+    --[[       javascript = { efm.prettier, efm.eslint }, ]]
+    --[[       sh = { efm.shellcheck, efm.shfmt }, ]]
+    --[[       go = { efm.staticcheck, efm.goimports, efm.govet }, ]]
+    --[[       ["="] = { efm.misspell }, ]]
+    --[[     }, ]]
+    --[[   }, ]]
+    --[[ }, ]]
   }
 
   -- setup servers
@@ -216,6 +221,6 @@ end
 
 return {
   setup = setup,
-  --clients = clients,
   on_attach_callback = on_attach_callback,
+  servers = servers,
 }
