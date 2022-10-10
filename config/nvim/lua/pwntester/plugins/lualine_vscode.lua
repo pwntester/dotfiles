@@ -4,11 +4,6 @@ local function setup()
     return
   end
 
-  local status_gps_ok, gps = pcall(require, "nvim-gps")
-  if not status_gps_ok then
-    return
-  end
-
   local hide_in_width = function()
     return vim.fn.winwidth(0) > 80
   end
@@ -49,6 +44,13 @@ local function setup()
     padding = 0,
   }
 
+  local cwd = {
+    function()
+      return vim.fn.getcwd()
+    end,
+    padding = { left = 0, right = 1 },
+    --color = 'CursorLineNr',
+  }
   -- cool function for progress
   local progress = function()
     local current_line = vim.fn.line "."
@@ -70,14 +72,12 @@ local function setup()
       theme = "nautilus_vscode",
       component_separators = { left = "", right = "" },
       section_separators = { left = "", right = "" },
-      -- disabled_filetypes = { "alpha", "dashboard", "NvimTree", "Outline", "toggleterm" },
       disabled_filetypes = { "alpha", "dashboard", "toggleterm" },
       always_divide_middle = true,
     },
     sections = {
-      -- lualine_a = { branch, diagnostics },
-      lualine_a = { branch },
-      lualine_b = { diagnostics },
+      lualine_a = { branch, diagnostics },
+      lualine_b = { cwd },
       lualine_c = {
         {
           function()
@@ -94,11 +94,6 @@ local function setup()
           -- color = "lualine_filename_status",
         },
       },
-      -- lualine_c = {},
-      -- lualine_c = {
-      --   { nvim_gps, cond = hide_in_width },
-      -- },
-      -- lualine_x = { "encoding", "fileformat", "filetype" },
       lualine_x = { diff, spaces, "encoding", filetype },
       lualine_y = { location },
       lualine_z = { progress },

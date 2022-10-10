@@ -27,33 +27,33 @@ end
 
 local function setup()
 
-  require("cmp_git").setup({
-    -- defaults
-    filetypes = { "gitcommit", "octo" },
-    trigger_actions = {
-      {
-        debug_name = "git_commits",
-        trigger_character = ":",
-        action = function(sources, trigger_char, callback, params)
-          return sources.git:get_commits(callback, params, trigger_char)
-        end,
-      },
-      {
-        debug_name = "github_issues_and_pr",
-        trigger_character = "#",
-        action = function(sources, trigger_char, callback, _, git_info)
-          return sources.github:get_issues_and_prs(callback, git_info, trigger_char)
-        end,
-      },
-      {
-        debug_name = "github_mentions",
-        trigger_character = "@",
-        action = function(sources, trigger_char, callback, _, git_info)
-          return sources.github:get_mentions(callback, git_info, trigger_char)
-        end,
-      },
-    },
-  })
+  --[[ require("cmp_git").setup({ ]]
+  --[[   -- defaults ]]
+  --[[   filetypes = { "gitcommit", "octo" }, ]]
+  --[[   trigger_actions = { ]]
+  --[[     { ]]
+  --[[       debug_name = "git_commits", ]]
+  --[[       trigger_character = ":", ]]
+  --[[       action = function(sources, trigger_char, callback, params) ]]
+  --[[         return sources.git:get_commits(callback, params, trigger_char) ]]
+  --[[       end, ]]
+  --[[     }, ]]
+  --[[     { ]]
+  --[[       debug_name = "github_issues_and_pr", ]]
+  --[[       trigger_character = "#", ]]
+  --[[       action = function(sources, trigger_char, callback, _, git_info) ]]
+  --[[         return sources.github:get_issues_and_prs(callback, git_info, trigger_char) ]]
+  --[[       end, ]]
+  --[[     }, ]]
+  --[[     { ]]
+  --[[       debug_name = "github_mentions", ]]
+  --[[       trigger_character = "@", ]]
+  --[[       action = function(sources, trigger_char, callback, _, git_info) ]]
+  --[[         return sources.github:get_mentions(callback, git_info, trigger_char) ]]
+  --[[       end, ]]
+  --[[     }, ]]
+  --[[   }, ]]
+  --[[ }) ]]
 
   local window_border_chars_thick = {
     { "▛", "CmpBorder" },
@@ -97,7 +97,7 @@ local function setup()
       { name = "buffer" },
       { name = "path" },
       { name = 'emoji' },
-      { name = "git" },
+      --{ name = "git" },
     },
     formatting = {
       deprecated = true,
@@ -162,10 +162,12 @@ local function setup()
       }),
       ["<C-e>"] = cmp.mapping.close(),
       ['<C-l>'] = cmp.mapping(function(fallback)
-        vim.api.nvim_feedkeys(vim.fn['copilot#Accept'](vim.api.nvim_replace_termcodes('<Tab>', true, true, true)), 'n', true)
+        vim.api.nvim_feedkeys(vim.fn['copilot#Accept'](vim.api.nvim_replace_termcodes('<Tab>', true, true, true)), 'n',
+          true)
       end),
       ['<Right>'] = cmp.mapping(function(fallback)
-        vim.api.nvim_feedkeys(vim.fn['copilot#Accept'](vim.api.nvim_replace_termcodes('<Tab>', true, true, true)), 'n', true)
+        vim.api.nvim_feedkeys(vim.fn['copilot#Accept'](vim.api.nvim_replace_termcodes('<Tab>', true, true, true)), 'n',
+          true)
       end)
     },
   }

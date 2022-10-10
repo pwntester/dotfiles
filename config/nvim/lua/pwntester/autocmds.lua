@@ -21,11 +21,6 @@ define({ "TermEnter", "WinEnter", "BufEnter" }, {
     end
   end,
 })
--- define({ "FileType" }, {
---   pattern = { "*" },
---   callback = function()
---   end,
--- })
 define({ "FocusGained", "BufEnter" }, {
   pattern = { "*" },
   callback = function()
@@ -66,25 +61,21 @@ define({ "BufEnter" }, {
   end,
 })
 define({ "BufWritePost" }, {
-  pattern = { "plugins.lua" },
+  pattern = { "*/plugins/init.lua" },
   callback = function()
-    vim.cmd [[source <afile> | PackerCompile ]]
+    vim.cmd [[source <afile> | PackerCompile | echo "Reloaded!" ]]
   end,
 })
--- define({ "BufWritePost" }, {
---   group = "bitacora",
---   pattern = { "*/bitacora/*" },
---   callback = function()
---     require("pwntester.markdown").asyncPush()
---   end,
--- })
 -- winbar
 define({ "CursorMoved", "BufWinEnter", "BufFilePost" }, {
   pattern = { "*" },
   callback = function()
-    if vim.tbl_contains(g.special_buffers, vim.bo.filetype) or
-        vim.tbl_contains({ "prompt", "nofile" }, vim.api.nvim_buf_get_option(0, "buftype")) or
-        vim.bo.filetype == "markdown" then
+    local buftype = vim.api.nvim_buf_get_option(0, "buftype")
+    local filetype = vim.bo.filetype
+    if vim.tbl_contains(g.special_buffers, filetype) or
+        buftype == "prompt" or
+        (buftype == "nofile" and string.sub(vim.fn.bufname(), 1, 8) ~= "codeql:/") or
+        filetype == "markdown" then
       vim.opt_local.winbar = nil
       return
     end
@@ -96,3 +87,10 @@ define({ "CursorMoved", "BufWinEnter", "BufFilePost" }, {
     end
   end,
 })
+-- define({ "BufWritePost" }, {
+--   group = "bitacora",
+--   pattern = { "*/bitacora/*" },
+--   callback = function()
+--     require("pwntester.markdown").asyncPush()
+--   end,
+-- })
