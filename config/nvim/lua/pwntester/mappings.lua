@@ -14,7 +14,7 @@ local mappings = {
     ["n<esc>"] = { "<nop>" },
 
     -- terminal
-    ["t<Esc>"] = { [[<C-\><C-n>]] },
+    --["t<Esc>"] = { [[<C-\><C-n>]] },
 
     ["v*"] = {
       [[y/\V<C-R>=escape(@",'/\')<CR><CR>]],
@@ -602,10 +602,10 @@ local mappings = {
       vim.lsp.buf.type_definition,
       desc = "Goto type definition"
     },
-    ["ng="] = {
-      vim.lsp.buf.formatting,
-      desc = "Format document"
-    },
+    --[[ ["ng="] = { ]]
+    --[[   vim.lsp.buf.formatting, ]]
+    --[[   desc = "Format document" ]]
+    --[[ }, ]]
     ["ngic"] = {
       vim.lsp.buf.incoming_calls,
       desc = "Incoming calls"

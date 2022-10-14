@@ -31,7 +31,7 @@ local function on_attach_callback(client, bufnr)
 
   -- Use LSP as the handler for formatexpr.
   -- See `:help formatexpr` for more information.
-  vim.api.nvim_buf_set_option(0, "formatexpr", "v:lua.vim.lsp.formatexpr()")
+  vim.api.nvim_buf_set_option(0, "formatexpr", "v:lua.vim.lsp.formatexpr")
 
   -- Configure formatting
   require("pwntester.plugins.null-ls.formatters").setup(client, bufnr)

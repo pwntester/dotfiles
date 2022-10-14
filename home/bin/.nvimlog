@@ -1,0 +1,1 @@
+ERR 2022-09-30T08:10:59.140 nvim.26914.0 libuv_process_spawn:84: uv_spawn(/usr/bin/git) failed: too many open files

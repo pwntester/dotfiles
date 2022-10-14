@@ -33,10 +33,9 @@ function M.setup(client, buf)
   local enable = false
   if M.has_formatter(filetype) then
     enable = client.name == "null-ls"
-  else
-    enable = not (client.name == "null-ls")
+    --[[ else ]]
+    --[[   enable = not (client.name == "null-ls") ]]
   end
-
   client.server_capabilities.documentFormattingProvider = enable
   client.server_capabilities.documentRangeFormattingProvider = enable
   if client.server_capabilities.documentFormattingProvider then
