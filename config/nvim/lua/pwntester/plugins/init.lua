@@ -423,6 +423,24 @@ return require("packer").startup {
       event = "VimEnter",
       config = function()
         require("noice").setup({
+          messages = {
+            enabled = true
+          },
+          notify = {
+            enabled = false
+          },
+          routes = {
+            {
+              view = "mini",
+              filter = {
+                any = {
+                  { event = "msg_show",
+                    kind = { "", "echo", "echomsg", "echoerr", "lua_error", "rpc_error", "return_prompt", "quickfix",
+                      "wmsg" } },
+                },
+              },
+            },
+          },
           views = {
             cmdline_popup = {
               position = {
@@ -434,38 +452,52 @@ return require("packer").startup {
                 width = "auto",
                 height = "auto",
               },
-              --[[ win_options = { ]]
-              --[[   winhighlight = { ]]
-              --[[     Normal = "Error", ]]
-              --[[   }, ]]
-              --[[ } ]]
             }
           }
         })
       end
     }
     use {
-      "rcarriga/nvim-notify",
+      "vigoux/notifier.nvim",
       config = function()
-        vim.notify = require "notify"
-        require("notify").setup {
-          render = "minimal",
-          top_down = false,
-          stages = "fade_in_slide_out",
-          timeout = 5000,
-          background_colour = "#ffcc66",
-          icons = {
-            ERROR = "",
-            WARN = "",
-            INFO = "",
-            DEBUG = "",
-            TRACE = "✎",
+        require("notifier").setup({
+          ignore_messages = {}, -- Ignore message from LSP servers with this name
+          status_width = 200, -- Computed using 'columns' and 'textwidth'
+          components = { -- Order of the components to draw from top to bottom (first nvim notifications, then lsp)
+            "nvim", -- Nvim notifications (vim.notify and such)
+            "lsp" -- LSP status updates
           },
-        }
-      end,
-      --- :Telescope notify
-      --- :lua require('telescope').extensions.notify.notify(<opts>)
+          notify = {
+            clear_time = 4000, -- Time in milliseconds before removing a vim.notify notification, 0 to make them sticky
+            min_level = vim.log.levels.INFO, -- Minimum log level to print the notification
+          },
+          component_name_recall = false, -- Whether to prefix the title of the notification by the component name
+          zindex = 50, -- The zindex to use for the floating window. Note that changing this value may cause visual bugs with other windows overlapping the notifier window.
+        })
+      end
     }
+    --[[ use { ]]
+    --[[   "rcarriga/nvim-notify", ]]
+    --[[   config = function() ]]
+    --[[     vim.notify = require "notify" ]]
+    --[[     require("notify").setup { ]]
+    --[[       render = "minimal", ]]
+    --[[       top_down = false, ]]
+    --[[       stages = "fade_in_slide_out", ]]
+    --[[       timeout = 5000, ]]
+    --[[       background_colour = "#ffcc66", ]]
+    --[[       icons = { ]]
+    --[[         ERROR = "", ]]
+    --[[         WARN = "", ]]
+    --[[         INFO = "", ]]
+    --[[         DEBUG = "", ]]
+    --[[         TRACE = "✎", ]]
+    --[[       }, ]]
+    --[[     } ]]
+    --[[   end, ]]
+    --[[   --- :Telescope notify ]]
+    --[[   --- :lua require('telescope').extensions.notify.notify(<opts>) ]]
+    --[[ } ]]
     use { "p00f/nvim-ts-rainbow" }
     use { "akinsho/toggleterm.nvim",
       config = function()
@@ -495,12 +527,12 @@ return require("packer").startup {
           dir = 'git_dir',
           hidden = true,
           direction = 'float',
-          --[[ on_open = function(term) ]]
-          --[[   if vim.fn.mapcheck('jk', 't') ~= '' then ]]
-          --[[     vim.api.nvim_buf_del_keymap(term.bufnr, 't', 'jk') ]]
-          --[[     vim.api.nvim_buf_del_keymap(term.bufnr, 't', '<esc>') ]]
-          --[[   end ]]
-          --[[ end ]]
+          --on_open = function(term)
+          --  if vim.fn.mapcheck('<esc>', 't') ~= '' then
+          --    vim.api.nvim_buf_del_keymap(term.bufnr, 't', 'jk')
+          --    vim.api.nvim_buf_del_keymap(term.bufnr, 't', '<esc>')
+          --  end
+          --end
         })
         vim.keymap.set('n', '<Plug>(LazyGit)', function() lazygit:toggle() end)
       end
@@ -528,6 +560,12 @@ return require("packer").startup {
       config = function()
         require("pwntester.plugins.neo-tree").setup()
       end,
+    }
+    use {
+      "mrbjarksen/neo-tree-diagnostics.nvim",
+      requires = "nvim-neo-tree/neo-tree.nvim",
+      module = "neo-tree.sources.diagnostics",
+      -- :Neotree diagnostics reveal bottom
     }
 
     -- COMMENTS
