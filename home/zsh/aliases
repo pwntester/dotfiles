@@ -18,6 +18,7 @@ alias glol='git log --graph --oneline --decorate'
 
 alias vi='nvim'
 alias tree='exa --tree'
+alias grep="grep --color=tty"
 
 if command -v gls &> /dev/null
 then

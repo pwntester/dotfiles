@@ -9,9 +9,13 @@ require "pwntester.globals"
 require "pwntester.plugins"
 
 -----------------------------------------------------------------------------//
+-- PLUGINS
+-----------------------------------------------------------------------------//
+require "pwntester.statuscolumn"
+
+-----------------------------------------------------------------------------//
 -- MAPPINGS
 -----------------------------------------------------------------------------//
-vim.cmd [[let mapleader = "\<Space>"]]
 local mappings = require("pwntester.mappings").all
 g.map(mappings, { silent = true })
 
@@ -86,16 +90,16 @@ vim.opt.eadirection = "hor"
 -- do not use split or vsplit to ensure we don't open any new windows
 vim.o.switchbuf = "useopen,uselast" -- "uselast"
 vim.opt.fillchars = {
-  stl = " ",
-  stlnc = " ",
-  vert = "│",
-  fold = "⠀",
-  eob = " ", -- suppress ~ at EndOfBuffer
+  --stl = " ",
+  --stlnc = " ",
+  --vert = "│",
+  --eob = " ", -- suppress ~ at EndOfBuffer
   --diff = "⣿", -- alternatives = ⣿ ░ ─ ╱
-  msgsep = "‾",
-  foldopen = "▾",
-  foldsep = "│",
-  foldclose = "▸",
+  -- msgsep = "‾",
+  fold = "⠀",
+  foldopen = "",
+  foldsep = " ",
+  foldclose = "",
 }
 -----------------------------------------------------------------------------//
 -- Diff {{{1
@@ -135,10 +139,22 @@ vim.opt.formatoptions = {
 ---------------------------------------------------------------------------//
 -- Folds {{{1
 -----------------------------------------------------------------------------//
---vim.opt.foldtext = "v:lua.folds()"
+-- CUSTOM
+-- vim.opt.foldtext = "v:lua.folds()"
 -- vim.opt.foldopen = vim.opt.foldopen + "search"
 -- vim.opt.foldlevelstart = 10
 -- vim.opt.foldmethod = "indent"
+
+-- TREESITTER
+-- vim.opt.foldlevel = 20
+-- vim.opt.foldmethod = "expr"
+-- vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+
+-- UFO
+vim.o.foldcolumn = '1' -- disable until we can disable numbers (https://github.com/neovim/neovim/pull/17446)
+vim.o.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
+vim.o.foldlevelstart = 99
+vim.o.foldenable = true
 -----------------------------------------------------------------------------//
 -- Grepprg {{{1
 -----------------------------------------------------------------------------//

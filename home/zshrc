@@ -1,3 +1,5 @@
+# Fig pre block. Keep at the top of this file.
+[[ -f "$HOME/.fig/shell/zshrc.pre.zsh" ]] && builtin source "$HOME/.fig/shell/zshrc.pre.zsh"
 # https://thevaluable.dev/zsh-install-configure/[201~
 # https://github.com/Phantas0s/.dotfiles/tree/master/zsh
 # https://github.com/mrnugget/dotfiles/blob/master/zshrc
@@ -56,6 +58,9 @@ fpath=(~/.zsh/plugins $fpath)
 autoload -Uz cursor_mode; cursor_mode
 source ~/.zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
 source ~/.zsh/plugins/cdr/cdr.zsh
+# fzf-tab-completion
+source ~/src/github.com/lincheney/fzf-tab-completion/zsh/fzf-zsh-completion.sh
+#export $FZF_COMPLETION_OPTS=--tiebreak=chunk
 
 #############
 # COMPLETION
@@ -91,6 +96,12 @@ zstyle ':completion:*:cd:*' tag-order local-directories directory-stack path-dir
 zstyle ':completion:*:*:*:*:*' menu select
 zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#) ([0-9a-z-]#)*=01;34=0=01'
 zstyle ':completion:*:*:*:*:processes' command "ps -u `whoami` -o pid,user,comm -w -w"
+
+# fzf-tab-completion
+# only for git
+#zstyle ':completion:*:*:git:*' fzf-search-display true
+# or for everything
+zstyle ':completion:*' fzf-search-display true
 
 # bash completion for jdxcode/gh
 source ~/.zsh/plugins/cdr/cdr.bash
@@ -153,6 +164,9 @@ bindkey '^[[3~' delete-char
 bindkey '^A' beginning-of-line
 bindkey '^E' end-of-line
 
+# fzf-tab-completion
+bindkey '^I' fzf_completion
+
 #########
 # PROMPT
 #########
@@ -197,6 +211,15 @@ function load_nvm() {
   [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 }
 
+function capture() {
+    sudo dtrace -p "$1" -qn '
+        syscall::write*:entry
+        /pid == $target && arg0 == 1/ {
+            printf("%s", copyinstr(arg1, arg2));
+        }
+    '
+}
+
 #########
 # OPTIONS
 #########
@@ -228,3 +251,6 @@ export PATH="/usr/local/opt/node@16/bin:$PATH"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 ulimit -n 10240
+
+# Fig post block. Keep at the bottom of this file.
+[[ -f "$HOME/.fig/shell/zshrc.post.zsh" ]] && builtin source "$HOME/.fig/shell/zshrc.post.zsh"

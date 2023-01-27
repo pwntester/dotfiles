@@ -49,7 +49,8 @@ local sources = {
   b.diagnostics.eslint_d,
 
   --- for Python code
-  b.diagnostics.flake8,
+  b.diagnostics.flake8.with { extra_args = { "--ignore=E501" } },
+  b.diagnostics.mypy,
 
   --- for typescript code
   b.diagnostics.tsc,

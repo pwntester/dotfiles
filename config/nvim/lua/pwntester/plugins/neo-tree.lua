@@ -9,6 +9,7 @@ local manager = require "neo-tree.sources.manager"
 local cc = require "neo-tree.sources.common.commands"
 local fs = require "neo-tree.sources.filesystem"
 local utils = require "neo-tree.utils"
+local icons = require "pwntester.icons"
 
 local M = {}
 
@@ -27,9 +28,11 @@ function M.setup()
     },
     enable_diagnostics = true,
     enable_git_status = true,
+    git_status_async = true,
     source_selector = {
       winbar = true,
       statusline = false,
+      separator_active = ' ',
     },
     diagnostics = {
       autopreview = false, -- Whether to automatically enable preview mode
@@ -50,8 +53,18 @@ function M.setup()
       show_unloaded = true, -- show diagnostics from unloaded buffers
     },
     filesystem = {
-      follow_current_file = true,
+      hijack_netrw_behavior = 'open_current',
+      group_empty_dirs = true,
+      follow_current_file = false,
       use_libuv_file_watcher = true,
+      filtered_items = {
+        visible = true,
+        hide_dotfiles = false,
+        hide_gitignored = false,
+        never_show = {
+          '.DS_Store',
+        },
+      },
       components = {
         icon = function(config, node)
           local icon = config.default or " "
@@ -208,6 +221,8 @@ function M.setup()
                 })
                 :find()
           end,
+          ['P'] = { 'toggle_preview', config = { use_float = true } },
+          ['<esc>'] = 'revert_preview',
         },
       },
     },
@@ -222,8 +237,16 @@ function M.setup()
       icon = {
         folder_closed = "",
         folder_open = "",
-        folder_empty = "ﰊ",
+        folder_empty = '',
         default = "*",
+      },
+      diagnostics = {
+        highlights = {
+          hint = 'DiagnosticHint',
+          info = 'DiagnosticInfo',
+          warn = 'DiagnosticWarn',
+          error = 'DiagnosticError',
+        },
       },
       name = {
         trailing_slash = false,
@@ -231,6 +254,20 @@ function M.setup()
       },
       git_status = {
         highlight = "ErrorMsg",
+        symbols = {
+          added = icons.git.add,
+          deleted = icons.git.remove,
+          modified = icons.git.mod,
+          renamed = icons.git.rename,
+          untracked = '',
+          ignored = '',
+          unstaged = '',
+          staged = '',
+          conflict = '',
+        },
+      },
+      modified = {
+        symbol = icons.ui.Circle .. ' ',
       },
     },
   }

@@ -216,6 +216,28 @@ local mappings = {
       desc = "Open URL in Octo"
     },
 
+    -- UFO
+    ["nzR"] = {
+      function() require('ufo').openAllFolds() end,
+      desc = "Open all folds"
+    },
+    ["nzM"] = {
+      function() require('ufo').closeAllFolds() end,
+      desc = "Close all folds"
+    },
+    ["nzr"] = {
+      function() require('ufo').openFoldsExceptKinds() end,
+      desc = "Open fold"
+    },
+    ["nzm"] = {
+      function() require('ufo').closeFoldsWith() end,
+      desc = "Close fold"
+    },
+    ["nzP"] = {
+      function() require('ufo').peekFoldedLinesUnderCursor() end,
+      desc = "Preview fold"
+    },
+
     -- COMMENT.NVIM
     ["ngc"] = {
       "<Plug>(comment_toggle_linewise_visual)",
@@ -489,30 +511,36 @@ local mappings = {
     },
 
     -- NVIM-HLSLENS
-    ["nn"] = {
-      [[<CMD>execute('normal! ' . v:count1 . 'n')<CR><CMD>lua require('hlslens').start()<CR>]],
-      desc = "Next match"
-    },
-    ["nN"] = {
-      [[<CMD>execute('normal! ' . v:count1 . 'N')<CR><CMD>lua require('hlslens').start()<CR>]],
-      desc = "Previous match"
-    },
-    ["n*"] = {
-      [[*<CMD>lua require('hlslens').start()<CR>]],
-      desc = "Next match"
-    },
-    ["n#"] = {
-      [[#<CMD>lua require('hlslens').start()<CR>]],
-      desc = "Previous match"
-    },
-    ["ng*"] = {
-      [[g*<CMD>lua require('hlslens').start()<CR>]],
-      desc = "Next match"
-    },
-    ["ng#"] = {
-      [[g#<CMD>lua require('hlslens').start()<CR>]],
-      desc = "Previous match"
-    },
+    -- ["nn"] = {
+    --   [[<CMD>execute('normal! ' . v:count1 . 'n')<CR><CMD>lua require('hlslens').start()<CR>]],
+    --   silent = true,
+    --   desc = "Next match"
+    -- },
+    -- ["nN"] = {
+    --   [[<CMD>execute('normal! ' . v:count1 . 'N')<CR><CMD>lua require('hlslens').start()<CR>]],
+    --   silent = true,
+    --   desc = "Previous match"
+    -- },
+    -- ["n*"] = {
+    --   [[*<CMD>lua require('hlslens').start()<CR>]],
+    --   silent = true,
+    --   desc = "Next match"
+    -- },
+    -- ["n#"] = {
+    --   [[#<CMD>lua require('hlslens').start()<CR>]],
+    --   silent = true,
+    --   desc = "Previous match"
+    -- },
+    -- ["ng*"] = {
+    --   [[g*<CMD>lua require('hlslens').start()<CR>]],
+    --   silent = true,
+    --   desc = "Next match"
+    -- },
+    -- ["ng#"] = {
+    --   [[g#<CMD>lua require('hlslens').start()<CR>]],
+    --   silent = true,
+    --   desc = "Previous match"
+    -- },
 
     -- CODEQL
     -- ["n<leader>c"] = {
