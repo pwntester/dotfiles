@@ -1,7 +1,6 @@
 local nvim_lsp = require "lspconfig"
 local window = require "pwntester.window"
 local util = require "lspconfig.util"
---local efm = require "pwntester.plugins.efm"
 
 local servers = {
   "pyright",
@@ -9,15 +8,13 @@ local servers = {
   "sumneko_lua",
   "tsserver",
   "gopls",
-  "solargraph",
   "codeqlls",
   "yamlls",
   "jsonls",
   "dockerls",
-  --"zk",
 }
 
-local capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities())
+local capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
 
 local function on_attach_callback(client, bufnr)
   bufnr = bufnr or vim.api.nvim_get_current_buf()
@@ -115,40 +112,11 @@ local function setup()
         return root_pattern(fname) or util.path.dirname(fname)
       end,
       settings = {
-        search_path = { "/Users/pwntester/codeql-home/codeql" }
+        search_path = vim.split(require("codeql.util").get_additional_packs(), ":")
       }
     },
-    --[[ ["zk"] = { ]]
-    --[[   root_dir = function() ]]
-    --[[     return vim.loop.cwd() ]]
-    --[[   end, ]]
-    --[[   on_attach = function(client, bufnr) ]]
-    --[[     on_attach_callback(client, bufnr) ]]
-    --[[     g.map(require("pwntester.mappings").zk, { silent = true }, bufnr) ]]
-    --[[   end, ]]
-    --[[ }, ]]
     ["null-ls"] = {},
     ["pyright"] = {},
-    --[[ ["efm"] = { ]]
-    --[[   init_options = { documentFormatting = true, codeAction = true }, ]]
-    --[[   filetypes = { "lua", "python", "yaml", "json", "typescript", "javascript" }, ]]
-    --[[   settings = { ]]
-    --[[     log_level = 1, ]]
-    --[[     log_file = "/tmp/efm.log", ]]
-    --[[     rootMarkers = { ".git/" }, ]]
-    --[[     languages = { ]]
-    --[[       lua = { efm.stylua }, ]]
-    --[[       python = { efm.black, efm.isort, efm.flake8, efm.mypy }, ]]
-    --[[       yaml = { efm.prettier }, ]]
-    --[[       json = { efm.prettier }, ]]
-    --[[       typescript = { efm.prettier, efm.eslint }, ]]
-    --[[       javascript = { efm.prettier, efm.eslint }, ]]
-    --[[       sh = { efm.shellcheck, efm.shfmt }, ]]
-    --[[       go = { efm.staticcheck, efm.goimports, efm.govet }, ]]
-    --[[       ["="] = { efm.misspell }, ]]
-    --[[     }, ]]
-    --[[   }, ]]
-    --[[ }, ]]
   }
 
   -- setup servers
@@ -169,10 +137,6 @@ local function setup()
       spacing = 4,
       prefix = "»",
     },
-  })
-
-  vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
-    border = window.window_border_chars,
   })
 
   -- vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {

@@ -60,12 +60,12 @@ define({ "BufEnter" }, {
     end
   end,
 })
-define({ "BufWritePost" }, {
-  pattern = { "*/plugins/init.lua" },
-  callback = function()
-    vim.cmd [[source <afile> | PackerCompile | echo "Reloaded!" ]]
-  end,
-})
+-- define({ "BufWritePost" }, {
+--   pattern = { "*/plugins/init.lua" },
+--   callback = function()
+--     vim.cmd [[source <afile> | PackerCompile | echo "Reloaded!" ]]
+--   end,
+-- })
 -- winbar
 define({ "CursorMoved", "BufWinEnter", "BufFilePost" }, {
   pattern = { "*" },
