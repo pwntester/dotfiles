@@ -150,11 +150,6 @@ vim.opt.formatoptions = {
 -- vim.opt.foldmethod = "expr"
 -- vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
 
--- UFO
-vim.o.foldcolumn = '1' -- disable until we can disable numbers (https://github.com/neovim/neovim/pull/17446)
-vim.o.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
-vim.o.foldlevelstart = 99
-vim.o.foldenable = true
 -----------------------------------------------------------------------------//
 -- Grepprg {{{1
 -----------------------------------------------------------------------------//
@@ -229,11 +224,22 @@ vim.opt.showtabline = 0 -- 2
 vim.opt.conceallevel = 2
 vim.opt.concealcursor = "nc"
 vim.opt.synmaxcol = 1024 -- don't syntax highlight long lines
-vim.opt.signcolumn = "yes:2"
 vim.opt.ruler = false
+vim.opt.mouse = ""
+-- Number column
 vim.opt.number = true
 vim.opt.relativenumber = true
-vim.opt.mouse = ""
+vim.opt.numberwidth = 1
+-- Status column
+vim.opt.statuscolumn = get_statuscol()
+-- Sign column
+--vim.opt.signcolumn = "yes:2"
+--vim.opt.signcolumn = "no"
+-- Fold column 
+vim.o.foldcolumn = '1' -- disable until we can disable numbers (https://github.com/neovim/neovim/pull/17446)
+vim.o.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
+vim.o.foldlevelstart = 99
+vim.opt.foldenable = true
 -----------------------------------------------------------------------------//
 -- List chars {{{1
 -----------------------------------------------------------------------------//

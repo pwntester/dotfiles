@@ -1,3 +1,5 @@
+local cache = {}
+
 local function setup()
   local status_ok, lualine = pcall(require, "lualine")
   if not status_ok then
@@ -18,6 +20,34 @@ local function setup()
     colored = false,
     update_in_insert = false,
     always_visible = true,
+  }
+
+  local github = {
+    function()
+      local cwd = vim.fn.getcwd()
+
+      if cache[cwd] then
+        return cache[cwd]
+      end
+
+      local ok, outils = pcall(require, "octo.utils")
+      if not ok then
+        cache[cwd] = ""
+        return ""
+      end
+
+      local name = outils.get_remote_name()
+
+      if type(name) == "string" and name ~= "" then
+        cache[cwd] = " " .. name
+        return cache[cwd]
+      else
+        cache[cwd] = ""
+        return ""
+      end
+    end,
+    padding = { left = 0, right = 1 },
+    --color = 'MoreMsg',
   }
 
   local diff = {
@@ -76,7 +106,7 @@ local function setup()
       always_divide_middle = true,
     },
     sections = {
-      lualine_a = { branch, diagnostics },
+      lualine_a = { branch, diagnostics, github },
       lualine_b = { cwd },
       lualine_c = {
         {

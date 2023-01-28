@@ -14,7 +14,6 @@ vim.opt.rtp:prepend(lazypath)
 
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
---asdfasdf
 
 local plugin_specs = {
 
@@ -281,6 +280,7 @@ local plugin_specs = {
   -- FOLDS
   {
     'kevinhwang91/nvim-ufo',
+    enabled = false,
     dependencies = 'kevinhwang91/promise-async',
     config = function()
       require("pwntester.plugins.ufo").setup()
@@ -704,6 +704,9 @@ local plugin_specs = {
     config = function()
       require("octo").setup {
         reaction_viewer_hint_icon = "",
+        ui = {
+          use_sign_column = false
+        }
       }
     end,
     dependencies = { "nvim-telescope/telescope.nvim" },
