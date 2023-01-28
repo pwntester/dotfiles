@@ -100,6 +100,7 @@ if vim.fn.has "mac" == 1 then
       Hint = "",
     },
     misc = {
+      Ok = " ",
       Robot = "ﮧ",
       Squirrel = "",
       Tag = "",
@@ -196,9 +197,10 @@ else
       Warning = " ",
       Information = " ",
       Question = " ",
-      Hint = " ",
+      Hint = "",
     },
     misc = {
+      Ok = " ",
       Robot = " ",
       Squirrel = " ",
       Tag = " ",

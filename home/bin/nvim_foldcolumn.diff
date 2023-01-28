@@ -1,0 +1,18 @@
+diff --git a/src/nvim/screen.c b/src/nvim/screen.c
+index ebff52c..ea937c5 100644
+--- a/src/nvim/screen.c
++++ b/src/nvim/screen.c
+@@ -215,12 +215,8 @@ size_t fill_foldcolumn(char *p, win_T *wp, foldinfo_T foldinfo, linenr_T lnum)
+     if (foldinfo.fi_lnum == lnum
+         && first_level + i >= foldinfo.fi_low_level) {
+       symbol = wp->w_p_fcs_chars.foldopen;
+-    } else if (first_level == 1) {
+-      symbol = wp->w_p_fcs_chars.foldsep;
+-    } else if (first_level + i <= 9) {
+-      symbol = '0' + first_level + i;
+     } else {
+-      symbol = '>';
++      symbol = wp->w_p_fcs_chars.foldsep;
+     }
+ 
+     len = utf_char2bytes(symbol, &p[char_counter]);
