@@ -23,8 +23,6 @@ g.map(mappings, { silent = true })
 -- AUTOCMDs
 -----------------------------------------------------------------------------//
 require "pwntester.autocmds"
---vim.cmd [[autocmd BufEnter *.md set foldexpr=NestedMarkdownFolds()]]
---vim.cmd [[autocmd FileType octo set foldexpr=NestedMarkdownFolds()]]
 
 -----------------------------------------------------------------------------//
 -- ALIASES
@@ -136,20 +134,6 @@ vim.opt.formatoptions = {
   v = false,
 }
 -- vim.cmd [[set formatoptions=qnj]]
----------------------------------------------------------------------------//
--- Folds {{{1
------------------------------------------------------------------------------//
--- CUSTOM
--- vim.opt.foldtext = "v:lua.folds()"
--- vim.opt.foldopen = vim.opt.foldopen + "search"
--- vim.opt.foldlevelstart = 10
--- vim.opt.foldmethod = "indent"
-
--- TREESITTER
--- vim.opt.foldlevel = 20
--- vim.opt.foldmethod = "expr"
--- vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
-
 -----------------------------------------------------------------------------//
 -- Grepprg {{{1
 -----------------------------------------------------------------------------//
@@ -230,16 +214,15 @@ vim.opt.mouse = ""
 vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.numberwidth = 1
+-- Sign column
+vim.opt.signcolumn = 'no'
 -- Status column
 vim.opt.statuscolumn = get_statuscol()
--- Sign column
---vim.opt.signcolumn = "yes:2"
---vim.opt.signcolumn = "no"
--- Fold column 
-vim.o.foldcolumn = '1' -- disable until we can disable numbers (https://github.com/neovim/neovim/pull/17446)
-vim.o.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
-vim.o.foldlevelstart = 99
+-- Fold column
+vim.opt.foldcolumn = '1' -- disable until we can disable numbers (https://github.com/neovim/neovim/pull/17446)
 vim.opt.foldenable = true
+vim.opt.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
+vim.opt.foldlevelstart = 99
 -----------------------------------------------------------------------------//
 -- List chars {{{1
 -----------------------------------------------------------------------------//

@@ -280,7 +280,7 @@ local plugin_specs = {
   -- FOLDS
   {
     'kevinhwang91/nvim-ufo',
-    enabled = false,
+    enabled = true,
     dependencies = 'kevinhwang91/promise-async',
     config = function()
       require("pwntester.plugins.ufo").setup()
