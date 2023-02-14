@@ -100,7 +100,7 @@ local function setup()
         if vim.startswith(fname, "octo:") or vim.startswith(fname, "codeql:") or vim.startswith(fname, "docker:") then
           return
         end
-        nvim_lsp.gopls.default_config.root_dir(fname)
+        --nvim_lsp.gopls.default_config.root_dir(fname)
       end,
     },
     ["codeqlls"] = {
@@ -119,6 +119,10 @@ local function setup()
     ["pyright"] = {},
   }
 
+  local codeql_search_path = require("codeql.util").get_additional_packs()
+  print("CodeQL search path: " .. codeql_search_path)
+  print("CodeQL version:")
+  print(vim.inspect(require("codeql.util").get_version()))
   -- setup servers
   for _, lsp in pairs(servers) do
     local opts = server_opts[lsp] or {}

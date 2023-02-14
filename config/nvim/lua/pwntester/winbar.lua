@@ -22,10 +22,24 @@ M.diagnostics = function()
   for _, diagnostic in ipairs(diagnostics) do
     count[diagnostic.severity] = count[diagnostic.severity] + 1
   end
+  local errHl, warnHl = "LineNr", "LineNr"
+  local bufnr = vim.api.nvim_get_current_buf()
+  local lsp_clients = vim.lsp.get_active_clients({ bufnr = bufnr })
+  if #lsp_clients > 0 then
+    for _, lsp_client in ipairs(lsp_clients) do
+      if lsp_client.name ~= "null-ls" then
+        errHl, warnHl = "DiagnosticError", "DiagnosticWarn"
+        break
+      end
+    end
+  end
+
   return string.format(
-    "%%#DiagnosticError#%s %%*%s %%#DiagnosticWarn#%s %%*%s ",
+    "%%#%s#%s %%*%s %%#%s#%s %%*%s ",
+    errHl,
     icons.diagnostics.Error,
     count[vim.diagnostic.severity.ERROR],
+    warnHl,
     icons.diagnostics.Warning,
     count[vim.diagnostic.severity.WARN]
   )

@@ -234,7 +234,14 @@ local mappings = {
       desc = "Close fold"
     },
     ["nzP"] = {
-      function() require('ufo').peekFoldedLinesUnderCursor() end,
+      function()
+        local winid = require('ufo').peekFoldedLinesUnderCursor()
+        if not winid then
+          -- choose one of coc.nvim and nvim lsp
+          vim.fn.CocActionAsync('definitionHover') -- coc.nvim
+          vim.lsp.buf.hover()
+        end
+      end,
       desc = "Preview fold"
     },
 
@@ -323,24 +330,6 @@ local mappings = {
       noremap = false,
       desc = "Next Hunk"
     },
-
-    -- VIM-SMOOTHIE
-    ["n<c-d>"] = {
-      "<Plug>(SmoothieDownwards)",
-      noremap = false,
-      desc = "Scroll down"
-    },
-    ["n<c-e>"] = {
-      "<Plug>(SmoothieUpwards)",
-      noremap = false,
-      desc = "Scroll up"
-    },
-
-    -- TRUE-ZEN
-    -- ["n<leader>z"] = {
-    --   ":TZAtaraxis<CR>",
-    --   desc = "Zen mode"
-    -- },
 
     -- NEO-TREE
     ["nge"] = {
