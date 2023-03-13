@@ -1,5 +1,5 @@
 # Github repo switcher
-# https://github.com/jdxcode/gh
+# Based on https://github.com/jdxcode/gh/blob/master/zsh/gh/gh.plugin.zsh
 
 GH_BASE_DIR=${GH_BASE_DIR:-$HOME/src}
 function cdr () {

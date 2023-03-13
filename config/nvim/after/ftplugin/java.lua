@@ -106,5 +106,5 @@ if not vim.startswith(bufname, "codeql:") and not vim.startswith(bufname, "octo:
       extendedClientCapabilities = extendedClientCapabilities,
     },
   }
-  require("jdtls").start_or_attach(config)
+  --require("jdtls").start_or_attach(config)
 end

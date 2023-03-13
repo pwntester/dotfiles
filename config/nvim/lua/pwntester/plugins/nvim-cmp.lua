@@ -27,34 +27,6 @@ end
 
 local function setup()
 
-  --[[ require("cmp_git").setup({ ]]
-  --[[   -- defaults ]]
-  --[[   filetypes = { "gitcommit", "octo" }, ]]
-  --[[   trigger_actions = { ]]
-  --[[     { ]]
-  --[[       debug_name = "git_commits", ]]
-  --[[       trigger_character = ":", ]]
-  --[[       action = function(sources, trigger_char, callback, params) ]]
-  --[[         return sources.git:get_commits(callback, params, trigger_char) ]]
-  --[[       end, ]]
-  --[[     }, ]]
-  --[[     { ]]
-  --[[       debug_name = "github_issues_and_pr", ]]
-  --[[       trigger_character = "#", ]]
-  --[[       action = function(sources, trigger_char, callback, _, git_info) ]]
-  --[[         return sources.github:get_issues_and_prs(callback, git_info, trigger_char) ]]
-  --[[       end, ]]
-  --[[     }, ]]
-  --[[     { ]]
-  --[[       debug_name = "github_mentions", ]]
-  --[[       trigger_character = "@", ]]
-  --[[       action = function(sources, trigger_char, callback, _, git_info) ]]
-  --[[         return sources.github:get_mentions(callback, git_info, trigger_char) ]]
-  --[[       end, ]]
-  --[[     }, ]]
-  --[[   }, ]]
-  --[[ }) ]]
-
   local window_border_chars_thick = {
     { "▛", "CmpBorder" },
     { "▀", "CmpBorder" },
@@ -90,7 +62,6 @@ local function setup()
       },
     },
     sources = {
-      --{ name = "copilot" },
       { name = "nvim_lsp", keyword_pattern = [[\k\+]] },
       { name = "nvim_lua" },
       { name = "luasnip" },
@@ -107,19 +78,10 @@ local function setup()
         -- Kind icons
         item.kind = string.format("%s", kind_icons[item.kind])
 
-        -- if entry.source.name == "copilot" then
-        --   item.kind = icons.git.Octoface
-        --   item.kind_hl_group = "CmpItemKindCopilot"
-        -- end
         if entry.source.name == "emoji" then
           item.kind = icons.misc.Smiley
         end
         item.menu = ({
-          -- nvim_lsp = "[lsp]",
-          -- luasnip = "[snip]",
-          -- nvim_lua = "[lua]",
-          -- buffer = "[buf]",
-          -- path = "[path]",
           nvim_lsp = "",
           nvim_lua = "",
           luasnip = "",
@@ -171,26 +133,6 @@ local function setup()
       end)
     },
   }
-
-  -- cmp.setup.cmdline(':', {
-  --   sources = cmp.config.sources({
-  --     { name = 'cmdline', keyword_pattern = [=[[^[:blank:]\!]*]=] },
-  --     { name = 'cmdline_history' },
-  --     { name = 'path' },
-  --   })
-  -- })
-
-  -- for _, cmd_type in ipairs({ '/', '?', '@' }) do
-  --   cmp.setup.cmdline(cmd_type, {
-  --     view = { entries = { name = 'custom', selection_order = 'near_cursor' } },
-  --     sources = cmp.config.sources({
-  --       { name = 'nvim_lsp_document_symbol' },
-  --     }, {
-  --       { name = 'buffer' },
-  --     }),
-  --   })
-  -- end
-
 end
 
 return {
