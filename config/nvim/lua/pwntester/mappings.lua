@@ -392,8 +392,23 @@ local mappings = {
     },
 
     -- COPILOT
-    --["i<C-l>"] = { [[copilot#Accept("<CR>")]], silent = true, script = true, expr = true, desc = "Accept Copilot suggestion" },
-    --["i<Right>"] = { [[copilot#Accept("<CR>")]], silent = true, script = true, expr = true, desc = "Accept Copilot suggestion" },
+    ["i<C-l>"] = { [[copilot#Accept("<CR>")]], script = true, expr = true, desc = "Accept Copilot suggestion" },
+    ["i<Right>"] = { [[copilot#Accept("<CR>")]], script = true, expr = true, desc = "Accept Copilot suggestion" },
+    ["i<A-s>"] = { [[<Plug>(copilot-suggest)]], noremap = false, desc = "Force Copilot suggestion" },
+    ["i<A-j>"] = { [[<Plug>(copilot-next)]], noremap = false, desc = "Show next Copilot suggestion" },
+    ["i<A-k>"] = { [[<Plug>(copilot-previous)]], noremap = false, desc = "Show previous Copilot suggestion" },
+    ["i<A-l>"] = { function()
+      vim.fn['copilot#Accept']("")
+      local bar = vim.fn['copilot#TextQueuedForInsertion']()
+      return vim.fn.split(bar, [[[ .]\zs]])[1]
+    end, silent = true, script = true, expr = true,
+      desc = "Accept next Copilot word suggestion" },
+    ["i<A-m>"] = { function()
+      vim.fn['copilot#Accept']("")
+      local bar = vim.fn['copilot#TextQueuedForInsertion']()
+      return vim.fn.split(bar, [[[\n]\zs]])[1]
+    end, silent = true, script = true, expr = true,
+      desc = "Accept pre" },
 
     -- ZK
     ["n<leader>zt"] = {

@@ -256,3 +256,9 @@ ulimit -n 10240
 
 # Fig post block. Keep at the bottom of this file.
 [[ -f "$HOME/.fig/shell/zshrc.post.zsh" ]] && builtin source "$HOME/.fig/shell/zshrc.post.zsh"
+
+# CodeQL
+export CODEQL_DIST=/Users/pwntester/src/github.com/github/codeql
+
+# Copilot CLI
+eval "$(github-copilot-cli alias -- "$0")"

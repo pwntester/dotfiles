@@ -18,7 +18,7 @@ function M.setup()
       backend = "nui",
     },
     messages = {
-      enabled = true,
+      enabled = false,
     },
     notify = {
       enabled = true,

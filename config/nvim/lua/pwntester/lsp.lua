@@ -5,7 +5,7 @@ local util = require "lspconfig.util"
 local servers = {
   "pyright",
   "bashls",
-  "sumneko_lua",
+  "lua_ls",
   "tsserver",
   "gopls",
   "codeqlls",
