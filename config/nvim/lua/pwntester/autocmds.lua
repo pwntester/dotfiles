@@ -78,10 +78,11 @@ define({ "CursorMoved", "BufWinEnter", "BufFilePost", "LspAttach" }, {
     local buftype = vim.api.nvim_buf_get_option(0, "buftype")
     local filetype = vim.bo.filetype
     local bufname = vim.fn.bufname()
-    if vim.tbl_contains(g.special_buffers, filetype) or
+    if buftype == "nofile" and vim.split(bufname, ":/")[1] == "codeql" then
+      vim.opt_local.winbar = require("pwntester.winbar").winbar()
+    elseif vim.tbl_contains(g.special_buffers, filetype) or
         buftype == "prompt" or
-        string.sub(bufname, 1, 8) ~= "codeql:/" or
-        string.sub(bufname, 1, 26) ~= "versionControlProvenance:/" or
+        buftype == "nofile" or
         filetype == "markdown" then
       vim.opt_local.winbar = nil
     else

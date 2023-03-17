@@ -47,11 +47,10 @@ end
 
 M.filename = function()
   local bufname = vim.fn.bufname()
-  local codeql_archive = false
-  if string.sub(bufname, 1, 8) == "codeql:/" then
-    codeql_archive = true
-  end
   local filename = vim.fn.expand "%:t"
+  if vim.split(bufname, ":/")[1] == "codeql" then
+    filename = "[CODEQL] " .. vim.split(bufname, ":/")[2]
+  end
   local extension = ""
   local file_icon = ""
   local file_icon_color = ""
@@ -75,9 +74,6 @@ M.filename = function()
     if file_icon == nil then
       file_icon = default_file_icon
       file_icon_color = default_file_icon_color
-    end
-    if codeql_archive then
-      filename = "[CODEQL] " .. filename
     end
     return " " .. "%#" .. icon_hl .. "#" .. file_icon .. "%*" .. " " .. "%#WinbarFilename#" .. filename .. "%*"
   end

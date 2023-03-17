@@ -462,6 +462,7 @@ local plugin_specs = {
           max_path_depth = nil,
         },
         panel = {
+          width = 80,
           group_by = "sink",
           show_filename = true,
           long_filename = false,
