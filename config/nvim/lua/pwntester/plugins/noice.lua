@@ -35,11 +35,11 @@ function M.setup()
         --     { "{data.progress.message} " },
         --   },
         -- },
-        { "{data.progress.message} ", hl_group = "NoiceLspProgressTitle" },
+        { "{data.progress.message} ",      hl_group = "NoiceLspProgressTitle" },
         { "({data.progress.percentage}%) " },
-        { "{spinner} ", hl_group = "NoiceLspProgressSpinner" },
-        { "{data.progress.title} ", hl_group = "NoiceLspProgressTitle" },
-        { "{data.progress.client} ", hl_group = "NoiceLspProgressClient" },
+        { "{spinner} ",                    hl_group = "NoiceLspProgressSpinner" },
+        { "{data.progress.title} ",        hl_group = "NoiceLspProgressTitle" },
+        { "{data.progress.client} ",       hl_group = "NoiceLspProgressClient" },
       },
     },
     routes = {
@@ -76,6 +76,11 @@ function M.setup()
       },
     },
     views = {
+      mini = {
+        position = {
+          row = -2
+        }
+      },
       cmdline_popup = {
         -- https://github.com/MunifTanjim/nui.nvim/tree/main/lua/nui/popup
         position = {
@@ -109,4 +114,5 @@ function M.setup()
     },
   }
 end
+
 return M
