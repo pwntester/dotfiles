@@ -48,6 +48,8 @@ end
 M.filename = function()
   local bufname = vim.fn.bufname()
   local filename = vim.fn.expand "%:t"
+  filename = vim.split(filename, "?")[1]
+  bufname = vim.split(bufname, "?")[1]
   if vim.split(bufname, ":/")[1] == "codeql" then
     filename = "[CODEQL] " .. vim.split(bufname, ":/")[2]
   end
@@ -58,6 +60,7 @@ M.filename = function()
   local default_file_icon_color = ""
   if not isempty(filename) then
     extension = vim.fn.expand "%:e"
+    extension = vim.split(extension, "?")[1]
 
     local default = false
 

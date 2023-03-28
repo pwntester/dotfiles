@@ -57,7 +57,7 @@ setopt share_history
 fpath=(~/.zsh/plugins $fpath)
 autoload -Uz cursor_mode; cursor_mode
 source ~/.zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
-source ~/.zsh/plugins/cdr/cdr.zsh
+# source ~/.zsh/plugins/cdr/cdr.zsh
 # fzf-tab-completion
 source ~/src/github.com/lincheney/fzf-tab-completion/zsh/fzf-zsh-completion.sh
 #export $FZF_COMPLETION_OPTS=--tiebreak=chunk
@@ -99,9 +99,9 @@ zstyle ':completion:*:*:*:*:processes' command "ps -u `whoami` -o pid,user,comm 
 
 # fzf-tab-completion
 # only for git
-#zstyle ':completion:*:*:git:*' fzf-search-display true
+zstyle ':completion:*:*:git:*' fzf-search-display true
 # or for everything
-zstyle ':completion:*' fzf-search-display true
+#zstyle ':completion:*' fzf-search-display true
 
 # bash completion for jdxcode/gh
 source ~/.zsh/plugins/cdr/cdr.bash
@@ -213,15 +213,6 @@ function load_nvm() {
   [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 }
 
-function capture() {
-    sudo dtrace -p "$1" -qn '
-        syscall::write*:entry
-        /pid == $target && arg0 == 1/ {
-            printf("%s", copyinstr(arg1, arg2));
-        }
-    '
-}
-
 #########
 # OPTIONS
 #########
@@ -254,11 +245,14 @@ export PATH="/usr/local/opt/node@16/bin:$PATH"
 
 ulimit -n 10240
 
-# Fig post block. Keep at the bottom of this file.
-[[ -f "$HOME/.fig/shell/zshrc.post.zsh" ]] && builtin source "$HOME/.fig/shell/zshrc.post.zsh"
+load_pyenv
+load_nvm
 
 # CodeQL
 export CODEQL_DIST=/Users/pwntester/src/github.com/github/codeql
 
 # Copilot CLI
 eval "$(github-copilot-cli alias -- "$0")"
+
+
+function cdr() {cd $(gh cdr $@)}
