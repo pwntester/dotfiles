@@ -75,6 +75,7 @@ local plugin_specs = {
         "nvim-telescope/telescope-symbols.nvim",
       },
       { "nvim-telescope/telescope-ui-select.nvim" },
+      {"nvim-telescope/telescope-github.nvim"}
     },
     config = function()
       require("pwntester.plugins.telescope").setup()
@@ -693,6 +694,14 @@ local plugin_specs = {
   },
 
   -- GIT
+  {
+    "ruifm/gitlinker.nvim",
+    config = function()
+      require("gitlinker").setup({
+        mappings = nil
+      })
+    end
+  },
   {
     "lewis6991/gitsigns.nvim",
     config = function()

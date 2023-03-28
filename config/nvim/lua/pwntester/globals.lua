@@ -15,7 +15,7 @@ _G.g = {
     "goterm",
     "codeql_panel",
     "codeql_explorer",
-    "codeql_mvra",
+    "codeql_mrva",
     "packer",
     "octo",
     "octo_panel",

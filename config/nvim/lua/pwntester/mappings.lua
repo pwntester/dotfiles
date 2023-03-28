@@ -269,6 +269,21 @@ local mappings = {
       desc = "Lazygit"
     },
 
+    -- GITLINKER
+    ["n<leader>gh"] = {
+      function()
+        require "gitlinker".get_buf_range_url("n", { action_callback = require "gitlinker.actions".open_in_browser })
+      end,
+      silent = true,
+      desc = "Copy permalink to clipboard"
+    },
+    ["v<leader>gh"] = {
+      function()
+        require "gitlinker".get_buf_range_url("v", { action_callback = require "gitlinker.actions".open_in_browser })
+      end,
+      desc = "Copy permalink to clipboard"
+    },
+
     -- TELESCOPE
     -- ["n<leader>n"] = {
     --   require('github-notifications.menu').notifications,
@@ -336,10 +351,10 @@ local mappings = {
       [[:Neotree action=show source=filesystem position=left toggle=true reveal=true reveal_force_cwd=true<CR>]],
       desc = "NeoTree files"
     },
-    ["n<C-o>"] = {
-      [[:Neotree action=show source=buffers position=right toggle=true<CR>]],
-      desc = "NeoTree buffers"
-    },
+    -- ["n<C-o>"] = {
+    --   [[:Neotree action=show source=buffers position=right toggle=true<CR>]],
+    --   desc = "NeoTree buffers"
+    -- },
 
     -- DIAL
     ["n<C-a>"] = {
