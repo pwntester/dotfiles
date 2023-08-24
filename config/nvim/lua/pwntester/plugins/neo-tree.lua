@@ -35,22 +35,21 @@ function M.setup()
       separator_active = ' ',
     },
     diagnostics = {
-      autopreview = false, -- Whether to automatically enable preview mode
-      autopreview_config = {}, -- Config table to pass to autopreview (for example `{ use_float = true }`)
+      autopreview = false,                         -- Whether to automatically enable preview mode
+      autopreview_config = {},                     -- Config table to pass to autopreview (for example `{ use_float = true }`)
       autopreview_event = "neo_tree_buffer_enter", -- The event to enable autopreview upon (for example `"neo_tree_window_after_open"`)
       bind_to_cwd = true,
-      diag_sort_function = "severity", -- "severity" means diagnostic items are sorted by severity in addition to their positions.
+      diag_sort_function = "severity",             -- "severity" means diagnostic items are sorted by severity in addition to their positions.
       -- "position" means diagnostic items are sorted strictly by their positions.
       -- May also be a function.
-      follow_behavior = { -- Behavior when `follow_current_file` is true
-        always_focus_file = false, -- Focus the followed file, even when focus is currently on a diagnostic item belonging to that file.
-        expand_followed = true, -- Ensure the node of the followed file is expanded
-        collapse_others = true, -- Ensure other nodes are collapsed
+      follow_current_file = {
+        enabled = true, -- Enable/disable follow current file
+        leave_dirs_open = true
+
       },
-      follow_current_file = true,
       group_dirs_and_files = true, -- when true, empty folders and files will be grouped together
-      group_empty_dirs = true, -- when true, empty directories will be grouped together
-      show_unloaded = true, -- show diagnostics from unloaded buffers
+      group_empty_dirs = true,     -- when true, empty directories will be grouped together
+      show_unloaded = true,        -- show diagnostics from unloaded buffers
     },
     filesystem = {
       hijack_netrw_behavior = 'open_current',
@@ -142,7 +141,7 @@ function M.setup()
           ["<CR>"] = function(state)
             local node = state.tree:get_node()
             if vim.endswith(node.path, ".sarif") then
-              vim.api.nvim_command("LoadSarif " .. node.path)
+              require 'codeql.loader'.load_sarif_results(node.path)
             else
               cc.open_with_window_picker(state, utils.wrap(fs.toggle_directory, state))
             end

@@ -1,4 +1,5 @@
 -- Bootstrap lazy.nvim
+
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({
@@ -17,17 +18,25 @@ vim.g.maplocalleader = ' '
 
 local plugin_specs = {
 
+  { 'mfussenegger/nvim-dap' },
+  {
+    'mfussenegger/nvim-dap-python',
+    config = function()
+      require('dap-python').setup('~/.virtualenvs/debugpy/bin/python')
+    end
+  },
   -- THEMES & COLORS
+  { 'folke/tokyonight.nvim' },
   {
     "pwntester/nautilus.nvim",
-    dev = true,
-    lazy = true,
-    config = function()
-      require("nautilus").load {
-        transparent = false,
-        mode = "octonauts"
-      }
-    end,
+    --dev = true,
+    --lazy = true,
+    --config = function()
+    --  require("nautilus").load {
+    --    transparent = false,
+    --    mode = "octonauts"
+    --  }
+    --end,
   },
   {
     "norcalli/nvim-colorizer.lua",
@@ -75,7 +84,7 @@ local plugin_specs = {
         "nvim-telescope/telescope-symbols.nvim",
       },
       { "nvim-telescope/telescope-ui-select.nvim" },
-      {"nvim-telescope/telescope-github.nvim"}
+      { "nvim-telescope/telescope-github.nvim" }
     },
     config = function()
       require("pwntester.plugins.telescope").setup()
@@ -84,6 +93,12 @@ local plugin_specs = {
   {
     "pwntester/telescope-zip.nvim",
     dev = true,
+  },
+  {
+    "ibhagwan/fzf-lua",
+    dependencies = {
+      "nvim-tree/nvim-web-devicons"
+    }
   },
 
   -- COMPLETION
@@ -199,7 +214,6 @@ local plugin_specs = {
         draw = {
           -- Delay (in ms) between event and start of drawing scope indicator
           delay = 200,
-
           -- Animation rule for scope's first drawing. A function which, given next
           -- and total step numbers, returns wait time (in ms). See
           -- |MiniIndentscope.gen_animation()| for builtin options. To not use
@@ -212,7 +226,6 @@ local plugin_specs = {
           -- Textobjects
           object_scope = "ii",
           object_scope_with_border = "ai",
-
           -- Motions (jump to respective border line; if not present - body line)
           goto_top = "[i",
           goto_bottom = "]i",
@@ -224,11 +237,9 @@ local plugin_specs = {
           -- Type of scope's border: which line(s) with smaller indent to
           -- categorize as border. Can be one of: 'both', 'top', 'bottom', 'none'.
           border = "both",
-
           -- Whether to use cursor column when computing reference indent. Useful to
           -- see incremental scopes with horizontal cursor movements.
           indent_at_cursor = true,
-
           -- Whether to first check input line to be a border of adjacent scope.
           -- Use it if you want to place cursor on function header to get scope of
           -- its body.
@@ -240,7 +251,8 @@ local plugin_specs = {
       }
     end,
   },
-  { 'echasnovski/mini.cursorword',
+  {
+    'echasnovski/mini.cursorword',
     version = '*',
     config = function()
       require("mini.cursorword").setup {
@@ -248,7 +260,8 @@ local plugin_specs = {
       }
     end,
   },
-  { 'echasnovski/mini.surround',
+  {
+    'echasnovski/mini.surround',
     version = '*',
     config = function()
       require("mini.surround").setup {
@@ -260,12 +273,12 @@ local plugin_specs = {
 
         -- Module mappings. Use `''` (empty string) to disable one.
         mappings = {
-          add = "sa", -- sa{motion/textobject}{delimiter}
-          delete = "sd", -- sd{delimiter}
-          find = "sf", -- Find surrounding (to the right)
-          find_left = "sF", -- Find surrounding (to the left)
-          highlight = "sh", -- Highlight surrounding
-          replace = "sr", --- sr{old}{new}
+          add = "sa",            -- sa{motion/textobject}{delimiter}
+          delete = "sd",         -- sd{delimiter}
+          find = "sf",           -- Find surrounding (to the right)
+          find_left = "sF",      -- Find surrounding (to the left)
+          highlight = "sh",      -- Highlight surrounding
+          replace = "sr",        --- sr{old}{new}
           update_n_lines = "sn", -- Update `n_lines`
         },
       }
@@ -290,11 +303,11 @@ local plugin_specs = {
 
   -- UI
   {
-    "kyazdani42/nvim-web-devicons",
+    "nvim-tree/nvim-web-devicons",
   },
   {
     "folke/trouble.nvim",
-    dependencies = "kyazdani42/nvim-web-devicons",
+    dependencies = "nvim-tree/nvim-web-devicons",
     config = function()
       require("trouble").setup {
         action_keys = {
@@ -332,6 +345,20 @@ local plugin_specs = {
       }
     end
   },
+  {
+    "pwntester/nvim-gps",
+    branch = "patch-1",
+    config = function()
+      require("nvim-gps").setup {
+        highlight = true,
+        separator = " > ",
+        depth_limit = 0,
+        depth_limit_indicator = "..",
+        text_hl = "SpecialKey",
+        icon_hl = "Tag"
+      }
+    end
+  },
 
   -- WINDOWS
   {
@@ -365,7 +392,8 @@ local plugin_specs = {
   },
 
   -- TERMINAL
-  { "akinsho/toggleterm.nvim",
+  {
+    "akinsho/toggleterm.nvim",
     config = function()
       require("toggleterm").setup({
         open_mapping = "<Plug>(ToggleTerm)",
@@ -402,7 +430,7 @@ local plugin_specs = {
   -- STATUSLINE & TABLINE
   {
     "nvim-lualine/lualine.nvim",
-    dependencies = { "kyazdani42/nvim-web-devicons", lazy = true },
+    dependencies = { "nvim-tree/nvim-web-devicons", lazy = true },
     config = function()
       require("pwntester.plugins.lualine_vscode").setup()
     end,
@@ -413,7 +441,7 @@ local plugin_specs = {
     "nvim-neo-tree/neo-tree.nvim",
     dependencies = {
       "nvim-lua/plenary.nvim",
-      "kyazdani42/nvim-web-devicons",
+      "nvim-tree/nvim-web-devicons",
       "MunifTanjim/nui.nvim",
       "s1n7ax/nvim-window-picker",
       "mrbjarksen/neo-tree-diagnostics.nvim",
@@ -454,7 +482,7 @@ local plugin_specs = {
     dependencies = {
       "MunifTanjim/nui.nvim",
       "nvim-telescope/telescope.nvim",
-      "kyazdani42/nvim-web-devicons",
+      "nvim-tree/nvim-web-devicons",
     },
     config = function()
       require("codeql").setup {
@@ -522,7 +550,6 @@ local plugin_specs = {
         ignore = {},
         autocmd = { enabled = true },
       })
-
     end
   },
   {
@@ -537,7 +564,8 @@ local plugin_specs = {
     end
   },
   { "ii14/lsp-command" },
-  { "jose-elias-alvarez/null-ls.nvim",
+  {
+    "jose-elias-alvarez/null-ls.nvim",
     config = function()
       require("pwntester.plugins.null-ls").setup({
         --debug = true,
@@ -554,12 +582,12 @@ local plugin_specs = {
     "rmagatti/goto-preview",
     config = function()
       require("goto-preview").setup {
-        width = 120, -- Width of the floating window
-        height = 15, -- Height of the floating window
+        width = 120,              -- Width of the floating window
+        height = 15,              -- Height of the floating window
         default_mappings = false, -- Bind default mappings
-        debug = false, -- Print debug information
-        opacity = nil, -- 0-100 opacity level of the floating window where 100 is fully transparent.
-        post_open_hook = nil, -- A function taking two arguments, a buffer and a window to be ran as a hook.
+        debug = false,            -- Print debug information
+        opacity = nil,            -- 0-100 opacity level of the floating window where 100 is fully transparent.
+        post_open_hook = nil,     -- A function taking two arguments, a buffer and a window to be ran as a hook.
       }
     end,
   },
@@ -713,6 +741,7 @@ local plugin_specs = {
     dev = true,
     config = function()
       require("octo").setup {
+        -- picker = "fzf-lua",
         reaction_viewer_hint_icon = "",
         ui = {
           use_sign_column = false

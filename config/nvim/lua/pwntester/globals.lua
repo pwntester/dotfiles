@@ -30,7 +30,8 @@ _G.g = {
     "NvimTree",
     "Yanil",
     "neo-tree",
-    "toggleterm"
+    "toggleterm",
+    "noice"
   },
 }
 

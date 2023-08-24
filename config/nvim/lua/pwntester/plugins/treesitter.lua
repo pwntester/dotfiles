@@ -16,10 +16,11 @@ local function setup()
     },
     incremental_selection = {
       enable = true,
-      keymaps = { -- mappings for incremental selection (visual mappings)
-        init_selection = "<Plug>(TsSelInit)", -- maps in normal mode to init the node/scope selection
-        node_incremental = "<Plug>(TsSelNodeIncr)", -- increment to the upper named parent
-        node_decremental = "<Plug>(TsSelNodeDecr)", -- decrement to the previous node
+      keymaps = {
+        -- mappings for incremental selection (visual mappings)
+        init_selection = "<Plug>(TsSelInit)",         -- maps in normal mode to init the node/scope selection
+        node_incremental = "<Plug>(TsSelNodeIncr)",   -- increment to the upper named parent
+        node_decremental = "<Plug>(TsSelNodeDecr)",   -- decrement to the previous node
         scope_incremental = "<Plug>(TsSelScopeIncr)", -- increment to the upper scope (as defined in locals.scm)
         scope_decremental = "<Plug>(TsSelScopeDecr)", -- decrement to the upper scope (as defined in locals.scm)
       },
@@ -44,7 +45,7 @@ local function setup()
         enable = false,
         keymaps = {
           goto_definition_lsp_fallback = "<Plug>(TsGotoDef)", -- mapping to go to definition of symbol under cursor
-          list_definitions = "<Plug>(TsListDefs)", -- mapping to list all definitions in current file
+          list_definitions = "<Plug>(TsListDefs)",            -- mapping to list all definitions in current file
           goto_next_usage = "<Plug>(TsGotoNextUse)",
           goto_previous_usage = "<Plug>(TsGotoPrevUse)",
         },
@@ -93,7 +94,7 @@ local function setup()
     },
     playground = {
       enable = false,
-      updatetime = 25, -- Debounced time for highlighting nodes in the playground from source code
+      updatetime = 25,         -- Debounced time for highlighting nodes in the playground from source code
       persist_queries = false, -- Whether the query persists across vim sessions
     },
   }
@@ -104,7 +105,8 @@ local function setup()
       attach = function(bufnr)
         g.map(require("pwntester.mappings").treesitter, { silent = false }, bufnr)
       end,
-      detach = function() end,
+      detach = function()
+      end,
       is_supported = function()
         return true
       end,

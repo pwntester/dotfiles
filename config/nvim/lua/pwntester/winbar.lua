@@ -1,12 +1,9 @@
 local icons = require("pwntester.icons")
 
-local M = {}
+local navic_ok, navic_locator = pcall(require, "nvim-navic")
+local gps_ok, gps_locator = pcall(require, "nvim-gps")
 
-local status_ok, locator = pcall(require, "nvim-navic")
---local status_ok, locator = pcall(require, "nvim-gps")
-if not status_ok then
-  return
-end
+local M = {}
 
 local function isempty(s)
   return s == nil or s == ""
@@ -50,8 +47,14 @@ M.filename = function()
   local filename = vim.fn.expand "%:t"
   filename = vim.split(filename, "?")[1]
   bufname = vim.split(bufname, "?")[1]
-  if vim.split(bufname, ":/")[1] == "codeql" then
-    filename = "[CODEQL] " .. vim.split(bufname, ":/")[2]
+  if vim.split(bufname, ":/")[1] == "ql" then
+    local ok_source, source = pcall(vim.api.nvim_buf_get_var, 0, "source")
+    local ok_path, path = pcall(vim.api.nvim_buf_get_var, 0, "path")
+    if ok_path and ok_source then
+      filename = "[" .. string.upper(source) .. "] " .. path
+    else
+      filename = "[CODEQL] " .. vim.split(bufname, "/")[#vim.split(bufname, "/")]
+    end
   end
   local extension = ""
   local file_icon = ""
@@ -84,15 +87,19 @@ end
 
 M.winbar = function()
   local filename = M.filename()
-  local ok, location = pcall(locator.get_location, {})
-  local left = ""
-  if ok and locator.is_available() and location ~= "error" and not isempty(location) then
-    left = filename .. " " .. "%#NavicSeparator#" .. icons.ui.ChevronRight .. "%* " .. location
-  elseif filename then
-    left = filename
-  end
   local right = M.diagnostics()
-
+  local left = filename and filename or ""
+  if navic_ok and navic_locator.is_available() then
+    local ok, navic_location = pcall(navic_locator.get_location, {})
+    if ok and navic_location ~= "error" and not isempty(navic_location) then
+      left = left .. " " .. "%#NavicSeparator#" .. icons.ui.ChevronRight .. "%* " .. navic_location
+    end
+  elseif gps_ok then
+    local ok, gps_location = pcall(gps_locator.get_location, {})
+    if ok and gps_location ~= "error" and not isempty(gps_location) then
+      left = left .. " " .. "%#NavicSeparator#" .. icons.ui.ChevronRight .. "%* " .. gps_location
+    end
+  end
   return left .. "%=" .. right
 end
 

@@ -41,7 +41,11 @@ vim.cmd [[command! BountySubmissions :call v:lua.g.BountySubmissions()]]
 vim.cmd [[command! Bitacora :call v:lua.g.Bitacora()]]
 vim.cmd [[command! TODO :call v:lua.g.TODO()]]
 
---vim.opt.cmdheight = 0
+-----------------------------------------------------------------------------//
+-- COLORS
+-----------------------------------------------------------------------------//
+vim.cmd [[ colorscheme nautilus-octonauts]]
+
 -----------------------------------------------------------------------------//
 -- Message output on vim actions {{{1
 -----------------------------------------------------------------------------//
@@ -74,8 +78,8 @@ vim.opt.shada = {
   "/1000", -- search history items
   ":1000", -- command-line history items
   "<1000", -- lines for each saved registry
-  "s100", -- max size of item in KiB
-  "h", -- no hlsearch when loading shada
+  "s100",  -- max size of item in KiB
+  "h",     -- no hlsearch when loading shada
 }
 -----------------------------------------------------------------------------//
 --Window splitting and buffers {{{1
@@ -119,14 +123,14 @@ vim.opt.diffopt = vim.opt.diffopt
 vim.opt.formatoptions = {
   ["1"] = false,
   ["2"] = false, -- Use indent from 2nd line of a paragraph
-  a = false, -- Auto formatting is BAD.
-  q = true, -- continue comments with gq"
-  c = false, -- Auto-wrap comments using textwidth
-  r = false, -- Continue comments when pressing Enter
-  o = false, -- Automatically insert the current comment leader after hitting 'o' or 'O'
-  n = true, -- Recognize numbered lists
-  t = false, -- autowrap lines using text width value
-  j = true, -- remove a comment leader when joining lines.
+  a = false,     -- Auto formatting is BAD.
+  q = true,      -- continue comments with gq"
+  c = false,     -- Auto-wrap comments using textwidth
+  r = false,     -- Continue comments when pressing Enter
+  o = false,     -- Automatically insert the current comment leader after hitting 'o' or 'O'
+  n = true,      -- Recognize numbered lists
+  t = false,     -- autowrap lines using text width value
+  j = true,      -- remove a comment leader when joining lines.
   -- Only break if the line was not longer than 'textwidth' when the insert
   -- started and only at a white character that has been entered during the
   -- current insert command.
@@ -221,7 +225,7 @@ vim.opt.statuscolumn = get_statuscol()
 -- Fold column
 vim.opt.foldcolumn = '1' -- disable until we can disable numbers (https://github.com/neovim/neovim/pull/17446)
 vim.opt.foldenable = true
-vim.opt.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
+vim.opt.foldlevel = 99   -- Using ufo provider need a large value, feel free to decrease the value
 vim.opt.foldlevelstart = 99
 -----------------------------------------------------------------------------//
 -- List chars {{{1
@@ -281,7 +285,7 @@ vim.opt.sessionoptions = {
   -- "tabpages",
 }
 vim.opt.viewoptions = { "cursor", "folds" } -- save/restore just these (with `:{mk,load}view`)
-vim.opt.virtualedit = "block" -- allow cursor to move where there is no text in visual block mode
+vim.opt.virtualedit = "block"               -- allow cursor to move where there is no text in visual block mode
 -------------------------------------------------------------------------------
 -- BACKUP AND SWAPS {{{
 -------------------------------------------------------------------------------
