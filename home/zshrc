@@ -213,6 +213,10 @@ function load_nvm() {
   [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 }
 
+function mrva() {
+  gh mrva status -p $1 -j | jq '.[] | "\(.name) \(.status) \(.total_findings_count)/\(.total_successful_scans)"'
+}
+
 #########
 # OPTIONS
 #########

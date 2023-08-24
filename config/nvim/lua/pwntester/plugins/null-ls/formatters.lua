@@ -4,8 +4,7 @@ local nls_utils = require "pwntester.plugins.null-ls.utils"
 local nls_sources = require "null-ls.sources"
 local method = require("null-ls").methods.FORMATTING
 
-local formatters = { "prettierd", "stylua", "black", "isort", "shfmt", "fixjson", "write_good", "eslint_d", "flake8",
-  "markdownlint", "selene", "shellcheck" }
+local formatters = { "prettierd", "stylua", "black", "isort", "shfmt", "fixjson", "write_good", "eslint_d", "flake8", "selene", "shellcheck" }
 M.autoformat = true
 
 function M.toggle()
