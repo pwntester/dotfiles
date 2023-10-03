@@ -1,5 +1,5 @@
-local nvim_lsp = require "lspconfig"
-local window = require "pwntester.window"
+--local nvim_lsp = require "lspconfig"
+--local window = require "pwntester.window"
 local util = require "lspconfig.util"
 
 local servers = {
@@ -17,11 +17,20 @@ local servers = {
 local capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
 
 local function on_attach_callback(client, bufnr)
+  -- print("Attaching " .. client["name"])
   bufnr = bufnr or vim.api.nvim_get_current_buf()
+
+  -- Configure key mappings
+  -- print("Attaching LSP mappings")
+  g.map(require("pwntester.mappings").lsp, { silent = false }, bufnr)
+
+  -- Configure formatting
+  -- require("pwntester.plugins.null-ls.formatters").setup(client, bufnr)
 
   -- Configure Extensions
   require("lsp-format").on_attach(client)
-  require("lsp_spinner").on_attach(client, bufnr)
+
+  --require("lsp_spinner").on_attach(client, bufnr)
   if client.server_capabilities.documentSymbolProvider then
     require("nvim-navic").attach(client, bufnr)
   end
@@ -29,12 +38,6 @@ local function on_attach_callback(client, bufnr)
   -- Use LSP as the handler for formatexpr.
   -- See `:help formatexpr` for more information.
   vim.api.nvim_buf_set_option(0, "formatexpr", "v:lua.vim.lsp.formatexpr")
-
-  -- Configure formatting
-  require("pwntester.plugins.null-ls.formatters").setup(client, bufnr)
-
-  -- Configure key mappings
-  g.map(require("pwntester.mappings").lsp, { silent = false }, bufnr)
 end
 
 local function setup()
@@ -119,16 +122,16 @@ local function setup()
     ["pyright"] = {},
   }
 
-  local codeql_search_path = require("codeql.util").get_additional_packs()
-  print("CodeQL search path: " .. codeql_search_path)
-  print("CodeQL version:")
-  print(vim.inspect(require("codeql.util").get_version()))
+  --local codeql_search_path = require("codeql.util").get_additional_packs()
+  --print("CodeQL search path: " .. codeql_search_path)
+  --print("CodeQL version:")
   -- setup servers
   for _, lsp in pairs(servers) do
     local opts = server_opts[lsp] or {}
     opts.capabilities = opts.capabilities or capabilities
     opts.on_attach = opts.on_attach or on_attach_callback
     opts.flags = opts.flags or { debounce_text_changes = 150 }
+    -- print("Setting up LSP: " .. lsp)
     require("lspconfig")[lsp].setup(opts)
   end
 

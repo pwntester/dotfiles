@@ -31,7 +31,8 @@ _G.g = {
     "Yanil",
     "neo-tree",
     "toggleterm",
-    "noice"
+    "noice",
+    "lazy"
   },
 }
 

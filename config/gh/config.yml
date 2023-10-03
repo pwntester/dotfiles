@@ -2,7 +2,7 @@ git_protocol: https
 editor:
 prompt: enabled
 pager:
-extensions.codeql.version: v2.13.4
+extensions.codeql.version: v2.14.6
 aliases:
     co: pr checkout
     url: "!gh $([[ $@ == *\"pull\"* ]] && echo pr || echo issue) view $@ --json url -q '.url'"
