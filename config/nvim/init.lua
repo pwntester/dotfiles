@@ -45,6 +45,7 @@ vim.cmd [[command! TODO :call v:lua.g.TODO()]]
 -- COLORS
 -----------------------------------------------------------------------------//
 vim.cmd [[ colorscheme nautilus-octonauts]]
+--vim.cmd [[colorscheme kanagawa]]
 
 -----------------------------------------------------------------------------//
 -- Message output on vim actions {{{1

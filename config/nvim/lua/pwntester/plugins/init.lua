@@ -26,7 +26,36 @@ local plugin_specs = {
     end
   },
   -- THEMES & COLORS
-  { 'folke/tokyonight.nvim' },
+  --{ 'folke/tokyonight.nvim' },
+  {
+    'rebelot/kanagawa.nvim',
+    config = function()
+      require('kanagawa').setup({
+        compile = false,  -- enable compiling the colorscheme
+        undercurl = true, -- enable undercurls
+        commentStyle = { italic = true },
+        functionStyle = {},
+        keywordStyle = { italic = true },
+        statementStyle = { bold = true },
+        typeStyle = {},
+        transparent = false,   -- do not set background color
+        dimInactive = false,   -- dim inactive window `:h hl-NormalNC`
+        terminalColors = true, -- define vim.g.terminal_color_{0,17}
+        colors = {             -- add/modify theme and palette colors
+          palette = {},
+          theme = { wave = {}, lotus = {}, dragon = {}, all = {} },
+        },
+        overrides = function(colors) -- add/modify highlights
+          return {}
+        end,
+        theme = "lotus",  -- Load "wave" theme when 'background' option is not set
+        background = {    -- map the value of 'background' option to a theme
+          dark = "lotus", -- try "dragon" !
+          light = "lotus"
+        },
+      })
+    end
+  },
   {
     "pwntester/nautilus.nvim",
     --dev = true,
@@ -374,19 +403,52 @@ local plugin_specs = {
   },
   {
     's1n7ax/nvim-window-picker',
+    name = 'window-picker',
+    event = 'VeryLazy',
+    version = '2.*',
     config = function()
       require 'window-picker'.setup({
-        autoselect_one = true,
-        include_current = false,
+        hint = 'statusline-winbar',
+        show_prompt = true,
+        prompt_message = 'Pick window: ',
+        selection_chars = 'FJDKSLA;CMRUEIWOQP',
         filter_rules = {
+          autoselect_one = true,
+          include_current = false,
           bo = {
             filetype = g.special_buffers,
             buftype = { 'terminal', 'quickfix' },
           },
+          wo = {},
+          file_path_contains = {},
+          file_name_contains = {},
         },
-        use_winbar = "always",
-        current_win_hl_color = '#e35e4f',
-        other_win_hl_color = '#3a84cc',
+        highlights = {
+          statusline = {
+            focused = {
+              fg = '#ededed',
+              bg = '#e35e4f',
+              bold = true,
+            },
+            unfocused = {
+              fg = '#ededed',
+              bg = '#44cc41',
+              bold = true,
+            },
+          },
+          winbar = {
+            focused = {
+              fg = '#ededed',
+              bg = '#e35e4f',
+              bold = true,
+            },
+            unfocused = {
+              fg = '#ededed',
+              bg = '#44cc41',
+              bold = true,
+            },
+          },
+        }
       })
     end,
   },
@@ -516,9 +578,8 @@ local plugin_specs = {
     dependencies = {
       "mason.nvim",
       "cmp-nvim-lsp",
-      "null-ls.nvim",
+      "none-ls.nvim",
       "williamboman/mason.nvim",
-      "jose-elias-alvarez/null-ls.nvim",
       "pwntester/codeql.nvim",
     },
     config = function()
@@ -565,7 +626,7 @@ local plugin_specs = {
   },
   { "ii14/lsp-command" },
   {
-    "jose-elias-alvarez/null-ls.nvim",
+    "nvimtools/none-ls.nvim",
     config = function()
       require("pwntester.plugins.null-ls").setup({
         --debug = true,
@@ -574,9 +635,6 @@ local plugin_specs = {
   },
   {
     "mfussenegger/nvim-jdtls",
-  },
-  {
-    "doums/lsp_spinner.nvim",
   },
   {
     "rmagatti/goto-preview",
@@ -620,6 +678,55 @@ local plugin_specs = {
   },
 
   -- MARKDOWN
+  {
+    "epwalsh/obsidian.nvim",
+    -- lazy = true,
+    -- event = { "BufReadPre " .. vim.fn.expand "~" .. "/obsidian/**.md" },
+    -- cmd = {
+    --   "ObsidianNew",
+    -- },
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "hrsh7th/nvim-cmp",
+      "nvim-telescope/telescope.nvim",
+    },
+    opts = {
+      dir = "~/obsidian",
+      notes_subdir = "inbox",
+      daily_notes = {
+        folder = "resources/journals",
+        date_format = "%Y_%m_%d"
+      },
+      completion = {
+        nvim_cmp = true,
+        min_chars = 2,
+        -- Where to put new notes created from completion. Valid options are
+        --  * "current_dir" - put new notes in same directory as the current buffer.
+        --  * "notes_subdir" - put new notes in the default notes subdirectory.
+        new_notes_location = "notes_subdir",
+
+        -- Whether to add the output of the node_id_func to new notes in autocompletion.
+        -- E.g. "[[Foo" completes to "[[foo|Foo]]" assuming "foo" is the ID of the note.
+        prepend_note_id = true
+      },
+      note_id_func = function(title)
+        -- Create note IDs in a Zettelkasten format with a timestamp and a suffix.
+        -- In this case a note with the title 'My new note' will given an ID that looks
+        -- like '1657296016-my-new-note', and therefore the file name '1657296016-my-new-note.md'
+        local suffix = ""
+        if title ~= nil then
+          -- If title is given, transform it into valid file name.
+          suffix = title:gsub(" ", "-"):gsub("[^A-Za-z0-9-]", ""):lower()
+        else
+          -- If title is nil, just add 4 random uppercase letters to the suffix.
+          for _ = 1, 4 do
+            suffix = suffix .. string.char(math.random(65, 90))
+          end
+        end
+        return tostring(os.time()) .. "-" .. suffix
+      end,
+    },
+  },
   {
     "ekickx/clipboard-image.nvim",
     config = function()
@@ -772,6 +879,102 @@ local plugin_specs = {
         end
       })
     end
+  },
+
+  -- 1PASSWORD
+  {
+    'mrjones2014/op.nvim',
+    build = "make install",
+  },
+
+  -- AI
+  {
+    "jackMort/ChatGPT.nvim",
+    --event = "VeryLazy",
+    cmd = {
+      "ChatGPT",
+    },
+    config = function()
+      require("chatgpt").setup({
+        api_key_cmd = "op read op://Personal/OpenAI/notes --no-newline"
+      })
+    end,
+    dependencies = {
+      "MunifTanjim/nui.nvim",
+      "nvim-lua/plenary.nvim",
+      "nvim-telescope/telescope.nvim"
+    }
+  },
+  {
+    "Bryley/neoai.nvim",
+    dependencies = {
+      "MunifTanjim/nui.nvim",
+    },
+    cmd = {
+      "NeoAI",
+      "NeoAIOpen",
+      "NeoAIClose",
+      "NeoAIToggle",
+      "NeoAIContext",
+      "NeoAIContextOpen",
+      "NeoAIContextClose",
+      "NeoAIInject",
+      "NeoAIInjectCode",
+      "NeoAIInjectContext",
+      "NeoAIInjectContextCode",
+    },
+    keys = {
+      { "<leader>as", desc = "summarize text" },
+      { "<leader>ag", desc = "generate git message" },
+    },
+    config = function()
+      require("neoai").setup({
+        models = {
+          {
+            name = "openai",
+            model = "gpt-4",
+            params = nil,
+          },
+        },
+        open_ai = {
+          api_key = {
+            get = function()
+              return require('op.api').item.get({ 'OpenAI', '--fields', 'text' })[1]
+            end,
+          }
+        },
+        shortcuts = {
+          {
+            name = "textify",
+            key = "<leader>as",
+            desc = "fix text with AI",
+            use_context = true,
+            prompt = [[
+                Please rewrite the text to make it more readable, clear,
+                concise, and fix any grammatical, punctuation, or spelling
+                errors
+            ]],
+            modes = { "v" },
+            strip_function = nil,
+          },
+          {
+            name = "gitcommit",
+            key = "<leader>ag",
+            desc = "generate git commit message",
+            use_context = false,
+            prompt = function()
+              return [[
+                    Using the following git diff generate a consise and
+                    clear git commit message, with a short title summary
+                    that is 75 characters or less:
+                ]] .. vim.fn.system("git diff --cached")
+            end,
+            modes = { "n" },
+            strip_function = nil,
+          },
+        },
+      })
+    end,
   },
 }
 local opts = {

@@ -12,7 +12,7 @@ local function setup()
     highlight = {
       enable = true,
       disable = { "xml" },
-      --additional_vim_regex_highlighting = { "markdown" }
+      additional_vim_regex_highlighting = { "markdown" },
     },
     incremental_selection = {
       enable = true,
