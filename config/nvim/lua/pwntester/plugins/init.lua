@@ -850,6 +850,7 @@ local plugin_specs = {
       require("octo").setup {
         -- picker = "fzf-lua",
         reaction_viewer_hint_icon = "",
+        enable_builtin = true,
         ui = {
           use_sign_column = false
         }
