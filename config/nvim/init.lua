@@ -40,7 +40,7 @@ vim.cmd [[command! VulnReports :call v:lua.g.VulnReports()]]
 vim.cmd [[command! BountySubmissions :call v:lua.g.BountySubmissions()]]
 vim.cmd [[command! Bitacora :call v:lua.g.Bitacora()]]
 vim.cmd [[command! TODO :call v:lua.g.TODO()]]
-
+vim.cmd [[command! BufOnly execute '%bdelete|edit #|normal `"']]
 -----------------------------------------------------------------------------//
 -- COLORS
 -----------------------------------------------------------------------------//

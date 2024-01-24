@@ -18,54 +18,39 @@ vim.g.maplocalleader = ' '
 
 local plugin_specs = {
 
-  { 'mfussenegger/nvim-dap' },
-  {
-    'mfussenegger/nvim-dap-python',
-    config = function()
-      require('dap-python').setup('~/.virtualenvs/debugpy/bin/python')
-    end
-  },
   -- THEMES & COLORS
-  --{ 'folke/tokyonight.nvim' },
   {
-    'rebelot/kanagawa.nvim',
+    'kwsp/halcyon-neovim'
+  },
+  {
+    'Shatur/neovim-ayu',
     config = function()
-      require('kanagawa').setup({
-        compile = false,  -- enable compiling the colorscheme
-        undercurl = true, -- enable undercurls
-        commentStyle = { italic = true },
-        functionStyle = {},
-        keywordStyle = { italic = true },
-        statementStyle = { bold = true },
-        typeStyle = {},
-        transparent = false,   -- do not set background color
-        dimInactive = false,   -- dim inactive window `:h hl-NormalNC`
-        terminalColors = true, -- define vim.g.terminal_color_{0,17}
-        colors = {             -- add/modify theme and palette colors
-          palette = {},
-          theme = { wave = {}, lotus = {}, dragon = {}, all = {} },
-        },
-        overrides = function(colors) -- add/modify highlights
-          return {}
-        end,
-        theme = "lotus",  -- Load "wave" theme when 'background' option is not set
-        background = {    -- map the value of 'background' option to a theme
-          dark = "lotus", -- try "dragon" !
-          light = "lotus"
-        },
+      require('ayu').setup({
+        mirage = true,
+        overrides = {},
+        -- overrides = {
+        --   Normal = { bg = "None" },
+        --   ColorColumn = { bg = "None" },
+        --   SignColumn = { bg = "None" },
+        --   Folded = { bg = "None" },
+        --   FoldColumn = { bg = "None" },
+        --   CursorLine = { bg = "None" },
+        --   CursorColumn = { bg = "None" },
+        --   WhichKeyFloat = { bg = "None" },
+        --   VertSplit = { bg = "None" },
+        -- },
       })
     end
   },
   {
     "pwntester/nautilus.nvim",
-    --dev = true,
-    --lazy = true,
-    --config = function()
-    --  require("nautilus").load {
-    --    transparent = false,
-    --    mode = "octonauts"
-    --  }
-    --end,
+    dev = true,
+    config = function()
+      require("nautilus").load {
+        transparent = false,
+        mode = "octonauts"
+      }
+    end,
   },
   {
     "norcalli/nvim-colorizer.lua",
@@ -134,7 +119,7 @@ local plugin_specs = {
   {
     "hrsh7th/nvim-cmp",
     dependencies = {
-      {
+      --[[{
         "L3MON4D3/LuaSnip",
         dependencies = {
           { "nvim-cmp" },
@@ -143,7 +128,7 @@ local plugin_specs = {
         config = function()
           require("pwntester.plugins.luasnip").setup()
         end,
-      },
+      },]] --
       { "hrsh7th/cmp-nvim-lsp" },
       { "hrsh7th/cmp-buffer" },
       { "hrsh7th/cmp-path" },
@@ -547,21 +532,8 @@ local plugin_specs = {
       "nvim-tree/nvim-web-devicons",
     },
     config = function()
-      require("codeql").setup {
-        results = {
-          max_paths = 10,
-          max_path_depth = nil,
-        },
-        panel = {
-          width = 80,
-          group_by = "sink",
-          show_filename = true,
-          long_filename = false,
-          context_lines = 3,
-        },
-        max_ram = 64000,
-      }
-    end,
+      require("pwntester.plugins.codeql").setup()
+    end
   },
   {
     'pwntester/fortify.nvim',
@@ -628,7 +600,7 @@ local plugin_specs = {
   {
     "nvimtools/none-ls.nvim",
     config = function()
-      require("pwntester.plugins.null-ls").setup({
+      require("pwntester.plugins.none-ls").setup({
         --debug = true,
       })
     end
@@ -848,7 +820,9 @@ local plugin_specs = {
     dev = true,
     config = function()
       require("octo").setup {
-        -- picker = "fzf-lua",
+        picker = "telescope",
+        --picker = "fzf-lua",
+        use_local_fs = true,
         reaction_viewer_hint_icon = "",
         enable_builtin = true,
         ui = {
@@ -987,6 +961,7 @@ local opts = {
     -- install missing plugins on startup. This doesn't increase startup time.
     missing = true,
     -- try to load one of these colorschemes when starting an installation during startup
+    --colorscheme = { "nautilus" },
     colorscheme = { "nautilus" },
   },
 }

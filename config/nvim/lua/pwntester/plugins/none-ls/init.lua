@@ -38,7 +38,7 @@ local sources = {
   b.formatting.isort,
 
   --- to format Lua code.
-  with_root_file(b.formatting.stylua, "stylua.toml"),
+  with_root_file(b.formatting.stylua, ".stylua.toml"),
 
   -- diagnostics
 
@@ -46,13 +46,12 @@ local sources = {
   b.diagnostics.write_good,
   b.diagnostics.markdownlint,
 
-  b.diagnostics.eslint_d,
-
   --- for Python code
   b.diagnostics.flake8.with { extra_args = { "--ignore=E501" } },
   b.diagnostics.mypy,
 
   --- for typescript code
+  b.diagnostics.eslint,
   b.diagnostics.tsc,
 
   --- for Lua code
@@ -71,7 +70,6 @@ local sources = {
 
   -- hover
 
-
   --- shows the first available definition for the current word under the cursor, using dictionaryapi.dev.
   b.hover.dictionary,
 }
@@ -86,7 +84,6 @@ function M.setup(opts)
     on_attach = opts.on_attach,
     root_dir = nls_utils.root_pattern ".git",
   }
-
 end
 
 return M
