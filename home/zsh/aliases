@@ -42,3 +42,4 @@ alias rest="timer 10m && terminal-notifier -message 'Pomodoro'\
 alias rm="trash -F"
 
 alias ssh='TERM=xterm-256color ssh'
+alias db='gh qldb'
