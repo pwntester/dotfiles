@@ -175,33 +175,7 @@ local function lsp_dynamic_symbols()
   require("telescope.builtin.lsp").dynamic_workspace_symbols(opts)
 end
 
-local pickers = require "telescope.pickers"
-local finders = require "telescope.finders"
-local conf = require("telescope.config").values
---local actions = require "telescope.actions"
-local action_state = require "telescope.actions.state"
-local set_db = require("codeql").set_database
-local codeql_dbs = function(opts)
-  opts = opts or {}
-  pickers.new(opts, {
-    prompt_title = "CodeQL Databases",
-    finder = finders.new_oneshot_job({ "find", "/Users/pwntester/seclab/workshops/h-c0n_workshop/", "-type", "d", "-maxdepth", "1" }, opts ),
-    sorter = conf.generic_sorter(opts),
-    attach_mappings = function(prompt_bufnr)
-			actions.select_default:replace(function()
-        actions.close(prompt_bufnr)
-        local selection = action_state.get_selected_entry()
-        print(selection.value)
-        set_db(selection.value)
-      end)
-			return true
-		end,
-  }):find()
-end
-
-
 return {
   setup = setup,
   lsp_dynamic_symbols = lsp_dynamic_symbols,
-  codeql_dbs = codeql_dbs
 }

@@ -2,7 +2,8 @@
 [user]
 # Please adapt and uncomment the following lines:
 #	name = Alvaro Muñoz
-email = pwntester@github.com
+	email = pwntester@github.com
+	name = Alvaro Muñoz
 [alias]
 	ll = log --oneline
 	co = checkout

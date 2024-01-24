@@ -40,3 +40,5 @@ alias rest="timer 10m && terminal-notifier -message 'Pomodoro'\
         -sound Crystal"
 
 alias rm="trash -F"
+
+alias ssh='TERM=xterm-256color ssh'

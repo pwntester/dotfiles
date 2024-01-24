@@ -1,6 +1,17 @@
 local create = vim.api.nvim_create_augroup
 local define = vim.api.nvim_create_autocmd
 
+
+define({ "User" }, {
+  pattern = "LazyVimStarted",
+  callback = function()
+    local stats = require("lazy").stats()
+    local ms = (math.floor(stats.startuptime * 100 + 0.5) / 100)
+    local pad_footer = string.rep(" ", 8)
+    print("⚡ Neovim loaded " .. stats.count .. " plugins in " .. ms .. "ms")
+  end,
+})
+
 create("bitacora", { clear = true })
 
 define({ "TermEnter", "WinEnter", "BufEnter" }, {
@@ -8,15 +19,15 @@ define({ "TermEnter", "WinEnter", "BufEnter" }, {
   callback = function()
     local ft = vim.bo.filetype
     if vim.tbl_contains({ "octo", "frecency", "TelescopePrompt", "TelescopeResults" }, ft) then
-      vim.wo.foldcolumn='0'
+      vim.wo.foldcolumn = '0'
     elseif vim.tbl_contains(g.special_buffers, ft) then
-      vim.wo.foldcolumn='0'
+      vim.wo.foldcolumn = '0'
       vim.api.nvim_win_set_option(0, "winhighlight", "Normal:NormalAlt")
     elseif ft == "" or vim.bo.buftype == "terminal" then
-      vim.wo.foldcolumn='0'
+      vim.wo.foldcolumn = '0'
       vim.api.nvim_win_set_option(0, "winhighlight", "Normal:NormalAlt")
     else
-      vim.wo.foldcolumn='1'
+      vim.wo.foldcolumn = '1'
       vim.api.nvim_win_set_option(0, "winhighlight", "Normal:Normal")
     end
     vim.api.nvim_command [[au FileType * set fo-=c fo-=r fo-=o]]
