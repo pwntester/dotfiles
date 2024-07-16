@@ -1,51 +1,56 @@
------------------------------------------------------------------------------//
--- GLOBALS
------------------------------------------------------------------------------//
-require "pwntester.globals"
+local vim = vim
+
+local g = require "pwntester.globals"
+
+-- require a lua module, but force reload it (RC files can be re-sourced)
+local function _require(name)
+  package.loaded[name] = nil
+  return require(name)
+end
 
 -----------------------------------------------------------------------------//
 -- PLUGINS
 -----------------------------------------------------------------------------//
-require "pwntester.plugins"
+vim.g.mapleader = " "
+vim.g.maplocalleader = " "
 
------------------------------------------------------------------------------//
--- PLUGINS
------------------------------------------------------------------------------//
-require "pwntester.statuscolumn"
+_require "pwntester.lazy"
 
 -----------------------------------------------------------------------------//
 -- MAPPINGS
 -----------------------------------------------------------------------------//
-local mappings = require("pwntester.mappings").all
-g.map(mappings, { silent = true })
+local mappings = _require "pwntester.mappings"
+g.map(mappings.all, { silent = true })
 
 -----------------------------------------------------------------------------//
 -- AUTOCMDs
 -----------------------------------------------------------------------------//
-require "pwntester.autocmds"
+_require "pwntester.autocmds"
 
 -----------------------------------------------------------------------------//
 -- ALIASES
 -----------------------------------------------------------------------------//
---g.alias("bd", "lua require('bufdelete').bufdelete(0, true)")
-g.alias("bd", "lua require('close_buffers').delete({type = 'this'})")
---g.alias("bd", "lua MiniBufremove.delete()")
+-- g.alias("bd", "lua require('bufdelete').bufdelete(0, true)")
+-- g.alias("bd", "lua require('close_buffers').delete({type = 'this'})")
+-- g.alias("bd", "lua MiniBufremove.delete()")
 
 -----------------------------------------------------------------------------//
 -- COMMANDS
 -----------------------------------------------------------------------------//
-vim.cmd [[command! LabIssues :call v:lua.g.LabIssues()]]
-vim.cmd [[command! HubberReports :call v:lua.g.HubberReports()]]
-vim.cmd [[command! VulnReports :call v:lua.g.VulnReports()]]
-vim.cmd [[command! BountySubmissions :call v:lua.g.BountySubmissions()]]
-vim.cmd [[command! Bitacora :call v:lua.g.Bitacora()]]
-vim.cmd [[command! TODO :call v:lua.g.TODO()]]
+vim.cmd [[command! LabIssues :call v:lua.require'pwntester.globals'.LabIssues()]]
+vim.cmd [[command! HubberReports :call v:lua.require'pwntester.globals'.HubberReports()]]
+vim.cmd [[command! VulnReports :call v:lua.require'pwntester.globals'.VulnReports()]]
+vim.cmd [[command! BountySubmissions :call v:lua.require'pwntester.globals'.BountySubmissions()]]
+vim.cmd [[command! Bitacora :call v:lua.require'pwntester.globals'.Bitacora()]]
+vim.cmd [[command! TODO :call v:lua.require'pwntester.globals'.TODO()]]
 vim.cmd [[command! BufOnly execute '%bdelete|edit #|normal `"']]
+vim.cmd [[command! W execute 'write']]
 -----------------------------------------------------------------------------//
 -- COLORS
 -----------------------------------------------------------------------------//
-vim.cmd [[ colorscheme nautilus-octonauts]]
---vim.cmd [[colorscheme kanagawa]]
+
+--vim.cmd.colorscheme "nautilus-halcyon"
+vim.cmd.colorscheme "catppuccin"
 
 -----------------------------------------------------------------------------//
 -- Message output on vim actions {{{1
@@ -67,10 +72,11 @@ vim.opt.shortmess = {
 -----------------------------------------------------------------------------//
 -- Timings {{{1
 -----------------------------------------------------------------------------//
-vim.opt.updatetime = 750
+vim.opt.updatetime = 200 --750
 vim.opt.timeout = true
 vim.opt.timeoutlen = 400
 vim.opt.ttimeoutlen = 10
+vim.loader.enable()
 -----------------------------------------------------------------------------//
 --Shada {{{1
 -----------------------------------------------------------------------------//
@@ -79,9 +85,13 @@ vim.opt.shada = {
   "/1000", -- search history items
   ":1000", -- command-line history items
   "<1000", -- lines for each saved registry
-  "s100",  -- max size of item in KiB
-  "h",     -- no hlsearch when loading shada
+  "s100", -- max size of item in KiB
+  "h", -- no hlsearch when loading shada
 }
+-----------------------------------------------------------------------------//
+--Shell {{{1
+-----------------------------------------------------------------------------//
+vim.opt.shell = "/bin/sh"
 -----------------------------------------------------------------------------//
 --Window splitting and buffers {{{1
 -----------------------------------------------------------------------------//
@@ -109,29 +119,29 @@ vim.opt.fillchars = {
 -----------------------------------------------------------------------------//
 -- Use in vertical diff mode, blank lines to keep sides aligned, Ignore whitespace changes
 vim.opt.diffopt = vim.opt.diffopt
-    + {
-      "vertical",
-      "iwhite",
-      "hiddenoff",
-      "foldcolumn:0",
-      "context:1000000",
-      "algorithm:histogram", -- "algorithm:patience"
-      "indent-heuristic",
-    }
+  + {
+    "vertical",
+    "iwhite",
+    "hiddenoff",
+    "foldcolumn:0",
+    "context:1000000",
+    "algorithm:histogram", -- "algorithm:patience"
+    "indent-heuristic",
+  }
 -----------------------------------------------------------------------------//
 -- Format Options {{{1
 -----------------------------------------------------------------------------//
 vim.opt.formatoptions = {
   ["1"] = false,
   ["2"] = false, -- Use indent from 2nd line of a paragraph
-  a = false,     -- Auto formatting is BAD.
-  q = true,      -- continue comments with gq"
-  c = false,     -- Auto-wrap comments using textwidth
-  r = false,     -- Continue comments when pressing Enter
-  o = false,     -- Automatically insert the current comment leader after hitting 'o' or 'O'
-  n = true,      -- Recognize numbered lists
-  t = false,     -- autowrap lines using text width value
-  j = true,      -- remove a comment leader when joining lines.
+  a = false, -- Auto formatting is BAD.
+  q = true, -- continue comments with gq"
+  c = false, -- Auto-wrap comments using textwidth
+  r = false, -- Continue comments when pressing Enter
+  o = false, -- Automatically insert the current comment leader after hitting 'o' or 'O'
+  n = true, -- Recognize numbered lists
+  t = false, -- autowrap lines using text width value
+  j = true, -- remove a comment leader when joining lines.
   -- Only break if the line was not longer than 'textwidth' when the insert
   -- started and only at a white character that has been entered during the
   -- current insert command.
@@ -207,7 +217,7 @@ vim.opt.wildignore = {
 -----------------------------------------------------------------------------//
 -- Display {{{1
 -----------------------------------------------------------------------------//
-vim.opt.cursorline = false
+vim.opt.cursorline = true
 vim.go.laststatus = 3
 vim.opt.showtabline = 0 -- 2
 vim.opt.conceallevel = 2
@@ -220,13 +230,15 @@ vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.numberwidth = 1
 -- Sign column
-vim.opt.signcolumn = 'no'
+vim.opt.signcolumn = "yes:1"
 -- Status column
-vim.opt.statuscolumn = get_statuscol()
+vim.opt.statuscolumn = [[%!v:lua.require'pwntester.statuscolumn'.statuscolumn()]]
+
 -- Fold column
-vim.opt.foldcolumn = '1' -- disable until we can disable numbers (https://github.com/neovim/neovim/pull/17446)
+vim.opt.foldtext = ""
+vim.opt.foldcolumn = "1" -- disable until we can disable numbers (https://github.com/neovim/neovim/pull/17446)
 vim.opt.foldenable = true
-vim.opt.foldlevel = 99   -- Using ufo provider need a large value, feel free to decrease the value
+vim.opt.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
 vim.opt.foldlevelstart = 99
 -----------------------------------------------------------------------------//
 -- List chars {{{1
@@ -286,7 +298,7 @@ vim.opt.sessionoptions = {
   -- "tabpages",
 }
 vim.opt.viewoptions = { "cursor", "folds" } -- save/restore just these (with `:{mk,load}view`)
-vim.opt.virtualedit = "block"               -- allow cursor to move where there is no text in visual block mode
+vim.opt.virtualedit = "block" -- allow cursor to move where there is no text in visual block mode
 -------------------------------------------------------------------------------
 -- BACKUP AND SWAPS {{{
 -------------------------------------------------------------------------------

@@ -1,0 +1,7 @@
+layout {
+    pane split_direction="horizontal" {
+        pane size="85%" command="nvim" close_on_exit=true
+        pane size="15%" name="terminal"
+    }
+}
+
