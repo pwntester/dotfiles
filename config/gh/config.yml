@@ -1,17 +1,2 @@
-git_protocol: https
-editor:
-prompt: enabled
-pager:
-extensions.codeql.version: v2.16.0
-aliases:
-    co: pr checkout
-    url: "!gh $([[ $@ == *\"pull\"* ]] && echo pr || echo issue) view $@ --json url -q '.url'"
-    vimpr: "!nvim +\"Octo `gh pr view --json url -q '.url'`\""
-    vim: "!nvim +\"Octo `gh url $@`\""
-    needmyreview: search prs --review-requested=@me --state=open
-    waitingforreview: search prs --author @me --state open --review none
-    cd: ghq-cd
-    clone: q
-    startcs: '!gh cs code -c $(gh cs list --json "name" | jq -r ".[].name" | grep -i "$1" -m 1)'
-    stopcs: '!gh cs stop -c $(gh cs list --json "name" | jq -r ".[].name" | grep -i "$1" -m 1)'
-    dockerlogs: '!gh cs ssh "docker ps -q | xargs -I@ -P4 docker logs -f @"'
+extensions.codeql.version: v2.18.0
+version: "1"

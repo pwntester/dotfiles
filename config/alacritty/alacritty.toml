@@ -1,0 +1,76 @@
+# https://convoluted.bearblog.dev/alacritty-config-example-guide/
+
+[colors.normal]
+black = "#272b30"
+blue = "#81a2be"
+cyan = "#7fb2c8"
+green = "#bdb968"
+magenta = "#b08cba"
+red = "#cc6666"
+white = "#afb4c3"
+yellow = "#f8d78c"
+
+[colors.primary]
+background = "#1d2433"
+foreground = "#c8ccd4"
+
+[env]
+TERM = "alacritty"
+
+[font]
+size = 15.0
+
+[font.bold]
+family = "MonispaceNe NF"
+style = "Bold"
+
+[font.bold_italic]
+family = "MonispaceNe NF"
+style = "Bold Italic"
+
+[font.italic]
+family = "MonispaceNe NF"
+style = "Italic"
+
+[font.normal]
+family = "MonispaceNe NF"
+style = "Regular"
+
+[selection]
+save_to_clipboard = true
+
+[window]
+decorations = "buttonless"
+opacity = 1.0
+startup_mode = "Windowed"
+option_as_alt = "Both"
+
+[window.padding]
+x = 20
+y = 20
+
+[keyboard]
+bindings = [
+  # { chars = "\x1bT", key = "T", mods = "Command" },
+  # { chars = "\x1bN", key = "N", mods = "Command" }
+  # Create a new Zellij Tab
+  # https://www.joshmedeski.com/posts/macos-keyboard-shortcuts-for-tmux/
+  # https://github.com/joshmedeski/dotfiles/blob/main/.config/alacritty/alacritty.toml
+  # { mods = "Command", key = "T", chars = "\u0002c" } # ctrl-b + c
+  { mods = "Command", key = "T", chars = "\u0002t" },
+  { mods = "Command", key = "P", chars = "\u0002p" },
+  { mods = "Command", key = "N", chars = "\u0002n" },
+  { mods = "Command", key = "H", chars = "\u0002h" },
+  { mods = "Command", key = "S", chars = "\u0002s" },
+  { mods = "Command", key = "O", chars = "\u0002o" },
+  { mods = "Command", key = "Q", chars = "\u0002q" },
+  { mods = "Command", key = "1", chars = "\u00021" },
+  { mods = "Command", key = "2", chars = "\u00022" },
+  { mods = "Command", key = "3", chars = "\u00023" },
+  { mods = "Command", key = "4", chars = "\u00024" },
+  { mods = "Command", key = "5", chars = "\u00025" },
+  { mods = "Command", key = "6", chars = "\u00026" },
+  { mods = "Command", key = "7", chars = "\u00027" },
+  { mods = "Command", key = "8", chars = "\u00028" },
+  { mods = "Command", key = "9", chars = "\u00029" }
+]

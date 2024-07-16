@@ -1,220 +1,159 @@
-local icons = require("pwntester.icons")
-local ffi = require("pwntester.ffi")
+-- Based on LazyVim: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/util/ui.lua
+local vim = vim
 
-local gitsigns_bar = '▎' -- '▌'
+local M = {}
 
-local gitsigns_hl_pool = {
-  GitSignsAdd          = "DiagnosticOk",
-  GitSignsChange       = "DiagnosticWarn",
-  GitSignsChangedelete = "DiagnosticWarn",
-  GitSignsDelete       = "DiagnosticError",
-  GitSignsTopdelete    = "DiagnosticError",
-  GitSignsUntracked    = "NonText",
-}
+---@type (fun(buf:number, lnum:number, vnum:number, win:number):Sign[]?)[]
+M.virtual = {}
 
-local diag_signs_icons = {
-  DiagnosticSignError = icons.diagnostics.Error,
-  DiagnosticSignWarn = icons.diagnostics.Warning,
-  DiagnosticSignInfo = icons.diagnostics.Information,
-  DiagnosticSignHint = icons.diagnostics.Hint,
-  DiagnosticSignOk = icons.misc.Ok
-}
+---@alias Sign {name:string, text:string, texthl:string, priority:number}
 
-local fillchars = vim.opt.fillchars:get()
-local foldopen = fillchars.foldopen or ""
-local foldclosed = fillchars.foldclose or ""
-local foldsep = fillchars.foldsep or " "
-local function get_fold_level_color(level)
-  local hls = { "FoldColumn", "FoldColumn1", "FoldColumn2", "FoldColumn3", "FoldColumn4" }
-  if level < #hls + 1 then
-    return hls[level]
-  else
-    return "FoldColumn"
-  end
-end
+-- Returns a list of regular and extmark signs sorted by priority (low to high)
+---@return Sign[]
+---@param buf number
+---@param lnum number
+function M.get_signs(buf, lnum)
+  -- Get regular signs
+  ---@type Sign[]
+  local signs = {}
 
-local function get_sign_name(cur_sign)
-  if (cur_sign == nil) then
-    return nil
-  end
-
-  cur_sign = cur_sign[1]
-
-  if (cur_sign == nil) then
-    return nil
-  end
-
-  cur_sign = cur_sign.signs
-
-  if (cur_sign == nil) then
-    return nil
-  end
-
-  cur_sign = cur_sign[1]
-
-  if (cur_sign == nil) then
-    return nil
-  end
-
-  return cur_sign["name"]
-end
-
-local function mk_hl(group, sym)
-  return table.concat({ "%#", group, "#", sym, "%*" })
-end
-
-local function get_name_from_group(bufnum, lnum, group)
-  local cur_sign_tbl = vim.fn.sign_getplaced(bufnum, {
-    group = group,
-    lnum = lnum
-  })
-
-  return get_sign_name(cur_sign_tbl)
-end
-
-_G.get_statuscol_fold = function()
-  local filetype = vim.bo.filetype
-  if vim.tbl_contains(g.special_buffers, filetype) then
-    return ""
-  end
-  local wp = ffi.C.find_window_by_handle(0, ffi.new('Error'))
-  local foldinfo = ffi.C.fold_info(wp, vim.v.lnum)
-  local level = foldinfo.level
-
-  if level == 0 then
-    return " %#LineNr#"
-  end
-
-  local closed = foldinfo.lines > 0
-  local first_level = level - (closed and 1 or 0)
-  if first_level < 1 then first_level = 1 end
-
-  if closed and 1 == level then
-    return mk_hl(get_fold_level_color(level), foldclosed) --.. "%#LineNr#"
-  elseif foldinfo.start == vim.v.lnum and first_level + 1 > foldinfo.llevel then
-    return mk_hl(get_fold_level_color(level), foldopen) --.. "%#LineNr#"
-  else
-    return mk_hl(get_fold_level_color(level), foldsep) --.. "%#LineNr#"
-  end
-
-end
-
-_G.get_statuscol_gitsign = function(bufnr, lnum)
-  local filetype = vim.bo.filetype
-  if vim.tbl_contains(g.special_buffers, filetype) then
-    return ""
-  end
-  local cur_sign_nm = get_name_from_group(bufnr, lnum, "gitsigns_vimfn_signs_")
-
-  if cur_sign_nm ~= nil then
-    return mk_hl(gitsigns_hl_pool[cur_sign_nm], gitsigns_bar)
-  else
-    return " "
-  end
-end
-
-_G.get_statuscol_num = function(lnum, relnum)
-  local filetype = vim.bo.filetype
-  if vim.tbl_contains(g.special_buffers, filetype) then
-    return ""
-  end
-  local width = #tostring(vim.fn.line('$'))
-  if relnum == 0 then
-    local current_line_width = #tostring(lnum)
-    return mk_hl("Identifier", string.rep(" ", width - current_line_width) .. lnum)
-  else
-    local current_line_width = #tostring(relnum)
-    return " " .. string.rep(" ", width - current_line_width) .. relnum
-  end
-  --return "%=%l"
-  --return "%=%{v:relnum?v:relnum:v:lnum}"
-end
-
-_G.get_statuscol_diag = function(bufnum, lnum)
-  local filetype = vim.bo.filetype
-  if vim.tbl_contains(g.special_buffers, filetype) then
-    return ""
-  end
-  local cur_sign_nm = get_name_from_group(bufnum, lnum, "*")
-
-  if cur_sign_nm ~= nil and vim.startswith(cur_sign_nm, "DiagnosticSign") then
-    return mk_hl(cur_sign_nm, diag_signs_icons[cur_sign_nm])
-  else
-    return " "
-  end
-end
-
-_G.get_statuscol_octo = function(bufnum, lnum)
-  local filetype = vim.bo.filetype
-  if filetype == "octo" then
-    if type(octo_buffers) == "table" then
-      local buffer = octo_buffers[bufnum]
-      if buffer then
-        buffer:update_metadata()
-        local hl = "OctoSignColumn"
-        local metadatas = { buffer.titleMetadata, buffer.bodyMetadata }
-        for _, comment_metadata in ipairs(buffer.commentsMetadata) do
-          table.insert(metadatas, comment_metadata)
-        end
-        for _, metadata in ipairs(metadatas) do
-          if metadata and metadata.startLine and metadata.endLine then
-            if metadata.dirty then
-              hl = "OctoDirty"
-            else
-              hl = "OctoSignColumn"
-            end
-            if lnum - 1 == metadata.startLine and lnum - 1 == metadata.endLine then
-              return mk_hl(hl, "[ ")
-            elseif lnum - 1 == metadata.startLine then
-              return mk_hl(hl, "┌ ")
-            elseif lnum - 1 == metadata.endLine then
-              return mk_hl(hl, "└ ")
-            elseif metadata.startLine < lnum - 1 and lnum - 1 < metadata.endLine then
-              return mk_hl(hl, "│ ")
-            end
-          end
-        end
+  if vim.fn.has "nvim-0.10" == 0 then
+    -- Only needed for Neovim <0.10
+    -- Newer versions include legacy signs in nvim_buf_get_extmarks
+    for _, sign in ipairs(vim.fn.sign_getplaced(buf, { group = "*", lnum = lnum })[1].signs) do
+      local ret = vim.fn.sign_getdefined(sign.name)[1] --[[@as Sign]]
+      if ret then
+        ret.priority = sign.priority
+        signs[#signs + 1] = ret
       end
     end
-    return " "
-  end
-  return ""
-end
-
-_G.get_statuscol_space = function()
-  local filetype = vim.bo.filetype
-  if vim.tbl_contains(g.special_buffers, filetype) then
-    return ""
-  else
-    return " "
-  end
-end
-
-_G.get_statuscol = function()
-  local str_table = {}
-
-  local parts = {
-    ["gitsigns"] = "%{%v:lua.get_statuscol_gitsign(bufnr(), v:lnum)%}",
-    ["diagnostics"] = "%{%v:lua.get_statuscol_diag(bufnr(), v:lnum)%}",
-    ["num"] = "%{%v:lua.get_statuscol_num(v:lnum, v:relnum)%}",
-    ["space"] = "%{%v:lua.get_statuscol_space(bufnr())%}",
-    ["fold"] = "%{%v:lua.get_statuscol_fold()%}",
-    ["octo"] = "%{%v:lua.get_statuscol_octo(bufnr(), v:lnum)%}",
-  }
-
-  local order = {
-    "gitsigns",
-    "diagnostics",
-    "num",
-    "space",
-    "fold",
-    "octo",
-    --"space",
-  }
-
-  for _, val in ipairs(order) do
-    table.insert(str_table, parts[val])
   end
 
-  return table.concat(str_table)
+  -- Get extmark signs
+  local extmarks = vim.api.nvim_buf_get_extmarks(
+    buf,
+    -1,
+    { lnum - 1, 0 },
+    { lnum - 1, -1 },
+    { details = true, type = "sign" }
+  )
+  for _, extmark in pairs(extmarks) do
+    signs[#signs + 1] = {
+      name = extmark[4].sign_hl_group or extmark[4].sign_name or "",
+      text = extmark[4].sign_text,
+      texthl = extmark[4].sign_hl_group,
+      priority = extmark[4].priority,
+    }
+  end
+
+  -- Sort by priority
+  table.sort(signs, function(a, b)
+    return (a.priority or 0) < (b.priority or 0)
+  end)
+
+  return signs
 end
+
+function M.statuscolumn()
+  local win = vim.g.statusline_winid
+  local buf = vim.api.nvim_win_get_buf(win)
+  local is_file = vim.bo[buf].buftype == ""
+  local show_signs = vim.wo[win].signcolumn ~= "no"
+
+  local components = { "", "", "" } -- left, middle, right
+
+  local show_open_folds = vim.g.lazyvim_statuscolumn and vim.g.lazyvim_statuscolumn.folds_open
+  local use_githl = vim.g.lazyvim_statuscolumn and vim.g.lazyvim_statuscolumn.folds_githl
+
+  if show_signs then
+    local signs = M.get_signs(buf, vim.v.lnum)
+
+    local has_virtual = false
+    for _, fn in ipairs(M.virtual) do
+      local virtual = fn(buf, vim.v.lnum, vim.v.virtnum, win)
+      if virtual then
+        has_virtual = true
+        vim.list_extend(signs, virtual)
+      end
+    end
+
+    ---@type Sign?,Sign?,Sign?
+    local left, right, fold, githl
+    for _, s in ipairs(signs) do
+      if s.name and s.name:lower():find "^octo_clean" then
+        s.texthl = "IblScope"
+      end
+      if s.name and (s.name:find "GitSign" or s.name:find "MiniDiffSign") then
+        right = s
+        if use_githl then
+          githl = s["texthl"]
+        end
+      else
+        left = s
+      end
+    end
+    if vim.v.virtnum ~= 0 and not has_virtual then
+      left = nil
+    end
+
+    vim.api.nvim_win_call(win, function()
+      if vim.fn.foldclosed(vim.v.lnum) >= 0 then
+        fold = { text = vim.opt.fillchars:get().foldclose or "", texthl = githl or "Folded" }
+      elseif
+        show_open_folds
+        -- and not LazyVim.ui.skip_foldexpr[buf]
+        and vim.treesitter.foldexpr(vim.v.lnum):sub(1, 1) == ">"
+      then -- fold start
+        fold = { text = vim.opt.fillchars:get().foldopen or "", texthl = githl }
+      end
+    end)
+    -- Left: mark or non-git sign
+    components[1] = M.icon(M.get_mark(buf, vim.v.lnum) or left)
+    -- Right: fold icon or git sign (only if file)
+    components[3] = is_file and M.icon(fold or right) or ""
+  end
+
+  -- Numbers in Neovim are weird
+  -- They show when either number or relativenumber is true
+  local is_num = vim.wo[win].number
+  local is_relnum = vim.wo[win].relativenumber
+  if (is_num or is_relnum) and vim.v.virtnum == 0 then
+    if vim.v.relnum == 0 then
+      components[2] = is_num and "%l" or "%r" -- the current line
+    else
+      components[2] = is_relnum and "%r" or "%l" -- other lines
+    end
+    components[2] = "%=" .. components[2] .. " " -- right align
+  end
+
+  if vim.v.virtnum ~= 0 then
+    components[2] = "%= "
+  end
+
+  return table.concat(components, "")
+end
+
+---@return Sign?
+---@param buf number
+---@param lnum number
+function M.get_mark(buf, lnum)
+  local marks = vim.fn.getmarklist(buf)
+  vim.list_extend(marks, vim.fn.getmarklist())
+  for _, mark in ipairs(marks) do
+    if mark.pos[1] == buf and mark.pos[2] == lnum and mark.mark:match "[a-zA-Z]" then
+      return { text = mark.mark:sub(2), texthl = "DiagnosticHint" }
+    end
+  end
+end
+
+---@param sign? Sign
+---@param len? number
+function M.icon(sign, len)
+  sign = sign or {}
+  len = len or 2
+  local text = vim.fn.strcharpart(sign.text or "", 0, len) ---@type string
+  text = text .. string.rep(" ", len - vim.fn.strchars(text))
+  return sign.texthl and ("%#" .. sign.texthl .. "#" .. text .. "%*") or text
+end
+
+return M

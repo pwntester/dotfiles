@@ -1,2 +1,0 @@
--- Mappings
---g.map(require("pwntester.mappings").markdown, { silent = true }, vim.api.nvim_get_current_buf())

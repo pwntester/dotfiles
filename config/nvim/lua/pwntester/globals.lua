@@ -1,45 +1,72 @@
+local vim = vim
+
 -----------------------------------------------------------------------------//
 -- Global namespace
 -----------------------------------------------------------------------------//
---- Inspired by @tjdevries' astraunauta.nvim/ @TimUntersberger's config
---- store all callbacks in one global table so they are able to survive re-requiring this file
-_G.__as_global_callbacks = __as_global_callbacks or {}
 
-_G.g = {
-  _store = __as_global_callbacks,
-  special_buffers = {
-    "help",
-    "fortifytestpane",
-    "fortifyauditpane",
-    "qf",
-    "goterm",
-    "codeql_panel",
-    "codeql_explorer",
-    "codeql_mrva",
-    "packer",
-    "octo",
-    "octo_panel",
-    "aerieal",
-    "Trouble",
-    "dashboard",
-    "frecency",
-    "TelescopePrompt",
-    "TelescopeResults",
-    "NeogitStatus",
-    "notify",
-    "NvimTree",
-    "Yanil",
-    "neo-tree",
-    "toggleterm",
-    "noice",
-    "lazy"
-  },
+local M = {}
+
+M.special_buffers = {
+  "help",
+  "fortifytestpane",
+  "fortifyauditpane",
+  "qf",
+  "goterm",
+  "codeql_panel",
+  "codeql_explorer",
+  "codeql_mrva",
+  "packer",
+  "octo",
+  "octo_panel",
+  "aerieal",
+  "Trouble",
+  --"frecency",
+  --"TelescopePrompt",
+  --"TelescopeResults",
+  "NeogitStatus",
+  "notify",
+  "NvimTree",
+  "Yanil",
+  "neo-tree",
+  "toggleterm",
+  "noice",
+  "fidget",
+  "lazy",
+  --"dashboard",
+  --"dashboardpreview",
+  --"alpha",
+  "neotest-output",
+  "neotest-summary",
+  "neotest-output-panel",
 }
 
 -----------------------------------------------------------------------------//
 -- Global functions
 -----------------------------------------------------------------------------//
-function g.setTimeout(delay, callback, ...)
+function M.is_loaded(name)
+  local Config = require "lazy.core.config"
+  return Config.plugins[name] and Config.plugins[name]._.loaded
+end
+
+---@param name string
+---@param fn fun(name:string)
+function M.on_load(name, fn)
+  if M.is_loaded(name) then
+    fn(name)
+  else
+    vim.api.nvim_create_autocmd("User", {
+      pattern = "LazyLoad",
+      callback = function(event)
+        if event.data == name then
+          fn(name)
+          return true
+        end
+      end,
+    })
+  end
+end
+
+function M.setTimeout(delay, callback, ...)
   local timer = vim.loop.new_timer()
   local args = { ... }
   vim.loop.timer_start(timer, delay, 0, function()
@@ -50,7 +77,7 @@ function g.setTimeout(delay, callback, ...)
   return timer
 end
 
-function g.map(mappings, defaults, bufnr)
+function M.map(mappings, defaults, bufnr)
   for k, v in pairs(mappings) do
     local opts = vim.fn.deepcopy(defaults)
     local mode = k:sub(1, 1)
@@ -79,7 +106,7 @@ function g.map(mappings, defaults, bufnr)
 end
 
 -- ALIASES
-function g.alias(from, to, buffer)
+function M.alias(from, to, buffer)
   local cmd = string.format(
     'cnoreabbrev <expr> %s ((getcmdtype() is# ":" && getcmdline() is# "%s")? ("%s") : ("%s"))',
     from,
@@ -100,7 +127,7 @@ function g.alias(from, to, buffer)
 end
 
 -- FUNCTIONS
-function g.openURL()
+function M.openURL()
   local uri = vim.fn.matchstr(vim.fn.getline ".", "[a-z]*:\\/\\/[^ >,;()]*")
   uri = vim.fn.shellescape(uri, 1)
   print(uri)
@@ -113,19 +140,19 @@ function g.openURL()
 end
 
 -- OCTO FUNCTIONS
-function g.TODO()
+function M.TODO()
   require("octo.utils").get_issue("pwntester/bitacora", 41)
 end
 
-function g.Bitacora()
+function M.Bitacora()
   require("octo.pickers.telescope.provider").issues { repo = "pwntester/bitacora", states = "OPEN" }
 end
 
-function g.LabIssues()
+function M.LabIssues()
   require("octo.pickers.telescope.provider").issues { repo = "github/pe-security-lab" }
 end
 
-function g.HubberReports()
+function M.HubberReports()
   require("octo.pickers.telescope.provider").issues {
     repo = "github/pe-security-lab",
     labels = "Vulnerability report",
@@ -133,25 +160,12 @@ function g.HubberReports()
   }
 end
 
-function g.VulnReports()
+function M.VulnReports()
   require("octo.pickers.telescope.provider").issues { repo = "github/securitylab_vulnerabilities" }
 end
 
-function g.BountySubmissions()
+function M.BountySubmissions()
   require("octo.pickers.telescope.provider").issues { repo = "github/securitylab-bounties", states = "OPEN" }
 end
 
----Reload lua modules
-function g.R(path, recursive)
-  if recursive then
-    for key, value in pairs(package.loaded) do
-      if key ~= '_G' and value and vim.fn.match(key, path) ~= -1 then
-        package.loaded[key] = nil
-        require(key)
-      end
-    end
-  else
-    package.loaded[path] = nil
-    require(path)
-  end
-end
+return M

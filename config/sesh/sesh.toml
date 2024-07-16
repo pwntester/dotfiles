@@ -1,0 +1,24 @@
+[[session]]
+name = "tmux config"
+path = "~/.config/tmux"
+startup_command = "nvim tmux.conf"
+
+[[session]]
+name = "sesh config"
+path = "~/.config/sesh"
+startup_command = "nvim sesh.toml"
+
+[[session]]
+name = "wezterm config"
+path = "~/.config/wezterm"
+startup_command = "nvim wezterm.lua"
+
+[[session]]
+name = "nvim config"
+path = "~/.config/nvim"
+startup_command = "nvim init.lua"
+
+[[session]]
+name = "nvim plugins"
+path = "~/.config/nvim/lua/pwntester/plugins"
+startup_command = "nvim +Neotree"
