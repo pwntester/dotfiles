@@ -1,0 +1,133 @@
+gui:
+  # Use the mocha catppuccin theme
+  theme:
+    activeBorderColor:
+      - '#8aadf4'
+      - bold
+    inactiveBorderColor:
+      - '#a5adcb'
+    optionsTextColor:
+      - '#8aadf4'
+    selectedLineBgColor:
+      - '#363a4f'
+    cherryPickedCommitBgColor:
+      - '#494d64'
+    cherryPickedCommitFgColor:
+      - '#8aadf4'
+    unstagedChangesColor:
+      - '#ed8796'
+    defaultFgColor:
+      - '#cad3f5'
+    searchingActiveBorderColor:
+      - '#eed49f'
+
+  authorColors:
+    '*': '#b7bdf8'
+customCommands:
+  - key: <c-g>
+    description: 'Pick AI commit'
+    context: 'files'
+    subprocess: true
+    # https://github.com/jesseduffield/lazygit/issues/2579
+    command: |
+      aichat "Please suggest 10 commit messages, given the following diff:
+
+        \`\`\`diff
+        $(git diff --cached)
+        \`\`\`
+
+        **Criteria:**
+
+        1. **Format:** Each commit message must follow the conventional commits format, which is \`<type>(<scope>): <description>\`.
+        2. **Relevance:** Avoid mentioning a module name unless it's directly relevant to the change.
+        3. **Enumeration:** List the commit messages from 1 to 10. 
+        4. **Clarity and Conciseness:** Each message should clearly and concisely convey the change made.
+
+        **Conventional Commits specification**
+        The commit message should be structured as follows:
+
+        \`\`\`
+        <type>[optional scope]: <description>
+
+        [optional body]
+
+        [optional footer(s)]
+        \`\`\`
+
+        The commit contains the following structural elements, to communicate intent to the consumers of your library:
+          - fix: a commit of the type fix patches a bug in your codebase (this correlates with PATCH in Semantic Versioning).
+          - feat: a commit of the type feat introduces a new feature to the codebase (this correlates with MINOR in Semantic Versioning).
+          - BREAKING CHANGE: a commit that has a footer BREAKING CHANGE:, or appends a ! after the type/scope, introduces a breaking API change (correlating with MAJOR in Semantic Versioning). A BREAKING CHANGE can be part of commits of any type.
+          - types other than fix: and feat: are allowed, for example:
+            - build:
+            - chore:
+            - ci:
+            - docs:
+            - style:
+            - refactor:
+            - perf:
+            - test:
+
+        **Commit Message Examples:**
+
+        - Commit message with description and breaking change footer
+        \`\`\`
+        feat: allow provided config object to extend other configs
+
+        BREAKING CHANGE: `extends` key in config file is now used for extending other config files
+        \`\`\`
+        - Commit message with ! to draw attention to breaking change
+        \`\`\`
+        feat!: send an email to the customer when a product is shipped
+        \`\`\`
+        - Commit message with scope and ! to draw attention to breaking change
+        \`\`\`
+        feat(api)!: send an email to the customer when a product is shipped
+        \`\`\`
+        - Commit message with both ! and BREAKING CHANGE footer
+        \`\`\`
+        chore!: drop support for Node 6
+
+        BREAKING CHANGE: use JavaScript features not available in Node 6.
+        \`\`\`
+        - Commit message with no body
+        \`\`\`
+        docs: correct spelling of CHANGELOG
+        \`\`\`
+        - Commit message with scope
+        \`\`\`
+        feat(lang): add Polish language
+        \`\`\`
+
+        **Recent Commits on Repo for Reference:**
+
+        \`\`\`
+        $(git log -n 10 --pretty=format:'%h %s')
+        \`\`\`
+
+        **Output Template**
+
+        Follow this output template and ONLY output raw commit messages without spacing, numbers or other decorations.
+
+        fix(app): add password regex pattern
+        test(unit): add new test cases
+        style: remove unused imports
+        refactor(pages): extract common code to \`utils/wait.ts\`
+
+        **Instructions:**
+
+        - Take a moment to understand the changes made in the diff.
+        - Think about the impact of these changes on the project (e.g., bug fixes, new features, performance improvements, code refactoring, documentation updates). It's critical to my career you abstract the changes to a higher level and not just describe the code changes.
+        - Generate commit messages that accurately describe these changes, ensuring they are helpful to someone reading the project's history.
+        - Remember, a well-crafted commit message can significantly aid in the maintenance and understanding of the project over time.
+        - If multiple changes are present, make sure you capture them all in each commit message.
+
+        Keep in mind you will suggest 10 commit messages. Only 1 will be used. It's better to push yourself (esp to synthesize to a higher level) and maybe wrong about some of the 10 commits because only one needs to be good. I'm looking for your best commit, not the best average commit. It's better to cover more scenarios than include a lot of overlap.
+
+        Write your 10 commit messages below in the format shown in Output Template section above." \
+          | fzf --height 40% --border --ansi --preview "echo {}" --preview-window=up:wrap \
+          | xargs -J {} sh -c 'ARG="$0 $@";COMMIT_MSG_FILE=$(mktemp);echo "$ARG" > "$COMMIT_MSG_FILE";${EDITOR:-nvim} "$COMMIT_MSG_FILE"
+              if [ -s "$COMMIT_MSG_FILE" ]; then
+                  git commit -F "$COMMIT_MSG_FILE"
+              fi
+              rm -f "$COMMIT_MSG_FILE"'

@@ -1,0 +1,5 @@
+# model: claude
+model: openai:gpt-4o
+clients:
+  - type: openai
+  - type: claude

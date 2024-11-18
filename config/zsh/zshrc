@@ -1,76 +1,32 @@
-if [[ -f "/opt/homebrew/bin/brew" ]] then
-  # If you're using macOS, you'll want this enabled
-  eval "$(/opt/homebrew/bin/brew shellenv)"
-fi
+# GLOBAL
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
 
-# Set the directory we want to store zinit and plugins
-ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
-
-# Download Zinit, if it's not there yet
-if [ ! -d "$ZINIT_HOME" ]; then
-   mkdir -p "$(dirname $ZINIT_HOME)"
-   git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
-fi
-
-# Source/Load zinit
-source "${ZINIT_HOME}/zinit.zsh"
-
-# Promp 
-# eval "$(starship init zsh)"
-eval "$(oh-my-posh init zsh --config $HOME/.config/ohmyposh/config.toml)"
-
-# Add in zsh plugins
-zinit light zsh-users/zsh-syntax-highlighting
-zinit light zsh-users/zsh-completions
-zinit light zsh-users/zsh-autosuggestions
-zinit light Aloxaf/fzf-tab
-
-# Configure zsh-syntax-highlighting
-# source ~/.config/zsh/catppuccin_frappe-zsh-syntax-highlighting.zsh
-
-# Configure zsh-autosuggestions
-_zsh_autosuggest_strategy_atuin_auto() {
-    suggestion=$(atuin search --cwd . --cmd-only --limit 1 --search-mode prefix -- "$1")
+install_xterm_kitty_terminfo() {
+  # Attempt to get terminfo for xterm-kitty
+  if ! infocmp xterm-kitty &>/dev/null; then
+    echo "xterm-kitty terminfo not found. Installing..."
+    # Create a temp file
+    tempfile=$(mktemp)
+    # Download the kitty.terminfo file
+    # https://github.com/kovidgoyal/kitty/blob/master/terminfo/kitty.terminfo
+    if curl -o "$tempfile" https://raw.githubusercontent.com/kovidgoyal/kitty/master/terminfo/kitty.terminfo; then
+      echo "Downloaded kitty.terminfo successfully."
+      # Compile and install the terminfo entry for my current user
+      if tic -x -o ~/.terminfo "$tempfile"; then
+        echo "xterm-kitty terminfo installed successfully."
+      else
+        echo "Failed to compile and install xterm-kitty terminfo."
+      fi
+    else
+      echo "Failed to download kitty.terminfo."
+    fi
+    # Remove the temporary file
+    rm "$tempfile"
+  fi
 }
 
-_zsh_autosuggest_strategy_atuin_global() {
-    suggestion=$(atuin search --cmd-only --limit 1 --search-mode prefix -- "$1")
-}
-
-export ZSH_AUTOSUGGEST_STRATEGY=(atuin_auto atuin_global)
-export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#666666"
-export ZSH_AUTOSUGGEST_ACCEPT_WIDGETS=("${(@)ZSH_AUTOSUGGEST_ACCEPT_WIDGETS:#forward-char}")
-
-
-# Add in snippets
-zinit snippet OMZP::git
-zinit snippet OMZP::sudo
-zinit snippet OMZP::command-not-found
-
-# Completion styling
-zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'  # partial completion
-zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
-zstyle ':completion:*' special-dirs true
-zstyle ':completion:*:cd:*' tag-order local-directories directory-stack path-directories
-zstyle ':completion:*:*:*:*:*' menu select # menu no
-zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#) ([0-9a-z-]#)*=01;34=0=01'
-zstyle ':completion:*:*:*:*:processes' command "ps -u `whoami` -o pid,user,comm -w -w"
-zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
-zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
-
-# Load completions
-autoload bashcompinit && bashcompinit
-autoload -Uz compinit && compinit
-
-# Keybindings
-bindkey -v
-bindkey 'jk' vi-cmd-mode
-bindkey -M viins 'jk' vi-cmd-mode
-bindkey -M vicmd 'k' history-substring-search-up
-bindkey -M vicmd 'j' history-substring-search-down
-bindkey '^l' forward-word # partial suggestions accept
-
-# History
+# HISTORY
 HISTSIZE=5000
 HISTFILE=~/.zsh_history
 SAVEHIST=$HISTSIZE
@@ -83,44 +39,80 @@ setopt hist_save_no_dups
 setopt hist_ignore_dups
 setopt hist_find_no_dups
 
-# Backspace working the way it should
-bindkey '^?' backward-delete-char
-bindkey '^[[3~' delete-char
+# ZINIT
+if [[ -f "/opt/homebrew/bin/brew" ]] then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
+ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
+if [ ! -d "$ZINIT_HOME" ]; then
+   mkdir -p "$(dirname $ZINIT_HOME)"
+   git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+fi
+source "${ZINIT_HOME}/zinit.zsh"
 
-source ~/.config/zsh/aliases
-source ~/.config/zsh/functions
+# OH-MY-POSH
+zinit lucid \
+  as"program" from"gh-r"  \
+  cp'posh-* -> oh-my-posh' pick'oh-my-posh' \
+  atload'eval "$(oh-my-posh init zsh --config $HOME/.config/ohmyposh/config.toml)"' \
+  light-mode for @JanDeDobbeleer/oh-my-posh
 
-export LC_ALL=en_US.UTF-8
-export LANG=en_US.UTF-8
+# ZSH-VI-MODE
+zinit wait depth=1 lucid \
+  atload' \
+    export ZVM_VI_INSERT_ESCAPE_BINDKEY=jk; \
+    export ZVM_VI_SURROUND_BINDKEY=s-prefix; \
+    export ZVM_INIT_MODE=sourcing; \
+    export ZVM_LINE_INIT_MODE=i; \
+    export ZSH_AUTOSUGGEST_MANUAL_REBIND=1'\
+  light-mode for @jeffreytse/zsh-vi-mode
 
-# Remove path separator from WORDCHARS.
-WORDCHARS=${WORDCHARS//[\/]}
+# ZSH-HISTORY-SUBSTRING
+zinit wait lucid \
+  atload"bindkey '^[[A' history-substring-search-up; \
+    bindkey '^[[B' history-substring-search-down" \
+    for zsh-users/zsh-history-substring-search
 
-ulimit -n 10240
+# ZSH-COMPLETIONS
+zinit wait blockf lucid \
+  atload"zicompinit; zicdreplay; install_xterm_kitty_terminfo" \
+  light-mode for @zsh-users/zsh-completions
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'  # partial completion
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+zstyle ':completion:*' special-dirs true
+zstyle ':completion:*:cd:*' tag-order local-directories directory-stack path-directories
+zstyle ':completion:*:*:*:*:*' menu select # menu no
+zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#) ([0-9a-z-]#)*=01;34=0=01'
+zstyle ':completion:*:*:*:*:processes' command "ps -u `whoami` -o pid,user,comm -w -w"
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
+zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 
-# https://stackoverflow.com/questions/43372723/how-to-open-dot-on-mac
-# export CPATH=/opt/homebrew/include
-# export LIBRARY_PATH=/opt/homebrew/lib
+# ZSH-AUTOSUGGESTIONS
+zinit wait lucid \
+  atload'_zsh_autosuggest_start; \
+  export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#666666"; \
+  bindkey "^\\" autosuggest-toggle; \
+  bindkey "^I" complete-word # tab; \
+  bindkey "^[[Z" vi-forward-word # shift-tab' \
+  light-mode for @zsh-users/zsh-autosuggestions 
 
-# Zoxide
+# SNIPPETS
+zinit snippet OMZP::git 
+zinit snippet OMZP::sudo
+zinit snippet OMZP::command-not-found
+zinit as'completion' is-snippet for 'OMZP::fd/_fd'
+zinit as'completion' is-snippet for 'OMZP::docker-compose/_docker-compose'
+zinit snippet OMZ::plugins/git/git.plugin.zsh
+
+# ZSH-SYNTAX-HIGHLIGHTING (keep at the bottom)
+zinit wait lucid \
+  atload'source ~/.config/zsh/catppuccin_machiatto-zsh-syntax-highlighting.zsh' \
+  light-mode for @zsh-users/zsh-syntax-highlighting
+
+builtin source ~/.config/zsh/aliases.sh
+builtin source ~/.config/zsh/zshenv.sh
+builtin source ~/.config/zsh/functions.sh
+builtin source ~/.config/wezterm/shell-integration.sh
+
+load_pyenv
 eval "$(zoxide init zsh)"
-
-# Sesh
-function sesh-sessions() {
-  {
-    exec </dev/tty
-    exec <&1
-    local session
-    session=$(sesh list -t -c | fzf --height 40% --reverse --border-label ' sesh ' --border --prompt '⚡  ')
-    [[ -z "$session" ]] && return
-    sesh connect $session
-  }
-}
-
-zle     -N             sesh-sessions
-bindkey -M emacs '\es' sesh-sessions
-bindkey -M vicmd '\es' sesh-sessions
-bindkey -M viins '\es' sesh-sessions
-
-# Atuin
-eval "$(atuin init zsh)"

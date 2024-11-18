@@ -45,10 +45,9 @@ return {
         }
       end
 
-
       local config = {
         layout = {
-          { type = "padding", val = vim.fn.max({ 4, vim.fn.floor(vim.fn.winheight(0) * 0.225) }) },
+          { type = "padding", val = vim.fn.max { 4, vim.fn.floor(vim.fn.winheight(0) * 0.225) } },
           {
             type = "terminal",
             command = vim.fn.expand "$HOME" .. "/dotfiles/thisisfine.sh",
@@ -77,12 +76,12 @@ return {
             type = "group",
             val = {
               button("t", "📅 Journal", ":ObsidianToday<CR>"),
-              button("n", "  New File", ":ene | startinsert<CR>"),
-              button("u", "  Lazy", ":Lazy<CR>"),
-              button("m", "󱌣  Mason", ":Mason<CR>"),
+              -- button("n", "  New File", ":ene | startinsert<CR>"),
+              -- button("u", "  Lazy", ":Lazy<CR>"),
+              -- button("m", "󱌣  Mason", ":Mason<CR>"),
               button("p", "󰄉  Profile", ":Lazy profile<CR>"),
               button("c", "  Config", ":e /Users/pwntester/.config/nvim/init.lua<CR>"),
-              button("q", "  Quit", ":qa<CR>"),
+              --button("q", "  Quit", ":qa<CR>"),
             },
             opts = {
               position = "center",

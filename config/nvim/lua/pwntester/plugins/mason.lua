@@ -20,8 +20,12 @@ return {
       },
     }
 
+    local servers = {}
+    for _, server in ipairs(require("pwntester.lsp").servers) do
+      servers[server] = server
+    end
     mason_lspconfig.setup {
-      ensure_installed = require("pwntester.lsp").servers,
+      ensure_installed = servers,
     }
 
     mason_tool_installer.setup {

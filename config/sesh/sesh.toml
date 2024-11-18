@@ -1,4 +1,9 @@
 [[session]]
+name = "obsidian"
+path = "~/obsidian"
+startup_command = "nvim -c 'ObsidianToday'"
+
+[[session]]
 name = "tmux config"
 path = "~/.config/tmux"
 startup_command = "nvim tmux.conf"
@@ -17,6 +22,11 @@ startup_command = "nvim wezterm.lua"
 name = "nvim config"
 path = "~/.config/nvim"
 startup_command = "nvim init.lua"
+
+[[session]]
+name = "zsh config"
+path = "~/.config/zsh"
+startup_command = "nvim zshrc"
 
 [[session]]
 name = "nvim plugins"
