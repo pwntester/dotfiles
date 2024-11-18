@@ -8,17 +8,27 @@ return {
     cmd_palette.setup {
       commands = {
         {
-          name = "test",
-          -- category = "obsidian",
+          name = "New Meeting Note",
           cmd = function()
-            local bufnr = vim.api.nvim_get_current_buf()
-            print("TEST CALLED from ", bufnr)
+            vim.cmd [[ObsidianNewMeetingNote]]
+          end,
+        },
+        {
+          name = "New 1:1 Note",
+          cmd = function()
+            vim.cmd [[ObsidianNewOneOnOneNote]]
+          end,
+        },
+        {
+          name = "New Note",
+          cmd = function()
+            vim.cmd [[ObsidianNew]]
           end,
         },
       },
       icons = {
-        category = "F",
-        cmd = "C",
+        category = "",
+        cmd = "",
         back = "..",
       },
     }

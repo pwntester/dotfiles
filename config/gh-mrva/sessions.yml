@@ -10,6 +10,225 @@ actions0:
     list: actions
     language: javascript
     repository_count: 598
+bb-art-poison-1:
+    name: bb-art-poison-1
+    timestamp: 2024-09-05T20:55:39.510237+02:00
+    runs:
+        - id: 11628
+          query: ql/src/Security/CWE-829/ArtifactPoisoningCritical.ql
+          query_id: actions/artifact-poisoning/critical
+        - id: 11629
+          query: ql/src/Security/CWE-829/ArtifactPoisoningCritical.ql
+          query_id: actions/artifact-poisoning/critical
+        - id: 11630
+          query: ql/src/Security/CWE-829/ArtifactPoisoningCritical.ql
+          query_id: actions/artifact-poisoning/critical
+    controller: github/seclab-mrva-controller
+    list_file: /Users/pwntester/.config/gh-mrva/bb.json
+    list: all
+    language: javascript
+    repository_count: 2384
+bb-artpoison-4:
+    name: bb-artpoison-4
+    timestamp: 2024-09-15T10:17:01.33098+02:00
+    runs:
+        - id: 11732
+          query: ql/src/Security/CWE-829/ArtifactPoisoningCritical.ql
+          query_id: actions/artifact-poisoning/critical
+        - id: 11733
+          query: ql/src/Security/CWE-829/ArtifactPoisoningCritical.ql
+          query_id: actions/artifact-poisoning/critical
+        - id: 11734
+          query: ql/src/Security/CWE-829/ArtifactPoisoningCritical.ql
+          query_id: actions/artifact-poisoning/critical
+        - id: 11735
+          query: ql/src/Security/CWE-829/ArtifactPoisoningCritical.ql
+          query_id: actions/artifact-poisoning/critical
+        - id: 11736
+          query: ql/src/Security/CWE-829/ArtifactPoisoningCritical.ql
+          query_id: actions/artifact-poisoning/critical
+        - id: 11737
+          query: ql/src/Security/CWE-829/ArtifactPoisoningCritical.ql
+          query_id: actions/artifact-poisoning/critical
+        - id: 11738
+          query: ql/src/Security/CWE-829/ArtifactPoisoningCritical.ql
+          query_id: actions/artifact-poisoning/critical
+        - id: 11739
+          query: ql/src/Security/CWE-829/ArtifactPoisoningCritical.ql
+          query_id: actions/artifact-poisoning/critical
+        - id: 11740
+          query: ql/src/Security/CWE-829/ArtifactPoisoningCritical.ql
+          query_id: actions/artifact-poisoning/critical
+    controller: github/seclab-mrva-controller
+    list_file: /Users/pwntester/.config/gh-mrva/bb.json
+    list: all
+    language: javascript
+    repository_count: 8084
+bb-code-inj-1:
+    name: bb-code-inj-1
+    timestamp: 2024-09-05T12:37:27.756951+02:00
+    runs:
+        - id: 11623
+          query: ql/src/Security/CWE-094/CodeInjectionCritical.ql
+          query_id: actions/code-injection/critical
+        - id: 11624
+          query: ql/src/Security/CWE-094/CodeInjectionCritical.ql
+          query_id: actions/code-injection/critical
+        - id: 11625
+          query: ql/src/Security/CWE-094/CodeInjectionCritical.ql
+          query_id: actions/code-injection/critical
+    controller: github/seclab-mrva-controller
+    list_file: /Users/pwntester/.config/gh-mrva/bb.json
+    list: all
+    language: javascript
+    repository_count: 2384
+bb-codeinj-3:
+    name: bb-codeinj-3
+    timestamp: 2024-09-13T16:49:53.75244+02:00
+    runs:
+        - id: 11714
+          query: ql/src/Security/CWE-094/CodeInjectionCritical.ql
+          query_id: actions/code-injection/critical
+        - id: 11715
+          query: ql/src/Security/CWE-094/CodeInjectionCritical.ql
+          query_id: actions/code-injection/critical
+        - id: 11716
+          query: ql/src/Security/CWE-094/CodeInjectionCritical.ql
+          query_id: actions/code-injection/critical
+        - id: 11717
+          query: ql/src/Security/CWE-094/CodeInjectionCritical.ql
+          query_id: actions/code-injection/critical
+        - id: 11718
+          query: ql/src/Security/CWE-094/CodeInjectionCritical.ql
+          query_id: actions/code-injection/critical
+        - id: 11719
+          query: ql/src/Security/CWE-094/CodeInjectionCritical.ql
+          query_id: actions/code-injection/critical
+        - id: 11720
+          query: ql/src/Security/CWE-094/CodeInjectionCritical.ql
+          query_id: actions/code-injection/critical
+        - id: 11721
+          query: ql/src/Security/CWE-094/CodeInjectionCritical.ql
+          query_id: actions/code-injection/critical
+        - id: 11722
+          query: ql/src/Security/CWE-094/CodeInjectionCritical.ql
+          query_id: actions/code-injection/critical
+    controller: github/seclab-mrva-controller
+    list_file: /Users/pwntester/.config/gh-mrva/bb.json
+    list: all
+    language: javascript
+    repository_count: 8084
+bb-ppe-1:
+    name: bb-ppe-1
+    timestamp: 2024-09-04T09:55:03.523585+02:00
+    runs:
+        - id: 11609
+          query: ql/src/Security/CWE-829/UntrustedCheckoutCritical.ql
+          query_id: actions/untrusted-checkout/critical
+        - id: 11610
+          query: ql/src/Security/CWE-829/UntrustedCheckoutCritical.ql
+          query_id: actions/untrusted-checkout/critical
+        - id: 11611
+          query: ql/src/Security/CWE-829/UntrustedCheckoutCritical.ql
+          query_id: actions/untrusted-checkout/critical
+        - id: 11612
+          query: ql/src/Security/CWE-829/UntrustedCheckoutCritical.ql
+          query_id: actions/untrusted-checkout/critical
+    controller: github/seclab-mrva-controller
+    list_file: /Users/pwntester/.config/gh-mrva/bb.json
+    list: all
+    language: javascript
+    repository_count: 3799
+bb-ppe-2:
+    name: bb-ppe-2
+    timestamp: 2024-09-04T18:10:03.307038+02:00
+    runs:
+        - id: 11618
+          query: ql/src/Security/CWE-829/UntrustedCheckoutCritical.ql
+          query_id: actions/untrusted-checkout/critical
+        - id: 11619
+          query: ql/src/Security/CWE-829/UntrustedCheckoutCritical.ql
+          query_id: actions/untrusted-checkout/critical
+        - id: 11620
+          query: ql/src/Security/CWE-829/UntrustedCheckoutCritical.ql
+          query_id: actions/untrusted-checkout/critical
+    controller: github/seclab-mrva-controller
+    list_file: /Users/pwntester/.config/gh-mrva/bb.json
+    list: all
+    language: javascript
+    repository_count: 2384
+bb-ppe-3:
+    name: bb-ppe-3
+    timestamp: 2024-09-12T11:56:19.134573+02:00
+    runs:
+        - id: 11702
+          query: ql/src/Security/CWE-829/UntrustedCheckoutCritical.ql
+          query_id: actions/untrusted-checkout/critical
+        - id: 11703
+          query: ql/src/Security/CWE-829/UntrustedCheckoutCritical.ql
+          query_id: actions/untrusted-checkout/critical
+        - id: 11704
+          query: ql/src/Security/CWE-829/UntrustedCheckoutCritical.ql
+          query_id: actions/untrusted-checkout/critical
+        - id: 11705
+          query: ql/src/Security/CWE-829/UntrustedCheckoutCritical.ql
+          query_id: actions/untrusted-checkout/critical
+        - id: 11706
+          query: ql/src/Security/CWE-829/UntrustedCheckoutCritical.ql
+          query_id: actions/untrusted-checkout/critical
+        - id: 11707
+          query: ql/src/Security/CWE-829/UntrustedCheckoutCritical.ql
+          query_id: actions/untrusted-checkout/critical
+        - id: 11708
+          query: ql/src/Security/CWE-829/UntrustedCheckoutCritical.ql
+          query_id: actions/untrusted-checkout/critical
+        - id: 11709
+          query: ql/src/Security/CWE-829/UntrustedCheckoutCritical.ql
+          query_id: actions/untrusted-checkout/critical
+        - id: 11710
+          query: ql/src/Security/CWE-829/UntrustedCheckoutCritical.ql
+          query_id: actions/untrusted-checkout/critical
+    controller: github/seclab-mrva-controller
+    list_file: /Users/pwntester/.config/gh-mrva/bb.json
+    list: all
+    language: javascript
+    repository_count: 8084
+bb-ppe-4:
+    name: bb-ppe-4
+    timestamp: 2024-09-14T22:47:04.038014+02:00
+    runs:
+        - id: 11723
+          query: ql/src/Security/CWE-829/UntrustedCheckoutHigh.ql
+          query_id: actions/untrusted-checkout/high
+        - id: 11724
+          query: ql/src/Security/CWE-829/UntrustedCheckoutHigh.ql
+          query_id: actions/untrusted-checkout/high
+        - id: 11725
+          query: ql/src/Security/CWE-829/UntrustedCheckoutHigh.ql
+          query_id: actions/untrusted-checkout/high
+        - id: 11726
+          query: ql/src/Security/CWE-829/UntrustedCheckoutHigh.ql
+          query_id: actions/untrusted-checkout/high
+        - id: 11727
+          query: ql/src/Security/CWE-829/UntrustedCheckoutHigh.ql
+          query_id: actions/untrusted-checkout/high
+        - id: 11728
+          query: ql/src/Security/CWE-829/UntrustedCheckoutHigh.ql
+          query_id: actions/untrusted-checkout/high
+        - id: 11729
+          query: ql/src/Security/CWE-829/UntrustedCheckoutHigh.ql
+          query_id: actions/untrusted-checkout/high
+        - id: 11730
+          query: ql/src/Security/CWE-829/UntrustedCheckoutHigh.ql
+          query_id: actions/untrusted-checkout/high
+        - id: 11731
+          query: ql/src/Security/CWE-829/UntrustedCheckoutHigh.ql
+          query_id: actions/untrusted-checkout/high
+    controller: github/seclab-mrva-controller
+    list_file: /Users/pwntester/.config/gh-mrva/bb.json
+    list: all
+    language: javascript
+    repository_count: 8084
 bb_ruby_deser:
     name: bb_ruby_deser
     timestamp: 2023-06-13T11:06:37.230303+02:00
@@ -34,6 +253,27 @@ bb_ruby_deser2:
     list: ruby_apps
     language: ruby
     repository_count: 996
+bb1:
+    name: bb1
+    timestamp: 2024-09-03T21:16:12.150969+02:00
+    runs:
+        - id: 11605
+          query: ql/src/Security/CWE-094/CodeInjectionCritical.ql
+          query_id: actions/code-injection/critical
+        - id: 11606
+          query: ql/src/Security/CWE-094/CodeInjectionCritical.ql
+          query_id: actions/code-injection/critical
+        - id: 11607
+          query: ql/src/Security/CWE-094/CodeInjectionCritical.ql
+          query_id: actions/code-injection/critical
+        - id: 11608
+          query: ql/src/Security/CWE-094/CodeInjectionCritical.ql
+          query_id: actions/code-injection/critical
+    controller: github/seclab-mrva-controller
+    list_file: /Users/pwntester/.config/gh-mrva/bb.json
+    list: bb_repos
+    language: javascript
+    repository_count: 3772
 hacs_asyncio:
     name: hacs_asyncio
     timestamp: 2023-07-17T11:17:46.182659+02:00

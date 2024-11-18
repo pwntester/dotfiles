@@ -13,8 +13,9 @@ end
 
 M.nvim_normal_cmd = function(command)
   return wezterm.action_callback(function(win, pane)
-    local procName = pane:get_foreground_process_name():gsub("(.*/)(.*)", "%2")
-    if procName == "nvim" then
+    local procName = pane:get_user_vars().WEZTERM_PROG
+    -- pane:get_foreground_process_name():gsub("(.*/)(.*)", "%2")
+    if procName == "nvim" or procName == "vi" or procName == "vim" then
       win:perform_action(
         a.Multiple {
           a.SendKey { key = "\x1b" }, -- escape
@@ -50,6 +51,32 @@ end
 
 M.cmd_to_nvim_command = function(key, nvim_cmd)
   return M.cmd_key(key, M.nvim_normal_cmd(nvim_cmd))
+end
+
+M.cmd = function(key, actions)
+  local action = wezterm.action_callback(function(win, pane)
+    local procName = pane:get_user_vars().WEZTERM_PROG
+    print("PROC: " .. procName)
+    if procName == "nvim" or procName == "vi" or procName == "vim" then
+      win:perform_action(
+        a.Multiple {
+          a.SendKey { key = "\x1b" }, -- escape
+          M.multiple_actions(actions["nvim"]),
+        },
+        pane
+      )
+    elseif procName == "" then
+      print "TMUX"
+      win:perform_action(
+        a.Multiple {
+          a.SendKey { mods = "CTRL", key = "b" },
+          a.SendKey { key = actions["tmux"] },
+        },
+        pane
+      )
+    end
+  end)
+  return M.cmd_key(key, action)
 end
 
 return M

@@ -35,29 +35,33 @@ return {
     {
       "ge",
       function()
-        require("neo-tree.command").execute { toggle = true, dir = require("pwntester.root").get() }
-        -- [[:Neotree action=show source=filesystem position=left toggle=true reveal=true reveal_force_cwd=true<CR>]],
+        require("neo-tree.command").execute {
+          action = "show",
+          toggle = true,
+          source = "filesystem",
+          dir = require("pwntester.root").get(),
+        }
       end,
       desc = "Explorer NeoTree (Root Dir)",
     },
     {
       "gE",
       function()
-        require("neo-tree.command").execute { toggle = true, dir = vim.uv.cwd() }
+        require("neo-tree.command").execute { action = "show", toggle = true, source = "filesystem", dir = vim.uv.cwd() }
       end,
       desc = "Explorer NeoTree (cwd)",
     },
     {
       "<leader>ge",
       function()
-        require("neo-tree.command").execute { source = "git_status", toggle = true }
+        require("neo-tree.command").execute { action = "show", toggle = true, source = "git_status" }
       end,
       desc = "Git Explorer",
     },
     {
       "<leader>be",
       function()
-        require("neo-tree.command").execute { source = "buffers", toggle = true }
+        require("neo-tree.command").execute { action = "show", toggle = true, source = "buffers" }
       end,
       desc = "Buffer Explorer",
     },
@@ -84,12 +88,41 @@ return {
 
     vim.cmd [[ let g:neo_tree_remove_legacy_commands = 1 ]]
 
+    local diff_files = function(state)
+      local node = state.tree:get_node()
+      local log = require "neo-tree.log"
+      state.clipboard = state.clipboard or {}
+      if diff_Node and diff_Node ~= tostring(node.id) then
+        local current_Diff = node.id
+        require("neo-tree.utils").open_file(state, diff_Node, open)
+        vim.cmd("vert diffs " .. current_Diff)
+        log.info("Diffing " .. diff_Name .. " against " .. node.name)
+        diff_Node = nil
+        current_Diff = nil
+        state.clipboard = {}
+        require("neo-tree.ui.renderer").redraw(state)
+      else
+        local existing = state.clipboard[node.id]
+        if existing and existing.action == "diff" then
+          state.clipboard[node.id] = nil
+          diff_Node = nil
+          require("neo-tree.ui.renderer").redraw(state)
+        else
+          state.clipboard[node.id] = { action = "diff", node = node }
+          diff_Name = state.clipboard[node.id].node.name
+          diff_Node = tostring(state.clipboard[node.id].node.id)
+          log.info("Diff source file " .. diff_Name)
+          require("neo-tree.ui.renderer").redraw(state)
+        end
+      end
+    end
+
     require("neo-tree").setup {
       close_if_last_window = true,
       sources = {
         "filesystem",
         "git_status",
-        "buffers"
+        "buffers",
       },
       source_selector = {
         winbar = true,
@@ -149,8 +182,50 @@ return {
           },
         },
       },
+      commands = {
+        diff_files = function(state)
+          local node = state.tree:get_node()
+          local log = require "neo-tree.log"
+          state.clipboard = state.clipboard or {}
+          if diff_Node and diff_Node ~= tostring(node.id) then
+            local current_Diff = node.id
+            require("neo-tree.utils").open_file(state, diff_Node, open)
+            vim.cmd("vert diffs " .. current_Diff)
+            log.info("Diffing " .. diff_Name .. " against " .. node.name)
+            diff_Node = nil
+            current_Diff = nil
+            state.clipboard = {}
+            require("neo-tree.ui.renderer").redraw(state)
+          else
+            local existing = state.clipboard[node.id]
+            if existing and existing.action == "diff" then
+              state.clipboard[node.id] = nil
+              diff_Node = nil
+              require("neo-tree.ui.renderer").redraw(state)
+            else
+              state.clipboard[node.id] = { action = "diff", node = node }
+              diff_Name = state.clipboard[node.id].node.name
+              diff_Node = tostring(state.clipboard[node.id].node.id)
+              log.info("Diff source file " .. diff_Name)
+              require("neo-tree.ui.renderer").redraw(state)
+            end
+          end
+        end,
+      },
       window = {
         mappings = {
+          ["D"] = "diff_files",
+          -- ["D"] = function(state)
+          --   local diffNode = state.tree:get_node()
+          --   local diffPath = diffNode:get_id()
+          --   vim.cmd [[Neotree close]]
+          --   vim.cmd("vert diffs " .. diffPath)
+          --   vim.cmd [[Neotree toggle]]
+          -- end,
+          -- ["D"] = function(state)
+          -- 	state.commands["copy_node_to_diff"](state, node)
+          -- 	require("neo-tree.ui.renderer").redraw(state)
+          -- end,
           ["<CR>"] = function(state)
             local node = state.tree:get_node()
             if vim.endswith(node.path, ".sarif") then
@@ -235,13 +310,6 @@ return {
           end,
           ["P"] = { "toggle_preview", config = { use_float = true } },
           ["<esc>"] = "revert_preview",
-          ["D"] = function(state)
-            local diffNode = state.tree:get_node()
-            local diffPath = diffNode:get_id()
-            vim.cmd [[Neotree close]]
-            vim.cmd("vert diffs " .. diffPath)
-            vim.cmd [[Neotree toggle]]
-          end,
         },
       },
       filesystem = {

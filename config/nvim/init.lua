@@ -37,13 +37,6 @@ _require "pwntester.autocmds"
 -----------------------------------------------------------------------------//
 -- COMMANDS
 -----------------------------------------------------------------------------//
-vim.cmd [[command! LabIssues :call v:lua.require'pwntester.globals'.LabIssues()]]
-vim.cmd [[command! HubberReports :call v:lua.require'pwntester.globals'.HubberReports()]]
-vim.cmd [[command! VulnReports :call v:lua.require'pwntester.globals'.VulnReports()]]
-vim.cmd [[command! BountySubmissions :call v:lua.require'pwntester.globals'.BountySubmissions()]]
-vim.cmd [[command! Bitacora :call v:lua.require'pwntester.globals'.Bitacora()]]
-vim.cmd [[command! TODO :call v:lua.require'pwntester.globals'.TODO()]]
-vim.cmd [[command! BufOnly execute '%bdelete|edit #|normal `"']]
 vim.cmd [[command! W execute 'write']]
 -----------------------------------------------------------------------------//
 -- COLORS
@@ -270,6 +263,7 @@ vim.opt.joinspaces = false
 vim.opt.gdefault = true
 vim.opt.confirm = true -- make vim prompt me to save before doing destructive things
 vim.opt.completeopt = { "menuone", "noselect", "noselect" }
+-- vim.opt.cia = { "kind", "abbrv", "menu" }
 vim.opt.hlsearch = true
 vim.opt.autowriteall = true -- automatically :write before running commands and changing files
 --vim.opt.clipboard = { "unnamedplus" }

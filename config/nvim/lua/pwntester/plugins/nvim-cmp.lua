@@ -1,5 +1,6 @@
 return {
   "hrsh7th/nvim-cmp",
+  enabled = true,
   event = "InsertEnter",
   dependencies = {
     { "hrsh7th/cmp-nvim-lsp" },
@@ -22,12 +23,21 @@ return {
     local kind_icons = icons.kind
     local cmp = require "cmp"
 
+    local function tab(fallback)
+      if cmp.visible() then
+        cmp.confirm {
+          behavior = cmp.ConfirmBehavior.Replace,
+          select = true,
+        }
+      else
+        fallback()
+      end
+    end
+
+    local function shift_tab(fallback)
+      fallback()
+    end
     cmp.setup {
-      snippet = {
-        expand = function(args)
-          require("luasnip").lsp_expand(args.body)
-        end,
-      },
       enabled = function()
         return vim.api.nvim_buf_get_option(0, "buftype") ~= "prompt"
       end,
@@ -44,13 +54,19 @@ return {
         },
       },
       sources = {
-        { name = "nvim_lsp", keyword_pattern = [[\k\+]] },
+        {
+          name = "nvim_lsp",
+          option = {
+            markdown_oxide = {
+              keyword_pattern = [[\(\k\| \|\/\|#\)\+]],
+            },
+          },
+          -- keyword_pattern = [[\k\+]],
+        },
         { name = "nvim_lua" },
-        { name = "luasnip" },
         { name = "buffer" },
         { name = "path" },
         { name = "emoji" },
-        --{ name = "git" },
       },
       formatting = {
         deprecated = true,
