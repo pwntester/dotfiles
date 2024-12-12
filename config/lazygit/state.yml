@@ -1,20 +1,19 @@
 lastupdatecheck: 0
 recentrepos:
     - /Users/pwntester/src/github.com/github/codeql-actions
+    - /Users/pwntester/dotfiles
+    - /Users/pwntester/src/github.com/githubsecuritylab/codeql-community-packs
+    - /Users/pwntester/src/github.com/github/securitylab-code-analysis
     - /Users/pwntester/src/github.com/pwntester/octo.nvim
     - /Users/pwntester/src/github.com/github/codeql
     - /Users/pwntester/src/github.com/github/entitlements
     - /Users/pwntester/obsidian
     - /Users/pwntester/src/github.com/pwntests/actions_tests
-    - /Users/pwntester/dotfiles
     - /Users/pwntester/src/github.com/Bughalla/bash-parser-action
     - /Users/pwntester/src/github.com/bughalla/bughalla
     - /Users/pwntester/src/github.com/Bughalla/bughalla
-    - /Users/pwntester/src/github.com/githubsecuritylab/codeql-community-packs
     - /Users/pwntester/src/github.com/pwntester/ESPHomeProjects
-    - /Users/pwntester/src/github.com/microsoft/autogen
     - /Users/pwntester/src/github.com/github/codeml-autofix
-    - /Users/pwntester/src/github.com/github/securitylab-code-analysis
     - /Users/pwntester/src/github.com/GithubSecurityLab/gh-mrva
     - /Users/pwntester/src/github.com/githubsecuritylab/gh-mrva
     - /Users/pwntester/src/github.com/pwntester/codeql.nvim

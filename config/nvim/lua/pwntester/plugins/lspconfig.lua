@@ -51,7 +51,7 @@ return {
 
     for server, _ in pairs(servers) do
       local opts = server_opts[server] or {}
-      opts.capabilities = opts.capabilities or capabilities
+      opts.capabilities = opts.capabilities or {}
       opts.on_attach = opts.on_attach or on_attach_callback
       opts.flags = opts.flags or { debounce_text_changes = 150 }
       lspconfig[server].setup(opts)
@@ -62,6 +62,7 @@ return {
       float = { border = "rounded" },
       underline = true,
       update_in_insert = false,
+      -- keep it to false for tiny-inline-diagnostic to work
       virtual_text = false,
       document_highlight = {
         enabled = true,
