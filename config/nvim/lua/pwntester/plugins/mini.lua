@@ -38,11 +38,11 @@ return {
   config = function()
     local mini_modules = {
       "ai",
-      "bufremove",
       "comment",
       "icons",
       "pairs",
       "surround",
+      -- "bufremove",
       -- "starter",
       -- "files",
       -- "hipatterns",
