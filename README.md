@@ -1,5 +1,3 @@
 # dotfiles
 
 My personal dotfiles
-
-
