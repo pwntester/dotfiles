@@ -11,74 +11,42 @@
 # Links
 - create:
     - ~/.config
-    - ~/.config/gh
-    - ~/.config/github-copilot
 
 - link:
-    ~/.config/gh/config.yml: config/gh/config.yml
-    ~/.config/github-copilot/terms.json: config/github-copilot/terms.json
-    ~/.config/kitty: config/kitty
-    ~/.config/karabiner: config/karabiner
-    ~/.config/nvim: config/nvim
+    ~/.config/alacritty: config/alacritty
+    ~/.config/atuin: config/atuin
+    ~/.config/bat: config/bat
+    ~/.config/broot: config/broot
     ~/.config/codeql: config/codeql
+    ~/.config/fabric: config/fabric
+    ~/.config/fish: config/fish
+    ~/.config/gh: config/gh
+    ~/.config/gh-dash: config/gh-dash
+    ~/.config/gh-mrva: config/gh-mrva
+    ~/.config/git: config/git
+    ~/.config/gitui: config/gitui
+    ~/.config/karabiner: config/karabiner
+    ~/.config/kitty: config/kitty
+    ~/.config/lazygit: config/lazygit
+    ~/.config/llm: config/llm
+    ~/.config/moxide: config/moxide
+    ~/.config/nvim: config/nvim
+    ~/.config/ohmyposh: config/ohmyposh
+    ~/.config/sesh: config/sesh
+    ~/.config/tmux: config/tmux
+    ~/.config/wezterm: config/wezterm
+    ~/.config/yazi: config/yazi
+    ~/.config/zellij: config/zellij
+    ~/.config/zinit: config/zinit
+    ~/.config/zsh: config/zsh
+
     ~/.ideavimrc: home/ideavimrc
-    ~/.tmux.conf: home/tmux.conf
-    ~/.zshrc: home/zshrc
-    ~/.zshenv: home/zshenv
-    ~/.zsh: home/zsh
+    ~/.vscodevimrc: home/ideavimrc
+    ~/.tmux: home/tmux
+    ~/.zshrc: config/zsh/zshrc
+    ~/.zshenv: config/zsh/zshenv
+    ~/.gitconfig: config/git/gitconfig
     ~/bin: home/bin
-
-
-# .zshenv -> /Users/pwntester/.config/zsh/zshenv
-# .zshrc -> /Users/pwntester/.config/zsh/zshrc
-# bin -> /Users/pwntester/dotfiles/home/bin
-# .vscodevimrc -> /Users/pwntester/dotfiles/home/ideavimrc
-# .tmux -> /Users/pwntester/dotfiles/home/tmux
-# .ideavimrc -> /Users/pwntester/dotfiles/home/ideavimrc
-# .gitconfig -> /Users/pwntester/dotfiles/config/git/gitconfig
-#
-#
-# drwxr-xr-x@    - pwntester 23 Jul 10:45  aichat
-# lrwxr-xr-x     - pwntester  4 Feb 22:04  alacritty -> /Users/pwntester/dotfiles/config/alacritty
-# .rw-r--r--   11k pwntester 29 Jul 17:25  alerts.txt
-# lrwxr-xr-x     - pwntester 14 Jul 09:48  atuin -> /Users/pwntester/dotfiles/config/atuin
-# lrwxr-xr-x     - pwntester 19 Jul 09:26  bat -> /Users/pwntester/dotfiles/config/bat
-# lrwxr-xr-x     - pwntester 19 Jul 09:27  broot -> /Users/pwntester/dotfiles/config/broot
-# lrwxr-xr-x     - pwntester 29 Sep  2022  codeql -> /Users/pwntester/dotfiles/config/codeql
-# drwx------     - pwntester 30 Jun  2023  configstore
-# lrwxr-xr-x     - pwntester 25 Jul 10:28  fabric -> /Users/pwntester/dotfiles/config/fabric
-# lrwxr-xr-x@    - pwntester 14 Oct 14:44  fish -> /Users/pwntester/dotfiles/config/fish
-# drwxr-xr-x     - pwntester 11 Jan  2023  flipperdevices.com
-# lrwxr-xr-x     - pwntester  3 Feb 22:46  gh -> /Users/pwntester/dotfiles/config/gh
-# lrwxr-xr-x     - pwntester  3 Feb 22:46  gh-copilot -> /Users/pwntester/dotfiles/config/gh-copilot
-# lrwxr-xr-x     - pwntester 27 Jul 16:48  gh-dash -> /Users/pwntester/dotfiles/config/gh-dash
-# lrwxr-xr-x     - pwntester  3 Feb 22:44  gh-mrva -> /Users/pwntester/dotfiles/config/gh-mrva
-# lrwxr-xr-x     - pwntester 19 Jul 09:36  git -> /Users/pwntester/dotfiles/config/git
-# drwx------     - pwntester  7 Feb 12:51  github-copilot
-# lrwxr-xr-x     - pwntester  9 Aug 22:58  gitui -> /Users/pwntester/dotfiles/config/gitui
-# drwx------@    - pwntester 13 Jun 12:15  gtk-2.0
-# drwxr-xr-x     - pwntester 27 Sep 09:48  jgit
-# lrwxr-xr-x     - pwntester 20 Feb  2023  karabiner -> /Users/pwntester/dotfiles/config/karabiner
-# lrwxr-xr-x     - pwntester 29 Sep  2022  kitty -> /Users/pwntester/dotfiles/config/kitty
-# lrwxr-xr-x     - pwntester 19 Jul 22:21  lazygit -> /Users/pwntester/dotfiles/config/lazygit
-# lrwxr-xr-x     - pwntester  7 Mar 11:03  llm -> /Users/pwntester/dotfiles/config/llm
-# lrwxr-xr-x     - pwntester 24 Jul 12:30  moxide -> /Users/pwntester/dotfiles/config/moxide
-# drwx------@    - pwntester  7 Oct 09:33  ngrok
-# lrwxr-xr-x     - pwntester 29 Sep  2022  nvim -> /Users/pwntester/dotfiles/config/nvim
-# lrwxr-xr-x@    - pwntester 15 Jul 21:36  ohmyposh -> /Users/pwntester/dotfiles/config/ohmyposh
-# drwx------     - pwntester 24 Jul 14:55  op
-# drwxr-xr-x@    - pwntester 18 Nov 11:38  raycast
-# drwxr-xr-x     - pwntester 27 Jul 18:59  secrets
-# lrwxr-xr-x     - pwntester  9 Jul 08:58  sesh -> /Users/pwntester/dotfiles/config/sesh
-# lrwxr-xr-x     - pwntester  8 Jul 14:41  tmux -> /Users/pwntester/dotfiles/config/tmux
-# lrwxr-xr-x@    - pwntester  1 Mar 21:57  wezterm -> /Users/pwntester/dotfiles/config/wezterm
-# drwxr-xr-x     - pwntester 13 Jan  2023  wireshark
-# drwxr-xr-x@    - pwntester 29 Nov  2023  yarn
-# lrwxr-xr-x@    - pwntester 15 Jul 21:35  yazi -> /Users/pwntester/dotfiles/config/yazi
-# lrwxr-xr-x     - pwntester  3 Feb 22:44  zellij -> /Users/pwntester/dotfiles/config/zellij
-# lrwxr-xr-x     - pwntester 19 Jul 09:27  zinit -> /Users/pwntester/dotfiles/config/zinit
-# lrwxr-xr-x@    - pwntester 15 Jul 21:21  zsh -> /Users/pwntester/dotfiles/config/zsh
-
 
 
 # ZSH
