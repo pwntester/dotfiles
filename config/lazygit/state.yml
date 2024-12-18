@@ -1,5 +1,6 @@
 lastupdatecheck: 0
 recentrepos:
+    - /Users/pwntester/src/github.com/bughalla/workflow-enum-action
     - /Users/pwntester/src/github.com/github/codeql-actions
     - /Users/pwntester/dotfiles
     - /Users/pwntester/src/github.com/githubsecuritylab/codeql-community-packs

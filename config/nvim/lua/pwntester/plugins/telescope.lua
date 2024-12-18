@@ -188,11 +188,11 @@ return {
       }
     end,
     -- stylua: ignore
-    keys = {
-      { "<leader>f", function() require("telescope.builtin").find_files() end, desc = "Find files" },
-      { "<leader>l", function() require("telescope.builtin").live_grep() end, desc = "Live grep" },
-      { "<leader>o", function() require("telescope.builtin").buffers() end, desc = "Open buffers" },
-      { "<leader>m", function() require("telescope.builtin").oldfiles() end, desc = "Most Recently Used" },
-    }
+    -- keys = {
+    --   { "<leader>f", function() require("telescope.builtin").find_files() end, desc = "Find files" },
+    --   { "<leader>l", function() require("telescope.builtin").live_grep() end, desc = "Live grep" },
+    --   { "<leader>o", function() require("telescope.builtin").buffers() end, desc = "Open buffers" },
+    --   { "<leader>m", function() require("telescope.builtin").oldfiles() end, desc = "Most Recently Used" },
+    -- }
   },
 }
