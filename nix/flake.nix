@@ -13,16 +13,23 @@
     configuration = { pkgs, config, ... }: {
       # List packages installed in system profile. To search by name, run:
       # $ nix-env -qaP | grep wget
-
-      nixpkgs.config.allowUnfree = true;
-
       environment.systemPackages = with pkgs; [ 
         mkalias # Needed to make nix gui apps available to spotlight/raycast
         neovim
         tmux
+
+        #burpsuite
+        discord
+        docker
         obsidian
+        ollama
 	raycast
+        slack
+        synology-drive-client
+        tailscale
+        vscode
         wezterm
+        #zoom
       ];
 
       homebrew = {
@@ -33,9 +40,10 @@
         ];
         casks = [
           "the-unarchiver"
+          "google-chrome"
         ];
 	masApps = {
-	  # "Things3" = 1111111;
+	  "Things3" = 904280696;
         };
         # remove brew apps installed outside nix when rebuilding
         onActivation.cleanup = "zap";
@@ -49,22 +57,16 @@
 	  nerd-fonts.monaspace
       ];
 
-      # Necessary for using flakes on this system.
+      nixpkgs.config.allowUnfree = true;
+      services.nix-daemon.enable = true;
       nix.settings.experimental-features = "nix-command flakes";
-
-      # Enable alternative shell support in nix-darwin.
       programs.zsh.enable = true;
-
-      # Set Git commit hash for darwin-version.
       system.configurationRevision = self.rev or self.dirtyRev or null;
-
-      # Used for backwards compatibility, please read the changelog before changing.
-      # $ darwin-rebuild changelog
       system.stateVersion = 5;
-
-      # The platform the configuration will be used on.
       nixpkgs.hostPlatform = "aarch64-darwin";
+      security.pam.enableSudoTouchIdAuth = true;
 
+      # Create symlinks so we can launch apps from Spotlight
       system.activationScripts.applications.text = let
         env = pkgs.buildEnv {
           name = "system-applications";
@@ -87,10 +89,14 @@
 
       system.defaults = {
         dock.autohide = true;
+        dock.mru-spaces = false;
+        finder.AppleShowAllExtensions = true;
 	finder.FXPreferredViewStyle = "clmv";
         loginwindow.GuestEnabled = false;
+        loginwindow.LoginwindowText = "pwntester";
         NSGlobalDomain.AppleICUForce24HourTime = true;
         NSGlobalDomain.AppleInterfaceStyle = "Dark";
+        screencapture.location = "~/Pictures/screenshots";
         NSGlobalDomain.KeyRepeat = 2;
       };
 
