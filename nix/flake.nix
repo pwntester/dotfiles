@@ -39,13 +39,13 @@
           "mas"
         ];
         casks = [
-          burp-suite-professional
-          krisp
-          the-unarchiver
-          google-drive
-          google-chrome
-          zoom
-          rectangle
+          "burp-suite-professional"
+          "krisp"
+          "the-unarchiver"
+          "google-drive"
+          "google-chrome"
+          "zoom"
+          "rectangle"
         ];
 	masApps = {
 	  "Things3" = 904280696;
