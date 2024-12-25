@@ -46,6 +46,8 @@
           "google-chrome"
           "zoom"
           "rectangle"
+          "chatgpt"
+ 	  "elgato-camera-hub"
         ];
 	masApps = {
 	  "Things3" = 904280696;
