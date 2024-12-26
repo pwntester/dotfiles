@@ -1,0 +1,92 @@
+set clipboard=unnamedplus,unnamed " integrate with system clipboard
+set timeoutlen=1000               " required for jk mapping 
+set ignorecase
+set smartcase
+set scrolloff=3                   " 3 lines above/below cursor when scrolling
+
+" MAPPINGS {{{
+" center after search
+nnoremap n nzz 
+nnoremap N Nzz
+
+" quit all windows
+command! Q execute "qa!"
+
+" escape to normal mode in insert mode
+inoremap jk <ESC>
+
+" shifting visual block should keep it selected
+vnoremap < <gv
+vnoremap > >gv
+
+" allow the . to execute once for each line of a visual selection
+vnoremap . :normal .<Return>
+
+" automatically jump to end of text you pasted
+vnoremap <silent> y y`]
+vnoremap <silent> p p`]
+nnoremap <silent> p p`]
+
+" quickly select text you pasted
+noremap gP `[v`]`]`
+
+" highlight last inserted text
+nnoremap gI `[v`]
+
+" go up/down onw visual line
+map j gj
+map k gk
+
+" go to Beggining or End of line
+nnoremap B ^
+nnoremap E $
+
+" disable arrow keys
+nnoremap <up> <nop>
+nnoremap <down> <nop>
+nnoremap <left> <nop>
+nnoremap <right> <nop>
+inoremap <up> <nop>
+inoremap <down> <nop>
+inoremap <left> <nop>
+inoremap <right> <nop>
+
+" remove search highlights
+noremap <silent>./ :nohlsearch<Return>
+
+" disable paste mode when leaving Insert mode
+autocmd InsertLeave * set nopaste
+
+" cycle through buffers
+nnoremap <S-l> :bnext<Return>
+nnoremap <S-h> :bprevious<Return>
+
+" jump to last visited location
+nnoremap <S-k> <C-^>
+
+" save one keystroke
+nnoremap ; :
+" }}}
+
+" LEADER MAPPINGS {{{
+
+" space is your leader
+nnoremap <SPACE> <Nop>
+let mapleader = " "
+
+" navigate faster
+nnoremap <Leader>j 15j
+nnoremap <Leader>k 15k
+
+" remove trailing spaces
+nnoremap <Leader>c :%s/\s\+$//<Return>
+
+" save file
+nnoremap w!! w !sudo tee % >/dev/null
+
+" paste keeping the default register
+vnoremap <Leader>p "_dP
+
+" }}}
+
+set clipboard+=ideaput
