@@ -14,48 +14,53 @@
       # List packages installed in system profile. To search by name, run:
       # $ nix-env -qaP | grep wget
       environment.systemPackages = with pkgs; [ 
-	ffmpeg
+	      ffmpeg
+        imagemagick
         mkalias # Needed to make nix gui apps available to spotlight/raycast
+        codeql
         neovim
+        nodejs_23
         tmux
-	jq
-	zoxide
-	direnv
-	ripgrep
-	difftastic
-	delta
-	fd
-	bat
-	serpl
-	fzf
-	eza
-	tree
-	broot
-	lazygit
-	llm
-	sesh
-	curl
-	git
-	gh
-	stylua
+        jq
+        zoxide
+        direnv
+        ripgrep
+        difftastic
+        delta
+        fd
+        bat
+        serpl
+        fzf
+        eza
+        tree
+        broot
+        lazygit
+        llm
+        sesh
+        curl
+        git
+        gh
+        gh-dash
+        stylua
+        stow
         discord
         docker
         obsidian
         ollama
-	raycast
+	      raycast
         slack
         synology-drive-client
         tailscale
         vscode
         wezterm
+        karabiner-elements
       ];
 
       homebrew = {
         enable = true;
         brews = [
-          # To search the AppStore for App Ids with `mas search <App Name>`
-          "mas"
-	  "trash"
+          "mas" # To search the AppStore for App Ids with `mas search <App Name>`
+	        "trash"
         ];
         casks = [
           "burp-suite-professional"
@@ -63,13 +68,14 @@
           "the-unarchiver"
           "google-drive"
           "google-chrome"
+          "microsoft-edge"
           "zoom"
           "rectangle"
           "chatgpt"
- 	  "elgato-camera-hub"
+ 	        "elgato-camera-hub"
         ];
-	masApps = {
-	  "Things3" = 904280696;
+	      masApps = {
+	        "Things3" = 904280696;
         };
         # remove brew apps installed outside nix when rebuilding
         onActivation.cleanup = "zap";
@@ -79,19 +85,18 @@
       };
 	
       fonts.packages = with pkgs; [
-	  nerd-fonts.jetbrains-mono
-	  nerd-fonts.monaspace
+	      nerd-fonts.jetbrains-mono
+	      nerd-fonts.monaspace
       ];
 
-      nixpkgs.config.allowUnfree = true;
-      services.nix-daemon.enable = true;
       nix.settings.experimental-features = "nix-command flakes";
+      nixpkgs.config.allowUnfree = true;
+      nixpkgs.hostPlatform = "aarch64-darwin";
       programs.zsh.enable = true;
+      security.pam.enableSudoTouchIdAuth = true;
+      services.nix-daemon.enable = true;
       system.configurationRevision = self.rev or self.dirtyRev or null;
       system.stateVersion = 5;
-      nixpkgs.hostPlatform = "aarch64-darwin";
-      security.pam.enableSudoTouchIdAuth = true;
-
       # Create symlinks so we can launch apps from Spotlight
       system.activationScripts.applications.text = let
         env = pkgs.buildEnv {
@@ -117,13 +122,13 @@
         dock.autohide = true;
         dock.mru-spaces = false;
         finder.AppleShowAllExtensions = true;
-	finder.FXPreferredViewStyle = "clmv";
+	      finder.FXPreferredViewStyle = "clmv";
         loginwindow.GuestEnabled = false;
         loginwindow.LoginwindowText = "pwntester";
         NSGlobalDomain.AppleICUForce24HourTime = true;
         NSGlobalDomain.AppleInterfaceStyle = "Dark";
-        screencapture.location = "~/Pictures/screenshots";
         NSGlobalDomain.KeyRepeat = 2;
+        screencapture.location = "~/Pictures/screenshots";
       };
 
     };
