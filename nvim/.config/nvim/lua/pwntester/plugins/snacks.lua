@@ -11,7 +11,7 @@ return {
       sections = {
         {
           section = "terminal",
-          cmd = vim.fn.expand "$HOME" .. "/dotfiles/thisisfine.sh",
+          cmd = vim.fn.expand "$HOME" .. "/.config/nvim/ascii/thisisfine.sh",
           height = 25,
           padding = 2,
           indent = 7,
@@ -21,7 +21,7 @@ return {
       },
     },
     notifier = {
-      enabled = true,
+      enabled = false,
       timeout = 3000,
     },
     quickfile = { enabled = true },

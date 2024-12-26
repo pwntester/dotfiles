@@ -100,8 +100,6 @@ zinit wait lucid \
 zinit snippet OMZP::git 
 zinit snippet OMZP::sudo
 zinit snippet OMZP::command-not-found
-zinit as'completion' is-snippet for 'OMZP::fd/_fd'
-zinit as'completion' is-snippet for 'OMZP::docker-compose/_docker-compose'
 zinit snippet OMZ::plugins/git/git.plugin.zsh
 
 # ZSH-SYNTAX-HIGHLIGHTING (keep at the bottom)
@@ -110,9 +108,7 @@ zinit wait lucid \
   light-mode for @zsh-users/zsh-syntax-highlighting
 
 builtin source ~/.config/zsh/aliases.sh
-builtin source ~/.config/zsh/zshenv.sh
 builtin source ~/.config/zsh/functions.sh
 builtin source ~/.config/wezterm/shell-integration.sh
 
-load_pyenv
 eval "$(zoxide init zsh)"
