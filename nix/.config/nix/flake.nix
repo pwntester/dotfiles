@@ -60,8 +60,6 @@
         ollama
 	      raycast
         slack
-        synology-drive-client
-        tailscale
         vscode
         wezterm
         karabiner-elements
@@ -87,6 +85,9 @@
  	        "elgato-camera-hub"
           "ghostty"
           "font-source-code-pro"
+          "synology-drive"
+          "tailscale"
+          "tunnelblick"
         ];
 	      masApps = {
 	        "Things3" = 904280696;
