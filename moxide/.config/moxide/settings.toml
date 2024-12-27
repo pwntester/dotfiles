@@ -1,6 +1,0 @@
-dailynote = "%Y-%m-%d" # this is akin to YYYY-MM-DD from Obsidian
-
-title_headings = false
-
-new_file_folder_path = "/Users/pwntester/obsidian/Inbox"
-daily_notes_folder = "/Users/pwntester/obsidian/Journal"
