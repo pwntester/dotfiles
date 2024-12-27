@@ -1,0 +1,41 @@
+
+# theme
+theme = catppuccin-macchiato
+
+# font
+#font-family = "MonaspiceNe Nerd Font"
+font-family = Source Code Pro Light
+font-style-bold = Source Code Pro Medium
+font-style-italic = Source Code Pro ExtraLight Italic
+font-style-bold-italic = Source Code Pro Italic
+
+font-size = 15
+font-thicken = true
+# Disable ligatures as described here:
+# https://ghostty.org/docs/config/reference#font-feature
+font-feature = -calt
+font-feature = -liga
+font-feature = -dlig
+# Enable slashed zero.
+font-feature = zero
+
+# macos-titlebar-style = tabs
+
+# new tab
+keybind = cmd+t=text:\x02c
+# tmux sesh
+keybind = cmd+k=text:\x02T
+# tmux floax
+keybind = cmd+f=text:\x02p
+# lazygit/gitui
+keybind = cmd+g=text:\x02g
+# tabs
+keybind = cmd+one=text:\x021
+keybind = cmd+two=text:\x022
+keybind = cmd+three=text:\x023
+keybind = cmd+four=text:\x024
+keybind = cmd+five=text:\x025
+keybind = cmd+six=text:\x026
+keybind = cmd+seven=text:\x027
+keybind = cmd+eight=text:\x028
+keybind = cmd+nine=text:\x029
