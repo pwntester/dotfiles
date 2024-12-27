@@ -2,10 +2,20 @@
   description = "Pwntester nix-darwin system flake";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    nix-darwin.url = "github:LnL7/nix-darwin";
-    nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
-    nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
+    nixpkgs = {
+      url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    };
+    nix-darwin = {
+      url = "github:LnL7/nix-darwin";
+      inputs = {
+        nixpkgs = {
+          follows = "nixpkgs";
+        };
+      };
+    };
+    nix-homebrew = {
+      url = "github:zhaofengli-wip/nix-homebrew";
+    };
   };
 
   outputs = inputs@{ self, nix-darwin, nixpkgs, nix-homebrew }:
@@ -21,6 +31,7 @@
         neovim
         nodejs_23
         tmux
+        gum # for sesh
         jq
         zoxide
         direnv
@@ -65,6 +76,7 @@
         casks = [
           "burp-suite-professional"
           "krisp"
+          "docker"
           "the-unarchiver"
           "google-drive"
           "google-chrome"
@@ -73,6 +85,8 @@
           "rectangle"
           "chatgpt"
  	        "elgato-camera-hub"
+          "ghostty"
+          "font-source-code-pro"
         ];
 	      masApps = {
 	        "Things3" = 904280696;
