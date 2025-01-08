@@ -27,6 +27,11 @@
             pkgs.nodePackages.typescript
             pkgs.nodePackages.typescript-language-server
           ];
+
+          shellHook = ''
+            echo "node `${pkgs.nodejs}/bin/node --version`"
+            exec zsh
+          '';
         };
       });
     };

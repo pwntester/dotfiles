@@ -61,6 +61,9 @@
 	      raycast
         slack
         vscode
+        # project discovery
+        interactsh
+        nuclei
       ];
 
       homebrew = {
