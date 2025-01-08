@@ -61,15 +61,17 @@
 	      raycast
         slack
         vscode
-        wezterm
-        karabiner-elements
       ];
 
       homebrew = {
         enable = true;
+        taps = [
+          "FelixKratz/formulae"
+        ];
         brews = [
           "mas" # To search the AppStore for App Ids with `mas search <App Name>`
 	        "trash"
+          "borders" # https://github.com/FelixKratz/JankyBorders
         ];
         casks = [
           "burp-suite-professional"
@@ -80,7 +82,6 @@
           "google-chrome"
           "microsoft-edge"
           "zoom"
-          "rectangle"
           "chatgpt"
  	        "elgato-camera-hub"
           "ghostty"
@@ -88,6 +89,9 @@
           "synology-drive"
           "tailscale"
           "tunnelblick"
+          "lookaway"
+          "rectangle"
+          "karabiner-elements"
         ];
 	      masApps = {
 	        "Things3" = 904280696;
@@ -110,8 +114,71 @@
       programs.zsh.enable = true;
       security.pam.enableSudoTouchIdAuth = true;
       services.nix-daemon.enable = true;
-      system.configurationRevision = self.rev or self.dirtyRev or null;
-      system.stateVersion = 5;
+
+      # https://daiderd.com/nix-darwin/manual/index.html
+      system = {
+        stateVersion = 5;
+
+        configurationRevision = self.rev or self.dirtyRev or null;
+
+        defaults = {
+          LaunchServices = {
+            LSQuarantine = false;
+          };
+
+          NSGlobalDomain = {
+            AppleInterfaceStyle = "Dark";
+            AppleICUForce24HourTime = true;
+            AppleShowAllExtensions = true;
+            ApplePressAndHoldEnabled = false;
+
+            # 120, 90, 60, 30, 12, 6, 2
+            KeyRepeat = 2;
+
+            # 120, 94, 68, 35, 25, 15
+            InitialKeyRepeat = 15;
+
+            "com.apple.mouse.tapBehavior" = 1;
+            "com.apple.sound.beep.volume" = 0.0;
+            "com.apple.sound.beep.feedback" = 0;
+          };
+
+          dock = {
+            autohide = true;
+            show-recents = false;
+            launchanim = true;
+            orientation = "right";
+            tilesize = 48;
+            mru-spaces = false;
+          };
+
+          finder = {
+            AppleShowAllExtensions = true;
+	          FXPreferredViewStyle = "clmv";
+            _FXShowPosixPathInTitle = false;
+          };
+
+          loginwindow = {
+            GuestEnabled = false;
+            LoginwindowText = "pwntester";
+          };
+
+          screencapture = {
+            location = "~/Pictures/screenshots";
+          };
+
+          trackpad = {
+            Clicking = true;
+            TrackpadThreeFingerDrag = true;
+          };
+        };
+
+        keyboard = {
+          enableKeyMapping = true;
+          remapCapsLockToControl = true;
+        };
+      };
+
       # Create symlinks so we can launch apps from Spotlight
       system.activationScripts.applications.text = let
         env = pkgs.buildEnv {
@@ -133,18 +200,6 @@
         done
             '';
 
-      system.defaults = {
-        dock.autohide = true;
-        dock.mru-spaces = false;
-        finder.AppleShowAllExtensions = true;
-	      finder.FXPreferredViewStyle = "clmv";
-        loginwindow.GuestEnabled = false;
-        loginwindow.LoginwindowText = "pwntester";
-        NSGlobalDomain.AppleICUForce24HourTime = true;
-        NSGlobalDomain.AppleInterfaceStyle = "Dark";
-        NSGlobalDomain.KeyRepeat = 2;
-        screencapture.location = "~/Pictures/screenshots";
-      };
 
     };
   in

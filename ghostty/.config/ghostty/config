@@ -19,8 +19,16 @@ font-feature = -dlig
 # Enable slashed zero.
 font-feature = zero
 
+adjust-cell-height = 10%
+window-decoration=false
+mouse-hide-while-typing = true
+macos-non-native-fullscreen=visible-menu
+macos-option-as-alt = true
+macos-titlebar-style = hidden
+copy-on-select = true
 # macos-titlebar-style = tabs
 
+# TMUX integration considering that my leader key is ctrl + b
 # new tab
 keybind = cmd+t=text:\x02c
 # tmux sesh
@@ -29,7 +37,14 @@ keybind = cmd+k=text:\x02T
 keybind = cmd+f=text:\x02p
 # lazygit/gitui
 keybind = cmd+g=text:\x02g
-# tabs
+# Rename a tmux window on Cmd+r in tmux it is Ctrl+b+,
+keybind = cmd+r=text:\x02\x2c
+# Split the window horizontally on Cmd+minus in tmux it is Ctrl+b+"
+keybind = super+minus=text:\x02\x22
+# Split the window vertically on Cmd+backslash in tmux it is Ctrl+b+%
+# TODO: I want to change it Cmd+pipe but looks like ghostty doesn't support that key for now
+keybind = super+backslash=text:\x02\x25
+# tab
 keybind = cmd+one=text:\x021
 keybind = cmd+two=text:\x022
 keybind = cmd+three=text:\x023

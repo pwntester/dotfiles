@@ -17,3 +17,6 @@
 [submodule "home/zsh/plugins/zsh-syntax-highlighting"]
 	path = home/zsh/plugins/zsh-syntax-highlighting
 	url = https://github.com/zsh-users/zsh-syntax-highlighting.git
+[submodule "tmux/.config/tmux/plugins/catppuccin-tmux"]
+	path = tmux/.config/tmux/plugins/catppuccin-tmux
+	url = https://github.com/dreamsofcode-io/catppuccin-tmux.git

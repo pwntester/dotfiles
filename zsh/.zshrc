@@ -109,6 +109,5 @@ zinit wait lucid \
 
 builtin source ~/.config/zsh/aliases.sh
 builtin source ~/.config/zsh/functions.sh
-builtin source ~/.config/wezterm/shell-integration.sh
 
 eval "$(zoxide init zsh)"
