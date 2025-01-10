@@ -29,10 +29,10 @@
         mkalias # Needed to make nix gui apps available to spotlight/raycast
         codeql
         neovim
-        nodejs_23
         tmux
         gum # for sesh
         jq
+        yq
         zoxide
         direnv
         ripgrep
@@ -72,6 +72,8 @@
           "FelixKratz/formulae"
         ];
         brews = [
+          "awscli"
+          "docker-credential-helper-ecr"
           "mas" # To search the AppStore for App Ids with `mas search <App Name>`
 	        "trash"
           "borders" # https://github.com/FelixKratz/JankyBorders

@@ -51,7 +51,7 @@
             pkgs.gopls
           ];
           shellHook = ''
-            echo "go `${pkgs.go}/bin/go --version`"
+            echo "`${pkgs.go}/bin/go version`"
             exec zsh
           '';
         };

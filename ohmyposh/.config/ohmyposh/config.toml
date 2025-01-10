@@ -41,6 +41,13 @@ final_space = true
       commit_icon = '@'
       fetch_status = true
 
+  [[blocks.segments]]
+    type = "nix-shell"
+    style = "powerline"
+    foreground = "blue"
+    background = "transparent"
+    template = "(nix-{{ .Type }})"
+
 [[blocks]]
   type = 'rprompt'
   overflow = 'hidden'

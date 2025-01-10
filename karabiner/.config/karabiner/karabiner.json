@@ -57,6 +57,17 @@
             "description": "Change command + h/j/k/l to Arrows",
             "manipulators": [
               {
+                "conditions": [
+                  {
+                    "type": "device_if",
+                    "identifiers": [
+                      {
+                        "product_id": 835,
+                        "vendor_id": 1452
+                      }
+                    ]
+                  }
+                ],
                 "from": {
                   "key_code": "h",
                   "modifiers": {
@@ -70,6 +81,17 @@
                 "type": "basic"
               },
               {
+                "conditions": [
+                  {
+                    "type": "device_if",
+                    "identifiers": [
+                      {
+                        "product_id": 835,
+                        "vendor_id": 1452
+                      }
+                    ]
+                  }
+                ],
                 "from": {
                   "key_code": "j",
                   "modifiers": {
@@ -83,6 +105,17 @@
                 "type": "basic"
               },
               {
+                "conditions": [
+                  {
+                    "type": "device_if",
+                    "identifiers": [
+                      {
+                        "product_id": 835,
+                        "vendor_id": 1452
+                      }
+                    ]
+                  }
+                ],
                 "from": {
                   "key_code": "k",
                   "modifiers": {
@@ -96,6 +129,17 @@
                 "type": "basic"
               },
               {
+                "conditions": [
+                  {
+                    "type": "device_if",
+                    "identifiers": [
+                      {
+                        "product_id": 835,
+                        "vendor_id": 1452
+                      }
+                    ]
+                  }
+                ],
                 "from": {
                   "key_code": "k",
                   "modifiers": {
