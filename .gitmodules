@@ -20,3 +20,6 @@
 [submodule "tmux/.config/tmux/plugins/catppuccin-tmux"]
 	path = tmux/.config/tmux/plugins/catppuccin-tmux
 	url = https://github.com/dreamsofcode-io/catppuccin-tmux.git
+[submodule "dev-templates"]
+	path = dev-templates
+	url = https://github.com/the-nix-way/dev-templates.git

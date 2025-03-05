@@ -24,6 +24,7 @@
       # List packages installed in system profile. To search by name, run:
       # $ nix-env -qaP | grep wget
       environment.systemPackages = with pkgs; [ 
+        bzip2
 	      ffmpeg
         imagemagick
         mkalias # Needed to make nix gui apps available to spotlight/raycast
@@ -34,7 +35,6 @@
         jq
         yq
         zoxide
-        direnv
         ripgrep
         difftastic
         delta
@@ -46,10 +46,11 @@
         tree
         broot
         lazygit
-        llm
         sesh
+        wget
         curl
         git
+        git-lfs
         gh
         gh-dash
         stylua
@@ -61,10 +62,16 @@
 	      raycast
         slack
         vscode
+        nodejs
+        nodePackages.npm
         # project discovery
         interactsh
         nuclei
+        # python
+        # python312
+        # python312Packages.semgrep
       ];
+
 
       homebrew = {
         enable = true;
@@ -73,21 +80,26 @@
         ];
         brews = [
           "awscli"
+          #"podman"
           "docker-credential-helper-ecr"
+          # "docker-credential-helper"
           "mas" # To search the AppStore for App Ids with `mas search <App Name>`
-	        "trash"
           "borders" # https://github.com/FelixKratz/JankyBorders
+          "scc" # for counting lines of code https://github.com/boyter/scc?tab=readme-ov-file
+          "llm"
+          "mitmproxy"
         ];
         casks = [
+          "caffeine"
           "burp-suite-professional"
           "krisp"
           "docker"
+          # "podman-desktop"
           "the-unarchiver"
           "google-drive"
           "google-chrome"
           "microsoft-edge"
           "zoom"
-          "chatgpt"
  	        "elgato-camera-hub"
           "ghostty"
           "font-source-code-pro"
@@ -97,6 +109,9 @@
           "lookaway"
           "rectangle"
           "karabiner-elements"
+          "msty"
+          "granola"
+          "intellij-idea"
         ];
 	      masApps = {
 	        "Things3" = 904280696;

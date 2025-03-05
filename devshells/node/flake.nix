@@ -26,9 +26,13 @@
             nodejs_22
 
             nodePackages.node-gyp
+            nodePackages.node-gyp-build
             nodePackages.prettier
             nodePackages.typescript
             nodePackages.typescript-language-server
+            # nodePackages.tree-sitter
+            # nodePackages.tree-sitter-javascript
+            # nodePackages.tree-sitter-typescript
           ];
 
           shellHook = ''

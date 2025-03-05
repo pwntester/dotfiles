@@ -38,7 +38,9 @@ return {
 
 		sources = {
 			default = { "lsp", "path", "buffer" },
-			cmdline = {},
+		},
+		cmdline = {
+			sources = {},
 		},
 	},
 	-- allows extending the providers array elsewhere in your config

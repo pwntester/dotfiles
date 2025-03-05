@@ -1,6 +1,7 @@
 # This is Git's per-user configuration file.
 [core]
   pager = delta
+	excludesfile = /Users/pwntester/dotfiles/git.gitignore
 [interactive]
     diffFilter = delta --color-only --features=interactive
 [user]

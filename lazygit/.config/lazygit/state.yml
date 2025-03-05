@@ -1,5 +1,10 @@
 lastupdatecheck: 0
 recentrepos:
+    - /Users/pwntester/src/github.com/xbow-engineering/xbow-benchmarks-toolset
+    - /Users/pwntester/src/github.com/xbow-engineering/vulndb
+    - /Users/pwntester/src/github.com/xbow-engineering/vulnDB
+    - /Users/pwntester/src/github.com/xbow-engineering/team-security
+    - /Users/pwntester/src/github.com/xbow-engineering/ctf-solver
     - /Users/pwntester/dotfiles
     - /Users/pwntester/src/github.com/pwntester/octo.nvim
     - /Users/pwntester/src/github.com/pwntester/codeql.nvim
