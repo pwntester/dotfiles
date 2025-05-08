@@ -1,6 +1,7 @@
 local vim = vim
 return {
   "nvim-neo-tree/neo-tree.nvim",
+  enabled = false,
   cmd = "Neotree",
   deactivate = function()
     vim.cmd [[Neotree close]]

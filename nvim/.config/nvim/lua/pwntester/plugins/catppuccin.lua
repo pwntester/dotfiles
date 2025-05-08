@@ -127,6 +127,7 @@ return {
           ["MarkviewImageLink"] = { fg = colors.blue },
           ["MarkviewHyperlink"] = { fg = colors.blue },
           ["MarkviewEmail"] = { fg = colors.blue },
+          ["BlinkCmpGhostText"] = { link = "Comment" }
           -- ["@lsp.type.decorator.markdown"] = { link = "Label" },
           -- ["RenderMarkdownH1"] = { link = "@markup.heading.1" },
           -- ["RenderMarkdownH2"] = { link = "@markup.heading.2" },

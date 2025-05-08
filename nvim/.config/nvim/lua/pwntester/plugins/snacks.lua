@@ -6,6 +6,7 @@ return {
   ---@type snacks.Config
   opts = {
     bigfile = { enabled = true },
+    bufdelete = { enabled = true },
     dashboard = {
       enabled = true,
       sections = {
@@ -20,18 +21,18 @@ return {
         { section = "startup" },
       },
     },
+    explorer = { enabled = true },
+    image = { enabled = true },
     notifier = {
       enabled = false,
       timeout = 3000,
     },
+    picker = { enabled = true },
     quickfile = { enabled = true },
+    rename = { enabled = true },
+    scroll = { enabled = false },
     statuscolumn = { enabled = true },
     words = { enabled = true },
-    styles = {
-      notification = {
-        wo = { wrap = true } -- Wrap notifications
-      }
-    }
   },
   keys = {
     -- scratch buffer
@@ -73,7 +74,31 @@ return {
           },
         })
       end,
-    }
+    },
+    -- Explorer
+    { "ge", function() Snacks.explorer() end, desc = "File Explorer" },
+    -- Picker
+    {
+      "<leader>f",
+      function() Snacks.picker.files() end,
+      desc = "Find Files"
+    },
+    {
+      "<leader>l",
+      function() Snacks.picker.grep() end,
+      desc = "Live grep",
+    },
+    {
+      "<leader>o",
+      function() Snacks.picker.buffers() end,
+      desc = "Open buffers",
+    },
+    {
+      "<leader>m",
+      function() Snacks.picker.smart() end, 
+      desc = "Smart Find Files"
+      --desc = "Most Recently Used",
+    },
   },
   init = function()
     vim.api.nvim_create_autocmd("User", {

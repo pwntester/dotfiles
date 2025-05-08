@@ -1,14 +1,11 @@
 return {
 	"williamboman/mason.nvim",
 	dependencies = {
-		"neovim/nvim-lspconfig",
-		"williamboman/mason-lspconfig.nvim",
 		"WhoIsSethDaniel/mason-tool-installer.nvim",
 	},
 	config = function()
 		local mason = require("mason")
 		local mason_tool_installer = require("mason-tool-installer")
-		local mason_lspconfig = require("mason-lspconfig")
 
 		mason.setup({
 			ui = {
@@ -20,28 +17,31 @@ return {
 			},
 		})
 
-		local servers = {}
-		for _, server in ipairs(require("pwntester.lsp").servers) do
-			servers[server] = server
-		end
-		mason_lspconfig.setup({
-			ensure_installed = servers,
-		})
-
 		mason_tool_installer.setup({
 			ensure_installed = {
+        -- LSP
+        "lua-language-server",
+        "dockerfile-language-server",
+        "json-lsp",
+        "yaml-language-server",
+        "typescript-language-server",
+        "codeql",
+        "python-lsp-server", -- instead of "pyright" since it has no formatter
+        "bash-language-server",
+        "marksman",
+        
+        -- FORMATTERS
 				"stylua", -- lua formatter
-				"isort", -- python formatter
-				"black", -- python formatter
-				"shfmt", -- sh formatter
+				"isort",  -- python formatter
+				"black",  -- python formatter
+				"kulala-fmt", -- REST formatter
+				"shfmt",  -- sh formatter
+
+        -- LINTERS
 				"pylint", -- python linter
-				"mypy", -- python linter
+				"mypy",   -- python linter
 				"flake8", -- python linter
 				"shellcheck", -- sh linter
-				-- "eslint_d", -- js linter
-				-- "prettier", -- prettier formatter
-				-- "luacheck", -- lua linter
-				-- "write-good", -- markdown linter
 			},
 		})
 	end,

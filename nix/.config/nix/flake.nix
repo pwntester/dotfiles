@@ -64,6 +64,7 @@
         vscode
         nodejs
         nodePackages.npm
+        flock
         # project discovery
         interactsh
         nuclei
@@ -86,13 +87,13 @@
           "mas" # To search the AppStore for App Ids with `mas search <App Name>`
           "borders" # https://github.com/FelixKratz/JankyBorders
           "scc" # for counting lines of code https://github.com/boyter/scc?tab=readme-ov-file
-          "llm"
-          "mitmproxy"
+          "qemu"
         ];
         casks = [
+          "utm" # Universal Tunneling Machine (VMs)
+          "ngrok"
           "caffeine"
           "burp-suite-professional"
-          "krisp"
           "docker"
           # "podman-desktop"
           "the-unarchiver"
@@ -112,6 +113,8 @@
           "msty"
           "granola"
           "intellij-idea"
+          "mitmproxy"
+          "1password"
         ];
 	      masApps = {
 	        "Things3" = 904280696;
@@ -132,8 +135,8 @@
       nixpkgs.config.allowUnfree = true;
       nixpkgs.hostPlatform = "aarch64-darwin";
       programs.zsh.enable = true;
-      security.pam.enableSudoTouchIdAuth = true;
-      services.nix-daemon.enable = true;
+      security.pam.services.sudo_local.touchIdAuth = true;
+      nix.enable = true;
 
       # https://daiderd.com/nix-darwin/manual/index.html
       system = {

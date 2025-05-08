@@ -1,15 +1,17 @@
 lastupdatecheck: 0
 recentrepos:
-    - /Users/pwntester/src/github.com/xbow-engineering/xbow-benchmarks-toolset
-    - /Users/pwntester/src/github.com/xbow-engineering/vulndb
     - /Users/pwntester/src/github.com/xbow-engineering/vulnDB
+    - /Users/pwntester/src/github.com/xbow-engineering/xbow-benchmarks-toolset
+    - /Users/pwntester/src/github.com/xbow-engineering/xbow-pentesting-tools
+    - /Users/pwntester/src/github.com/xbow-engineering/xb-browse
+    - /Users/pwntester/src/github.com/xbow-engineering/vulndb
     - /Users/pwntester/src/github.com/xbow-engineering/team-security
     - /Users/pwntester/src/github.com/xbow-engineering/ctf-solver
     - /Users/pwntester/dotfiles
     - /Users/pwntester/src/github.com/pwntester/octo.nvim
     - /Users/pwntester/src/github.com/pwntester/codeql.nvim
 startuppopupversion: 5
-lastversion: 0.44.1
+lastversion: 0.48.0
 customcommandshistory:
     - qa
 hidecommandlog: false

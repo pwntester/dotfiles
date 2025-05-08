@@ -118,6 +118,13 @@ return {
       desc = "Next tab",
     },
 
+    -- format (conform.nvim)
+    ["n<C-f>"] = {
+      [[:Format<CR>]],
+      desc = "Format using LSP formatter",
+    },
+    --[[:lua vim.lsp.buf.format()<CR>]]
+
     -- paste keeping the default register
     ["v<leader>p"] = {
       '"_dP',
@@ -169,9 +176,6 @@ return {
       desc = "Coment blockwise",
     },
 
-    -- CHATGPT
-    ["v<leader>gc"] = { [[:ChatGPTRun grammar_correction<CR>]] },
-
     -- GITSIGNS
     ["n[h"] = {
       "<Plug>(GitGutterPrevHunk)",
@@ -211,98 +215,10 @@ return {
     },
   },
 
-  ["lsp"] = {
-    ["ngdc"] = {
-      vim.lsp.buf.declaration,
-      desc = "Goto declaration",
-    },
-    ["ngi"] = {
-      vim.lsp.buf.implementation,
-      desc = "Goto implementation",
-    },
-    ["ngtt"] = {
-      vim.lsp.buf.type_definition,
-      desc = "Goto type definition",
-    },
-    --[[ ["ng="] = { ]]
-    --[[   vim.lsp.buf.formatting, ]]
-    --[[   desc = "Format document" ]]
-    --[[ }, ]]
-    ["ngic"] = {
-      vim.lsp.buf.incoming_calls,
-      desc = "Incoming calls",
-    },
-    ["ngoc"] = {
-      vim.lsp.buf.outgoing_calls,
-      desc = "Outcoming calls",
-    },
-    ["ngK"] = {
-      vim.lsp.buf.hover,
-      desc = "Hover",
-    },
-    ["ngD"] = {
-      function()
-        vim.diagnostic.open_float(0, { scope = "line", border = "single" })
-      end,
-      desc = "Show diagnostics",
-    },
-    ["ngd"] = {
-      function()
-        if not vim.g.vscode then
-          require("telescope.builtin").lsp_definitions()
-        end
-      end,
-      desc = "Goto definition",
-    },
-    ["ngr"] = {
-      function()
-        if not vim.g.vscode then
-          require("telescope.builtin").lsp_references()
-        end
-      end,
-      desc = "Goto references",
-    },
-  },
-  -- ["treesitter"] = {
-  --   ["n<CR>"] = {
-  --     [[<Plug>(TsSelInit)]],
-  --     noremap = false,
-  --     desc = "Select context incrementally",
-  --   },
-  --   ["x<CR>"] = {
-  --     [[<Plug>(TsSelScopeIncr)]],
-  --     noremap = false,
-  --     desc = "Select context incrementally",
-  --   },
-  --   ["x<Tab>"] = {
-  --     [[<Plug>(TsSelNodeIncr)]],
-  --     noremap = false,
-  --     desc = "Select node incrementally",
-  --   },
-  --   ["x<S-Tab>"] = {
-  --     [[<Plug>(TsSelNodeDecr)]],
-  --     noremap = false,
-  --     desc = "Select node incrementally",
-  --   },
-  -- },
   ["gitconflict"] = {
     ["n[n"] = { [[<Plug>(git-conflict-prev-conflict)]], noremap = false, desc = "Previous conflict" },
     ["n]n"] = { [[<Plug>(git-conflict-next-conflict)]], noremap = false, desc = "Next conflict" },
     ["n<leader>co"] = { [[<Plug>(git-conflict-ours)]], noremap = false, desc = "Choose ours" },
     ["n<leader>ct"] = { [[<Plug>(git-conflict-theirs)]], noremap = false, desc = "Choose theirs" },
   },
-  -- ["markdown"] = {
-  --   ["i<Tab>"] = {
-  --     function()
-  --       vim.api.nvim_input "<C-T>"
-  --     end,
-  --     { desc = "Increase Indent" },
-  --   },
-  --   ["i<S-Tab>"] = {
-  --     function()
-  --       vim.api.nvim_input "<C-D>"
-  --     end,
-  --     { desc = "Decrease Indent" },
-  --   },
-  -- },
 }

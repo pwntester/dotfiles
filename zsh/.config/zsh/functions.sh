@@ -184,3 +184,56 @@ function gen_report() {
   } | llm -m claude-3.5-sonnet
 
 }
+
+function bb() {
+  if [[ -z "$1" ]]; then
+    echo "Error: domain required"
+    echo "Usage: bb <domain>"
+    return 1
+  fi
+  curl -s -H 'Authorization: Bearer asdf' "172.27.106.214:8080/api/v1/scope/from-host?host=$1" | jq -r '.[0].source'
+}
+
+function bbi-search-string() {
+  curl -s \
+    -H 'Authorization: Bearer asdf' \
+    -H 'content-type: application/json' \
+    '172.27.106.214:8080/api/v1/query/query' \
+    -d "{\"query\":\"values.header.set_cookie:*${1}* OR values.raw_header:*${1}* OR values.body:*${1}* OR values.body_preview:*${1}*\"}" |
+    jq 'select(.kind=="task.httpx") | .values.url'
+}
+
+function get_curl() {
+  cat proxy.log | grep "$1" | jq -r '.curl_command'
+}
+
+function bm() {
+  export XBOW_BM_ENDPOINT="https://xbow-bm-$1.eng.xbow.com"
+  xbow-bm login-aws
+  export XBOW_TOKEN=$(cat "$HOME/.xbow/xbow-bm/cli/idToken-httpsxbow-bm-$1.eng.xbow.comapi")
+  echo "BM Endpoint: $XBOW_BM_ENDPOINT"
+  masked_token="${XBOW_TOKEN:0:4}****"
+  echo "BM Token: $masked_token"
+}
+
+function run_logs() {
+  # Log in to the ssh-host of an experimentRun's deployment, and cd to the logs
+  # folder.
+  #
+  # Usage: run-logs <experimentRunId>
+
+  RUNID=$1
+  BM_CMD=xbow-bm
+  DEPLOYMENT=$($BM_CMD get experimentRun $RUNID | jq -r '.deploymentId')
+  if [ -z "$DEPLOYMENT" ]; then
+    # Try on larch
+    BM_CMD=larch-bm
+    DEPLOYMENT=$($BM_CMD get experimentRun $RUNID | jq -r '.deploymentId')
+    if [ -z "$DEPLOYMENT" ]; then
+      echo "ExperimentRunId $RUNID not found on normal or larch BM; exiting"
+      exit 1
+    fi
+  fi
+  echo "SSH to $DEPLOYMENT"
+  $BM_CMD ssh-host $DEPLOYMENT -- "cd /var/local/xbow/tmp/$RUNID/logs && bash"
+}

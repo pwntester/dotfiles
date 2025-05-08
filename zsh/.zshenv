@@ -8,6 +8,7 @@ export PATH=$PATH:/usr/local/bin
 export PATH=$PATH:/usr/local/sbin
 export PATH=$PATH:/usr/local/share/npm/bin
 export PATH=$PATH:$HOME/bin
+export PATH=$PATH:$HOME/mutable_node_modules/bin
 export PATH=$PATH:$HOME/.gem/ruby/3.0.0/bin
 export PATH=$PATH:$HOME/.cargo/bin
 export PATH=$PATH:$HOME/.local/bin
@@ -17,7 +18,6 @@ export PATH=$PATH:$HOME/src/github.com/xbow-engineering/team-security/scripts/sa
 
 
 export XDG_CONFIG_HOME="$HOME/.config"
-export AICHAT_CONFIG_DIR="$XDG_CONFIG_HOME/aichat"
 
 export FZF_DEFAULT_OPTS=" \
     --color=bg+:#363a4f,bg:#24273a,spinner:#f4dbd6,hl:#ed8796 \
@@ -32,11 +32,6 @@ if [ -x "$(command -v go)" ]; then
   export GOPATH=$(go env GOPATH)
   export PATH=$PATH:$(go env GOPATH)/bin
 fi
-
-# xbow
-export XBOW_BM_INSTANCE=xbow-bm-albert
-export XBOW_BM_ENDPOINT=https://$XBOW_BM_INSTANCE.eng.xbow.com
-export XBOW_TOKEN=`cat ~/.xbow/xbow-bm/cli/idToken-https$XBOW_BM_INSTANCE.eng.xbow.comapi`
 
 # codeql
 export CODEQL_DIST=$HOME/src/github.com/github/codeql 

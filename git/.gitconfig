@@ -29,3 +29,5 @@
 	features = catppuccin-machiatto
 [delta "interactive"]
     keep-plus-minus-markers = false
+# [url "git@github.com:"]
+#	insteadOf = https://github.com/

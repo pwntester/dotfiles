@@ -4,6 +4,21 @@ local vim = vim
 
 local M = {}
 
+function M.get_clients(opts)
+  local ret = {}
+  if vim.lsp.get_clients then
+    ret = vim.lsp.get_clients(opts)
+  else
+    ret = vim.lsp.get_active_clients(opts)
+    if opts and opts.method then
+      ret = vim.tbl_filter(function(client)
+        return client.supports_method(opts.method, { bufnr = opts.bufnr })
+      end, ret)
+    end
+  end
+  return opts and opts.filter and vim.tbl_filter(opts.filter, ret) or ret
+end
+
 M.spec = { "lsp", { ".git", "lua" }, "cwd" }
 
 M.detectors = {}
@@ -18,7 +33,7 @@ function M.detectors.lsp(buf)
     return {}
   end
   local roots = {}
-  for _, client in pairs(require("pwntester.lsp").get_clients { bufnr = buf }) do
+  for _, client in pairs(M.get_clients { bufnr = buf }) do
     -- only check workspace folders, since we're not interested in clients
     -- running in single file mode
     local workspace = client.config.workspace_folders
@@ -143,11 +158,9 @@ function M.get(opts)
     local roots = M.detect { all = false }
     ret = roots[1] and roots[1].paths[1] or vim.uv.cwd()
     M.cache[buf] = ret
-  end
-  if opts and opts.normalize then
+  else
     return ret
   end
-  return ret
 end
 
 function M.git()

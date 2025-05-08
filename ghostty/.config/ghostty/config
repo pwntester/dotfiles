@@ -4,10 +4,11 @@ theme = catppuccin-macchiato
 
 # font
 #font-family = "MonaspiceNe Nerd Font"
-font-family = Source Code Pro Light
-font-style-bold = Source Code Pro Medium
-font-style-italic = Source Code Pro ExtraLight Italic
-font-style-bold-italic = Source Code Pro Italic
+#font-family = "Akkurat-Mono"
+ font-family = Source Code Pro Light
+ font-style-bold = Source Code Pro Medium
+ font-style-italic = Source Code Pro ExtraLight Italic
+ font-style-bold-italic = Source Code Pro Italic
 
 font-size = 15
 font-thicken = true
@@ -40,7 +41,7 @@ keybind = cmd+g=text:\x02g
 # Rename a tmux window on Cmd+r in tmux it is Ctrl+b+,
 keybind = cmd+r=text:\x02\x2c
 # Split the window horizontally on Cmd+minus in tmux it is Ctrl+b+"
-keybind = super+minus=text:\x02\x22
+#keybind = super+minus=text:\x02\x22
 # Split the window vertically on Cmd+backslash in tmux it is Ctrl+b+%
 # TODO: I want to change it Cmd+pipe but looks like ghostty doesn't support that key for now
 keybind = super+backslash=text:\x02\x25

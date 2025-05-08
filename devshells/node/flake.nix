@@ -19,7 +19,7 @@
             # nodejs-22_x
 
             # Comment out one of these to use an alternative package manager.
-            # yarn
+            yarn
             # pnpm
             # bun
 
