@@ -1,7 +1,7 @@
 # This is Git's per-user configuration file.
 [core]
   pager = delta
-	excludesfile = /Users/pwntester/dotfiles/git.gitignore
+	excludesfile = /Users/pwntester/.config/git/.gitignore
 [interactive]
     diffFilter = delta --color-only --features=interactive
 [user]
@@ -31,3 +31,5 @@
     keep-plus-minus-markers = false
 # [url "git@github.com:"]
 #	insteadOf = https://github.com/
+[url "ssh://git@github.com/"]
+	insteadOf = https://github.com/

@@ -28,161 +28,13 @@ function cdr() {
   cd "$(gh cdr "$@")" || return
 }
 
-function fc() {
-  curl -s -X POST https://api.firecrawl.dev/v0/scrape \
-    -H 'Content-Type: application/json' \
-    -H "Authorization: Bearer $FIRECRAWL_API_KEY" \
-    -d "{\"url\": \"$1\"}" | jq -r '.data.markdown'
-}
-
-function sm() {
-  # fabric -m=gpt-4o-2024-05-13 -p summarize_meeting
-  # pbpaste | llm "$(</Users/pwntester/.config/fabric/custom_patterns/summarize_meeting/system.md)" | FABRIC_OUTPUT_PATH="/Users/pwntester/obsidian/Meeting Notes" save -s "$1"
-  # pbpaste | aichat -m claude:claude-3-5-sonnet-20240620 --prompt "$(</Users/pwntester/.config/fabric/custom_patterns/summarize_meeting/system.md)" | FABRIC_OUTPUT_PATH="/Users/pwntester/obsidian/Meeting Notes" save -s "$1"
-  pbpaste | aichat --prompt "$(</Users/pwntester/.config/fabric/custom_patterns/summarize_meeting/system.md)" | FABRIC_OUTPUT_PATH="/Users/pwntester/obsidian/Meeting Notes" save -s "$1"
-}
-
-function logbook() {
-  if [[ $# -eq 0 ]]; then
-    DATE=$(date -I)
-  else
-    DATE="$1"
-  fi
-  JOURNAL="/Users/pwntester/obsidian/Journal/$DATE.md"
-
-  # Check if the journal file exists
-  if [[ -f "$JOURNAL" ]]; then
-    echo "Appending to existing journal file: $JOURNAL"
-  else
-    echo "Creating new journal file: $JOURNAL"
-    cat <<EOF >"$JOURNAL"
----
-tags:
-  - journal
-  - daily-notes
-created: "$DATE"
-links: []
-modified: "$DATE"
----
-
-# $DATE
-
-## Notes
-
-EOF
-
-  fi
-
-  PROMPT="Generate a markdown logbook with all the tasks the user worked on during the day. These tasks will be provided in JSON format. Write a short summary for each of the tasks and also include URLs or other notes associated with the tasks, but do not include any dates. Use the following format and template for the response: \
-\  
-  ## Logbook \
-  ### Project title \
-  #### Task title \
-  Brief summary of the task. \
-\
-  - URL: [URL] (optional) \
-\
-  ... \
-"
-
-  {
-    echo -e "\n\n## Meeting and Conversations\n\n"
-
-    find Meeting\ Notes -type f -name "${DATE}*" -print0 | xargs -0 -I {} basename {} | sed "s/^/- [[/g" | sed "s/\.md$/]]/g"
-
-    load_pyenv
-    things-cli -j -r logbook | jq ".[] | select(.stop_date | contains(\"$DATE\"))" | llm "$PROMPT"
-
-  } | tee -a "$JOURNAL"
-
-}
-
 function sarif() {
   nvim -c "QL sarif load $1"
-}
-
-function dev() {
-  nix develop "$HOME/dotfiles/dev-templates/$1"
-}
-
-week_summary() {
-  if [ -z "$1" ]; then
-    start_date=$(date -v-7d +%Y-%m-%d)
-  else
-    start_date="$1"
-  fi
-  current_date=$(date +%Y-%m-%d)
-  echo "Summaring week ($start_date - $current_date)"
-  find . -type f -name "*.md" -newermt "$start_date" ! -newermt "$current_date 23:59:59" -print0 | xargs -0 files-to-prompt -c | llm -m claude-3.5-sonnet "create a list of things Ive been worked on based on the journal entries provided. This blob should match all the files from the provided date to the current date. Just output a markdown list"
-  # "You will be provided with several journal files containing daily entries. Your task is to analyze these entries and generate a concise list of tasks completed, meetings attended, and any other relevant activities or accomplishments during the period covered by the journal entries. Present this information as a simple markdown list, without any headings, introductions, or conclusions. Each item should be clear and to the point, providing just enough context to understand the task or activity. Do not include any explanatory text outside of the list itself. Group similar tasks together and omit any personal tasks"
-
 }
 
 # XBOW
 function get_bm_compose() {
   bm get benchmark $1 | jq -r '.dockerCompose' | yq --output-format=yaml 'del(.services.attack) | del(.services."xb-hosting")'
-}
-
-function gen_report() {
-  # Generate a markdown report from an experimentRun solver trace
-  # Usage: gen_report <experimentRunId>
-  # Requirements:
-  #   - llm (brew install llm)
-  #   - llm-anthropic (llm install llm-anthropic)
-
-  if [[ -z "$1" ]]; then
-    echo "Error: experimentRunId required"
-    echo "Usage: gen_report <experimentRunId>"
-    return 1
-  fi
-
-  if [[ -z "$XBOW_BM_ENDPOINT" ]]; then
-    echo "Error: XBOW_BM_ENDPOINT environment variable not set"
-    return 1
-  fi
-
-  if [[ -z "$XBOW_TOKEN" ]]; then
-    echo "Error: XBOW_TOKEN environment variable not set"
-    return 1
-  fi
-
-  local run_id=$1
-  local api_base="$XBOW_BM_ENDPOINT/api/experimentRun"
-  local auth_header="authorization: Bearer $XBOW_TOKEN"
-
-  # Create temporary files and ensure cleanup
-  local temp_trace=$(mktemp /tmp/xbow-solve.XXXXXX)
-  local temp_yaml=$(mktemp /tmp/xbow-solve.XXXXXX)
-  trap 'rm -f "$temp_trace" "$temp_yaml"' EXIT
-
-  # Get trace log name
-  local trace_log=$(curl -s "$api_base/$run_id/log" \
-    -H "Accept: application/json" \
-    -H "$auth_header" |
-    jq -r '.[] | select(.name | contains("solverTrace")) | .name')
-
-  echo "[+] Downloading trace from: $api_base/$run_id/log/$trace_log"
-
-  # Download trace and prepare prompts
-  curl -s "$api_base/$run_id/log/$trace_log" \
-    -H "Accept: text/plain" \
-    -H "$auth_header" >"$temp_trace"
-
-  # Prepare YAML generation prompt
-  {
-    cat "$HOME/CopperMind/System/Prompts/xbow/trace2yaml.md"
-    cat "$temp_trace"
-  } >"$temp_yaml"
-
-  echo "[+] Generating YAML report"
-  local yaml_output=$(llm -m claude-3.5-sonnet <"$temp_yaml")
-
-  echo "[+] Generating MD report"
-  {
-    cat "$HOME/CopperMind/System/Prompts/xbow/yamlreport2md.md"
-    echo "$yaml_output"
-  } | llm -m claude-3.5-sonnet
-
 }
 
 function bb() {
@@ -191,32 +43,57 @@ function bb() {
     echo "Usage: bb <domain>"
     return 1
   fi
-  curl -s -H 'Authorization: Bearer asdf' "172.27.106.214:8080/api/v1/scope/from-host?host=$1" | jq -r '.[0].source'
+  curl -s -H 'Authorization: Bearer asdf' "172.27.209.218:8080/api/v1/scope/from-host?host=$1" | jq -r '.[0].source'
+}
+
+bbs() {
+    local file="$1"
+    
+    if [[ ! -f "$file" ]]; then
+        echo "Error: File '$file' not found" >&2
+        return 1
+    fi
+    
+    while IFS= read -r url; do
+        # Skip empty lines
+        [[ -z "$url" ]] && continue
+        
+        # Extract host from URL
+        host=$(echo "$url" | sed -E 's|^https?://([^/]+).*|\1|')
+        
+        # Call API and extract source, fallback to ??? if curl fails
+        program=$(curl -s -H 'Authorization: Bearer asdf' "172.27.209.218:8080/api/v1/scope/from-host?host=$host" | jq -r '.[0].source' 2>/dev/null)
+        
+        # If curl failed or jq returned null/empty, use ???
+        if [[ -z "$program" || "$program" == "null" ]]; then
+            program="???"
+        fi
+        
+        echo "$program"
+    done < "$file"
 }
 
 function bbi-search-string() {
   curl -s \
     -H 'Authorization: Bearer asdf' \
     -H 'content-type: application/json' \
-    '172.27.106.214:8080/api/v1/query/query' \
+    '172.27.209.218:8080/api/v1/query/query' \
     -d "{\"query\":\"values.header.set_cookie:*${1}* OR values.raw_header:*${1}* OR values.body:*${1}* OR values.body_preview:*${1}*\"}" |
     jq 'select(.kind=="task.httpx") | .values.url'
 }
 
-function get_curl() {
-  cat proxy.log | grep "$1" | jq -r '.curl_command'
-}
-
 function bm() {
   export XBOW_BM_ENDPOINT="https://xbow-bm-$1.eng.xbow.com"
+  export XBOW_BM_URL="https://xbow-bm-$1.eng.xbow.com"
   xbow-bm login-aws
   export XBOW_TOKEN=$(cat "$HOME/.xbow/xbow-bm/cli/idToken-httpsxbow-bm-$1.eng.xbow.comapi")
+  export XBOW_BM_TOKEN=$(cat "$HOME/.xbow/xbow-bm/cli/idToken-httpsxbow-bm-$1.eng.xbow.comapi")
   echo "BM Endpoint: $XBOW_BM_ENDPOINT"
-  masked_token="${XBOW_TOKEN:0:4}****"
+  masked_token="${XBOW_TOKEN:0:16}****"
   echo "BM Token: $masked_token"
 }
 
-function run_logs() {
+function get_run_logs() {
   # Log in to the ssh-host of an experimentRun's deployment, and cd to the logs
   # folder.
   #
@@ -236,4 +113,81 @@ function run_logs() {
   fi
   echo "SSH to $DEPLOYMENT"
   $BM_CMD ssh-host $DEPLOYMENT -- "cd /var/local/xbow/tmp/$RUNID/logs && bash"
+}
+
+# Devcontainer utilities
+function load_devcontainer() {
+  # Add devcontainer scripts to PATH (for dc-init and dc-nvim)
+  export PATH="$HOME/dotfiles/devcontainer/.config/devcontainer/scripts:$PATH"
+
+  # Main devcontainer CLI alias
+  alias dc='devcontainer'
+
+  # Convenience aliases for common operations
+  alias dci='dc-init'                                                      # Initialize from template
+  alias dcu='devcontainer up --workspace-folder .'                         # Start container
+  alias dce='devcontainer exec --workspace-folder .'                       # Execute command in container
+  alias dcr='devcontainer up --workspace-folder . --remove-existing-container'  # Rebuild container
+  alias dcs='devcontainer exec --workspace-folder . bash'                  # Open shell in container
+  alias dcc='devcontainer exec --workspace-folder . claude'                # Claude Code (sandboxed)
+  alias dcp='devcontainer exec --workspace-folder . github-copilot-cli'   # GitHub Copilot CLI (sandboxed)
+  alias dcd='docker stop $(docker ps -q --filter label=devcontainer.local_folder=$(pwd))'  # Stop container
+
+  # Wrapper for npm to prevent accidental host usage
+  npm() {
+    if [[ "$1" == "-v" || "$1" == "--version" ]] && [[ $# -eq 1 ]]; then
+      command npm "$@"
+      return
+    fi
+
+    if [[ -d ".devcontainer" ]] && [[ "$1" != "install" || ! "$*" =~ "-g" ]]; then
+      echo "⚠️  Warning: You're using npm on the host system."
+      echo "💡 Consider using: dce npm $*"
+      echo ""
+      read -q "REPLY?Continue with host npm? (y/n) "
+      echo
+      if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        return 1
+      fi
+    fi
+
+    command npm "$@"
+  }
+
+  # Wrapper for pnpm to prevent accidental host usage
+  pnpm() {
+    if [[ "$1" == "-v" || "$1" == "--version" ]] && [[ $# -eq 1 ]]; then
+      command pnpm "$@" 2>/dev/null || echo "pnpm not installed on host (use in devcontainer)"
+      return
+    fi
+
+    if [[ -d ".devcontainer" ]]; then
+      echo "⚠️  Warning: pnpm is not available on host (by design)."
+      echo "💡 Use: dce pnpm $*"
+      return 1
+    fi
+
+    command pnpm "$@" 2>/dev/null || echo "pnpm not installed on host (use in devcontainer)"
+  }
+
+  # Wrapper for claude to prevent accidental host usage (security: AI should run sandboxed)
+  claude() {
+    if [[ "$1" == "--version" ]] && [[ $# -eq 1 ]]; then
+      command claude "$@"
+      return
+    fi
+
+    if [[ -d ".devcontainer" ]]; then
+      echo "⚠️  Warning: Claude Code should run in the sandboxed devcontainer for security."
+      echo "💡 Use: dcc $*"
+      echo ""
+      read -q "REPLY?Continue with host Claude? (y/n) "
+      echo
+      if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        return 1
+      fi
+    fi
+
+    command claude "$@"
+  }
 }

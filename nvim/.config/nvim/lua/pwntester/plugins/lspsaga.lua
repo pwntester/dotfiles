@@ -78,13 +78,13 @@ return {
         vim.cmd 'Lspsaga show_line_diagnostics ++normal'
       end,
     },
-    {
-      '<leader>db',
-      mode = { 'n' },
-      function()
-        vim.cmd 'Lspsaga show_buf_diagnostics ++normal'
-      end,
-    },
+    -- {
+    --   '<leader>db',
+    --   mode = { 'n' },
+    --   function()
+    --     vim.cmd 'Lspsaga show_buf_diagnostics ++normal'
+    --   end,
+    -- },
     {
       '<leader>dw',
       mode = { 'n' },

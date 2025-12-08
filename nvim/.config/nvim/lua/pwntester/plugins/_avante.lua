@@ -3,24 +3,32 @@ return {
   event = "VeryLazy",
   lazy = "false",
   build = "make",
+  version = false,
+  enabled = false,
   dependencies = {
-    "nvim-treesitter/nvim-treesitter",
     "nvim-lua/plenary.nvim",
     "MunifTanjim/nui.nvim",
-    "echasnovski/mini.icons",
     "ibhagwan/fzf-lua", -- for file_selector provider fzf
+    "folke/snacks.nvim", -- for input provider snacks
+    "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
+    "zbirenbaum/copilot.lua", -- for providers='copilot'
   },
   opts = {
     provider = "claude",
-    auto_suggestions_provider = "claude",
-    claude = {
-      endpoint = "https://api.anthropic.com",
-      model = "claude-3-5-sonnet-20240620",
-      temperature = 0,
-      max_tokens = 4096,
+    cursor_applying_provider = "claude",
+    providers = {
+      claude = {
+        endpoint = "https://api.anthropic.com",
+        model = "claude-sonnet-4-20250514",
+        timeout = 30000, -- Timeout in milliseconds
+          extra_request_body = {
+            temperature = 0.75,
+            max_tokens = 20480,
+          },
+      },
     },
     behaviour = {
-      enable_claude_text_editor_tool_mode = false,
+        enable_cursor_planning_mode = true, -- enable cursor planning mode!
     },
     mappings = {
       ask = "<leader>aa",
@@ -57,6 +65,23 @@ return {
         close = { "q" },
         close_from_input = nil,
       },
+    },
+    selector = {
+        --- @alias avante.SelectorProvider "native" | "fzf_lua" | "mini_pick" | "snacks" | "telescope" | fun(selector: avante.ui.Selector): nil
+        --- @type avante.SelectorProvider
+        provider = "fzf",
+        -- Options override for custom providers
+        provider_opts = {},
+    },
+    {
+      input = {
+        provider = "snacks",
+        provider_opts = {
+          -- Additional snacks.input options
+          title = "Avante Input",
+          icon = " ",
+        },
+      }
     },
     windows = {
       ---@type "right" | "left" | "top" | "bottom"

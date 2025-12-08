@@ -1,0 +1,42 @@
+#!/bin/bash
+# Initialize a devcontainer in the current directory
+
+set -e
+
+TEMPLATE_DIR="${HOME}/dotfiles/devcontainer/.config/devcontainer/templates"
+
+echo "Available templates:"
+echo "  1) nodejs-typescript - Node.js with TypeScript, pnpm, neovim"
+echo ""
+read -p "Select template (1): " choice
+
+case "$choice" in
+    1|"")
+        TEMPLATE="nodejs-typescript"
+        ;;
+    *)
+        echo "Invalid choice"
+        exit 1
+        ;;
+esac
+
+if [ -d ".devcontainer" ] || [ -f ".devcontainer.json" ]; then
+    read -p "Devcontainer config already exists. Overwrite? (y/N): " confirm
+    if [ "$confirm" != "y" ] && [ "$confirm" != "Y" ]; then
+        echo "Aborted."
+        exit 0
+    fi
+fi
+
+echo "📋 Copying template: $TEMPLATE"
+cp -r "${TEMPLATE_DIR}/${TEMPLATE}/.devcontainer" .
+
+# Make postCreate.sh executable
+chmod +x .devcontainer/postCreate.sh
+
+echo "✅ Devcontainer initialized!"
+echo ""
+echo "Next steps:"
+echo "  1. Review .devcontainer/devcontainer.json"
+echo "  2. Run: dcu (or 'devcontainer up --workspace-folder .')"
+echo "  3. Run: dcn . (or 'dc-nvim .')"

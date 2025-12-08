@@ -1,2 +1,4 @@
 extensions.codeql.version: v2.19.3
 version: "1"
+aliases:
+    deploy: '!gh workflow --repo xbow-engineering/deploy-controller run main-to-production.yml -f repository="$(gh repo view --json nameWithOwner --jq .nameWithOwner)" "$@"'

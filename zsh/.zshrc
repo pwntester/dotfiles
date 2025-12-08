@@ -111,3 +111,9 @@ builtin source ~/.config/zsh/aliases.sh
 builtin source ~/.config/zsh/functions.sh
 
 eval "$(zoxide init zsh)"
+
+# Worktrunk
+if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init zsh)"; fi
+
+# Auto-load devcontainer utilities
+load_devcontainer

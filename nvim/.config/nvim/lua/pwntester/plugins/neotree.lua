@@ -1,7 +1,6 @@
 local vim = vim
 return {
   "nvim-neo-tree/neo-tree.nvim",
-  enabled = false,
   cmd = "Neotree",
   deactivate = function()
     vim.cmd [[Neotree close]]
@@ -71,11 +70,6 @@ return {
   config = function()
     local highlights = require "neo-tree.ui.highlights"
     local scan = require "plenary.scandir"
-    local pickers = require "telescope.pickers"
-    local finders = require "telescope.finders"
-    local tactions = require "telescope.actions"
-    local taction_state = require "telescope.actions.state"
-    local conf = require("telescope.config").values
     local manager = require "neo-tree.sources.manager"
     local cc = require "neo-tree.sources.common.commands"
     local fs = require "neo-tree.sources.filesystem"
@@ -266,48 +260,39 @@ return {
               table.insert(relative_dirs, relative_dir)
             end
 
-            local opts = require("telescope.themes").get_dropdown {}
-            pickers
-              .new(opts, {
-                prompt_title = "Target directory",
-                finder = finders.new_table {
-                  results = relative_dirs,
-                },
-                sorter = conf.generic_sorter(opts),
-                attach_mappings = function(prompt_bufnr)
-                  tactions.select_default:replace(function()
-                    tactions.close(prompt_bufnr)
-                    local selection = taction_state.get_selected_entry()
+            Snacks.picker.pick {
+              title = "Target directory",
+              items = relative_dirs,
+              format = function(item) 
+                return item 
+              end,
+              confirm = function(item)
+                local source_file = node.path
+                local target_dir = cwd .. item
+                target_dir = target_dir .. "/"
+                target_dir = target_dir:gsub("//", "/")
+                local target_file = target_dir .. node.name
 
-                    local source_file = node.path
-                    local target_dir = cwd .. selection[1]
-                    target_dir = target_dir .. "/"
-                    target_dir = target_dir:gsub("//", "/")
-                    local target_file = target_dir .. node.name
+                if not is_dir(target_dir) then
+                  vim.notify "Target is not a directory"
+                  return
+                end
 
-                    if not is_dir(target_dir) then
-                      vim.notify "Target is not a directory"
+                vim.loop.fs_rename(
+                  source_file,
+                  target_file,
+                  vim.schedule(function(err)
+                    if err then
+                      print "Could not move the file"
                       return
+                    else
+                      print("Moved " .. node.name .. " successfully")
+                      tree:render()
                     end
-
-                    vim.loop.fs_rename(
-                      source_file,
-                      target_file,
-                      vim.schedule(function(err)
-                        if err then
-                          print "Could not move the file"
-                          return
-                        else
-                          print("Moved " .. node.name .. " successfully")
-                          tree:render()
-                        end
-                      end)
-                    )
                   end)
-                  return true
-                end,
-              })
-              :find()
+                )
+              end,
+            }
           end,
           ["P"] = { "toggle_preview", config = { use_float = true } },
           ["<esc>"] = "revert_preview",

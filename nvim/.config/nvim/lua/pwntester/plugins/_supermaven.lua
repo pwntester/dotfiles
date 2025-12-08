@@ -1,6 +1,7 @@
 return {
   {
     "supermaven-inc/supermaven-nvim",
+    enabled = false,
     event = "InsertEnter",
     cmd = {
       "SupermavenUseFree",

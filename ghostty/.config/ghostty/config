@@ -1,14 +1,13 @@
-
 # theme
-theme = catppuccin-macchiato
+theme = catppuccin-macchiato.conf
 
 # font
 #font-family = "MonaspiceNe Nerd Font"
 #font-family = "Akkurat-Mono"
- font-family = Source Code Pro Light
- font-style-bold = Source Code Pro Medium
- font-style-italic = Source Code Pro ExtraLight Italic
- font-style-bold-italic = Source Code Pro Italic
+font-family = Source Code Pro Light
+font-style-bold = Source Code Pro Medium
+font-style-italic = Source Code Pro ExtraLight Italic
+font-style-bold-italic = Source Code Pro Italic
 
 font-size = 15
 font-thicken = true
@@ -41,17 +40,18 @@ keybind = cmd+g=text:\x02g
 # Rename a tmux window on Cmd+r in tmux it is Ctrl+b+,
 keybind = cmd+r=text:\x02\x2c
 # Split the window horizontally on Cmd+minus in tmux it is Ctrl+b+"
-#keybind = super+minus=text:\x02\x22
+#keybind = cmd+minus=text:\x02\x22
 # Split the window vertically on Cmd+backslash in tmux it is Ctrl+b+%
-# TODO: I want to change it Cmd+pipe but looks like ghostty doesn't support that key for now
-keybind = super+backslash=text:\x02\x25
+#keybind = cmd+Backslash=text:\x02\x25
 # tab
-keybind = cmd+one=text:\x021
-keybind = cmd+two=text:\x022
-keybind = cmd+three=text:\x023
-keybind = cmd+four=text:\x024
-keybind = cmd+five=text:\x025
-keybind = cmd+six=text:\x026
-keybind = cmd+seven=text:\x027
-keybind = cmd+eight=text:\x028
-keybind = cmd+nine=text:\x029
+keybind = shift+Enter=text:\x1b\r
+keybind = cmd+Digit1=text:\x021
+keybind = cmd+Digit2=text:\x022
+keybind = cmd+Digit3=text:\x023
+keybind = cmd+Digit4=text:\x024
+keybind = cmd+Digit5=text:\x025
+keybind = cmd+Digit6=text:\x026
+keybind = cmd+Digit7=text:\x027
+keybind = cmd+Digit8=text:\x028
+keybind = cmd+Digit9=text:\x029
+keybind = shift+enter=text:\x1b\r

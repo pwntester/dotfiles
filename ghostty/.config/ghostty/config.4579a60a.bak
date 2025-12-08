@@ -1,0 +1,56 @@
+# theme
+theme = catppuccin-macchiato.conf
+
+# font
+#font-family = "MonaspiceNe Nerd Font"
+#font-family = "Akkurat-Mono"
+font-family = Source Code Pro Light
+font-style-bold = Source Code Pro Medium
+font-style-italic = Source Code Pro ExtraLight Italic
+font-style-bold-italic = Source Code Pro Italic
+
+font-size = 15
+font-thicken = true
+# Disable ligatures as described here:
+# https://ghostty.org/docs/config/reference#font-feature
+font-feature = -calt
+font-feature = -liga
+font-feature = -dlig
+# Enable slashed zero.
+font-feature = zero
+
+adjust-cell-height = 10%
+window-decoration=false
+mouse-hide-while-typing = true
+macos-non-native-fullscreen=visible-menu
+macos-option-as-alt = true
+macos-titlebar-style = hidden
+copy-on-select = true
+# macos-titlebar-style = tabs
+
+# TMUX integration considering that my leader key is ctrl + b
+# new tab
+keybind = cmd+t=text:\x02c
+# tmux sesh
+keybind = cmd+k=text:\x02T
+# tmux floax
+keybind = cmd+f=text:\x02p
+# lazygit/gitui
+keybind = cmd+g=text:\x02g
+# Rename a tmux window on Cmd+r in tmux it is Ctrl+b+,
+keybind = cmd+r=text:\x02\x2c
+# Split the window horizontally on Cmd+minus in tmux it is Ctrl+b+"
+#keybind = cmd+minus=text:\x02\x22
+# Split the window vertically on Cmd+backslash in tmux it is Ctrl+b+%
+#keybind = cmd+Backslash=text:\x02\x25
+# tab
+keybind = shift+Enter=text:\x1b\r
+keybind = cmd+Digit1=text:\x021
+keybind = cmd+Digit2=text:\x022
+keybind = cmd+Digit3=text:\x023
+keybind = cmd+Digit4=text:\x024
+keybind = cmd+Digit5=text:\x025
+keybind = cmd+Digit6=text:\x026
+keybind = cmd+Digit7=text:\x027
+keybind = cmd+Digit8=text:\x028
+keybind = cmd+Digit9=text:\x029

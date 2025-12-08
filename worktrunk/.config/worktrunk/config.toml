@@ -1,0 +1,28 @@
+worktree-path = "../{{ main_worktree }}.{{ branch }}"
+
+[commit-generation]
+args = []
+command = ""
+
+[projects."github.com/xbow-engineering/ctf-solver"]
+approved-commands = [
+    """
+MAIN_REPO=$(git rev-parse --path-format=absolute --git-common-dir | sed 's|/.git||')
+if [ -d "$MAIN_REPO/.devcontainer" ]; then
+  ln -sf "$MAIN_REPO/.devcontainer" .devcontainer
+  echo "✅ Devcontainer config linked from main repo"
+else
+  echo "⚠️  No .devcontainer found in $MAIN_REPO"
+fi
+""",
+    """
+if [ -d ".devcontainer" ]; then
+  echo "🚀 Starting devcontainer in background..."
+  devcontainer up --workspace-folder . > /tmp/devcontainer-$(basename $(pwd)).log 2>&1 &
+  echo "📝 Logs: /tmp/devcontainer-$(basename $(pwd)).log"
+  echo "💡 Run 'nv .' when container is ready (check with 'docker ps')"
+else
+  echo "⚠️  No .devcontainer config found"
+fi
+""",
+]

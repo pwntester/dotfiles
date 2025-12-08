@@ -44,6 +44,7 @@ local textobjects = {
 return {
 	{
 		"nvim-treesitter/nvim-treesitter",
+    dependencies = { "OXY2DEV/markview.nvim" },
 		event = { "BufReadPost", "BufWritePost", "BufNewFile", "VeryLazy" },
 		version = false, -- last release is way too old and doesn't work on Windows
 		build = ":TSUpdate",

@@ -4,7 +4,7 @@ local g = require("pwntester.globals")
 
 return {
 	"nvim-telescope/telescope.nvim",
-	enabled = false,
+  enabled = false,
 	cmd = "Telescope",
 	version = false, -- telescope did only one release, so use HEAD for now
 	dependencies = {
@@ -20,28 +20,28 @@ return {
 				end)
 			end,
 		},
-		{
-			"nvim-telescope/telescope-fzf-native.nvim",
-			build = have_make and "make"
-				or "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
-			enabled = have_make or have_cmake,
-			config = function(plugin)
-				g.on_load("telescope.nvim", function()
-					local ok, err = pcall(require("nvim.config.nvim.lua.pwntester.plugins._telescope").load_extension, "fzf")
-					if not ok then
-						local lib = plugin.dir .. "/build/libfzf." .. "so"
-						if not vim.uv.fs_stat(lib) then
-							print("`telescope-fzf-native.nvim` not built. Rebuilding...")
-							require("lazy").build({ plugins = { plugin }, show = false }):wait(function()
-								print("Rebuilding `telescope-fzf-native.nvim` done.\nPlease restart Neovim.")
-							end)
-						else
-							print("Failed to load `telescope-fzf-native.nvim`:\n" .. err)
-						end
-					end
-				end)
-			end,
-		},
+		-- {
+		-- 	"nvim-telescope/telescope-fzf-native.nvim",
+		-- 	build = have_make and "make"
+		-- 		or "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
+		-- 	enabled = have_make or have_cmake,
+		-- 	config = function(plugin)
+		-- 		g.on_load("telescope.nvim", function()
+		-- 			local ok, err = pcall(require("nvim.config.nvim.lua.pwntester.plugins._telescope").load_extension, "fzf")
+		-- 			if not ok then
+		-- 				local lib = plugin.dir .. "/build/libfzf." .. "so"
+		-- 				if not vim.uv.fs_stat(lib) then
+		-- 					print("`telescope-fzf-native.nvim` not built. Rebuilding...")
+		-- 					require("lazy").build({ plugins = { plugin }, show = false }):wait(function()
+		-- 						print("Rebuilding `telescope-fzf-native.nvim` done.\nPlease restart Neovim.")
+		-- 					end)
+		-- 				else
+		-- 					print("Failed to load `telescope-fzf-native.nvim`:\n" .. err)
+		-- 				end
+		-- 			end
+		-- 		end)
+		-- 	end,
+		-- },
 	},
 	opts = function()
 		local actions = require("telescope.actions")

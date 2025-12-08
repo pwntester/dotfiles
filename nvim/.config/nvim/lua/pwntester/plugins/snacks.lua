@@ -21,7 +21,7 @@ return {
         { section = "startup" },
       },
     },
-    explorer = { enabled = true },
+    explorer = { enabled = false },
     image = { enabled = true },
     notifier = {
       enabled = false,
@@ -57,6 +57,8 @@ return {
     { "<c-_>",      function() Snacks.terminal() end, desc = "which_key_ignore" },
     { "]]",         function() Snacks.words.jump(vim.v.count1) end, desc = "Next Reference", mode = { "n", "t" } },
     { "[[",         function() Snacks.words.jump(-vim.v.count1) end, desc = "Prev Reference", mode = { "n", "t" } },
+    -- Explorer
+    -- { "ge", function() Snacks.explorer() end, desc = "File Explorer" },
     {
       "<leader>N",
       desc = "Neovim News",
@@ -75,8 +77,6 @@ return {
         })
       end,
     },
-    -- Explorer
-    { "ge", function() Snacks.explorer() end, desc = "File Explorer" },
     -- Picker
     {
       "<leader>f",

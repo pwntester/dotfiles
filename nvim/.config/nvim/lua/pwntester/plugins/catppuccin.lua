@@ -49,7 +49,7 @@ return {
       dim_inactive = {
         enabled = true,
         shade = "dark",
-        percentage = 0.1,
+        percentage = 0.5,
       },
       color_overrides = {
         --   all = {},
@@ -91,6 +91,9 @@ return {
           ["Identifier"] = { fg = colors.yellow },
           ["Special"] = { fg = colors.sapphire },
           ["Number"] = { fg = colors.green },
+          ["Normal"] = { fg = colors.text, bg = "NONE"},
+          ["NormalNC"] = { fg = colors.text, bg = "NONE"},
+          --["Normal"] = { fg = colors.text, bg = colors.base},
           ["NormalAlt"] = { fg = colors.text, bg = colors.mantle },
           ["@attribute"] = { fg = colors.mauve },
           ["@function.builtin"] = { fg = colors.mauve },
@@ -208,6 +211,63 @@ return {
       for _, group in ipairs(vim.fn.getcompletion("@lsp", "highlight")) do
         vim.api.nvim_set_hl(0, group, {})
       end
+
+      -- Store original highlights
+      local highlights_cache = {}
+      local is_dimmed = false
+
+      -- Function to dim a color (reduce brightness)
+      local function dim_color(color, factor)
+        if not color or color == "NONE" then return color end
+        local hex = color:gsub("#", "")
+        local r = tonumber(hex:sub(1, 2), 16)
+        local g = tonumber(hex:sub(3, 4), 16)
+        local b = tonumber(hex:sub(5, 6), 16)
+        r = math.floor(r * factor)
+        g = math.floor(g * factor)
+        b = math.floor(b * factor)
+        return string.format("#%02x%02x%02x", r, g, b)
+      end
+
+      -- Function to dim all highlights
+      local function dim_all()
+        if is_dimmed then return end
+        is_dimmed = true
+        
+        local groups = vim.fn.getcompletion("", "highlight")
+        for _, group in ipairs(groups) do
+          local hl = vim.api.nvim_get_hl(0, { name = group })
+          if hl and (hl.fg or hl.bg) then
+            highlights_cache[group] = hl
+            local dimmed = vim.tbl_extend("force", {}, hl)
+            if hl.fg then dimmed.fg = dim_color(string.format("#%06x", hl.fg), 0.6) end
+            if hl.bg and hl.bg ~= "NONE" then dimmed.bg = dim_color(string.format("#%06x", hl.bg), 0.8) end
+            vim.api.nvim_set_hl(0, group, dimmed)
+          end
+        end
+      end
+
+      -- Function to restore all highlights
+      local function restore_all()
+        if not is_dimmed then return end
+        is_dimmed = false
+        
+        for group, hl in pairs(highlights_cache) do
+          vim.api.nvim_set_hl(0, group, hl)
+        end
+      end
+
+      -- Dim when losing focus
+      vim.api.nvim_create_autocmd("FocusLost", {
+        pattern = "*",
+        callback = dim_all,
+      })
+
+      -- Restore when gaining focus
+      vim.api.nvim_create_autocmd("FocusGained", {
+        pattern = "*",
+        callback = restore_all,
+      })
     end,
   },
 }

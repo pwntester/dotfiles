@@ -1,0 +1,68 @@
+# https://www.nerdfonts.com/cheat-sheet
+# https://github.com/FelixKratz/dotfiles
+
+# Unload the macOS on screen indicator overlay for volume change
+launchctl unload -F /System/Library/LaunchAgents/com.apple.OSDUIHelper.plist > /dev/null 2>&1 &
+
+PLUGIN_DIR="$CONFIG_DIR/plugins"
+ITEM_DIR="$CONFIG_DIR/items"
+
+source "$CONFIG_DIR/scripts/config.sh"
+
+##### Bar Appearance #####
+
+sketchybar --bar \
+  position=top \
+  height=35 \
+  color=$BG \
+  border_color=$BLACK \
+  corner_radius=0 \
+  blur_radius=10 \
+  border_width=0 \
+  y_offset=0  \
+  margin=0 \
+  display=all \
+  topmost=off \
+  sticky=off \
+  font_smoothing=on \
+  padding_left=10 \
+  padding_right=10
+
+##### Changing Defaults #####
+
+default=(
+  padding_left=2
+  padding_right=2
+  icon.font="$FONT:Bold:20.0"
+  label.font="$FONT:Bold:14.0"
+  icon.color=$FG
+  label.color=$FG
+  icon.padding_left=5
+  icon.padding_right=5
+  label.padding_left=5
+  label.padding_right=5
+)
+sketchybar --default "${default[@]}"
+
+##### Adding Mission Control Space Indicators #####
+
+source "$ITEM_DIR/apple.sh"
+source "$ITEM_DIR/spaces.sh"
+source "$ITEM_DIR/front_app.sh"
+# source "$ITEM_DIR/spotify.sh"
+
+##### Adding Right Items #####
+
+source "$ITEM_DIR/time.sh"
+source "$ITEM_DIR/date.sh"
+source "$ITEM_DIR/wifi.sh"
+source "$ITEM_DIR/battery.sh"
+source "$ITEM_DIR/brightness.sh"
+source "$ITEM_DIR/volume.sh"
+source "$ITEM_DIR/cpu.sh"
+source "$ITEM_DIR/homebrew.sh"
+
+sketchybar --hotload on
+
+##### Force all scripts to run the first time (never do this in a script) #####
+sketchybar --update

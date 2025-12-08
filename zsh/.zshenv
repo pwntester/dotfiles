@@ -33,5 +33,8 @@ if [ -x "$(command -v go)" ]; then
   export PATH=$PATH:$(go env GOPATH)/bin
 fi
 
+# XBOW
+export LIMIT_PROVIDERS=anthropic,openai
+
 # codeql
 export CODEQL_DIST=$HOME/src/github.com/github/codeql 

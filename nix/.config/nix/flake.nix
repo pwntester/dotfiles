@@ -28,49 +28,7 @@
 	      ffmpeg
         imagemagick
         mkalias # Needed to make nix gui apps available to spotlight/raycast
-        codeql
-        neovim
-        tmux
-        gum # for sesh
-        jq
-        yq
-        zoxide
-        ripgrep
-        difftastic
-        delta
-        fd
-        bat
-        serpl
-        fzf
-        eza
-        tree
-        broot
-        lazygit
-        sesh
-        wget
-        curl
-        git
-        git-lfs
-        gh
-        gh-dash
-        stylua
-        stow
-        discord
-        docker
-        obsidian
-        ollama
-	      raycast
-        slack
-        vscode
-        nodejs
-        nodePackages.npm
-        flock
-        # project discovery
-        interactsh
-        nuclei
-        # python
-        # python312
-        # python312Packages.semgrep
+        interactsh # Not available in brew
       ];
 
 
@@ -81,21 +39,58 @@
         ];
         brews = [
           "awscli"
-          #"podman"
           "docker-credential-helper-ecr"
-          # "docker-credential-helper"
           "mas" # To search the AppStore for App Ids with `mas search <App Name>`
-          "borders" # https://github.com/FelixKratz/JankyBorders
-          "scc" # for counting lines of code https://github.com/boyter/scc?tab=readme-ov-file
+          "sketchybar"
           "qemu"
+          "graphviz"
+          "switchaudio-osx"
+          "bzip2"
+          "ffmpeg"
+          "imagemagick"
+          "sqlmap"
+          "neovim"
+          "tmux"
+          "gum" # for sesh
+          "jq"
+          "yq"
+          "zoxide"
+          "ripgrep"
+          "difftastic"
+          "delta"
+          "fd"
+          "bat"
+          "serpl"
+          "fzf"
+          "eza"
+          "tree"
+          "broot"
+          "lazygit"
+          "sesh"
+          "wget"
+          "curl"
+          "git"
+          "git-lfs"
+          "gh"
+          "stylua"
+          "stow"
+          "docker"
+          "nuclei"
+          "nmap"
+          "devcontainer"
+          "max-sixty/worktrunk/wt"
         ];
         casks = [
           "utm" # Universal Tunneling Machine (VMs)
+          "blackhole-16ch"
+          "virtualbox"
           "ngrok"
           "caffeine"
           "burp-suite-professional"
-          "docker"
-          # "podman-desktop"
+          "docker-desktop"
+          "claude-code"
+          "copilot-cli"
+          "gemini-cli"
           "the-unarchiver"
           "google-drive"
           "google-chrome"
@@ -104,10 +99,9 @@
  	        "elgato-camera-hub"
           "ghostty"
           "font-source-code-pro"
+          "font-hack-nerd-font"
           "synology-drive"
-          "tailscale"
-          "tunnelblick"
-          "lookaway"
+          "tailscale-app"
           "rectangle"
           "karabiner-elements"
           "msty"
@@ -115,11 +109,23 @@
           "intellij-idea"
           "mitmproxy"
           "1password"
+          "discord"
+          "obsidian"
+          "ollama-app"
+          "raycast"
+          "slack"
+          "visual-studio-code"
+          "codeql"
+          "loupedeck"
         ];
-	      masApps = {
-	        "Things3" = 904280696;
-        };
+	      # masApps disabled due to mas CLI limitations on newer macOS versions
+        # Install these manually from the App Store if needed
+        # masApps = {
+	      #   "Things3" = 904280696;
+        #   "Perplexity" = 6714467650;
+        # };
         # remove brew apps installed outside nix when rebuilding
+        # Note: loupedeck uses manual installer and must be upgraded with: brew upgrade --cask loupedeck
         onActivation.cleanup = "zap";
         # Update and upgrade brew on rebuild
         onActivation.autoUpdate = true;
@@ -141,60 +147,76 @@
       # https://daiderd.com/nix-darwin/manual/index.html
       system = {
         stateVersion = 5;
+        primaryUser = "pwntester";
 
         configurationRevision = self.rev or self.dirtyRev or null;
 
         defaults = {
-          LaunchServices = {
-            LSQuarantine = false;
+          CustomUserPreferences = {
+            "com.knollsoft.Rectangle" = {
+              screenEdgeGapTop = 35;
+              screenEdgeGapBottom = 0;
+              screenEdgeGapLeft = 0;
+              screenEdgeGapRight = 0;
+            };
           };
-
           NSGlobalDomain = {
-            AppleInterfaceStyle = "Dark";
-            AppleICUForce24HourTime = true;
-            AppleShowAllExtensions = true;
-            ApplePressAndHoldEnabled = false;
-
-            # 120, 90, 60, 30, 12, 6, 2
-            KeyRepeat = 2;
-
-            # 120, 94, 68, 35, 25, 15
-            InitialKeyRepeat = 15;
-
-            "com.apple.mouse.tapBehavior" = 1;
-            "com.apple.sound.beep.volume" = 0.0;
-            "com.apple.sound.beep.feedback" = 0;
-          };
-
-          dock = {
-            autohide = true;
-            show-recents = false;
-            launchanim = true;
-            orientation = "right";
-            tilesize = 48;
-            mru-spaces = false;
-          };
-
-          finder = {
-            AppleShowAllExtensions = true;
-	          FXPreferredViewStyle = "clmv";
-            _FXShowPosixPathInTitle = false;
-          };
-
-          loginwindow = {
-            GuestEnabled = false;
-            LoginwindowText = "pwntester";
-          };
-
-          screencapture = {
-            location = "~/Pictures/screenshots";
-          };
-
-          trackpad = {
-            Clicking = true;
-            TrackpadThreeFingerDrag = true;
+            _HIHideMenuBar = true;
+            NSAutomaticWindowAnimationsEnabled = false; # Reduce motion
           };
         };
+        
+        # defaults = {
+        #   LaunchServices = {
+        #     LSQuarantine = false;
+        #   };
+        #
+        #   NSGlobalDomain = {
+        #     AppleInterfaceStyle = "Dark";
+        #     AppleICUForce24HourTime = true;
+        #     AppleShowAllExtensions = true;
+        #     ApplePressAndHoldEnabled = false;
+        #
+        #     # 120, 90, 60, 30, 12, 6, 2
+        #     KeyRepeat = 2;
+        #
+        #     # 120, 94, 68, 35, 25, 15
+        #     InitialKeyRepeat = 15;
+        #
+        #     "com.apple.mouse.tapBehavior" = 1;
+        #     "com.apple.sound.beep.volume" = 0.0;
+        #     "com.apple.sound.beep.feedback" = 0;
+        #   };
+        #
+        #   dock = {
+        #     autohide = true;
+        #     show-recents = false;
+        #     launchanim = true;
+        #     orientation = "right";
+        #     tilesize = 48;
+        #     mru-spaces = false;
+        #   };
+        #
+        #   finder = {
+        #     AppleShowAllExtensions = true;
+        #    FXPreferredViewStyle = "clmv";
+        #     _FXShowPosixPathInTitle = false;
+        #   };
+        #
+        #   loginwindow = {
+        #     GuestEnabled = false;
+        #     LoginwindowText = "pwntester";
+        #   };
+        #
+        #   screencapture = {
+        #     location = "~/Pictures/screenshots";
+        #   };
+        #
+        #   trackpad = {
+        #     Clicking = true;
+        #     TrackpadThreeFingerDrag = true;
+        #   };
+        # };
 
         keyboard = {
           enableKeyMapping = true;
@@ -207,7 +229,7 @@
         env = pkgs.buildEnv {
           name = "system-applications";
           paths = config.environment.systemPackages;
-          pathsToLink = "/Applications";
+          pathsToLink = [ "/Applications" ];
         };
       in
         pkgs.lib.mkForce ''

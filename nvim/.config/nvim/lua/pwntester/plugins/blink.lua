@@ -1,30 +1,16 @@
 return {
   "saghen/blink.cmp",
-  build = "cargo build --release",
-  version = "*",
-  opts_extend = {
-    "sources.completion.enabled_providers",
-    "sources.compat",
-    "sources.default",
-  },
+  version = '1.*', -- use a release tag to download pre-built binaries
   dependencies = {
-    -- "fang2hou/blink-copilot",
-    -- "Kaiser-Yang/blink-cmp-avante",
-    -- "supermaven-inc/supermaven-nvim",
-    -- "huijiro/blink-cmp-supermaven",
+    "fang2hou/blink-copilot",
     "rafamadriz/friendly-snippets",
-    {
-      "saghen/blink.compat",
-      version = "*",
-      lazy = true,
-      opts = {},
-    },
   },
   event = "InsertEnter",
 
   ---@module 'blink.cmp'
   ---@type blink.cmp.Config
   opts = {
+    snippets = {},
     appearance = {
       -- sets the fallback highlight groups to nvim-cmp's highlight groups
       -- useful for when your theme doesn't support blink.cmp
@@ -42,62 +28,12 @@ return {
       },
       menu = {
         draw = {
-          -- Aligns the keyword you've typed to a component in the menu
-          align_to = 'label', -- or 'none' to disable, or 'cursor' to align to the cursor
-          -- Left and right padding, optionally { left, right } for different padding on each side
-          padding = 1,
-          -- Gap between columns
-          gap = 1,
           -- Use treesitter to highlight the label text for the given list of sources
-          treesitter = {}, -- { 'lsp' }
-          -- Components to render, grouped by column
-          columns = { { 'kind_icon' }, { 'label', 'label_description', gap = 1 } },
-          -- Definitions for possible components to render. Each defines:
-          --   ellipsis: whether to add an ellipsis when truncating the text
-          --   width: control the min, max and fill behavior of the component
-          --   text function: will be called for each item
-          --   highlight function: will be called only when the line appears on screen
-          components = {
-            kind_icon = {
-              text = function(ctx)
-                local kind_icon, _, _ = require('mini.icons').get('lsp', ctx.kind)
-                return kind_icon
-              end,
-              -- (optional) use highlights from mini.icons
-              highlight = function(ctx)
-                local _, hl, _ = require('mini.icons').get('lsp', ctx.kind)
-                return hl
-              end,
-            },
-            kind = {
-              -- (optional) use highlights from mini.icons
-              highlight = function(ctx)
-                local _, hl, _ = require('mini.icons').get('lsp', ctx.kind)
-                return hl
-              end,
-            }
-          }
+          treesitter = { 'lsp' }
         }
       },
-      -- menu = {
-      --   draw = {
-      --     treesitter = { "lsp" },
-      --   },
-      -- },
-      -- documentation = {
-      --   auto_show = true,
-      --   auto_show_delay_ms = 200,
-      -- },
       ghost_text = {
         enabled = true,
-        -- Show the ghost text when an item has been selected
-        show_with_selection = true,
-        -- Show the ghost text when no item has been selected, defaulting to the first item
-        show_without_selection = false,
-        -- Show the ghost text when the menu is open
-        show_with_menu = true,
-        -- Show the ghost text when the menu is closed
-        show_without_menu = true,
       },
     },
     sources = {
@@ -105,11 +41,30 @@ return {
         return {
           "lsp",
           "path",
-          -- "supermaven", -- "avante", "copilot"
           "buffer",
+          "copilot" -- "supermaven", -- "avante", 
         }
       end,
       providers = {
+        copilot = {
+            name = "copilot",
+            module = "blink-copilot",
+            opts = {
+              max_completions = 3,
+              max_attempts = 4,
+            },
+            score_offset = 100,
+            async = true,
+            transform_items = function(_, items)
+              local CompletionItemKind = require("blink.cmp.types").CompletionItemKind
+              local kind_idx = #CompletionItemKind + 1
+              CompletionItemKind[kind_idx] = "Copilot"
+              for _, item in ipairs(items) do
+                item.kind = kind_idx
+              end
+              return items
+            end,
+        },
         -- copilot = {
         --   name = "copilot",
         --   module = "blink-copilot",
@@ -132,7 +87,7 @@ return {
       preset = "none",
       ["<C-k>"] = { "select_prev", "fallback" },
       ["<C-j>"] = { "select_next", "fallback" },
-      ["<C-s>"] = { "show" },
+      --["<C-s>"] = { "show" },
       ["<Up>"] = { "select_prev", "fallback" },
       ["<Down>"] = { "select_next", "fallback" },
       ["<Right>"] = { "select_and_accept", "fallback" },

@@ -1,24 +1,31 @@
 lastupdatecheck: 0
 recentrepos:
-    - /Users/pwntester/src/github.com/xbow-engineering/vulnDB
-    - /Users/pwntester/src/github.com/xbow-engineering/xbow-benchmarks-toolset
+    - /Users/pwntester/dotfiles
     - /Users/pwntester/src/github.com/xbow-engineering/xbow-pentesting-tools
+    - /Users/pwntester/src/github.com/xbow-engineering/xb-crawl
+    - /Users/pwntester/src/github.com/xbow-engineering/ctf-solver-passive-scan-findings
+    - /Users/pwntester/src/github.com/xbow-engineering/ctf-solver
+    - /Users/pwntester/src/github.com/xbow-engineering/test-targets
+    - /Users/pwntester/src/github.com/xbow-engineering/ctf-solver.nuclei_solvers
+    - /Users/pwntester/src/github.com/xbow-engineering/xbow-larch
+    - /Users/pwntester/src/github.com/xbow-engineering/xbow-benchmarks-toolset
+    - /Users/pwntester/src/github.com/xbow-engineering/unrestricted-internet-proxy
+    - /Users/pwntester/src/github.com/xbow-engineering/xb-urlscore
+    - /Users/pwntester/src/github.com/xbow-engineering/xbow-quartermaster
+    - /Users/pwntester/src/github.com/xbow-engineering/xbow-workerd
+    - /Users/pwntester/src/github.com/xbow-engineering/team-security
+    - /Users/pwntester/src/github.com/xbow-engineering/vulnDB
+    - /Users/pwntester/src/github.com/xbow-engineering/TiTiler
+    - /Users/pwntester/xbow/PoCs/TiTiler/titiler
+    - /Users/pwntester/xbow/cve-project/repos/titiler
     - /Users/pwntester/src/github.com/xbow-engineering/xb-browse
     - /Users/pwntester/src/github.com/xbow-engineering/vulndb
-    - /Users/pwntester/src/github.com/xbow-engineering/team-security
-    - /Users/pwntester/src/github.com/xbow-engineering/ctf-solver
-    - /Users/pwntester/dotfiles
     - /Users/pwntester/src/github.com/pwntester/octo.nvim
     - /Users/pwntester/src/github.com/pwntester/codeql.nvim
 startuppopupversion: 5
-lastversion: 0.48.0
+didshowhunkstaginghint: true
+lastversion: 0.57.0
 customcommandshistory:
     - qa
+    - w
 hidecommandlog: false
-ignorewhitespaceindiffview: false
-diffcontextsize: 3
-renamesimilaritythreshold: 50
-localbranchsortorder: recency
-remotebranchsortorder: alphabetical
-gitlogorder: topo-order
-gitlogshowgraph: always

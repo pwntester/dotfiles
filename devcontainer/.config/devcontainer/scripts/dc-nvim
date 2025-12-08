@@ -1,0 +1,48 @@
+#!/bin/bash
+# Smart neovim launcher - uses container if available, host otherwise
+
+# Check if we're in a directory with devcontainer config
+if [ ! -d ".devcontainer" ] && [ ! -f ".devcontainer.json" ]; then
+    # No devcontainer - use host nvim
+    exec nvim "$@"
+fi
+
+# Get the absolute workspace folder path
+WORKSPACE_FOLDER="$(pwd)"
+
+# Try to find running container
+CONTAINER_ID=$(docker ps --filter "label=devcontainer.local_folder=${WORKSPACE_FOLDER}" --format '{{.ID}}' | head -1)
+
+if [ -z "$CONTAINER_ID" ]; then
+    echo "⚠️  Devcontainer not running. Start it with 'dc-up' or use host nvim?"
+    read -p "Use host nvim? (Y/n): " choice
+    if [ "$choice" = "n" ] || [ "$choice" = "N" ]; then
+        exit 1
+    fi
+    exec nvim "$@"
+fi
+
+# Get the workspace folder path inside the container
+CONTAINER_WORKSPACE="/workspaces/$(basename "${WORKSPACE_FOLDER}")"
+
+# If files are passed as arguments, convert them to container paths
+ARGS=()
+for arg in "$@"; do
+    if [ -f "$arg" ] || [ -d "$arg" ]; then
+        # Convert to absolute path, then to container path
+        ABS_PATH="$(cd "$(dirname "$arg")" && pwd)/$(basename "$arg")"
+        REL_PATH="${ABS_PATH#${WORKSPACE_FOLDER}/}"
+        ARGS+=("${CONTAINER_WORKSPACE}/${REL_PATH}")
+    else
+        ARGS+=("$arg")
+    fi
+done
+
+echo "→ Using devcontainer neovim"
+docker exec -it \
+    -u node \
+    -e "TERM=${TERM}" \
+    -e "COLORTERM=${COLORTERM}" \
+    -w "${CONTAINER_WORKSPACE}" \
+    "$CONTAINER_ID" \
+    nvim "${ARGS[@]}"
