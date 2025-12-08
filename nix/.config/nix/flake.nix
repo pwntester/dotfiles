@@ -79,6 +79,7 @@
           "nmap"
           "devcontainer"
           "max-sixty/worktrunk/wt"
+          "gemini-cli"
         ];
         casks = [
           "utm" # Universal Tunneling Machine (VMs)
@@ -90,7 +91,6 @@
           "docker-desktop"
           "claude-code"
           "copilot-cli"
-          "gemini-cli"
           "the-unarchiver"
           "google-drive"
           "google-chrome"
