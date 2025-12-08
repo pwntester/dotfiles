@@ -9,3 +9,7 @@ config/nvim/.netrwhist
 config/nvim/spell/en.utf-8.spl
 config/nvim/spell/en.utf-8.sug
 config/nvim/plugin/packer_compiled.lua
+
+# Ignore secrets directory if accidentally placed in repo
+.config/secrets/
+**/secrets/
